@@ -1,0 +1,14 @@
+tiling "6" 1
+
+    2.0 0.0
+    1.0 1.7320508075688767
+
+        regular 6 1
+
+            1.0 0.0 0.0
+            0.0 1.0 0.0
+
+    "Tuilage régulier avec des hexagones."
+
+    "Craig S. Kaplan"
+

@@ -1,0 +1,80 @@
+layers 5
+
+  interlace 0.05 0.03
+  thick 0.05 0.0
+  color 247 243 240 255
+
+  mosaic "4.8^2" 2
+
+    regular 8
+
+    rosette 8 0.0 3
+
+
+    regular 4
+
+    explicit 
+
+
+  interlace 0.05 0.03
+  thick 0.05 0.0
+  color 240 234 228 255
+
+  mosaic "4.8^2" 2
+
+    regular 8
+
+    rosette 8 0.0 3
+
+
+    regular 4
+
+    explicit 
+
+
+  outline 
+  thick 0.10312500000000001 0.0
+  color 0 0 0 255
+
+  mosaic "4.8^2" 2
+
+    regular 8
+
+    rosette 8 0.0 3
+
+
+    regular 4
+
+    explicit 
+
+
+  filled true false
+  color 0 51 153 255
+
+  mosaic "4.8^2" 2
+
+    regular 8
+
+    rosette 8 0.0 3
+
+
+    regular 4
+
+    explicit 
+
+
+  filled false true
+  color 153 0 0 255
+
+  mosaic "4.8^2" 2
+
+    regular 8
+
+    rosette 8 0.0 3
+
+
+    regular 4
+
+    explicit 
+
+

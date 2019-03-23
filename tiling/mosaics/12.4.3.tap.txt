@@ -1,0 +1,82 @@
+layers 4
+
+  thick 0.015 0.0
+  color 153 51 0 255
+
+  mosaic "Square 12.4.3" 3
+
+    regular 3
+
+    explicit 
+
+
+    regular 12
+
+    rosette 12 0.0 3
+
+
+    regular 4
+
+    explicit 
+
+
+  thick 0.03 0.0
+  color 255 255 255 255
+
+  mosaic "Square 12.4.3" 3
+
+    regular 3
+
+    explicit 
+
+
+    regular 12
+
+    rosette 12 0.0 3
+
+
+    regular 4
+
+    explicit 
+
+
+  thick 0.075 0.0
+  color 0 0 0 255
+
+  mosaic "Square 12.4.3" 3
+
+    regular 3
+
+    explicit 
+
+
+    regular 12
+
+    rosette 12 0.0 3
+
+
+    regular 4
+
+    explicit 
+
+
+  filled false true
+  color 0 0 0 255
+
+  mosaic "Square 12.4.3" 3
+
+    regular 3
+
+    explicit 
+
+
+    regular 12
+
+    rosette 12 0.0 3
+
+
+    regular 4
+
+    explicit 
+
+

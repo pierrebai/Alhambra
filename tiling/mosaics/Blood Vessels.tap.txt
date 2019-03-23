@@ -1,0 +1,120 @@
+layers 5
+
+  interlace 0.12 0.0
+  thick 0.02 0.0
+  color 255 255 255 255
+
+  mosaic "8 and 8" 3
+
+    regular 8
+
+    rosette 8 0.0 3
+
+
+    polygon 3
+      1.8284271247461912 0.4142135623730955
+      3.000000000000001 0.41421356237309426
+      2.414213562373096 0.9999999999999997
+
+    explicit 
+
+
+    regular 4
+
+    explicit 
+
+
+  interlace 0.08 0.0
+  thick 0.06 0.0
+  color 153 0 0 255
+
+  mosaic "8 and 8" 3
+
+    regular 8
+
+    rosette 8 0.0 3
+
+
+    polygon 3
+      1.8284271247461912 0.4142135623730955
+      3.000000000000001 0.41421356237309426
+      2.414213562373096 0.9999999999999997
+
+    explicit 
+
+
+    regular 4
+
+    explicit 
+
+
+  outline 
+  thick 0.12 0.024
+  color 214 42 42 255
+
+  mosaic "8 and 8" 3
+
+    regular 8
+
+    rosette 8 0.0 3
+
+
+    polygon 3
+      1.8284271247461912 0.4142135623730955
+      3.000000000000001 0.41421356237309426
+      2.414213562373096 0.9999999999999997
+
+    explicit 
+
+
+    regular 4
+
+    explicit 
+
+
+  filled true false
+  color 236 151 139 255
+
+  mosaic "8 and 8" 3
+
+    regular 8
+
+    rosette 8 0.0 3
+
+
+    polygon 3
+      1.8284271247461912 0.4142135623730955
+      3.000000000000001 0.41421356237309426
+      2.414213562373096 0.9999999999999997
+
+    explicit 
+
+
+    regular 4
+
+    explicit 
+
+
+  filled false true
+  color 210 82 65 255
+
+  mosaic "8 and 8" 3
+
+    regular 8
+
+    rosette 8 0.0 3
+
+
+    polygon 3
+      1.8284271247461912 0.4142135623730955
+      3.000000000000001 0.41421356237309426
+      2.414213562373096 0.9999999999999997
+
+    explicit 
+
+
+    regular 4
+
+    explicit 
+
+

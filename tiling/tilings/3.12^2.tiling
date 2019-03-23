@@ -1,0 +1,22 @@
+tiling "3.12^2" 2
+
+    0.0 2.0
+    1.7320508075688772 1.0
+
+        regular 3 2
+
+            0.07735026918962594 -0.13397459621556157 1.1547005383792515
+            0.13397459621556157 0.07735026918962594 0.0
+
+            0.15470053837925152 0.0 0.5773502691896257
+            0.0 0.15470053837925152 1.0
+
+        regular 12 1
+
+            1.0 0.0 0.0
+            0.0 1.0 0.0
+
+    "Le tuilage Archimédéen de dodécagone et de triangles.Très commun dans la construction de designs Islamiques."
+
+    "Craig S. Kaplan"
+

@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\dak\tiling\explicit_figure.h" />
+    <ClInclude Include="inc\dak\tiling\extended_figure.h" />
+    <ClInclude Include="inc\dak\tiling\figure.h" />
+    <ClInclude Include="inc\dak\tiling\infer.h" />
+    <ClInclude Include="inc\dak\tiling\infer_helpers.h" />
+    <ClInclude Include="inc\dak\tiling\infer_mode.h" />
+    <ClInclude Include="inc\dak\tiling\irregular_figure.h" />
+    <ClInclude Include="inc\dak\tiling\known_tilings.h" />
+    <ClInclude Include="inc\dak\tiling\known_tilings_generator.h" />
+    <ClInclude Include="inc\dak\tiling\mosaic.h" />
+    <ClInclude Include="inc\dak\tiling\radial_figure.h" />
+    <ClInclude Include="inc\dak\tiling\rosette.h" />
+    <ClInclude Include="inc\dak\tiling\scale_figure.h" />
+    <ClInclude Include="inc\dak\tiling\star.h" />
+    <ClInclude Include="inc\dak\tiling\tiling.h" />
+    <ClInclude Include="inc\dak\tiling\tiling_io.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\explicit_figure.cpp" />
+    <ClCompile Include="src\extended_figure.cpp" />
+    <ClCompile Include="src\figure.cpp" />
+    <ClCompile Include="src\infer.cpp" />
+    <ClCompile Include="src\irregular_figure.cpp" />
+    <ClCompile Include="src\known_tilings.cpp" />
+    <ClCompile Include="src\known_tilings_generator.cpp" />
+    <ClCompile Include="src\mosaic.cpp" />
+    <ClCompile Include="src\radial_figure.cpp" />
+    <ClCompile Include="src\rosette.cpp" />
+    <ClCompile Include="src\scale_figure.cpp" />
+    <ClCompile Include="src\star.cpp" />
+    <ClCompile Include="src\tiling.cpp" />
+    <ClCompile Include="src\tiling_io.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="tilings\10.tiling" />
+    <None Include="tilings\12-6-trigon.tiling" />
+    <None Include="tilings\12.18.tiling" />
+    <None Include="tilings\12.4.3.tiling" />
+    <None Include="tilings\14.tiling" />
+    <None Include="tilings\16.8.tiling" />
+    <None Include="tilings\18.9.tiling" />
+    <None Include="tilings\18.tiling" />
+    <None Include="tilings\24.12.tiling" />
+    <None Include="tilings\3-8-12 pieces.tiling" />
+    <None Include="tilings\3-8-12.tiling" />
+    <None Include="tilings\3-8-4-6.tiling" />
+    <None Include="tilings\3.12^2.tiling" />
+    <None Include="tilings\3.4.6.tiling" />
+    <None Include="tilings\4.5.tiling" />
+    <None Include="tilings\4.6.12.tiling" />
+    <None Include="tilings\4.7 Star.tiling" />
+    <None Include="tilings\4.7 Stars.tiling" />
+    <None Include="tilings\4.8^2.tiling" />
+    <None Include="tilings\4^4.tiling" />
+    <None Include="tilings\6 Losange.tiling" />
+    <None Include="tilings\6.4 Boats.tiling" />
+    <None Include="tilings\6.4 circles.tiling" />
+    <None Include="tilings\6.5 flower.tiling" />
+    <None Include="tilings\6.5.tiling" />
+    <None Include="tilings\6.5x6.tiling" />
+    <None Include="tilings\6.tiling" />
+    <None Include="tilings\7 et 8.tiling" />
+    <None Include="tilings\7.4.tiling" />
+    <None Include="tilings\7.6.5.tiling" />
+    <None Include="tilings\7.6.tiling" />
+    <None Include="tilings\8 6 almost 5.tiling" />
+    <None Include="tilings\8 6 ~5.tiling" />
+    <None Include="tilings\8 and 8.tiling" />
+    <None Include="tilings\8 Ring.tiling" />
+    <None Include="tilings\8-6-5.tiling" />
+    <None Include="tilings\8.12.tiling" />
+    <None Include="tilings\8.5 and some.tiling" />
+    <None Include="tilings\8.5.tiling" />
+    <None Include="tilings\8_var.tiling" />
+    <None Include="tilings\9-6 hat and kites 2.tiling" />
+    <None Include="tilings\9-6 hat and kites.tiling" />
+    <None Include="tilings\9.12.tiling" />
+    <None Include="tilings\9.5.3.6.tiling" />
+    <None Include="tilings\9.6 almost 5.tiling" />
+    <None Include="tilings\9.6 Losange 2.tiling" />
+    <None Include="tilings\9.6 Losange.tiling" />
+    <None Include="tilings\9.6 ~5.tiling" />
+    <None Include="tilings\9.6.tiling" />
+    <None Include="tilings\Abbasid Al-Mustansiriyya Madrasa.tiling" />
+    <None Include="tilings\Al-Mustansiriyya.tiling" />
+    <None Include="tilings\Alcazar 12 8.tiling" />
+    <None Include="tilings\Alcazar De Seville 12 8 - Shorter.tiling" />
+    <None Include="tilings\alhambra 16 in pieces.tiling" />
+    <None Include="tilings\alhambra 16 pieces.tiling" />
+    <None Include="tilings\alhambra16.tiling" />
+    <None Include="tilings\Almost.tiling" />
+    <None Include="tilings\Angel.tiling" />
+    <None Include="tilings\chikipoo.tiling" />
+    <None Include="tilings\csk_5.tiling" />
+    <None Include="tilings\csk_7.tiling" />
+    <None Include="tilings\csk_9.tiling" />
+    <None Include="tilings\Curvy Hex.tiling" />
+    <None Include="tilings\Diamond Hive.tiling" />
+    <None Include="tilings\Girih Crab.tiling" />
+    <None Include="tilings\Girih Inflation 10.tiling" />
+    <None Include="tilings\Girih Star.tiling" />
+    <None Include="tilings\Girih Tiles.tiling" />
+    <None Include="tilings\Great Mosque of Malatya.tiling" />
+    <None Include="tilings\Green Mosque.tiling" />
+    <None Include="tilings\Harem Lodge.tiling" />
+    <None Include="tilings\Ilkhanid Uljaytu Vault.tiling" />
+    <None Include="tilings\Ilkhanid Uljaytu.tiling" />
+    <None Include="tilings\Malatya.tiling" />
+    <None Include="tilings\Mamluk Quran.tiling" />
+    <None Include="tilings\More alien.tiling" />
+    <None Include="tilings\Mughal I%27timad.tiling" />
+    <None Include="tilings\Mughal.tiling" />
+    <None Include="tilings\pbn_7.tiling" />
+    <None Include="tilings\Penrose Monster.tiling" />
+    <None Include="tilings\Penrose.tiling" />
+    <None Include="tilings\Pentaflower.tiling" />
+    <None Include="tilings\Recursive Lock.tiling" />
+    <None Include="tilings\Sacawere.tiling" />
+    <None Include="tilings\Seville Alcazar 12.8.6.tiling" />
+    <None Include="tilings\Square 12.4.3.tiling" />
+    <None Include="tilings\Square Wave.tiling" />
+    <None Include="tilings\square_12.tiling" />
+    <None Include="tilings\Squoctogon 2.tiling" />
+    <None Include="tilings\Squoctogon.tiling" />
+    <None Include="tilings\Squoctogon2.tiling" />
+    <None Include="tilings\Sultan lodge.tiling" />
+    <None Include="tilings\Timurid Tumaq Aqa.tiling" />
+    <None Include="tilings\Tricorn.tiling" />
+    <None Include="tilings\trigon nanites.tiling" />
+    <None Include="tilings\Trigon of nanites.tiling" />
+    <None Include="tilings\Two Monsters.tiling" />
+    <None Include="tilings\var_5.tiling" />
+    <None Include="tilings\wonka.tiling" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="mosaics\12-6-trigon.tap.txt" />
+    <Text Include="mosaics\12.4.3.tap.txt" />
+    <Text Include="mosaics\3-8-12.tap.txt" />
+    <Text Include="mosaics\3-8-4-6.tap.txt" />
+    <Text Include="mosaics\6.5.tap.txt" />
+    <Text Include="mosaics\7-shadow.tap.txt" />
+    <Text Include="mosaics\7.4.tap.txt" />
+    <Text Include="mosaics\7.6.tap.txt" />
+    <Text Include="mosaics\8 6 almost 5 -- starred.tap.txt" />
+    <Text Include="mosaics\8 and 8 rings carpet.tap.txt" />
+    <Text Include="mosaics\8-6-5.tap.txt" />
+    <Text Include="mosaics\8.5.tap.txt" />
+    <Text Include="mosaics\9-6 Losange.tap.txt" />
+    <Text Include="mosaics\9.6 almost 5.tap.txt" />
+    <Text Include="mosaics\Abbasid Al-Mustansiriyya Madrasa.tap.txt" />
+    <Text Include="mosaics\Add Doubt Sin.tap.txt" />
+    <Text Include="mosaics\African Birds Migration.tap.txt" />
+    <Text Include="mosaics\Al-Mustansiriyya Gold.tap.txt" />
+    <Text Include="mosaics\Alcazar of Seville.tap.txt" />
+    <Text Include="mosaics\Alien TO.tap.txt" />
+    <Text Include="mosaics\Almost.tap.txt" />
+    <Text Include="mosaics\Are you a square.tap.txt" />
+    <Text Include="mosaics\Blood Vessels.tap.txt" />
+    <Text Include="mosaics\Bloom of May.tap.txt" />
+    <Text Include="mosaics\Bluer shade of sky.tap.txt" />
+    <Text Include="mosaics\Candyland.tap.txt" />
+    <Text Include="mosaics\Chikipoo.tap.txt" />
+    <Text Include="mosaics\Child sky of a thousand suns.tap.txt" />
+    <Text Include="mosaics\Circulatory System.tap.txt" />
+    <Text Include="mosaics\Circus.tap.txt" />
+    <Text Include="mosaics\Coffee Hankerchief.tap.txt" />
+    <Text Include="mosaics\Curvy Hex.tap.txt" />
+    <Text Include="mosaics\dentelle.tap.txt" />
+    <Text Include="mosaics\Elegant Monster.tap.txt" />
+    <Text Include="mosaics\Flying Vistas of Earth.tap.txt" />
+    <Text Include="mosaics\Girih Crab.tap.txt" />
+    <Text Include="mosaics\Golden Cage.tap.txt" />
+    <Text Include="mosaics\Green Islands.tap.txt" />
+    <Text Include="mosaics\Green Mosque.tap.txt" />
+    <Text Include="mosaics\Ilkhanid Uljaytu.tap.txt" />
+    <Text Include="mosaics\Locked Ribbon.tap.txt" />
+    <Text Include="mosaics\Malatya.tap.txt" />
+    <Text Include="mosaics\Mamluk Quran.tap.txt" />
+    <Text Include="mosaics\Mexican Suns.tap.txt" />
+    <Text Include="mosaics\More alien.tap.txt" />
+    <Text Include="mosaics\Ochre Silicate.tap.txt" />
+    <Text Include="mosaics\pbn_7.tap.txt" />
+    <Text Include="mosaics\Penrose Dots.tap.txt" />
+    <Text Include="mosaics\Penrose Monster.tap.txt" />
+    <Text Include="mosaics\pipes.tap.txt" />
+    <Text Include="mosaics\Rock the Hive.tap.txt" />
+    <Text Include="mosaics\SimpleStar.tap.txt" />
+    <Text Include="mosaics\Squoc.tap.txt" />
+    <Text Include="mosaics\Squoctogon.tap.txt" />
+    <Text Include="mosaics\star.tap.txt" />
+    <Text Include="mosaics\Sultan Lodge.tap.txt" />
+    <Text Include="mosaics\Tangle Diamonds.tap.txt" />
+    <Text Include="mosaics\thickness.tap.txt" />
+    <Text Include="mosaics\Timurid Tumaq Aqa.tap.txt" />
+    <Text Include="mosaics\Triangulated.tap.txt" />
+    <Text Include="mosaics\USA.tap.txt" />
+    <Text Include="mosaics\Water Rings.tap.txt" />
+    <Text Include="mosaics\wawa.tap.txt" />
+    <Text Include="mosaics\white stars.tap.txt" />
+    <Text Include="mosaics\wonka.tap.txt" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{7E0B3E84-185E-4261-B7C5-9006BC33696F}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>tiling</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>KNOWN_TILINGS_DIR=LR"($(SolutionDir)\tiling\tilings)";NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)inc;$(SolutionDir)geometry\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile />
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>KNOWN_TILINGS_DIR=LR"($(SolutionDir)\tiling\tilings)";_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)inc;$(SolutionDir)geometry\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile />
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

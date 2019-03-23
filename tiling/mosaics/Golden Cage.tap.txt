@@ -1,0 +1,142 @@
+layers 6
+
+  thick 0.03 0.0
+  color 255 255 204 48
+
+  mosaic "8 and 8" 3
+
+    regular 8
+
+    star 8 3.0013427734375 2
+
+
+    polygon 3
+      1.8284271247461912 0.4142135623730955
+      3.0 0.41421356237309426
+      2.414213562373096 1.0
+
+    explicit 
+
+
+    regular 4
+
+    explicit 
+
+
+  thick 0.01 0.0
+  color 255 255 255 40
+
+  mosaic "8 and 8" 3
+
+    regular 8
+
+    star 8 3.0013427734375 2
+
+
+    polygon 3
+      1.8284271247461912 0.4142135623730955
+      3.0 0.41421356237309426
+      2.414213562373096 1.0
+
+    explicit 
+
+
+    regular 4
+
+    explicit 
+
+
+  thick 0.01 0.0
+  color 176 136 14 255
+
+  mosaic "8 and 8" 3
+
+    regular 8
+
+    star 8 3.0013427734375 2
+
+
+    polygon 3
+      1.8284271247461912 0.4142135623730955
+      3.0 0.41421356237309426
+      2.414213562373096 1.0
+
+    explicit 
+
+
+    regular 4
+
+    explicit 
+
+
+  emboss 0.7853981633974483
+  outline 
+  thick 0.073046875 0.0
+  color 230 194 9 255
+
+  mosaic "8 and 8" 3
+
+    regular 8
+
+    star 8 3.0013427734375 2
+
+
+    polygon 3
+      1.8284271247461912 0.4142135623730955
+      3.0 0.41421356237309426
+      2.414213562373096 1.0
+
+    explicit 
+
+
+    regular 4
+
+    explicit 
+
+
+  thick 0.1 0.0
+  color 140 113 0 255
+
+  mosaic "8 and 8" 3
+
+    regular 8
+
+    star 8 3.0013427734375 2
+
+
+    polygon 3
+      1.8284271247461912 0.4142135623730955
+      3.0 0.41421356237309426
+      2.414213562373096 1.0
+
+    explicit 
+
+
+    regular 4
+
+    explicit 
+
+
+  filled true true
+  color 153 204 255 255
+
+  mosaic "8 and 8" 3
+
+    regular 8
+
+    star 8 3.0013427734375 2
+
+
+    polygon 3
+      1.8284271247461912 0.4142135623730955
+      3.0 0.41421356237309426
+      2.414213562373096 1.0
+
+    explicit 
+
+
+    regular 4
+
+    explicit 
+
+

@@ -1,0 +1,63 @@
+layers 4
+
+  outline 
+  thick 0.040625 0.008125
+  color 204 0 0 63
+
+  mosaic "3.12^2" 2
+
+    regular 3
+
+    explicit 
+
+
+    regular 12
+
+    star 12 3.0 1
+
+
+  plain 
+  color 153 255 255 255
+
+  mosaic "3.12^2" 2
+
+    regular 3
+
+    explicit 
+
+
+    regular 12
+
+    star 12 3.0 1
+
+
+  filled false true
+  color 51 204 255 255
+
+  mosaic "3.12^2" 2
+
+    regular 3
+
+    explicit 
+
+
+    regular 12
+
+    star 12 3.0 1
+
+
+  filled true false
+  color 20 150 210 255
+
+  mosaic "3.12^2" 2
+
+    regular 3
+
+    explicit 
+
+
+    regular 12
+
+    star 12 3.0 1
+
+

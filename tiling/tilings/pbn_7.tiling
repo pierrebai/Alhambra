@@ -1,0 +1,30 @@
+tiling "pbn_7" 2
+
+    2.445041867912629 -1.9498558243636483
+    0.0 3.899711648727295
+
+        regular 7 2
+
+            1.0 0.0 0.0
+            0.0 1.0 0.0
+
+            0.9009688679024193 0.43388373911755795 -0.44504186791262884
+            -0.43388373911755795 0.9009688679024193 1.9498558243636475
+
+        polygon 5 2
+        0.24697960371746683 2.817623302598764
+        0.6648743962621135 1.9498558243636477
+        1.3351256037378867 1.949855824363648
+        1.753020396282533 2.817623302598764
+        0.9999999999999998 3.418137029919767
+
+            1.0 0.0 0.0
+            0.0 1.0 0.0
+
+            -1.0 0.0 2.0
+            0.0 -1.0 3.8997116487272954
+
+    "A nouveau tuilage basé sur un arrangement d'heptagone avec des régions quasi-pentagonales pour remplir les trous. Ce tuilage n'aurait probablement pas été utilisé par les artisans Islamiques. Une variation de csk_7."
+
+    "Pierre Baillargeon"
+

@@ -1,0 +1,613 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Known Tilings">
+      <UniqueIdentifier>{19f76788-50d9-459d-8064-8850d47ddf51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Known Mosaics">
+      <UniqueIdentifier>{9b45a939-0b5e-4983-a4b3-cba8ded98ac2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\dak\tiling\tiling.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\tiling\tiling_io.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\tiling\figure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\tiling\radial_figure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\tiling\scale_figure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\tiling\star.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\tiling\rosette.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\tiling\explicit_figure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\tiling\mosaic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\tiling\infer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\tiling\infer_helpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\tiling\known_tilings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\tiling\known_tilings_generator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\tiling\extended_figure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\tiling\irregular_figure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\tiling\infer_mode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\tiling_io.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\radial_figure.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scale_figure.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\star.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rosette.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mosaic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\infer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tiling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\known_tilings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\known_tilings_generator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\extended_figure.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\figure.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\irregular_figure.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\explicit_figure.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="tilings\3-8-4-6.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\3-8-12 pieces.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\3-8-12.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\4.5.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\4.7 Star.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\6 Losange.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\6.4 Boats.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\6.4 circles.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\6.5 flower.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\6.5.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\7.4.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\7.6.5.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\7.6.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\8 6 almost 5.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\8.5 and some.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\8.5.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\8-6-5.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\9.5.3.6.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\9.6 almost 5.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\9.6.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\9-6 hat and kites 2.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\9-6 hat and kites.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\12.4.3.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\12-6-trigon.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Abbasid Al-Mustansiriyya Madrasa.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Alcazar 12 8.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\alhambra 16 pieces.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Almost.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Angel.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\chikipoo.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Curvy Hex.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Diamond Hive.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Girih Crab.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Girih Inflation 10.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Girih Star.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Girih Tiles.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Green Mosque.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Harem Lodge.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Ilkhanid Uljaytu Vault.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Ilkhanid Uljaytu.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Malatya.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Mamluk Quran.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\More alien.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Mughal.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\pbn_7.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Penrose Monster.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Penrose.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Pentaflower.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Recursive Lock.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Sacawere.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Square Wave.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Squoctogon.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Squoctogon2.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Sultan lodge.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Timurid Tumaq Aqa.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Tricorn.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\trigon nanites.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Two Monsters.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\var_5.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\wonka.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\3.4.6.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\3.12^2.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\4.6.12.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\4.7 Stars.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\4.8^2.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\4^4.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\6.5x6.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\6.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\7 et 8.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\8 6 ~5.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\8 and 8.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\8 Ring.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\8.12.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\8_var.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\9.6 ~5.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\9.6 Losange 2.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\9.6 Losange.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\9.12.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\10.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\12.18.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\14.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\16.8.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\18.9.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\18.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\24.12.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Alcazar De Seville 12 8 - Shorter.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\alhambra 16 in pieces.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\alhambra16.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Al-Mustansiriyya.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\csk_5.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\csk_7.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\csk_9.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Great Mosque of Malatya.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Mughal I%27timad.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Seville Alcazar 12.8.6.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Square 12.4.3.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\square_12.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Squoctogon 2.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+    <None Include="tilings\Trigon of nanites.tiling">
+      <Filter>Known Tilings</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="mosaics\3-8-4-6.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\3-8-12.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\6.5.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\7.4.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\7.6.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\7-shadow.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\8 6 almost 5 -- starred.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\8 and 8 rings carpet.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\8.5.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\8-6-5.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\9.6 almost 5.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\9-6 Losange.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\12.4.3.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\12-6-trigon.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Abbasid Al-Mustansiriyya Madrasa.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Add Doubt Sin.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\African Birds Migration.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Alcazar of Seville.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Alien TO.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Almost.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Al-Mustansiriyya Gold.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Are you a square.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Blood Vessels.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Bloom of May.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Bluer shade of sky.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Candyland.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Chikipoo.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Child sky of a thousand suns.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Circulatory System.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Circus.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Coffee Hankerchief.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Curvy Hex.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\dentelle.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Elegant Monster.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Flying Vistas of Earth.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Girih Crab.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Golden Cage.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Green Islands.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Green Mosque.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Ilkhanid Uljaytu.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Locked Ribbon.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Malatya.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Mamluk Quran.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Mexican Suns.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\More alien.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Ochre Silicate.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\pbn_7.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Penrose Dots.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Penrose Monster.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\pipes.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Rock the Hive.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\SimpleStar.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Squoc.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Squoctogon.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\star.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Sultan Lodge.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Tangle Diamonds.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\thickness.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Timurid Tumaq Aqa.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Triangulated.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\USA.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\Water Rings.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\wawa.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\white stars.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+    <Text Include="mosaics\wonka.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
+  </ItemGroup>
+</Project>
