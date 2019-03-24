@@ -36,6 +36,17 @@ namespace dak
          return std::make_shared<rosette>(*this);
       }
 
+      bool rosette::operator==(const figure& other) const
+      {
+         const auto other_rosette = dynamic_cast<const rosette *>(&other);
+         if (!other_rosette)
+            return false;
+
+         return n == other_rosette->n
+             && s == other_rosette->s
+             && q == other_rosette->q;
+      }
+
       bool rosette::is_similar(const figure& other) const
       {
          const auto other_rosette = dynamic_cast<const rosette *>(&other);

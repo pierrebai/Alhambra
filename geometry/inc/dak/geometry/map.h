@@ -105,6 +105,9 @@ namespace dak
          // Merge two maps, adding necessary intersection points as needed.
          void merge(const map& other);
 
+         // Merge two maps, assuming no too edges are the same nor intersect.
+         void merge_non_overlapping(const map& other);
+
          // Insert a group of edges, adding necessary intersection points as needed.
          void insert(const edges& from_edges);
 

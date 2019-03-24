@@ -26,6 +26,11 @@ namespace dak
          author.swap(other.author);
       }
 
+      bool tiling::operator==(const tiling& other) const
+      {
+         return tiles == other.tiles && t1 == other.t1 && t2 == other.t2;
+      }
+
       rect tiling::bounds() const
       {
          rect tiling_bounds;

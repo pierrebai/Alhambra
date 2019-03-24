@@ -87,7 +87,7 @@ namespace dak
             if (p2 < p1)
             {
                p1.swap(p2);
-               order = angle();
+               order = (order <= 0.) ? (order + PI) : (order - PI);
             }
             return *this;
          }
@@ -95,13 +95,13 @@ namespace dak
          // Create a copy that is guaranteed to be canonical if the original was a valid edge.
          edge canonical() const
          {
-            return p1 < p2 ? edge(p1, p2) : edge(p2, p1);
+            return p1 < p2 ? *this : twin();
          }
 
          // Create a copy that has the points swapped.
          edge twin() const
          {
-            return edge(p2, p1);
+            return edge(p2, p1, (order <= 0.) ? (order + PI) : (order - PI));
          }
 
          // Verify of the edge is canonical.
@@ -147,6 +147,7 @@ namespace dak
 
       private:
          constexpr edge(const point& p1, double order) : p1(p1), p2(), order(order) { }
+         constexpr edge(const point& p1, const point& p2, double order) : p1(p1), p2(p2), order(order) { }
       };
    }
 }

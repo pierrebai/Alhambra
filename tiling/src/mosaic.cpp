@@ -10,6 +10,28 @@ namespace dak
       using geometry::map;
       using geometry::transform;
 
+      bool mosaic::operator==(const mosaic& other) const
+      {
+         return tiling == other.tiling && same_figures(other);
+      }
+
+      bool mosaic::same_figures(const mosaic& other) const
+      {
+         if (tile_figures.size() != other.tile_figures.size())
+            return false;
+
+         for (const auto& tile_fig : tile_figures)
+         {
+            const auto other_tile_fig = other.tile_figures.find(tile_fig.first);
+            if (other_tile_fig == other.tile_figures.end())
+               return false;
+            if (*(tile_fig.second) != *(other_tile_fig->second))
+               return false;
+         }
+
+         return true;
+      }
+
       map mosaic::construct(const rect& region) const
       {
          map final_map;
@@ -27,7 +49,8 @@ namespace dak
                {
                   const transform total_trf = receive_trf.compose(trf);
                   const geometry::map placed = map.apply(total_trf);
-                  final_map.merge(placed);
+                  final_map.merge_non_overlapping(placed);
+                  //final_map.merge(placed);
                }
             }
          });

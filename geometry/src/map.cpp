@@ -190,6 +190,15 @@ namespace dak
             from_edges.erase(i);
       }
 
+      void map::merge_non_overlapping(const map& other)
+      {
+         _sorted_canonical_edges.reserve(_sorted_canonical_edges.size() + other._sorted_canonical_edges.size());
+         _sorted_canonical_edges.insert(_sorted_canonical_edges.end(), other._sorted_canonical_edges.begin(), other._sorted_canonical_edges.end());
+         internal_sort_edges();
+         internal_clear_inverted_edges();
+         internal_verify();
+      }
+
       void map::merge(const map& other)
       {
          std::vector<std::pair<edge, point>> temp_edge_intersections;
@@ -262,7 +271,6 @@ namespace dak
       void map::internal_sort_edges()
       {
          std::sort(_sorted_canonical_edges.begin(), _sorted_canonical_edges.end());
-         _sorted_canonical_edges.erase(std::unique(_sorted_canonical_edges.begin(), _sorted_canonical_edges.end()), _sorted_canonical_edges.end());
       }
 
       void map::internal_fill_connections(const edges& from_edges, const point& p, edges& conns, bool inbound, bool outbound)
@@ -421,6 +429,7 @@ namespace dak
 
          _sorted_canonical_edges.swap(new_sorted_canonical_edges);
          internal_sort_edges();
+         _sorted_canonical_edges.erase(std::unique(_sorted_canonical_edges.begin(), _sorted_canonical_edges.end()), _sorted_canonical_edges.end());
       }
 
       void map::internal_verify() const

@@ -28,9 +28,6 @@ namespace dak
          // Create a canvas with the given parent widget.
          mosaic_canvas(QWidget* parent);
 
-         // Draw the mosaic, if any, in the given drawing.
-         void draw_tiling(dak::ui::drawing& drw) const;
-
       protected:
          // This will draw the mosaic, if any, then the transformer drawings, if any.
          void paint(QPainter& painter) override;

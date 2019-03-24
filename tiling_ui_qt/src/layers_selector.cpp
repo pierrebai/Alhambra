@@ -1,4 +1,5 @@
 #include <dak/tiling_ui_qt/layers_selector.h>
+#include <dak/tiling_ui_qt/utility.h>
 
 #include <dak/ui_qt/convert.h>
 
@@ -140,6 +141,25 @@ namespace dak
             fill_ui(get_selected_indexes());
          }
 
+         void update_list_content()
+         {
+            int row = 0;
+            for (auto& layer : edited)
+            {
+               if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
+               {
+                  std::wstring text = mo_layer->mosaic->tiling.name + std::wstring(L"\n") + mo_layer->style->describe();
+                  QString qtext = QString::fromStdWString(text);
+                  // Note: make icon larger so that it gets scaled down with some smoothing.
+                  QIcon qicon = get_icon(mo_layer, 128, 64);
+                  auto item = layer_list->item(row);
+                  item->setText(qtext);
+                  item->setIcon(qicon);
+                  row++;
+               }
+            }
+         }
+
          layers get_selected_layers() const
          {
             std::vector<std::shared_ptr<layer>> selected;
@@ -166,11 +186,7 @@ namespace dak
       private:
          static std::shared_ptr<style> extract_style(const std::shared_ptr<layer>& layer)
          {
-            if (auto layer_style = std::dynamic_pointer_cast<style>(layer))
-            {
-               return layer_style;
-            }
-            else if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
+            if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
             {
                return mo_layer->style;
             }
@@ -225,6 +241,7 @@ namespace dak
             layer_list = std::make_unique<QListWidget>(&parent);
             layer_list->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
             layer_list->setSelectionMode(QAbstractItemView::SelectionMode::ExtendedSelection);
+            layer_list->setIconSize(QSize(64, 32));
             layout->addWidget(layer_list.get());
 
             style_editor = std::make_unique<QComboBox>(&parent);
@@ -257,17 +274,14 @@ namespace dak
 
             for (auto& layer : edited)
             {
-               if (auto layer_style = std::dynamic_pointer_cast<style>(layer))
-               {
-                  std::wstring text = layer_style->describe();
-                  QString qtext = QString::fromStdWString(text);
-                  layer_list->addItem(qtext);
-               }
                if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
                {
-                  std::wstring text = mo_layer->style->describe();
+                  std::wstring text = mo_layer->mosaic->tiling.name + std::wstring(L"\n") + mo_layer->style->describe();
                   QString qtext = QString::fromStdWString(text);
-                  layer_list->addItem(qtext);
+                  // Note: make icon larger so that it gets scaled down with some smoothing.
+                  QIcon qicon = get_icon(mo_layer, 128, 64);
+                  auto item = new QListWidgetItem(qicon, qtext);
+                  layer_list->addItem(item);
                }
             }
 
@@ -485,6 +499,9 @@ namespace dak
 
       void layers_selector::set_edited(const layers& edited)
       {
+         if (!ui)
+            return;
+
          ui->set_edited(edited);
       }
 
@@ -496,6 +513,15 @@ namespace dak
 
          return ui->get_edited();
       }
+
+      void layers_selector::update_list_content()
+      {
+         if (!ui)
+            return;
+
+         return ui->update_list_content();
+      }
+
 
       layers layers_selector::get_selected_layers() const
       {

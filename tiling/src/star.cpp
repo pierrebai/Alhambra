@@ -31,6 +31,17 @@ namespace dak
          return std::make_shared<star>(*this);
       }
 
+      bool star::operator==(const figure& other) const
+      {
+         const auto other_star = dynamic_cast<const star *>(&other);
+         if (!other_star)
+            return false;
+
+         return n == other_star->n
+             && s == other_star->s
+             && d == other_star->d;
+      }
+
       bool star::is_similar(const figure& other) const
       {
          const auto other_star = dynamic_cast<const star *>(&other);

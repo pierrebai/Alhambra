@@ -88,12 +88,14 @@
   <ItemGroup>
     <ClInclude Include="inc\dak\tiling_ui_qt\figure_editor.h" />
     <ClInclude Include="inc\dak\tiling_ui_qt\layers_selector.h" />
+    <ClInclude Include="inc\dak\tiling_ui_qt\utility.h" />
     <ClInclude Include="inc\dak\tiling_ui_qt\styles_editor.h" />
     <ClInclude Include="inc\dak\tiling_ui_qt\tiling_selector.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\figure_editor.cpp" />
     <ClCompile Include="src\layers_selector.cpp" />
+    <ClCompile Include="src\utility.cpp" />
     <ClCompile Include="src\styles_editor.cpp" />
     <ClCompile Include="src\tiling_selector.cpp" />
   </ItemGroup>

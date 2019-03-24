@@ -19,7 +19,8 @@ namespace dak
             // Note: we could speed-up by only applying a base rotation
             //       multiple times to a non-const unit, but we would
             //       accumulate imprecisions for large n.
-            cached_map.merge(unit.apply(transform::rotate(2 * PI * i / n)));
+            cached_map.merge_non_overlapping(unit.apply(transform::rotate(2 * PI * i / n)));
+            //cached_map.merge(unit.apply(transform::rotate(2 * PI * i / n)));
          }
       }
 

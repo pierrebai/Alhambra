@@ -56,6 +56,10 @@ namespace dak
          // Swap two tilings.
          void swap(tiling& other);
 
+         // Tiling comparison.
+         bool operator==(const tiling& other) const;
+         bool operator!=(const tiling& other) const { return !(*this == other); }
+
          // Calculate the bounds of the tiles of the tiling.
          rect bounds() const;
       };

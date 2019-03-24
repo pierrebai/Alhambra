@@ -41,6 +41,10 @@ namespace dak
       // have black magic built-in.  It has to use heuristics to construct
       // plausible inferred maps, or at least maps that don't break the rest
       // of the system.
+      //
+      // If you're using Taprats and experiencing weird behaviour, it's 
+      // probably coming from in here.  But you knew what you were infer
+      // when you started using Taprats (sorry -- couldn't resist the pun).
 
       class infer
       {

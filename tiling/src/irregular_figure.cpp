@@ -20,6 +20,19 @@ namespace dak
          return std::make_shared<irregular_figure>(*this);
       }
 
+      bool irregular_figure::operator==(const figure& other) const
+      {
+         const auto other_irregular = dynamic_cast<const irregular_figure *>(&other);
+         if (!other_irregular)
+            return false;
+
+         return poly  == other_irregular->poly
+             && infer == other_irregular->infer
+             && q     == other_irregular->q
+             && d     == other_irregular->d
+             && s     == other_irregular->s;
+      }
+
       bool irregular_figure::is_similar(const figure& other) const
       {
          const auto other_irregular = dynamic_cast<const irregular_figure *>(&other);

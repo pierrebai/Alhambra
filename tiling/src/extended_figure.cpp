@@ -55,6 +55,18 @@ namespace dak
          cached_s_last_build_unit = NAN;
       }
 
+      bool extended_figure::operator==(const figure& other) const
+      {
+         const auto other_extended = dynamic_cast<const extended_figure *>(&other);
+         if (!other_extended)
+            return false;
+
+         if (!child || !other_extended->child)
+            return false;
+
+         return *child == *other_extended->child;
+      }
+
       bool extended_figure::is_similar(const figure& other) const
       {
          const auto other_extended = dynamic_cast<const extended_figure *>(&other);

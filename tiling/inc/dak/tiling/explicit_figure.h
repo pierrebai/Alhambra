@@ -32,6 +32,9 @@ namespace dak
          // Figure implementation.
          bool is_similar(const figure&) const override { return false; }
 
+         // Comparison.
+         bool operator==(const figure& other) const override;
+
       protected:
          // Figure cache implementation.
          bool is_cache_valid() const override { return true; }

@@ -31,3 +31,4 @@
 /Alhambra/x64
 *.aps
 /installer/Release
+*.diagsession

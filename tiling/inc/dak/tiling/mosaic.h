@@ -37,6 +37,13 @@ namespace dak
          // Mosaic of the given tiling, with empty figures.
          mosaic(const dak::tiling::tiling& t) : tiling(t) { }
 
+         // Mosaic comparison.
+         bool operator==(const mosaic& other) const;
+         bool operator!=(const mosaic& other) const { return !(*this == other); }
+
+         // Verify if both mosaics have the same figures.
+         bool same_figures(const mosaic& other) const;
+
          // Construct a map in the given polygonal region using the tiling and figures.
          map construct(const rect& region) const;
       };

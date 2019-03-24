@@ -48,6 +48,16 @@ namespace dak
          {
             return !(*this == other);
          }
+
+         bool is_pale() const
+         {
+            return r >= 240 && g >= 240 && b >= 240;
+         }
+
+         bool is_dark() const
+         {
+            return r <= 20 && g <= 20 && b <= 20;
+         }
       };
 
       class random_colors

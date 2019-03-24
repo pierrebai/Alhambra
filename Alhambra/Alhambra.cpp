@@ -159,28 +159,29 @@ int main(int argc, char **argv)
       layered.set_transform(transform::scale(ratio / 3.));
    };
 
+   auto find_calculated_mosaic = [&](std::map<std::shared_ptr<mosaic>, dak::geometry::map>& calculated_mosaics, const std::shared_ptr<mosaic>& mosaic) -> const dak::geometry::map&
+   {
+      for (const auto& calculated : calculated_mosaics)
+      {
+         if (*(calculated.first) == *mosaic)
+         {
+            return calculated.second;
+         }
+      }
+      return calculated_mosaics[mosaic] = mosaic->construct(window_filling_region());
+   };
+
    auto update_canvas_layers = [&](const std::vector<std::shared_ptr<layer>>& layers)
    {
+      // Optimize updating the layers by only calculating the map of a mosaic once
+      // if multiple layers have identical mosaics.
+      std::map<std::shared_ptr<mosaic>, dak::geometry::map> calculated_mosaics;
       for (auto& layer : layers)
       {
          if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
          {
-            mo_layer->update_style(window_filling_region());
-         }
-      }
-      canvas->update();
-   };
-
-   auto update_canvas_styles = [&](const std::vector<std::shared_ptr<style>>& styles)
-   {
-      for (auto& layer : get_avail_layers())
-      {
-         if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
-         {
-            if (std::find(styles.begin(), styles.end(), mo_layer->style) != styles.end())
-            {
-               mo_layer->update_style(window_filling_region());
-            }
+            const auto& calc_map = find_calculated_mosaic(calculated_mosaics, mo_layer->mosaic);
+            mo_layer->style->set_map(calc_map);
          }
       }
       canvas->update();
@@ -229,9 +230,32 @@ int main(int argc, char **argv)
       return selected;
    };
 
+   auto find_styles_layers = [&](const std::vector<std::shared_ptr<style>>& styles)
+   {
+      // Find the layers that corresonpond to the list of styles given.
+      std::vector<std::shared_ptr<layer>> layers;
+      for (auto& layer : get_avail_layers())
+      {
+         if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
+         {
+            if (std::find(styles.begin(), styles.end(), mo_layer->style) != styles.end())
+            {
+               layers.emplace_back(layer);
+            }
+         }
+      }
+      return layers;
+   };
+
+   auto update_layer_list = [&]()
+   {
+      layer_list->update_list_content();
+   };
+
    styles_editor->styles_changed = [&](const dak::tiling_ui_qt::styles_editor::styles& styles)
    {
-      update_canvas_styles(styles);
+      update_layer_list();
+      update_canvas_layers(find_styles_layers(styles));
    };
 
    /////////////////////////////////////////////////////////////////////////
@@ -376,6 +400,7 @@ int main(int argc, char **argv)
 
    layer_list->layers_changed = [&](const dak::tiling_ui_qt::layers_selector::layers& layers)
    {
+      update_layer_list();
       update_canvas_layers(layers);
    };
 

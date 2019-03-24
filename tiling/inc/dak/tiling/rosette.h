@@ -36,6 +36,9 @@ namespace dak
          // Figure implementation.
          bool is_similar(const figure& other) const override;
 
+         // Comparison.
+         bool operator==(const figure& other) const override;
+
          // Retrieve a description of this style.
          std::wstring describe() const override;
 

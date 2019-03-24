@@ -213,7 +213,7 @@ namespace tiling_tests
                   for (const auto& trf : placed_tile.second)
                   {
                      const auto placed = map.apply(trf).apply(receive_trf);
-                     final_map.merge(placed);
+                     final_map.merge_non_overlapping(placed);
                   }
                }
             });
@@ -286,7 +286,7 @@ namespace tiling_tests
                   for (const auto& trf : placed_tile.second)
                   {
                      const auto placed = map.apply(trf).apply(receive_trf);
-                     final_map.merge(placed);
+                     final_map.merge_non_overlapping(placed);
                   }
                }
             });

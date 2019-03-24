@@ -54,9 +54,14 @@ namespace dak
          layers_selector(QWidget* parent, selection_changed_callback selection_changed);
          layers_selector(QWidget* parent, const layers& edited, selection_changed_callback selection_changed);
 
+         // Set the layers being edited.
          void set_edited(const layers& edited);
          const layers& get_edited() const;
 
+         // Update the list UI to represent changes made to layers.
+         void update_list_content();
+
+         // Retrieve the selected layers or styles.
          layers get_selected_layers() const;
          styles get_selected_styles() const;
 

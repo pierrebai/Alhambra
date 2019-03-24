@@ -35,6 +35,10 @@ namespace dak
          // if it's the same type and has the same number of sides.
          virtual bool is_similar(const figure& other) const = 0;
 
+         // Comparison.
+         virtual bool operator==(const figure& other) const = 0;
+         bool operator!=(const figure& other) const { return !(*this == other); }
+
          // Retrieve a description of this style.
          virtual std::wstring describe() const = 0;
 

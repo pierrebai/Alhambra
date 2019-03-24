@@ -10,8 +10,16 @@
 
 namespace dak
 {
+   namespace tiling
+   {
+      class mosaic;
+   }
+
    namespace ui_qt
    {
+      using tiling::mosaic;
+      using ui::color;
+
       ////////////////////////////////////////////////////////////////////////////
       //
       // Drawing that can translate color, stroke, etc to QT format.
@@ -22,6 +30,13 @@ namespace dak
          QPen get_pen() const;
          QBrush get_brush() const;
       };
+
+      ////////////////////////////////////////////////////////////////////////////
+      //
+      // Draw the mosaic, if any, in the given drawing.
+
+      void draw_tiling(dak::ui::drawing& drw, const std::shared_ptr<tiling::mosaic>& mosaic, const color& co, int copy_count);
+
    }
 }
 
