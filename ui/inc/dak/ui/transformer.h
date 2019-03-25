@@ -43,7 +43,7 @@ namespace dak
          };
 
          // Force a particular interaction mode.
-         interaction_mode forced__interaction_mode = interaction_mode::normal;
+         interaction_mode forced_interaction_mode = interaction_mode::normal;
 
          // Creation.
          transformer(std::function<void(transformer&)> draw_callback);

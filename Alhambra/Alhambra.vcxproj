@@ -80,7 +80,7 @@ copy $(QT5_DIR)msvc2017_64\bin\Qt5WinExtras.dll $(OutputPath)
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(QT5_DIR)msvc2017_64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Qt5Widgets.lib;Qt5Gui.lib;Qt5Core.lib;Qt5WinExtras.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Qt5Svg.lib;Qt5Widgets.lib;Qt5Gui.lib;Qt5Core.lib;Qt5WinExtras.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent>
@@ -88,6 +88,7 @@ copy $(QT5_DIR)msvc2017_64\bin\Qt5WinExtras.dll $(OutputPath)
 copy $(QT5_DIR)msvc2017_64\bin\Qt5Gui.dll $(OutputPath)
 copy $(QT5_DIR)msvc2017_64\bin\Qt5Widgets.dll $(OutputPath)
 copy $(QT5_DIR)msvc2017_64\bin\Qt5WinExtras.dll $(OutputPath)
+copy $(QT5_DIR)msvc2017_64\bin\Qt5Svg.dll $(OutputPath)
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -132,6 +133,9 @@ copy $(QT5_DIR)msvc2017_64\bin\Qt5WinExtras.dll $(OutputPath)
     <None Include="..\x64\Release\Qt5Gui.dll">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </None>
+    <None Include="..\x64\Release\Qt5Svg.dll">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </None>
     <None Include="..\x64\Release\Qt5Widgets.dll">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </None>
@@ -143,6 +147,7 @@ copy $(QT5_DIR)msvc2017_64\bin\Qt5WinExtras.dll $(OutputPath)
     <Text Include="License.txt">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </Text>
+    <Text Include="TODO.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

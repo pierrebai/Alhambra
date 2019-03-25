@@ -118,19 +118,27 @@ namespace dak
             { L"Fill Inside", L"Remplir l'intérieur" },
             { L"Fill Outside", L"Remplir l'extérieur" },
 
-            { L"Previous Mosaic", L"Précédente" },
-            { L"Next Mosaic", L"Suivante" },
-            { L"Load Mosaic", L"Charger" },
-            { L"Save Mosaic", L"Sauvegarder" },
+            { L"Previous Mosaic", L"Mosaïque Précédente" },
+            { L"Next Mosaic", L"Mosaïque Suivante" },
+            { L"Load Mosaic", L"Charger une mosaïque " },
+            { L"Save Mosaic", L"Sauvegarder la mosaïque" },
+
             { L"Export EPS", L"Exporter en EPS" },
+            { L"Export SVG", L"Exporter en SVG"},
             { L"Export Image", L"Exporter en image" },
+
+            { L"Translate", L"Déplacer" },
+            { L"Rotate", L"Tourner" },
+            { L"Scale", L"Zoomer" },
 
             { L"Save Mosaic", L"Sauvegarder la mosaïque" },
             { L"Load Mosaic", L"Charger une mosaïque" },
             { L"Mosaic Files (*.tap.txt)", L"Fichiers Mosaïques (*.tap.txt)" },
             { L"Choose a Tiling", L"Choisir un Tuilage" },
             { L"Export Mosaic to an Image", L"Exporter la mosaïque dans une image" },
-            { L"PNG Files (*.png)", L"Fichiers PNG (*.png)" },
+            { L"Image Files (*.png *.jpg *.bmp)", L"Fichiers image (*.png *.jpg *.bmp)" },
+            { L"Export Mosaic to a Scalable Vector Graphics File", L"Exporter la mosaïque dans un fichier vectoriel" },
+            { L"SVG Files (*.svg)", L"Fichiers SVG (*.svg)" },
          };
 
          const char_translator fr =

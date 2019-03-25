@@ -65,6 +65,20 @@ namespace dak
 
          drw.set_stroke(stroke(1));
       }
+
+      void draw_layered(dak::ui::drawing& drw, ui::layered* layered)
+      {
+         drw.set_color(color::white());
+         drw.fill_rect(drw.get_bounds().apply(drw.get_transform().invert()));
+
+         if (!layered)
+            return;
+
+         drw.set_color(color::black());
+         drw.set_stroke(stroke(1.2));
+         layered->draw(drw);
+         drw.set_stroke(stroke(1));
+      }
    }
 }
 

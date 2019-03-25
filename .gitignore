@@ -32,3 +32,4 @@
 *.aps
 /installer/Release
 *.diagsession
+/export.cmd

@@ -5,6 +5,8 @@
 
 #include <dak/ui/drawing_base.h>
 
+#include <dak/ui/layered.h>
+
 #include <QtGui/qpen.h>
 #include <QtGui/qbrush.h>
 
@@ -37,6 +39,7 @@ namespace dak
 
       void draw_tiling(dak::ui::drawing& drw, const std::shared_ptr<tiling::mosaic>& mosaic, const color& co, int copy_count);
 
+      void draw_layered(dak::ui::drawing& drw, ui::layered* layered);
    }
 }
 

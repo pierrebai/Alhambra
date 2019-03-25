@@ -1,0 +1,10 @@
+- Tiling designer.
+- Selection framework.
+- Undo framework.
+- Show/hide of layers.
+- Manipulate canvas for a single layer.
+- Degenrate cases of inferring.
+- Wix for the installer.
+- Put side panels in moveable Qt panels.
+- Change implementation of interlace style to have gap.
+- Move stuff to a dak/utility project: number_utility, text_utility.

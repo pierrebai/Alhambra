@@ -1,16 +1,4 @@
-#include <dak/tiling/known_tilings_generator.h>
-#include <dak/tiling/star.h>
-#include <dak/tiling/rosette.h>
-#include <dak/tiling/extended_figure.h>
-#include <dak/tiling/irregular_figure.h>
-
-#include <dak/tiling_style/plain.h>
 #include <dak/tiling_style/thick.h>
-#include <dak/tiling_style/sketch.h>
-#include <dak/tiling_style/outline.h>
-#include <dak/tiling_style/emboss.h>
-#include <dak/tiling_style/filled.h>
-#include <dak/tiling_style/interlace.h>
 
 #include <dak/tiling_style/known_mosaics_generator.h>
 #include <dak/tiling_style/styled_mosaic.h>
@@ -18,15 +6,17 @@
 
 #include <dak/ui_qt/layered_canvas.h>
 #include <dak/ui_qt/convert.h>
+#include <dak/ui_qt/drawing.h>
 
 #include <dak/tiling_ui_qt/styles_editor.h>
 #include <dak/tiling_ui_qt/figure_editor.h>
 #include <dak/tiling_ui_qt/layers_selector.h>
 #include <dak/tiling_ui_qt/tiling_selector.h>
 
+#include <dak/geometry/utility.h>
+
 #include <QtWidgets/qapplication>
 #include <QtWidgets/qboxlayout.h>
-#include <QtWidgets/qgridlayout.h>
 #include <QtWidgets/qlistwidget.h>
 #include <QtWidgets/qmainwindow.h>
 #include <QtWidgets/qpushbutton.h>
@@ -35,7 +25,11 @@
 #include <QtWidgets/qfiledialog.h>
 #include <QtWidgets/qtoolbar.h>
 
+#include <QtGui/qpainter.h>
+
 #include <QtWinExtras/qwinfunctions.h>
+
+#include <QtSvg/qsvggenerator.h>
 
 #include <fstream>
 
@@ -44,6 +38,9 @@
 using namespace dak::geometry;
 using namespace dak::tiling;
 using namespace dak::tiling_style;
+using namespace dak::tiling_style;
+using namespace dak::ui_qt;
+using namespace dak::tiling_ui_qt;
 
 static HINSTANCE appInstance;
 
@@ -67,12 +64,25 @@ int main(int argc, char **argv)
             toolbar->addWidget(previous_mosaic_button);
             QPushButton* next_mosaic_button = new QPushButton(QString::fromWCharArray(L::t(L"Next Mosaic")), window);
             toolbar->addWidget(next_mosaic_button);
+            toolbar->addSeparator();
             QPushButton* load_mosaic_button = new QPushButton(QString::fromWCharArray(L::t(L"Load Mosaic")), window);
             toolbar->addWidget(load_mosaic_button);
             QPushButton* save_mosaic_button = new QPushButton(QString::fromWCharArray(L::t(L"Save Mosaic")), window);
             toolbar->addWidget(save_mosaic_button);
             QPushButton* export_image_button = new QPushButton(QString::fromWCharArray(L::t(L"Export Image")), window);
             toolbar->addWidget(export_image_button);
+            QPushButton* export_svg_button = new QPushButton(QString::fromWCharArray(L::t(L"Export SVG")), window);
+            toolbar->addWidget(export_svg_button);
+            toolbar->addSeparator();
+            QPushButton* translate_button = new QPushButton(QString::fromWCharArray(L::t(L"Translate")), window);
+            translate_button->setCheckable(true);
+            toolbar->addWidget(translate_button);
+            QPushButton* rotate_button = new QPushButton(QString::fromWCharArray(L::t(L"Rotate")), window);
+            rotate_button->setCheckable(true);
+            toolbar->addWidget(rotate_button);
+            QPushButton* scale_button = new QPushButton(QString::fromWCharArray(L::t(L"Zoom")), window);
+            scale_button->setCheckable(true);
+            toolbar->addWidget(scale_button);
 
          QLabel* mosaic_name_label = new QLabel(QString::fromWCharArray(L::t(L"Mosaic")), window);
          left_layout->addWidget(mosaic_name_label);
@@ -83,10 +93,10 @@ int main(int argc, char **argv)
          separator_label_b->setMidLineWidth(2);
          left_layout->addWidget(separator_label_b);
 
-         dak::tiling_ui_qt::layers_selector* layer_list = new dak::tiling_ui_qt::layers_selector(window);
+         layers_selector* layer_list = new layers_selector(window);
          left_layout->addWidget(layer_list);
 
-         dak::tiling_ui_qt::styles_editor* styles_editor = new dak::tiling_ui_qt::styles_editor(window);
+         styles_editor* styles_editor = new dak::tiling_ui_qt::styles_editor(window);
          left_layout->addWidget(styles_editor);
 
          QLabel* separator_label_a = new QLabel(window);
@@ -100,12 +110,12 @@ int main(int argc, char **argv)
          figure_list->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
          left_layout->addWidget(figure_list);
 
-         dak::tiling_ui_qt::figure_editor* figure_editor = new dak::tiling_ui_qt::figure_editor(window);
+         figure_editor* figure_editor = new dak::tiling_ui_qt::figure_editor(window);
          left_layout->addWidget(figure_editor);
 
       window_layout->addWidget(left_panel);
 
-      dak::ui_qt::layered_canvas* canvas = new dak::ui_qt::layered_canvas(window);
+      layered_canvas* canvas = new layered_canvas(window);
       window_layout->addWidget(canvas);
       window_layout->setStretch(0, 0);
       window_layout->setStretch(1, 1);
@@ -121,8 +131,8 @@ int main(int argc, char **argv)
 
    // These will generate tilings and mosaics from files.
    std::vector<std::wstring> errors;
-   known_tilings_generator tiling_gen(KNOWN_TILINGS_DIR, errors);
-   known_mosaics_generator mosaic_gen(KNOWN_TILINGS_DIR LR"(\..\mosaics)", tiling_gen.tilings);
+   known_tilings known_tilings(KNOWN_TILINGS_DIR, errors);
+   known_mosaics_generator mosaic_gen(KNOWN_TILINGS_DIR LR"(\..\mosaics)", known_tilings);
 
    // This will allow to have layers of tilings.
    // Set initial transform to a proper scale.
@@ -138,7 +148,7 @@ int main(int argc, char **argv)
    // This will calculate the region based on the window size and current transform.
    auto window_filling_region = [&canvas]()
    {
-      rect region = dak::ui_qt::convert(canvas->geometry());
+      rect region = convert(canvas->geometry());
       region.x = region.y = 0;
       return region.apply(canvas->layered->get_transform().invert());
    };
@@ -148,39 +158,41 @@ int main(int argc, char **argv)
       return layered.get_layers();
    };
 
-   auto update_layered_transform = [&](const dak::geometry::rect& bounds)
+   auto update_layered_transform = [&](const rect& bounds)
    {
       if (bounds.is_invalid())
          return;
 
-      rect region = dak::ui_qt::convert(canvas->geometry());
+      rect region = convert(canvas->geometry());
       double ratio = std::max(region.width / bounds.width, region.height / bounds.height);
       // Make it so we can see 9 instances (3x3) of the tiling or mosaic.
       layered.set_transform(transform::scale(ratio / 3.));
    };
 
-   auto find_calculated_mosaic = [&](std::map<std::shared_ptr<mosaic>, dak::geometry::map>& calculated_mosaics, const std::shared_ptr<mosaic>& mosaic) -> const dak::geometry::map&
+   typedef std::map<std::shared_ptr<mosaic>, map> calculated_mosaics;
+
+   auto find_calculated_mosaic = [&](calculated_mosaics& calc_mos, const std::shared_ptr<mosaic>& mosaic) -> const map&
    {
-      for (const auto& calculated : calculated_mosaics)
+      for (const auto& calculated : calc_mos)
       {
          if (*(calculated.first) == *mosaic)
          {
             return calculated.second;
          }
       }
-      return calculated_mosaics[mosaic] = mosaic->construct(window_filling_region());
+      return calc_mos[mosaic] = mosaic->construct(window_filling_region());
    };
 
    auto update_canvas_layers = [&](const std::vector<std::shared_ptr<layer>>& layers)
    {
       // Optimize updating the layers by only calculating the map of a mosaic once
       // if multiple layers have identical mosaics.
-      std::map<std::shared_ptr<mosaic>, dak::geometry::map> calculated_mosaics;
+      calculated_mosaics calc_mos;
       for (auto& layer : layers)
       {
          if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
          {
-            const auto& calc_map = find_calculated_mosaic(calculated_mosaics, mo_layer->mosaic);
+            const auto& calc_map = find_calculated_mosaic(calc_mos, mo_layer->mosaic);
             mo_layer->style->set_map(calc_map);
          }
       }
@@ -201,11 +213,7 @@ int main(int argc, char **argv)
       std::vector<std::shared_ptr<style>> selected;
       for (auto layer : layer_list->get_selected_layers())
       {
-         if (auto layer_style = std::dynamic_pointer_cast<style>(layer))
-         {
-            selected.emplace_back(layer_style);
-         }
-         else if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
+         if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
          {
             selected.emplace_back(mo_layer->style);
          }
@@ -218,11 +226,7 @@ int main(int argc, char **argv)
       std::vector<std::shared_ptr<mosaic>> selected;
       for (auto layer : layer_list->get_selected_layers())
       {
-         if (auto layer_style = std::dynamic_pointer_cast<style>(layer))
-         {
-            selected.emplace_back(tiling_gen.current_mosaic());
-         }
-         else if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
+         if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
          {
             selected.emplace_back(mo_layer->mosaic);
          }
@@ -252,7 +256,7 @@ int main(int argc, char **argv)
       layer_list->update_list_content();
    };
 
-   styles_editor->styles_changed = [&](const dak::tiling_ui_qt::styles_editor::styles& styles)
+   styles_editor->styles_changed = [&](const styles_editor::styles& styles)
    {
       update_layer_list();
       update_canvas_layers(find_styles_layers(styles));
@@ -390,7 +394,7 @@ int main(int argc, char **argv)
    //
    // The various data editors UI call-backs.
 
-   layer_list->selection_changed = [&](const dak::tiling_ui_qt::layers_selector::layers& layers)
+   layer_list->selection_changed = [&](const layers_selector::layers& layers)
    {
       layered.set_layers(layers);
       styles_editor->set_edited(get_selected_styles());
@@ -398,7 +402,7 @@ int main(int argc, char **argv)
       canvas->update();
    };
 
-   layer_list->layers_changed = [&](const dak::tiling_ui_qt::layers_selector::layers& layers)
+   layer_list->layers_changed = [&](const layers_selector::layers& layers)
    {
       update_layer_list();
       update_canvas_layers(layers);
@@ -408,7 +412,7 @@ int main(int argc, char **argv)
    {
       auto mo_layer = std::make_shared<styled_mosaic>();
       mo_layer->mosaic = new_mosaic;
-      mo_layer->style = std::make_shared<plain>(dak::ui::color::black());
+      mo_layer->style = std::make_shared<thick>(color::black());
       mo_layer->update_style(window_filling_region());
       auto layers = layered.get_layers();
       layers.emplace_back(mo_layer);
@@ -419,7 +423,7 @@ int main(int argc, char **argv)
 
    layer_list->new_layer_requested = [&]()
    {
-      auto selector = new dak::tiling_ui_qt::tiling_selector(nullptr, add_layer);
+      auto selector = new tiling_selector(nullptr, add_layer);
       selector->show();
    };
 
@@ -431,6 +435,10 @@ int main(int argc, char **argv)
          break;
       }
    });
+
+   /////////////////////////////////////////////////////////////////////////
+   //
+   // The mosaic tool-bar buttons.
 
    previous_mosaic_button->connect(previous_mosaic_button, &QPushButton::clicked, [&]()
    {
@@ -454,7 +462,7 @@ int main(int argc, char **argv)
       try
       {
          std::wifstream file(fileName);
-         auto layers = dak::tiling_style::read_layered_mosaic(file, mosaic_gen.known_tilings);
+         auto layers = read_layered_mosaic(file, mosaic_gen.known_tilings);
          std::experimental::filesystem::path path(fileName);
          update_mosaic_map(layers, path.filename());
       }
@@ -474,7 +482,7 @@ int main(int argc, char **argv)
       try
       {
          std::wofstream file(fileName);
-         dak::tiling_style::write_layered_mosaic(file, get_avail_layers());
+         write_layered_mosaic(file, get_avail_layers());
       }
       catch (std::exception&)
       {
@@ -482,14 +490,83 @@ int main(int argc, char **argv)
       }
    });
 
+   /////////////////////////////////////////////////////////////////////////
+   //
+   // The export tool-bar buttons.
+
    export_image_button->connect(export_image_button, &QPushButton::clicked, [&]()
    {
       auto fileName = QFileDialog::getSaveFileName(
          mainWindow, QString::fromWCharArray(L::t(L"Export Mosaic to an Image")), QString(),
-         QString::fromWCharArray(L::t(L"PNG Files (*.png)")));
+         QString::fromWCharArray(L::t(L"Image Files (*.png *.jpg *.bmp)")));
       if (fileName.isEmpty())
          return;
       canvas->grab().save(fileName);
+   });
+
+   export_svg_button->connect(export_svg_button, &QPushButton::clicked, [&]()
+   {
+      auto fileName = QFileDialog::getSaveFileName(
+         mainWindow, QString::fromWCharArray(L::t(L"Export Mosaic to a Scalable Vector Graphics File")), QString(),
+         QString::fromWCharArray(L::t(L"SVG Files (*.svg)")));
+      if (fileName.isEmpty())
+         return;
+
+      QSvgGenerator svg_gen;
+      svg_gen.setFileName(fileName);
+      // TODO extract viewport from canvas.
+      svg_gen.setSize(canvas->size());
+      svg_gen.setViewBox(QRect(QPoint(0,0), canvas->size()));
+      QPainter painter(&svg_gen);
+      painter_drawing drw(painter);
+      drw.set_transform(layered.get_transform());
+      draw_layered(drw, &layered);
+   });
+
+   /////////////////////////////////////////////////////////////////////////
+   //
+   // The canvas manipulation tool-bar buttons.
+
+   auto update_canvas_mode = [&]()
+   {
+      auto forced_mode = dak::ui::transformer::interaction_mode::normal;
+      if (translate_button->isChecked())
+         forced_mode = dak::ui::transformer::interaction_mode::moving;
+      else if (rotate_button->isChecked())
+         forced_mode = dak::ui::transformer::interaction_mode::rotating;
+      else if (scale_button->isChecked())
+         forced_mode = dak::ui::transformer::interaction_mode::scaling;
+      canvas->transformer.forced_interaction_mode = forced_mode;
+   };
+
+   translate_button->connect(translate_button, &QPushButton::clicked, [&]()
+   {
+      if (translate_button->isChecked())
+      {
+         rotate_button->setChecked(false);
+         scale_button->setChecked(false);
+      }
+      update_canvas_mode();
+   });
+
+   rotate_button->connect(rotate_button, &QPushButton::clicked, [&]()
+   {
+      if (rotate_button->isChecked())
+      {
+         translate_button->setChecked(false);
+         scale_button->setChecked(false);
+      }
+      update_canvas_mode();
+   });
+
+   scale_button->connect(scale_button, &QPushButton::clicked, [&]()
+   {
+      if (scale_button->isChecked())
+      {
+         translate_button->setChecked(false);
+         rotate_button->setChecked(false);
+      }
+      update_canvas_mode();
    });
 
    /////////////////////////////////////////////////////////////////////////

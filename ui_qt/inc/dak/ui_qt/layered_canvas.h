@@ -26,9 +26,6 @@ namespace dak
          // Create a canvas with the given parent widget.
          layered_canvas(QWidget* parent);
 
-         // Draw the layered container, if any, in the given drawing.
-         void draw_layered(dak::ui::drawing& drw) const;
-
       protected:
          // This will draw the layered container, if any, then the transformer drawings, if any.
          void paint(QPainter& painter) override;

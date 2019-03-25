@@ -47,10 +47,16 @@
     <None Include="..\x64\Release\Qt5WinExtras.dll">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\x64\Release\Qt5Svg.dll">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="License.txt">
       <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="TODO.txt">
+      <Filter>Source Files</Filter>
     </Text>
   </ItemGroup>
 </Project>

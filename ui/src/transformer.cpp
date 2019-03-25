@@ -253,8 +253,8 @@ namespace dak
 
       transformer::interaction_mode transformer::get_wheel_interaction_mode(const mouse::event& me)
       {
-         if (forced__interaction_mode != interaction_mode::normal)
-            _interaction_mode = forced__interaction_mode;
+         if (forced_interaction_mode != interaction_mode::normal)
+            _interaction_mode = forced_interaction_mode;
          else if (me.has_modifiers(modifiers::shift))
             _interaction_mode = interaction_mode::rotating;
          else if (me.has_modifiers(modifiers::alt))
@@ -267,8 +267,8 @@ namespace dak
 
       transformer::interaction_mode transformer::get_button_interaction_mode(const mouse::event& me)
       {
-         if (forced__interaction_mode != interaction_mode::normal)
-            _interaction_mode = forced__interaction_mode;
+         if (forced_interaction_mode != interaction_mode::normal)
+            _interaction_mode = forced_interaction_mode;
          else if (!me.has_modifiers(modifiers::shift))
             _interaction_mode = interaction_mode::normal;
          else if ((me.has_buttons(mouse::buttons::two)) != 0)
@@ -352,7 +352,7 @@ namespace dak
       void transformer::end_interaction()
       {
          clear_interaction_data();
-         _interaction_mode = forced__interaction_mode;
+         _interaction_mode = forced_interaction_mode;
          draw_callback(*this);
       }
 
