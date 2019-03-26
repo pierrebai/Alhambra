@@ -23,6 +23,7 @@ namespace dak
                 L"/mo { newpath moveto } bd\n"
                 L"/to { lineto } bd\n"
                 L"/li { mo to st } bd\n"
+                L"/li2 { mo to to st } bd\n"
                 L"/ci { newpath 0 360 arc } bd\n"
                 L"/ar { newpath arc } bd\n"
                 L"/sm { setmatrix } bd\n";
@@ -54,6 +55,20 @@ namespace dak
          internal_update_bbox(to);
 
          out << from.x << L" " << from.y << L" " << to.x << L" " << to.y << L" li\n";
+
+         return *this;
+      }
+
+      drawing& eps_drawing::draw_corner(const point& from, const point& mid, const point& to)
+      {
+         internal_update_stroke();
+         internal_update_color();
+         internal_update_transform();
+         internal_update_bbox(from);
+         internal_update_bbox(mid);
+         internal_update_bbox(to);
+
+         out << from.x << L" " << from.y << L" " << mid.x << L" " << mid.y << L" " << to.x << L" " << to.y << L" li2\n";
 
          return *this;
       }
@@ -191,21 +206,27 @@ namespace dak
 
          switch (applied_strk.cap)
          {
-            case stroke::cap_style::normal:
+            case stroke::cap_style::flat:
                out << L"0 setlinecap\n";
                break;
             case stroke::cap_style::round:
                out << L"1 setlinecap\n";
                break;
+            case stroke::cap_style::square:
+               out << L"2 setlinecap\n";
+               break;
          }
 
          switch (applied_strk.join)
          {
-            case stroke::join_style::normal:
+            case stroke::join_style::miter:
                out << L"0 setlinejoin\n";
                break;
             case stroke::join_style::round:
                out << L"1 setlinejoin\n";
+               break;
+            case stroke::join_style::bevel:
+               out << L"2 setlinejoin\n";
                break;
          }
       }

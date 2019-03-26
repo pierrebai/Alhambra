@@ -14,6 +14,8 @@
 #include <QtGui/qpixmap.h>
 #include <QtWidgets/qboxlayout.h>
 #include <QtWidgets/qcheckbox.h>
+#include <QtWidgets/qcombobox.h>
+#include <QtWidgets/qlabel.h>
 #include <QtWidgets/qcolordialog.h>
 #include <QtWidgets/qpushbutton.h>
 
@@ -29,6 +31,37 @@ namespace dak
       using geometry::L;
       typedef std::vector<std::shared_ptr<style>> styles;
       typedef std::function<void(const styles& )> styles_changed_callback;
+
+      namespace
+      {
+         struct
+         {
+            ui::stroke::join_style style;
+            const wchar_t* name;
+         }
+         const join_styles[] =
+         {
+            { ui::stroke::join_style::bevel, L"Beveled Corners" },
+            { ui::stroke::join_style::miter, L"Mitered Corners" },
+            { ui::stroke::join_style::round, L"Rounded Corners" },
+         };
+
+         const wchar_t* get_join_style_name(const ui::stroke::join_style a_style)
+         {
+            for (const auto& style : join_styles)
+               if (style.style == a_style)
+                  return L::t(style.name);
+            return L::t(L"Unknown");
+         }
+
+         ui::stroke::join_style get_join_style_from_name(const std::wstring& a_style)
+         {
+            for (const auto& style : join_styles)
+               if (std::wstring(L::t(style.name)) == a_style)
+                  return style.style;
+            return ui::stroke::join_style::round;
+         }
+      }
 
       ////////////////////////////////////////////////////////////////////////////
       //
@@ -94,31 +127,36 @@ namespace dak
                QWidget* style_buttons_panel = new QWidget(&parent);
                QHBoxLayout* style_buttons_layout = new QHBoxLayout(style_buttons_panel);
                   style_buttons_layout->setContentsMargins(0, 0, 0, 0);
-                  color_button = std::make_unique<QPushButton>(QString::fromWCharArray(L::t(L"Color")), &parent);
+                  color_button = std::make_unique<QPushButton>(QString::fromWCharArray(L::t(L"Color")), style_buttons_panel);
                   style_buttons_layout->addWidget(color_button.get());
-                  outline_color_button = std::make_unique<QPushButton>(QString::fromWCharArray(L::t(L"Outline")), &parent);
+                  outline_color_button = std::make_unique<QPushButton>(QString::fromWCharArray(L::t(L"Outline")), style_buttons_panel);
                   style_buttons_layout->addWidget(outline_color_button.get());
+                  join_combo = std::make_unique<QComboBox>(style_buttons_panel);
+                  for (const auto& style : join_styles)
+                     join_combo->addItem(QString::fromWCharArray(L::t(style.name)));
+                  style_buttons_layout->addWidget(join_combo.get());
                layout->addWidget(style_buttons_panel);
+
 
                QWidget* fill_panel = new QWidget(&parent);
                QHBoxLayout* fill_layout = new QHBoxLayout(fill_panel);
                   fill_layout->setContentsMargins(0, 0, 0, 0);
-                  fill_inside_check = std::make_unique<QCheckBox>(QString::fromWCharArray(L::t(L"Fill Inside")), &parent);
+                  fill_inside_check = std::make_unique<QCheckBox>(QString::fromWCharArray(L::t(L"Fill Inside")), fill_panel);
                   fill_layout->addWidget(fill_inside_check.get());
-                  fill_outside_check = std::make_unique<QCheckBox>(QString::fromWCharArray(L::t(L"Fill Outside")), &parent);
+                  fill_outside_check = std::make_unique<QCheckBox>(QString::fromWCharArray(L::t(L"Fill Outside")), fill_panel);
                   fill_layout->addWidget(fill_outside_check.get());
                layout->addWidget(fill_panel);
 
                QWidget* style_outline_panel = new QWidget(&parent);
                QVBoxLayout* style_outline_layout = new QVBoxLayout(style_outline_panel);
                   style_outline_layout->setContentsMargins(0, 0, 0, 0);
-                  width_editor = std::make_unique<dak::ui_qt::double_editor>(&parent, L::t(L"Width"));
+                  width_editor = std::make_unique<dak::ui_qt::double_editor>(style_outline_panel, L::t(L"Width"));
                   width_editor->set_limits(0.01, 40, 0.01);
                   style_outline_layout->addWidget(width_editor.get());
-                  outline_width_editor = std::make_unique<dak::ui_qt::double_editor>(&parent, L::t(L"Outline Width"));
+                  outline_width_editor = std::make_unique<dak::ui_qt::double_editor>(style_outline_panel, L::t(L"Outline Width"));
                   outline_width_editor->set_limits(0, 20, 0.01);
                   style_outline_layout->addWidget(outline_width_editor.get());
-                  angle_editor = std::make_unique<ui_qt::double_editor>(&parent, L::t(L"Angle"));
+                  angle_editor = std::make_unique<ui_qt::double_editor>(style_outline_panel, L::t(L"Angle"));
                   style_outline_layout->addWidget(angle_editor.get());
                layout->addWidget(style_outline_panel);
 
@@ -129,6 +167,7 @@ namespace dak
             fill_inside_check->setEnabled(false);
             fill_outside_check->setEnabled(false);
             angle_editor->setEnabled(false);
+            join_combo->setEnabled(false);
 
             color_button->connect(color_button.get(), &QPushButton::clicked, [&]() { update_color(); });
             outline_color_button->connect(outline_color_button.get(), &QPushButton::clicked, [&]() { update_outline_color(); });
@@ -137,6 +176,7 @@ namespace dak
             fill_inside_check->connect(fill_inside_check.get(), &QCheckBox::stateChanged, [&](int new_state) { update_fill_inside(new_state); });
             fill_outside_check->connect(fill_outside_check.get(), &QCheckBox::stateChanged, [&](int new_state) { update_fill_outside(new_state); });
             angle_editor->value_changed_callback = std::bind(&styles_editor_ui::update_angle, this, std::placeholders::_1);
+            join_combo->connect(join_combo.get(), &QComboBox::currentTextChanged, [&](const QString& text) { update_join(text); });
          }
 
          void fill_ui()
@@ -146,11 +186,13 @@ namespace dak
                width_editor->setEnabled(true);
                outline_width_editor->setEnabled(true);
                outline_color_button->setEnabled(true);
+               join_combo->setEnabled(true);
                fill_ui_outline_color();
                for (auto thick : get_styles<thick>())
                {
                   width_editor->set_value(thick->width);
                   outline_width_editor->set_value(thick->outline_width);
+                  join_combo->setCurrentText(QString::fromWCharArray(get_join_style_name(thick->join)));
                }
             }
             else
@@ -158,6 +200,7 @@ namespace dak
                width_editor->setEnabled(false);
                outline_width_editor->setEnabled(false);
                outline_color_button->setEnabled(false);
+               join_combo->setEnabled(false);
             }
 
             if (get_styles<colored>().size() > 0)
@@ -319,6 +362,16 @@ namespace dak
             update();
          }
 
+         void update_join(const QString& new_value)
+         {
+            if (disable_feedback)
+               return;
+
+            for (auto style : get_styles<thick>())
+               style->join = get_join_style_from_name(new_value.toStdWString());
+            update();
+         }
+
          void update()
          {
             if (edited.size() <= 0)
@@ -342,6 +395,7 @@ namespace dak
          std::unique_ptr<ui_qt::double_editor> angle_editor;
          std::unique_ptr<QCheckBox> fill_inside_check;
          std::unique_ptr<QCheckBox> fill_outside_check;
+         std::unique_ptr<QComboBox> join_combo;
 
          bool disable_feedback = false;
       };

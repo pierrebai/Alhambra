@@ -20,6 +20,7 @@
     <ClInclude Include="inc\dak\ui\map_layer.h" />
     <ClInclude Include="inc\dak\ui\modifiers.h" />
     <ClInclude Include="inc\dak\ui\mouse.h" />
+    <ClInclude Include="inc\dak\ui\stroke.h" />
     <ClInclude Include="inc\dak\ui\transformable.h" />
     <ClInclude Include="inc\dak\ui\transformer.h" />
   </ItemGroup>

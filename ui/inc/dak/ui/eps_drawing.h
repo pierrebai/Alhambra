@@ -24,6 +24,7 @@ namespace dak
 
          // drawing interface implementation.
          drawing& draw_line(const point& from, const point& to) override;
+         drawing& draw_corner(const point& from, const point& mid, const point& to) override;
          drawing& fill_polygon(const polygon& p) override;
          drawing& draw_polygon(const polygon& p) override;
          drawing& fill_oval(const point& c, double rx, double ry) override;

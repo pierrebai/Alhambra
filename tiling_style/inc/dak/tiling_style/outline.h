@@ -5,6 +5,8 @@
 
 #include <dak/tiling_style/thick.h>
 
+#include <dak/geometry/polygon.h>
+
 namespace dak
 {
    namespace tiling_style

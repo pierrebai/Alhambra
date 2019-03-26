@@ -2,6 +2,8 @@
 
 #include <dak/geometry/utility.h>
 
+#include <dak/ui/drawing.h>
+
 namespace dak
 {
    namespace tiling_style
@@ -30,6 +32,25 @@ namespace dak
          return geometry::L::t(L"Thick");
       }
 
+      ui::stroke thick::get_stroke(ui::drawing& drw, double sw) const
+      {
+         const double w = drw.get_transform().dist_from_zero(sw);
+         return stroke(w,
+            join == stroke::join_style::round ? stroke::cap_style::round : stroke::cap_style::flat,
+            join);
+      }
+
+      static void draw_edges(ui::drawing& drw, const geometry::map& map, const geometry::map::edges& edges)
+      {
+         for (const auto &e : edges)
+         {
+            const auto e2 = map.continuation(e);
+            const auto p1 = e.p1.convex_sum(e.p2, 0.4);
+            const auto p3 = e2.p1.convex_sum(e2.p2, 0.6);
+            drw.draw_corner(p1, e.p2, p3);
+         }
+      }
+
       void thick::internal_draw(ui::drawing& drw)
       {
          // Note: we multiply the width by two because all other styles using
@@ -37,17 +58,15 @@ namespace dak
          //       directions by that width.
          if (!geometry::near_zero(outline_width))
          {
-            const double ow = drw.get_transform().dist_from_zero(outline_width);
             drw.set_color(outline_color);
-            drw.set_stroke(stroke(outline_width));
-            for (const auto &e : map.canonicals())
-               drw.draw_line(e.p1, e.p2);
+            drw.set_stroke(get_stroke(drw, outline_width + width * 2.));
+            draw_edges(drw, map, map.canonicals());
+            draw_edges(drw, map, map.non_canonicals());
          }
          drw.set_color(color);
-         const double w = drw.get_transform().dist_from_zero(width);
-         drw.set_stroke(ui::stroke(w));
-         for (const auto &e : map.canonicals())
-            drw.draw_line(e.p1, e.p2);
+         drw.set_stroke(get_stroke(drw, width * 2));
+         draw_edges(drw, map, map.canonicals());
+         draw_edges(drw, map, map.non_canonicals());
       }
    }
 }

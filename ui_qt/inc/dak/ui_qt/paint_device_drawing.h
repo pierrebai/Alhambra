@@ -27,6 +27,7 @@ namespace dak
 
          // ui::drawing interface, complete the implementation.
          paint_device_drawing& draw_line(const point& from, const point& to) override;
+         paint_device_drawing& draw_corner(const point& from, const point& corner, const point& to) override;
          paint_device_drawing& fill_polygon(const polygon& p) override;
          paint_device_drawing& draw_polygon(const polygon& p) override;
          paint_device_drawing& fill_oval(const point& c, double rx, double ry) override;

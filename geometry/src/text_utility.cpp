@@ -106,17 +106,23 @@ namespace dak
             { L"Width", L"Largeur" },
             { L"Outline Width", L"Largeur du contour" },
 
+            { L"Beveled Corners", L"Coins coupés" },
+            { L"Mitered Corners", L"Coins pointus" },
+            { L"Rounded Corners", L"Coins arrondis" },
+
             { L"Choose Layer Color", L"Choisir une couleur" },
             { L"Choose Layer Outline Color", L"Choisir une couleur de contour" },
 
             { L"Tiling", L"Tuilage" },
             { L"Tiling: ", L"Tuilage: " },
-            { L"Mosaic", L"Mosaïque" },
-            { L"Mosaic: ", L"Mosaïque: " },
+            { L"Layers", L"Couches" },
+            { L"Layers for Mosaic: ", L"Couche pour la mosaïque: " },
+            { L"Figures", L"Figures" },
 
             { L"Angle", L"Angle" },
             { L"Fill Inside", L"Remplir l'intérieur" },
             { L"Fill Outside", L"Remplir l'extérieur" },
+            { L"Rounded Corners", L"Coins arrondis"},
 
             { L"Previous Mosaic", L"Mosaïque Précédente" },
             { L"Next Mosaic", L"Mosaïque Suivante" },

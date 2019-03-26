@@ -3,6 +3,8 @@
 #include <dak/geometry/intersect.h>
 #include <dak/geometry/utility.h>
 
+#include <dak/ui/drawing.h>
+
 #include <algorithm>
 #include <random>
 #include <cmath>
@@ -271,13 +273,13 @@ namespace dak
       {
          outline::internal_draw_fat_lines(drw, fat_lines);
 
-         const double ow = drw.get_transform().dist_from_zero(outline_width);
-         drw.set_stroke(ui::stroke(ow));
+         const ui::stroke outline_stroke = get_stroke(drw, outline_width * 0.5);
+         drw.set_stroke(outline_stroke);
 
          for (const auto& crossing_edge : cached_crossing_edges)
          {
-            draw_crossing_point(drw, crossing_edge.p1_crossing, color, outline_color, ow);
-            draw_crossing_point(drw, crossing_edge.p2_crossing, color, outline_color, ow);
+            draw_crossing_point(drw, crossing_edge.p1_crossing, color, outline_color, outline_stroke.width);
+            draw_crossing_point(drw, crossing_edge.p2_crossing, color, outline_color, outline_stroke.width);
          }
       }
    }

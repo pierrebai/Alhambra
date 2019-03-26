@@ -23,6 +23,22 @@ namespace dak
          return *this;
       }
 
+      painter_drawing& painter_drawing::draw_corner(const point& from, const point& mid, const point& to)
+      {
+         if (!painter)
+            return *this;
+
+         const point tf = from.apply(get_transform());
+         const point tm = mid.apply(get_transform());
+         const point tt = to.apply(get_transform());
+
+         QPointF qps[] = { convert(tf), convert(tm), convert(tt) };
+
+         painter->setPen(get_pen());
+         painter->drawPolyline(qps, 3);
+         return *this;
+      }
+
       painter_drawing& painter_drawing::fill_polygon(const polygon& p)
       {
          if (!painter)

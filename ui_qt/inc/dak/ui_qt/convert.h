@@ -37,11 +37,13 @@ namespace dak
       QPolygonF convert(const polygon& p);
       Qt::PenCapStyle convert(stroke::cap_style c);
       Qt::PenJoinStyle convert(stroke::join_style j);
+      QRectF convert(const rect & r);
 
       color convert(const QColor & c);
       point convert(const QPointF& p);
       polygon convert(const QPolygonF& p);
       rect convert(const QRect& r);
+      rect convert(const QSize& s);
    }
 }
 

@@ -2,6 +2,8 @@
 
 #include <dak/geometry/utility.h>
 
+#include <dak/ui/drawing.h>
+
 namespace dak
 {
    namespace tiling_style

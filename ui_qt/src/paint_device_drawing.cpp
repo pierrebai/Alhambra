@@ -17,6 +17,15 @@ namespace dak
          return *this;
       }
 
+      paint_device_drawing& paint_device_drawing::draw_corner(const point& from, const point& corner, const point& to)
+      {
+         QPainter tmp_painter(&paint_device);
+         painter = &tmp_painter;
+         painter_drawing::draw_corner(from, corner, to);
+         painter = 0;
+         return *this;
+      }
+
       paint_device_drawing& paint_device_drawing::fill_polygon(const polygon& p)
       {
          QPainter tmp_painter(&paint_device);

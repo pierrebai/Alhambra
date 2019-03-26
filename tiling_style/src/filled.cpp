@@ -1,5 +1,7 @@
 #include <dak/tiling_style/filled.h>
 
+#include <dak/ui/drawing.h>
+
 namespace dak
 {
    namespace tiling_style

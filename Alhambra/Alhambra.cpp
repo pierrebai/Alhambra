@@ -19,11 +19,13 @@
 #include <QtWidgets/qboxlayout.h>
 #include <QtWidgets/qlistwidget.h>
 #include <QtWidgets/qmainwindow.h>
+#include <QtWidgets/qdockwidget.h>
 #include <QtWidgets/qpushbutton.h>
 #include <QtWidgets/qwidget.h>
 #include <QtWidgets/qlabel.h>
 #include <QtWidgets/qfiledialog.h>
 #include <QtWidgets/qtoolbar.h>
+#include <QtWidgets/qerrormessage.h>
 
 #include <QtGui/qpainter.h>
 
@@ -54,75 +56,66 @@ int main(int argc, char **argv)
    //
    // The window UI contents.
 
-   QWidget* window = new QWidget;
-   QHBoxLayout* window_layout = new QHBoxLayout(window);
-      QWidget* left_panel = new QWidget(window);
-      QVBoxLayout* left_layout = new QVBoxLayout(left_panel);
+   QToolBar* toolbar = new QToolBar();
+      QPushButton* previous_mosaic_button = new QPushButton(QString::fromWCharArray(L::t(L"Previous Mosaic")), toolbar);
+      toolbar->addWidget(previous_mosaic_button);
+      QPushButton* next_mosaic_button = new QPushButton(QString::fromWCharArray(L::t(L"Next Mosaic")), toolbar);
+      toolbar->addWidget(next_mosaic_button);
+      toolbar->addSeparator();
+      QPushButton* load_mosaic_button = new QPushButton(QString::fromWCharArray(L::t(L"Load Mosaic")), toolbar);
+      toolbar->addWidget(load_mosaic_button);
+      QPushButton* save_mosaic_button = new QPushButton(QString::fromWCharArray(L::t(L"Save Mosaic")), toolbar);
+      toolbar->addWidget(save_mosaic_button);
+      QPushButton* export_image_button = new QPushButton(QString::fromWCharArray(L::t(L"Export Image")), toolbar);
+      toolbar->addWidget(export_image_button);
+      QPushButton* export_svg_button = new QPushButton(QString::fromWCharArray(L::t(L"Export SVG")), toolbar);
+      toolbar->addWidget(export_svg_button);
+      toolbar->addSeparator();
+      QPushButton* translate_button = new QPushButton(QString::fromWCharArray(L::t(L"Translate")), toolbar);
+      translate_button->setCheckable(true);
+      toolbar->addWidget(translate_button);
+      QPushButton* rotate_button = new QPushButton(QString::fromWCharArray(L::t(L"Rotate")), toolbar);
+      rotate_button->setCheckable(true);
+      toolbar->addWidget(rotate_button);
+      QPushButton* scale_button = new QPushButton(QString::fromWCharArray(L::t(L"Zoom")), toolbar);
+      scale_button->setCheckable(true);
+      toolbar->addWidget(scale_button);
 
-         QToolBar* toolbar = new QToolBar(window);
-            QPushButton* previous_mosaic_button = new QPushButton(QString::fromWCharArray(L::t(L"Previous Mosaic")), window);
-            toolbar->addWidget(previous_mosaic_button);
-            QPushButton* next_mosaic_button = new QPushButton(QString::fromWCharArray(L::t(L"Next Mosaic")), window);
-            toolbar->addWidget(next_mosaic_button);
-            toolbar->addSeparator();
-            QPushButton* load_mosaic_button = new QPushButton(QString::fromWCharArray(L::t(L"Load Mosaic")), window);
-            toolbar->addWidget(load_mosaic_button);
-            QPushButton* save_mosaic_button = new QPushButton(QString::fromWCharArray(L::t(L"Save Mosaic")), window);
-            toolbar->addWidget(save_mosaic_button);
-            QPushButton* export_image_button = new QPushButton(QString::fromWCharArray(L::t(L"Export Image")), window);
-            toolbar->addWidget(export_image_button);
-            QPushButton* export_svg_button = new QPushButton(QString::fromWCharArray(L::t(L"Export SVG")), window);
-            toolbar->addWidget(export_svg_button);
-            toolbar->addSeparator();
-            QPushButton* translate_button = new QPushButton(QString::fromWCharArray(L::t(L"Translate")), window);
-            translate_button->setCheckable(true);
-            toolbar->addWidget(translate_button);
-            QPushButton* rotate_button = new QPushButton(QString::fromWCharArray(L::t(L"Rotate")), window);
-            rotate_button->setCheckable(true);
-            toolbar->addWidget(rotate_button);
-            QPushButton* scale_button = new QPushButton(QString::fromWCharArray(L::t(L"Zoom")), window);
-            scale_button->setCheckable(true);
-            toolbar->addWidget(scale_button);
+   QDockWidget* layers_dock = new QDockWidget(QString::fromWCharArray(L::t(L"Layers")));
+   layers_dock->setFeatures(QDockWidget::DockWidgetFeature::DockWidgetFloatable | QDockWidget::DockWidgetFeature::DockWidgetMovable);
+      QWidget* layers_container = new QWidget();
+      QVBoxLayout* layers_layout = new QVBoxLayout(layers_container);
 
-         QLabel* mosaic_name_label = new QLabel(QString::fromWCharArray(L::t(L"Mosaic")), window);
-         left_layout->addWidget(mosaic_name_label);
+      layers_selector* layer_list = new layers_selector(layers_container);
+      layers_layout->addWidget(layer_list);
 
-         QLabel* separator_label_b = new QLabel(window);
-         separator_label_b->setFrameShape(QFrame::Shape::HLine);
-         separator_label_b->setFrameStyle(QFrame::Shape::HLine | QFrame::Sunken);
-         separator_label_b->setMidLineWidth(2);
-         left_layout->addWidget(separator_label_b);
+      styles_editor* styles_editor = new dak::tiling_ui_qt::styles_editor(layers_container);
+      layers_layout->addWidget(styles_editor);
 
-         layers_selector* layer_list = new layers_selector(window);
-         left_layout->addWidget(layer_list);
+      layers_dock->setWidget(layers_container);
 
-         styles_editor* styles_editor = new dak::tiling_ui_qt::styles_editor(window);
-         left_layout->addWidget(styles_editor);
+   QDockWidget* figures_dock = new QDockWidget(QString::fromWCharArray(L::t(L"Figures")));
+   figures_dock->setFeatures(QDockWidget::DockWidgetFeature::DockWidgetFloatable | QDockWidget::DockWidgetFeature::DockWidgetMovable);
+      QWidget* figures_container = new QWidget();
+      QVBoxLayout* figures_layout = new QVBoxLayout(figures_container);
 
-         QLabel* separator_label_a = new QLabel(window);
-         separator_label_a->setFrameShape(QFrame::Shape::HLine);
-         separator_label_a->setFrameStyle(QFrame::Shape::HLine | QFrame::Sunken);
-         separator_label_a->setMidLineWidth(2);
-         left_layout->addWidget(separator_label_a);
+      QListWidget* figure_list = new QListWidget(figures_container);
+      figure_list->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
+      figure_list->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
+      figures_layout->addWidget(figure_list);
 
-         QListWidget* figure_list = new QListWidget(window);
-         figure_list->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
-         figure_list->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
-         left_layout->addWidget(figure_list);
+      figure_editor* figure_editor = new dak::tiling_ui_qt::figure_editor(figures_container);
+      figures_layout->addWidget(figure_editor);
 
-         figure_editor* figure_editor = new dak::tiling_ui_qt::figure_editor(window);
-         left_layout->addWidget(figure_editor);
+      figures_dock->setWidget(figures_container);
 
-      window_layout->addWidget(left_panel);
-
-      layered_canvas* canvas = new layered_canvas(window);
-      window_layout->addWidget(canvas);
-      window_layout->setStretch(0, 0);
-      window_layout->setStretch(1, 1);
+   layered_canvas* canvas = new layered_canvas(nullptr);
 
    QMainWindow* mainWindow = new QMainWindow;
-   mainWindow->setCentralWidget(window);
+   mainWindow->setCentralWidget(canvas);
    mainWindow->addToolBar(toolbar);
+   mainWindow->addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, layers_dock);
+   mainWindow->addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, figures_dock);
    mainWindow->setWindowIcon(QIcon(QtWin::fromHICON((HICON)::LoadImage(appInstance, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 256, 256, 0))));
 
    /////////////////////////////////////////////////////////////////////////
@@ -378,7 +371,7 @@ int main(int argc, char **argv)
 
    auto update_mosaic_map = [&](const std::vector<std::shared_ptr<layer>>& layers, const std::wstring& name)
    {
-      mosaic_name_label->setText(QString::fromWCharArray(L::t(L"Mosaic: ")) + QString::fromStdWString(name));
+      layers_dock->setWindowTitle(QString::fromWCharArray(L::t(L"Layers for Mosaic: ")) + QString::fromStdWString(name));
 
       layered.set_layers(layers);
       if (layers.size() > 0)
@@ -412,7 +405,7 @@ int main(int argc, char **argv)
    {
       auto mo_layer = std::make_shared<styled_mosaic>();
       mo_layer->mosaic = new_mosaic;
-      mo_layer->style = std::make_shared<thick>(color::black());
+      mo_layer->style = std::make_shared<thick>(color(20, 90, 180, 255));
       mo_layer->update_style(window_filling_region());
       auto layers = layered.get_layers();
       layers.emplace_back(mo_layer);
@@ -466,9 +459,10 @@ int main(int argc, char **argv)
          std::experimental::filesystem::path path(fileName);
          update_mosaic_map(layers, path.filename());
       }
-      catch (std::exception&)
+      catch (std::exception& ex)
       {
-         // TODO: show error.
+         QErrorMessage error(mainWindow);
+         error.showMessage(ex.what());
       }
    });
 
@@ -484,9 +478,10 @@ int main(int argc, char **argv)
          std::wofstream file(fileName);
          write_layered_mosaic(file, get_avail_layers());
       }
-      catch (std::exception&)
+      catch (std::exception& ex)
       {
-         // TODO: show error.
+         QErrorMessage error(mainWindow);
+         error.showMessage(ex.what());
       }
    });
 
@@ -514,12 +509,10 @@ int main(int argc, char **argv)
 
       QSvgGenerator svg_gen;
       svg_gen.setFileName(fileName);
-      // TODO extract viewport from canvas.
       svg_gen.setSize(canvas->size());
       svg_gen.setViewBox(QRect(QPoint(0,0), canvas->size()));
       QPainter painter(&svg_gen);
       painter_drawing drw(painter);
-      drw.set_transform(layered.get_transform());
       draw_layered(drw, &layered);
    });
 

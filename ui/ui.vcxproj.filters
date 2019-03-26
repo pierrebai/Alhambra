@@ -48,6 +48,9 @@
     <ClInclude Include="inc\dak\ui\map_layer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="inc\dak\ui\stroke.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\transformer.cpp">

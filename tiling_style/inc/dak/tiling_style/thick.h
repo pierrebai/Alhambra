@@ -5,10 +5,19 @@
 
 #include <dak/tiling_style/colored.h>
 
+#include <dak/ui/stroke.h>
+
 namespace dak
 {
+   namespace ui
+   {
+      class drawing;
+   }
+
    namespace tiling_style
    {
+      using ui::stroke;
+
       ////////////////////////////////////////////////////////////////////////////
       //
       // A style that has a thickness and can have its outline drawn.
@@ -20,6 +29,7 @@ namespace dak
          double  width = 0.05;
          double  outline_width = 0.01;
          ui::color outline_color = ui::color::black();
+         stroke::join_style join = stroke::join_style::round;
 
          // Creation.
          thick() { }
@@ -38,6 +48,8 @@ namespace dak
       protected:
          // The internal draw is called with the layer transform already applied.
          void internal_draw(ui::drawing& drw) override;
+
+         ui::stroke get_stroke(ui::drawing& drw, double width) const;
       };
    }
 }

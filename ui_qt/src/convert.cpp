@@ -47,13 +47,25 @@ namespace dak
          return rect(convert(r.topLeft()), convert(r.bottomRight()));
       }
 
+      QRectF convert(const rect & r)
+      {
+         return QRectF(convert(r.top_left()), convert(r.bottom_right()));
+      }
+
+      rect convert(const QSize& s)
+      {
+         return rect(point(0., 0.), point(s.width(), s.height()));
+      }
+
       Qt::PenCapStyle convert(stroke::cap_style c)
       {
          switch (c)
          {
-            default:
-            case stroke::cap_style::normal:
+            case stroke::cap_style::flat:
+               return Qt::PenCapStyle::FlatCap;
+            case stroke::cap_style::square:
                return Qt::PenCapStyle::SquareCap;
+            default:
             case stroke::cap_style::round:
                return Qt::PenCapStyle::RoundCap;
          }
@@ -63,9 +75,11 @@ namespace dak
       {
          switch (j)
          {
-            default:
-            case stroke::join_style::normal:
+            case stroke::join_style::miter:
+               return Qt::PenJoinStyle::MiterJoin;
+            case stroke::join_style::bevel:
                return Qt::PenJoinStyle::BevelJoin;
+            default:
             case stroke::join_style::round:
                return Qt::PenJoinStyle::RoundJoin;
          }

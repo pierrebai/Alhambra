@@ -14,6 +14,7 @@
 #include <dak/geometry/utility.h>
 
 #include <QtWidgets/qboxlayout.h>
+#include <QtWidgets/qgridlayout.h>
 #include <QtWidgets/qcombobox.h>
 #include <QtWidgets/qlabel.h>
 #include <QtWidgets/qlistwidget.h>
@@ -222,20 +223,18 @@ namespace dak
             layout->setContentsMargins(0, 0, 0, 0);
 
             QWidget* button_panel = new QWidget(&parent);
-               QHBoxLayout* button_layout = new QHBoxLayout(button_panel);
+               QGridLayout* button_layout = new QGridLayout(button_panel);
                button_layout->setContentsMargins(0, 0, 0, 0);
-               QLabel* layers_label = new QLabel(QString::fromWCharArray(L::t(L"Layers")), &parent);
-               button_layout->addWidget(layers_label);
-               clone_layer_button = std::make_unique<QPushButton>(QString::fromWCharArray(L::t(L"Copy")), &parent);
-               button_layout->addWidget(clone_layer_button.get());
-               add_layer_button = std::make_unique<QPushButton>(QString::fromWCharArray(L::t(L"Add")), &parent);
-               button_layout->addWidget(add_layer_button.get());
-               remove_layers_button = std::make_unique<QPushButton>(QString::fromWCharArray(L::t(L"Remove")), &parent);
-               button_layout->addWidget(remove_layers_button.get());
-               move_layers_up_button = std::make_unique<QPushButton>(QString::fromWCharArray(L::t(L"Move Up")), &parent);
-               button_layout->addWidget(move_layers_up_button.get());
-               move_layers_down_button = std::make_unique<QPushButton>(QString::fromWCharArray(L::t(L"Move Down")), &parent);
-               button_layout->addWidget(move_layers_down_button.get());
+               clone_layer_button = std::make_unique<QPushButton>(QString::fromWCharArray(L::t(L"Copy")), button_panel);
+               button_layout->addWidget(clone_layer_button.get(), 0, 0, 1, 2);
+               add_layer_button = std::make_unique<QPushButton>(QString::fromWCharArray(L::t(L"Add")), button_panel);
+               button_layout->addWidget(add_layer_button.get(), 0, 2, 1, 2);
+               remove_layers_button = std::make_unique<QPushButton>(QString::fromWCharArray(L::t(L"Remove")), button_panel);
+               button_layout->addWidget(remove_layers_button.get(), 0, 4, 1, 2);
+               move_layers_up_button = std::make_unique<QPushButton>(QString::fromWCharArray(L::t(L"Move Up")), button_panel);
+               button_layout->addWidget(move_layers_up_button.get(), 1, 0, 1, 3);
+               move_layers_down_button = std::make_unique<QPushButton>(QString::fromWCharArray(L::t(L"Move Down")), button_panel);
+               button_layout->addWidget(move_layers_down_button.get(), 1, 3, 1, 3);
             layout->addWidget(button_panel);
 
             layer_list = std::make_unique<QListWidget>(&parent);

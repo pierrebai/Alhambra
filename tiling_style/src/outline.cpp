@@ -2,6 +2,8 @@
 
 #include <dak/geometry/utility.h>
 
+#include <dak/ui/drawing.h>
+
 #include <cmath>
 #include <algorithm>
 
@@ -64,7 +66,7 @@ namespace dak
             ui::random_colors rnd_color;
          #endif
 
-         const double ow = drw.get_transform().dist_from_zero(outline_width);
+         const ui::stroke outline_stroke = get_stroke(drw, outline_width * 0.5);
 
          for (const auto& fat_line : fat_lines)
          {
@@ -75,10 +77,10 @@ namespace dak
             #endif
             drw.fill_polygon(fat_line.hexagon);
 
-            if (geometry::near_zero(ow))
+            if (geometry::near_zero(outline_stroke.width))
                continue;
 
-            drw.set_stroke(ui::stroke(ow));
+            drw.set_stroke(outline_stroke);
             drw.set_color(outline_color);
 
             const auto& pts = fat_line.hexagon.points;
@@ -152,7 +154,7 @@ namespace dak
 
       std::pair<point, point> outline::get_points_many_connections(const edge& an_edge, double width, geometry::map::edges& connections)
       {
-         return get_points_continuation(an_edge, width, connections);
+         return get_points_intersection(an_edge, width, connections);
       }
 
       std::pair<point, point> outline::get_points_dead_end(const edge& an_edge, double width)
