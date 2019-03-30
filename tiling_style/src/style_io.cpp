@@ -47,7 +47,7 @@ namespace dak
          void write_colored(std::wostream& file, const colored& style)
          {
             const int r = style.color.r, g = style.color.g, b = style.color.b, a = style.color.a;
-            file << "  colored " << r << " " << g << " " << b << " " << a << L"\n";
+            file << "  color " << r << " " << g << " " << b << " " << a << L"\n";
          }
 
          void read_plain(std::wistream& file, plain& new_style)

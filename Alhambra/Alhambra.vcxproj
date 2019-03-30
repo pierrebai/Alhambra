@@ -154,6 +154,7 @@ copy $(SolutionDir)tiling\mosaics\*.tap.txt $(OutputPath)mosaics\</Command>
     <Image Include="Icon.ico">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </Image>
+    <Image Include="icons\canvas-redraw.bmp" />
     <Image Include="icons\canvas-rotate.bmp" />
     <Image Include="icons\canvas-rotate.png" />
     <Image Include="icons\canvas-translate.bmp" />

@@ -137,6 +137,7 @@ namespace dak
             { L"Translate", L"Déplacer" },
             { L"Rotate", L"Tourner" },
             { L"Scale", L"Zoomer" },
+            { L"Redraw", L"Redessiner" },
 
             { L"Save Mosaic", L"Sauvegarder la mosaïque" },
             { L"Load Mosaic", L"Charger une mosaïque" },

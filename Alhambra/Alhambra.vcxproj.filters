@@ -80,6 +80,9 @@
     <Image Include="Icon.ico">
       <Filter>Resource Files\Images</Filter>
     </Image>
+    <Image Include="icons\canvas-redraw.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">

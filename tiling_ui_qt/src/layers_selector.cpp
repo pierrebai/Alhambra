@@ -154,7 +154,7 @@ namespace dak
                if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
                {
                   std::wstring text = mo_layer->mosaic->tiling.name + std::wstring(L"\n") + mo_layer->style->describe();
-                  QString qtext = QString::fromStdWString(text);
+                  QString qtext = QString::fromWCharArray(text.c_str());
                   // Note: make icon larger so that it gets scaled down with some smoothing.
                   QIcon qicon = get_icon(mo_layer, 128, 64);
                   auto item = layer_list->item(row);
@@ -288,7 +288,7 @@ namespace dak
                if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
                {
                   std::wstring text = mo_layer->mosaic->tiling.name + std::wstring(L"\n") + mo_layer->style->describe();
-                  QString qtext = QString::fromStdWString(text);
+                  QString qtext = QString::fromWCharArray(text.c_str());
                   // Note: make icon larger so that it gets scaled down with some smoothing.
                   QIcon qicon = get_icon(mo_layer, 128, 64);
                   auto item = new QListWidgetItem(qicon, qtext);

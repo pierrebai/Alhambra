@@ -85,18 +85,21 @@ int main(int argc, char **argv)
 
       QToolButton* translate_button = create_tool_button(L::t(L"Translate"), IDB_CANVAS_TRANSLATE);
       translate_button->setCheckable(true);
-
       toolbar->addWidget(translate_button);
+
       QToolButton* rotate_button = create_tool_button(L::t(L"Rotate"), IDB_CANVAS_ROTATE);
       rotate_button->setCheckable(true);
-
       toolbar->addWidget(rotate_button);
+
       QToolButton* scale_button = create_tool_button(L::t(L"Zoom"), IDB_CANVAS_ZOOM);
       scale_button->setCheckable(true);
       toolbar->addWidget(scale_button);
 
-   QDockWidget* layers_dock = new QDockWidget(QString::fromWCharArray(L::t(L"Layers")));
-   layers_dock->setFeatures(QDockWidget::DockWidgetFeature::DockWidgetFloatable | QDockWidget::DockWidgetFeature::DockWidgetMovable);
+      QToolButton* redraw_button = create_tool_button(L::t(L"Redraw"), IDB_CANVAS_REDRAW);
+      toolbar->addWidget(redraw_button);
+
+      QDockWidget* layers_dock = new QDockWidget(QString::fromWCharArray(L::t(L"Layers")));
+      layers_dock->setFeatures(QDockWidget::DockWidgetFeature::DockWidgetFloatable | QDockWidget::DockWidgetFeature::DockWidgetMovable);
       QWidget* layers_container = new QWidget();
       QVBoxLayout* layers_layout = new QVBoxLayout(layers_container);
 
@@ -385,7 +388,7 @@ int main(int argc, char **argv)
 
    auto update_mosaic_map = [&](const std::vector<std::shared_ptr<layer>>& layers, const std::wstring& name)
    {
-      layers_dock->setWindowTitle(QString::fromWCharArray(L::t(L"Layers for Mosaic: ")) + QString::fromStdWString(name));
+      layers_dock->setWindowTitle(QString::fromWCharArray(L::t(L"Layers for Mosaic: ")) + QString::fromWCharArray(name.c_str()));
 
       layered.set_layers(layers);
       if (layers.size() > 0)
@@ -494,7 +497,7 @@ int main(int argc, char **argv)
          return;
       try
       {
-         std::wofstream file(fileName);
+         std::wofstream file(fileName, std::ios::out | std::ios::trunc);
          write_layered_mosaic(file, get_avail_layers());
       }
       catch (std::exception& ex)
@@ -579,6 +582,11 @@ int main(int argc, char **argv)
          rotate_button->setChecked(false);
       }
       update_canvas_mode();
+   });
+
+   redraw_button->connect(redraw_button, &QPushButton::clicked, [&]()
+   {
+      update_canvas_layers(layered.get_layers());
    });
 
    /////////////////////////////////////////////////////////////////////////
