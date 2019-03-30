@@ -56,7 +56,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(QT5_DIR)msvc2017_64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Qt5Widgets.lib;Qt5Gui.lib;Qt5Core.lib;Qt5WinExtras.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Qt5Svg.lib;Qt5Widgets.lib;Qt5Gui.lib;Qt5Core.lib;Qt5WinExtras.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent>
@@ -64,6 +64,7 @@
 copy $(QT5_DIR)msvc2017_64\bin\Qt5Gui.dll $(OutputPath)
 copy $(QT5_DIR)msvc2017_64\bin\Qt5Widgets.dll $(OutputPath)
 copy $(QT5_DIR)msvc2017_64\bin\Qt5WinExtras.dll $(OutputPath)
+copy $(QT5_DIR)msvc2017_64\bin\Qt5Svg.dll $(OutputPath)
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -121,6 +122,22 @@ copy $(QT5_DIR)msvc2017_64\bin\Qt5Svg.dll $(OutputPath)
     <Image Include="Icon.ico">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </Image>
+    <Image Include="icons\canvas-rotate.bmp" />
+    <Image Include="icons\canvas-rotate.png" />
+    <Image Include="icons\canvas-translate.bmp" />
+    <Image Include="icons\canvas-zoom.bmp" />
+    <Image Include="icons\icon2.ico" />
+    <Image Include="icons\layer-add.bmp" />
+    <Image Include="icons\layer-copy.bmp" />
+    <Image Include="icons\layer-delete.bmp" />
+    <Image Include="icons\layer-move-down.bmp" />
+    <Image Include="icons\layer-move-up.bmp" />
+    <Image Include="icons\mosaic-next.bmp" />
+    <Image Include="icons\mosaic-open.bmp" />
+    <Image Include="icons\mosaic-previous.bmp" />
+    <Image Include="icons\mosaic-save.bmp" />
+    <Image Include="icons\save-img.bmp" />
+    <Image Include="icons\save-svg.bmp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />

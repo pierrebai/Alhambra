@@ -86,144 +86,111 @@ namespace dak
             return errors;
          }
 
-         typedef std::vector<std::pair<edge, edge>> next_edges;
-         typedef std::vector<std::pair<point, int>> crossing_counts;
-
-         next_edges build_next_edge_around_points(const std::vector<edge>& all_edges, crossing_counts& crossing_counts)
-         {
-            next_edges next_edge_around_points;
-
-            edge first_edge;
-            edge prev_edge;
-            int crossing_count = 0;
-            for (const auto& cur_edge : all_edges)
-            {
-               if (prev_edge.is_invalid())
-               {
-                  first_edge = cur_edge;
-                  crossing_count = 1;
-               }
-               else
-               {
-                  if (prev_edge.p1 == cur_edge.p1)
-                  {
-                     next_edge_around_points.emplace_back(prev_edge, cur_edge);
-                     crossing_count++;
-                  }
-                  else
-                  {
-                     crossing_counts.emplace_back(first_edge.p1, crossing_count);
-                     next_edge_around_points.emplace_back(prev_edge, first_edge);
-                     first_edge = cur_edge;
-                     crossing_count = 1;
-                  }
-               }
-               prev_edge = cur_edge;
-            }
-
-            if (!prev_edge.is_invalid())
-            {
-               crossing_counts.emplace_back(first_edge.p1, crossing_count);
-               next_edge_around_points.emplace_back(prev_edge, first_edge);
-            }
-
-            std::sort(crossing_counts.begin(), crossing_counts.end());
-            return next_edge_around_points;
-         }
       }
 
       void face::make_faces(const map& m, faces& white, faces& black, faces& red, faces& exteriors)
       {
-         // The points we need to process.
-         std::vector<edge> all_edges;
-         all_edges.reserve(m.canonicals().size() + m.non_canonicals().size());
-         all_edges.insert(all_edges.end(), m.canonicals().begin(), m.canonicals().end());
-         all_edges.insert(all_edges.end(), m.non_canonicals().begin(), m.non_canonicals().end());
-         std::sort(all_edges.begin(), all_edges.end());
-
-         auto edge_index = [&all_edges=all_edges](const edge& edge)
-         {
-            const auto iter = std::lower_bound(all_edges.begin(), all_edges.end(), edge);
-            return std::distance(all_edges.begin(), iter);
-         };
-
-         // Sorted vector that can be used to find rapidly the next outbound edge that
-         // follow a given outbound edge around a point. (To find from an inbound,
-         // search using the twin of the edge.)
+         // The edges we need to process.
          //
-         // Note: because the input is sorted by edge, the output is automatically
-         //       sorted by points too. This allows us to use std::lower_bound to 
-         //       find the next edge.
-         crossing_counts crossing_counts;
-         const auto next_edge_around_points = build_next_edge_around_points(all_edges, crossing_counts);
+         // Because the edges are sorted by their p1, we can easily find all edges around the same point
+         // as another edge by "looking around" the address of the edge in the vector.
+         const std::vector<edge>& all_edges = m.all();
+         const edge* const first_edge = &all_edges.front();
+         const edge* const last_edge = &all_edges.back();
+
+         auto edge_index = [first_edge=first_edge](const edge* edge) -> size_t
+         {
+            return edge - first_edge;
+         };
 
          // Crossings where this is an odd number of edges cannot propagate the checker-board
          // pattern properly. We will ignore them during propagation to avoid completely random
          // checker-boards.
-         auto is_odd_crossing = [&crossing_counts=crossing_counts] (const point& pt) -> bool
+         auto is_p1_odd_crossing = [first_edge=first_edge,last_edge=last_edge] (const edge* e) -> bool
          {
-            const auto iter = std::lower_bound(crossing_counts.begin(), crossing_counts.end(), std::make_pair(pt, 0));
-            const int crossing_count = (iter != crossing_counts.end()) ? iter->second : 0;
-            return crossing_count > 1 && (crossing_count & 1) != 0;
+            const point& p1 = e->p1;
+            int count = 1;
+            for (const edge* pe = e - 1; pe >= first_edge && pe->p1 == p1; --pe)
+               count += 1;
+            for (const edge* ne = e + 1; ne <= last_edge  && ne->p1 == p1; ++ne)
+               count += 1;
+            return (count & 1) == 1;
+         };
+
+         auto next_edge_around_p1 = [first_edge=first_edge,last_edge=last_edge] (const edge* e) -> const edge*
+         {
+            const point& p1 = e->p1;
+            if (e < last_edge && (e+1)->p1 == p1)
+               return (e + 1);
+            while (e > first_edge)
+               if ((e - 1)->p1 == p1)
+                  --e;
+               else
+                  break;
+            return e;
+         };
+
+         auto find_twin = [first_edge=first_edge,last_edge=last_edge] (const edge twin) -> const edge*
+         {
+            const edge* iter = std::lower_bound(first_edge, last_edge, twin);
+            return iter;
          };
 
          // Keeping track of which edge needs to be done and which are already done.
-         std::deque<edge> edges_todo;
-         std::deque<bool> whites_todo;
+         std::deque<const edge *> edges_todo;
          std::vector<bool> done_edges(all_edges.size(), false);
          std::vector<bool> seen_edges(all_edges.size(), false);
          std::vector<bool> edge_colors(all_edges.size(), false);
 
-         const auto all_edges_end = all_edges.end();
-         for (auto edge_iter = all_edges.begin(); edge_iter != all_edges_end; ++edge_iter)
+         auto add_point = [&edge_index, &done_edges, &seen_edges, &is_p1_odd_crossing](polygon& poly, const edge* cur_edge, size_t cur_edge_index) -> bool
          {
-            {
-               const size_t index = std::distance(all_edges.begin(), edge_iter);
-               if (done_edges[index])
-                  continue;
-               seen_edges[index] = true;
-            }
+            poly.points.emplace_back(cur_edge->p1);
 
-            edges_todo.emplace_back(*edge_iter);
-            whites_todo.emplace_back(true);
+            done_edges[cur_edge_index] = true;
+            seen_edges[cur_edge_index] = true;
+
+            return is_p1_odd_crossing(cur_edge);
+         };
+
+         for (const edge* edge_iter = first_edge; edge_iter != last_edge; ++edge_iter)
+         {
+            const size_t edge_iter_index = edge_index(edge_iter);
+            if (done_edges[edge_iter_index])
+               continue;
+            seen_edges[edge_iter_index] = true;
+
+            edges_todo.emplace_back(edge_iter);
 
             while (edges_todo.size() > 0)
             {
-               const auto first_edge = edges_todo.front();
-               const bool should_be_white = whites_todo.front();
+               const edge* cur_edge = edges_todo.front();
+               size_t cur_index = edge_index(cur_edge);
+               const bool is_white = edge_colors[cur_index];
                edges_todo.pop_front();
-               whites_todo.pop_front();
 
-               const size_t first_index = edge_index(first_edge);
-               if (done_edges[first_index])
+               if (done_edges[cur_index])
                   continue;
 
-               auto add_point = [&edge_index, &done_edges, &seen_edges, &is_odd_crossing](polygon& poly, const edge& cur_edge) -> bool
-               {
-                  poly.points.emplace_back(cur_edge.p1);
-
-                  const size_t index = edge_index(cur_edge);
-                  done_edges[index] = true;
-                  seen_edges[index] = true;
-
-                  return is_odd_crossing(cur_edge.p1);
-               };
-
                polygon new_face;
-               bool face_has_odd_crossing = add_point(new_face, first_edge);
-
-               bool is_white = should_be_white;
-               for (edge cur_edge = first_edge; cur_edge.p2 != first_edge.p1; )
+               const point until_point = cur_edge->p1;
+               bool face_has_odd_crossing = add_point(new_face, cur_edge, cur_index);
+               while (cur_edge->p2 != until_point)
                {
-                  const edge twin = cur_edge.twin();
-                  if (done_edges[edge_index(twin)])
-                     is_white = !edge_colors[edge_index(twin)];
-                  const auto next_iter = std::lower_bound(next_edge_around_points.begin(), next_edge_around_points.end(), std::make_pair(twin, edge::lowest_edge(cur_edge.p2)));
-                  const edge next_edge = next_iter->second;
+                  const edge* twin = find_twin(cur_edge->twin());
+                  const size_t twin_index = edge_index(twin);
+                  if (!done_edges[twin_index] && !seen_edges[twin_index])
+                  {
+                     edge_colors[edge_index(twin)] = !is_white;
+                     seen_edges[twin_index] = true;
+                     edges_todo.emplace_back(twin);
+                  }
+
+                  const edge* next_edge = next_edge_around_p1(twin);
                   if (new_face.points.size() > 50000)
                      break;
-                  face_has_odd_crossing |= add_point(new_face, next_edge);
                   cur_edge = next_edge;
+                  cur_index = edge_index(next_edge);
+                  face_has_odd_crossing |= add_point(new_face, cur_edge, cur_index);
                }
 
                // Note: we don't want to have the exterior polygon!
@@ -234,6 +201,7 @@ namespace dak
                   continue;
                }
 
+               // Odd-crossing faces are not part of the black/white division.
                if (face_has_odd_crossing)
                {
                   red.emplace_back(new_face);
@@ -244,22 +212,6 @@ namespace dak
                   white.emplace_back(new_face);
                else
                   black.emplace_back(new_face);
-
-               // Propagate to twins of the edge of the new face, but not if it has an odd crossing.
-               point p1 = new_face.points.back();
-               for (const point& p2 : new_face.points)
-               {
-                  edge_colors[edge_index(edge(p1, p2))] = is_white;
-                  const edge twin(p2, p1);
-                  const size_t twin_index = edge_index(twin);
-                  if (!done_edges[twin_index] && !seen_edges[twin_index])
-                  {
-                     seen_edges[twin_index] = true;
-                     edges_todo.emplace_back(twin);
-                     whites_todo.emplace_back(!is_white);
-                  }
-                  p1 = p2;
-               }
             }
          }
 

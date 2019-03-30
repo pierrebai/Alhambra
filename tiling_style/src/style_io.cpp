@@ -134,16 +134,14 @@ namespace dak
          void read_interlace(std::wistream& file, interlace& new_style)
          {
             std::wstring dummy;
-            double gap = 0;
-            file >> dummy >> gap >> new_style.shadow_width;
+            file >> dummy >> new_style.gap_width >> new_style.shadow_width;
             // In the text format, interlace derives from thick, not outline.
             read_thick(file, new_style);
          }
 
          void write_interlace(std::wostream& file, const interlace& style)
          {
-            double gap = 0;
-            file << L"  interlace " << gap << " " << style.shadow_width << L"\n";
+            file << L"  interlace " << style.gap_width << " " << style.shadow_width << L"\n";
             // In the text format, interlace derives from thick, not outline.
             write_thick(file, style);
          }

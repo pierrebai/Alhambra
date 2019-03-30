@@ -25,8 +25,9 @@ namespace dak
       {
          drw.set_color(color);
          drw.set_stroke(stroke(1., stroke::cap_style::round, stroke::join_style::round));
-         for (const auto& e : map.canonicals())
-            drw.draw_line(e.p1, e.p2);
+         for (const auto& e : map.all())
+            if (e.is_canonical())
+               drw.draw_line(e.p1, e.p2);
       }
    }
 }

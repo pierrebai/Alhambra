@@ -105,6 +105,7 @@ namespace dak
          slider->setRange(-1000, 1000);
          text_editor->setRange(-10., 10.);
          text_editor->setSingleStep(0.1);
+         text_editor->setDecimals(3);
 
          slider->connect(slider, &QSlider::valueChanged, this, &double_editor::set_value_from_slider);
 

@@ -121,9 +121,6 @@
     <None Include="tilings\3-8-12 pieces.tiling">
       <Filter>Known Tilings</Filter>
     </None>
-    <None Include="tilings\3-8-12.tiling">
-      <Filter>Known Tilings</Filter>
-    </None>
     <None Include="tilings\4.5.tiling">
       <Filter>Known Tilings</Filter>
     </None>
@@ -191,9 +188,6 @@
       <Filter>Known Tilings</Filter>
     </None>
     <None Include="tilings\Alcazar 12 8.tiling">
-      <Filter>Known Tilings</Filter>
-    </None>
-    <None Include="tilings\alhambra 16 pieces.tiling">
       <Filter>Known Tilings</Filter>
     </None>
     <None Include="tilings\Almost.tiling">
@@ -271,9 +265,6 @@
     <None Include="tilings\Squoctogon.tiling">
       <Filter>Known Tilings</Filter>
     </None>
-    <None Include="tilings\Squoctogon2.tiling">
-      <Filter>Known Tilings</Filter>
-    </None>
     <None Include="tilings\Sultan lodge.tiling">
       <Filter>Known Tilings</Filter>
     </None>
@@ -281,9 +272,6 @@
       <Filter>Known Tilings</Filter>
     </None>
     <None Include="tilings\Tricorn.tiling">
-      <Filter>Known Tilings</Filter>
-    </None>
-    <None Include="tilings\trigon nanites.tiling">
       <Filter>Known Tilings</Filter>
     </None>
     <None Include="tilings\Two Monsters.tiling">
@@ -322,9 +310,6 @@
     <None Include="tilings\7 et 8.tiling">
       <Filter>Known Tilings</Filter>
     </None>
-    <None Include="tilings\8 6 ~5.tiling">
-      <Filter>Known Tilings</Filter>
-    </None>
     <None Include="tilings\8 and 8.tiling">
       <Filter>Known Tilings</Filter>
     </None>
@@ -335,15 +320,6 @@
       <Filter>Known Tilings</Filter>
     </None>
     <None Include="tilings\8_var.tiling">
-      <Filter>Known Tilings</Filter>
-    </None>
-    <None Include="tilings\9.6 ~5.tiling">
-      <Filter>Known Tilings</Filter>
-    </None>
-    <None Include="tilings\9.6 Losange 2.tiling">
-      <Filter>Known Tilings</Filter>
-    </None>
-    <None Include="tilings\9.6 Losange.tiling">
       <Filter>Known Tilings</Filter>
     </None>
     <None Include="tilings\9.12.tiling">
@@ -370,16 +346,10 @@
     <None Include="tilings\24.12.tiling">
       <Filter>Known Tilings</Filter>
     </None>
-    <None Include="tilings\Alcazar De Seville 12 8 - Shorter.tiling">
-      <Filter>Known Tilings</Filter>
-    </None>
     <None Include="tilings\alhambra 16 in pieces.tiling">
       <Filter>Known Tilings</Filter>
     </None>
     <None Include="tilings\alhambra16.tiling">
-      <Filter>Known Tilings</Filter>
-    </None>
-    <None Include="tilings\Al-Mustansiriyya.tiling">
       <Filter>Known Tilings</Filter>
     </None>
     <None Include="tilings\csk_5.tiling">
@@ -389,12 +359,6 @@
       <Filter>Known Tilings</Filter>
     </None>
     <None Include="tilings\csk_9.tiling">
-      <Filter>Known Tilings</Filter>
-    </None>
-    <None Include="tilings\Great Mosque of Malatya.tiling">
-      <Filter>Known Tilings</Filter>
-    </None>
-    <None Include="tilings\Mughal I%27timad.tiling">
       <Filter>Known Tilings</Filter>
     </None>
     <None Include="tilings\Seville Alcazar 12.8.6.tiling">

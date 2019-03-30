@@ -170,11 +170,11 @@ namespace dak
 
       void extended_figure::scale_to_unit(map& cunit)
       {
-         const auto iter = std::max_element(cunit.canonicals().begin(), cunit.canonicals().end(), [](const auto& lhs, const auto& rhs) {
+         const auto iter = std::max_element(cunit.all().begin(), cunit.all().end(), [](const auto& lhs, const auto& rhs) {
             return std::max(lhs.p1.x, lhs.p2.x) < std::max(rhs.p1.x, rhs.p2.x);
          });
 
-         if (iter == cunit.canonicals().end())
+         if (iter == cunit.all().end())
             return;
 
          cunit.apply_to_self(transform::scale(1.0 / std::max(iter->p1.x, iter->p2.x)));

@@ -54,8 +54,10 @@ namespace dak
                auto map = iter->second->get_map();
                for (const auto& trf : placed_tile.second)
                {
-                  for (const auto& edge : map.canonicals())
+                  for (const auto& edge : map.all())
                   {
+                     if (!edge.is_canonical())
+                        continue;
                      const auto placed = edge.apply(trf).apply(transform::translate(mo.tiling.t1.scale(t1) + mo.tiling.t2.scale(t2)));
                      drw.draw_line(placed.p1, placed.p2);
                   }

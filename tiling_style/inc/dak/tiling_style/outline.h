@@ -70,30 +70,33 @@ namespace dak
 
          // Generate the fat lines.
          // The generated fat lines are guaranteed to be in the same order as the canonical edges.
-         virtual fat_lines generate_fat_lines();
+         virtual fat_lines generate_fat_lines(bool all_edges);
+
+         // Generate one fat line of the edge and width.
+         fat_line generate_fat_line(const edge& edge, const size_t edge_index, double width);
 
          // Draw the fat lines. Override in-sub-class to change the rendering.
          virtual void internal_draw_fat_lines(ui::drawing& drw, const fat_lines& fat_lines);
 
          // Get the two points at the left and right needed to draw the p2 junction
          // of the given edge at the given width.
-         std::pair<point, point> get_points(const edge& edge, double width, bool& is_line_end);
+         std::pair<point, point> get_points(const edge& edge, size_t index, double width, bool& is_line_end);
 
          // Get the two before/after points needed to draw the p2 junction
          // of the given edge given the number of connections.
-         virtual std::pair<point, point> get_points_one_connection(const edge& an_edge, double width, geometry::map::edges& connections);
-         virtual std::pair<point, point> get_points_two_connections(const edge& an_edge, double width, geometry::map::edges& connections);
-         virtual std::pair<point, point> get_points_many_connections(const edge& an_edge, double width, geometry::map::edges& connections);
+         virtual std::pair<point, point> get_points_one_connection(  const edge& an_edge, size_t index, double width, const geometry::map::range& connections);
+         virtual std::pair<point, point> get_points_two_connections( const edge& an_edge, size_t index, double width, const geometry::map::range& connections);
+         virtual std::pair<point, point> get_points_many_connections(const edge& an_edge, size_t index, double width, const geometry::map::range& connections);
 
          // Get the two before/after points needed to draw the p2 junction
          // of the given edge when we want to treat the intersection ina specific way.
-         std::pair<point, point> get_points_dead_end(const edge& an_edge, double width);
-         std::pair<point, point> get_points_continuation(const edge& an_edge, double width, geometry::map::edges& connections);
-         std::pair<point, point> get_points_intersection(const edge& an_edge, double width, geometry::map::edges& connections);
+         std::pair<point, point> get_points_dead_end(    const edge& an_edge, size_t index, double width);
+         std::pair<point, point> get_points_continuation(const edge& an_edge, size_t index, double width, const geometry::map::range& connections);
+         std::pair<point, point> get_points_intersection(const edge& an_edge, size_t index, double width, double other_edges_width, const geometry::map::range& connections);
 
          // Calculate the position of a point to draw the junction properly
          // given the angle between and b at the joint.
-         static point get_join(const point& joint, const point& a, const point& b, double width);
+         static point get_join(const point& joint, const point& a, const point& b, double width, double other_edges_width);
       };
    }
 }

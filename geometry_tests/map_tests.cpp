@@ -17,15 +17,17 @@ namespace geometry_tests
    {
    public:
 
+      static size_t range_size(const map::range& r)
+      {
+         return r.second - r.first;
+      }
+
       TEST_METHOD(map_constructors)
       {
          const map m1;
 
-         Assert::AreEqual<size_t>(0, m1.canonicals().size());
-         Assert::AreEqual<size_t>(0, m1.non_canonicals().size());
-         Assert::AreEqual<size_t>(0, m1.connections(point::origin()).size());
-         Assert::AreEqual<size_t>(0, m1.inbounds(point::origin()).size());
-         Assert::AreEqual<size_t>(0, m1.outbounds(point::origin()).size());
+         Assert::AreEqual<size_t>(0, m1.all().size());
+         Assert::AreEqual<size_t>(0, range_size(m1.outbounds(point::origin())));
 
          Assert::IsFalse(m1.contains(point::origin()));
          Assert::IsFalse(m1.are_connected(point::origin(), point::unit_x()));
@@ -42,11 +44,8 @@ namespace geometry_tests
              edge(point(2., 3.), point(1., 2.)),
             });
 
-         Assert::AreEqual<size_t>(4, m1.canonicals().size());
-         Assert::AreEqual<size_t>(4, m1.non_canonicals().size());
-         Assert::AreEqual<size_t>(4, m1.connections(point(1., 2.)).size());
-         Assert::AreEqual<size_t>(2, m1.inbounds(point(1., 2.)).size());
-         Assert::AreEqual<size_t>(2, m1.outbounds(point(1., 2.)).size());
+         Assert::AreEqual<size_t>(8, m1.all().size());
+         Assert::AreEqual<size_t>(2, range_size(m1.outbounds(point(1., 2.))));
 
          Assert::IsTrue(m1.contains(point(1., 2.)));
          Assert::IsTrue(m1.contains(point(-3., -4.)));
@@ -71,12 +70,8 @@ namespace geometry_tests
              edge(point(0., -3.), point(0., 3.)),
             });
 
-         Assert::AreEqual<size_t>(4, m1.canonicals().size());
-         Assert::AreEqual<size_t>(4, m1.non_canonicals().size());
-         Assert::AreEqual<size_t>(2, m1.connections(point(-2., 0.)).size());
-         Assert::AreEqual<size_t>(1, m1.inbounds(point(0., 3.)).size());
-         Assert::AreEqual<size_t>(1, m1.outbounds(point(2., 0.)).size());
-         Assert::AreEqual<size_t>(8, m1.connections(point(0., 0.)).size());
+         Assert::AreEqual<size_t>(8, m1.all().size());
+         Assert::AreEqual<size_t>(1, range_size(m1.outbounds(point(2., 0.))));
 
          Assert::IsTrue(m1.contains(point(-2.,  0.)));
          Assert::IsTrue(m1.contains(point( 2.,  0.)));
@@ -101,12 +96,9 @@ namespace geometry_tests
          
          m1.insert(edge(point(-2., 0.), point(2., 0.)));
 
-         Assert::AreEqual<size_t>(1, m1.canonicals().size());
-         Assert::AreEqual<size_t>(1, m1.non_canonicals().size());
+         Assert::AreEqual<size_t>(2, m1.all().size());
 
-         Assert::AreEqual<size_t>(2, m1.connections(point(-2., 0.)).size());
-         Assert::AreEqual<size_t>(1, m1.inbounds(point(-2., 0.)).size());
-         Assert::AreEqual<size_t>(1, m1.outbounds(point(-2., 0.)).size());
+         Assert::AreEqual<size_t>(1, range_size(m1.outbounds(point(-2., 0.))));
 
          Assert::IsTrue(m1.contains(point(-2., 0.)));
          Assert::IsTrue(m1.contains(point( 2., 0.)));
@@ -119,14 +111,11 @@ namespace geometry_tests
 
          Assert::AreEqual<size_t>(0, m1.verify().size());
 
-         Assert::AreEqual<size_t>(4, m1.canonicals().size());
-         Assert::AreEqual<size_t>(4, m1.non_canonicals().size());
+         Assert::AreEqual<size_t>(8, m1.all().size());
 
-         Assert::AreEqual<size_t>(2, m1.connections(point(0., 3.)).size());
-         Assert::AreEqual<size_t>(1, m1.inbounds(point(0., 3.)).size());
-         Assert::AreEqual<size_t>(1, m1.outbounds(point(0., 3.)).size());
+         Assert::AreEqual<size_t>(1, range_size(m1.outbounds(point(0., 3.))));
 
-         Assert::AreEqual<size_t>(8, m1.connections(point(0., 0.)).size());
+         Assert::AreEqual<size_t>(4, range_size(m1.outbounds(point(0., 0.))));
 
          Assert::IsTrue(m1.contains(point(-2.,  0.)));
          Assert::IsTrue(m1.contains(point( 2.,  0.)));
@@ -146,18 +135,13 @@ namespace geometry_tests
 
          Assert::AreEqual<size_t>(0, m1.verify().size());
 
-         Assert::AreEqual<size_t>(3, m1.canonicals().size());
-         Assert::AreEqual<size_t>(3, m1.non_canonicals().size());
+         Assert::AreEqual<size_t>(6, m1.all().size());
 
-         Assert::AreEqual<size_t>(0, m1.connections(point(0., 3.)).size());
-         Assert::AreEqual<size_t>(0, m1.inbounds(point(0., 3.)).size());
-         Assert::AreEqual<size_t>(0, m1.outbounds(point(0., 3.)).size());
+         Assert::AreEqual<size_t>(0, range_size(m1.outbounds(point(0., 3.))));
 
-         Assert::AreEqual<size_t>(2, m1.connections(point(0., -3.)).size());
-         Assert::AreEqual<size_t>(1, m1.inbounds(point(0., -3.)).size());
-         Assert::AreEqual<size_t>(1, m1.outbounds(point(0., -3.)).size());
+         Assert::AreEqual<size_t>(1, range_size(m1.outbounds(point(0., -3.))));
 
-         Assert::AreEqual<size_t>(6, m1.connections(point(0., 0.)).size());
+         Assert::AreEqual<size_t>(3, range_size(m1.outbounds(point(0., 0.))));
 
          Assert::IsTrue(m1.contains(point(-2., 0.)));
          Assert::IsTrue(m1.contains(point(2., 0.)));
@@ -177,18 +161,11 @@ namespace geometry_tests
 
          Assert::AreEqual<size_t>(0, m1.verify().size());
 
-         Assert::AreEqual<size_t>(2, m1.canonicals().size());
-         Assert::AreEqual<size_t>(2, m1.non_canonicals().size());
+         Assert::AreEqual<size_t>(4, m1.all().size());
 
-         Assert::AreEqual<size_t>(0, m1.connections(point(2., 0.)).size());
-         Assert::AreEqual<size_t>(0, m1.inbounds(point(2., 0.)).size());
-         Assert::AreEqual<size_t>(0, m1.outbounds(point(2., 0.)).size());
+         Assert::AreEqual<size_t>(0, range_size(m1.outbounds(point(2., 0.))));
 
-         Assert::AreEqual<size_t>(2, m1.connections(point(-2., 0.)).size());
-         Assert::AreEqual<size_t>(1, m1.inbounds(point(-2., 0.)).size());
-         Assert::AreEqual<size_t>(1, m1.outbounds(point(-2., 0.)).size());
-
-         Assert::AreEqual<size_t>(4, m1.connections(point(0., 0.)).size());
+         Assert::AreEqual<size_t>(1, range_size(m1.outbounds(point(-2., 0.))));
 
          Assert::IsTrue(m1.contains(point(-2., 0.)));
          Assert::IsFalse(m1.contains(point(2., 0.)));
@@ -429,8 +406,7 @@ namespace geometry_tests
          {
             horiz.insert(edge(point(-count, i / 2.), point(count, i / 2.)));
          }
-         Assert::AreEqual<size_t>(count, horiz.canonicals().size());
-         Assert::AreEqual<size_t>(count, horiz.non_canonicals().size());
+         Assert::AreEqual<size_t>(count * 2, horiz.all().size());
 
          Assert::AreEqual<size_t>(0, horiz.verify().size());
 
@@ -439,8 +415,7 @@ namespace geometry_tests
          {
             verti.insert(edge(point(i / 2., -count), point(i / 2., count)));
          }
-         Assert::AreEqual<size_t>(count , verti.canonicals().size());
-         Assert::AreEqual<size_t>(count, verti.non_canonicals().size());
+         Assert::AreEqual<size_t>(count * 2, verti.all().size());
 
          Assert::AreEqual<size_t>(0, verti.verify().size());
 
@@ -448,8 +423,15 @@ namespace geometry_tests
 
          Assert::AreEqual<size_t>(0, horiz.verify().size());
 
-         Assert::AreEqual<size_t>((count + 1) * count * 2, horiz.canonicals().size());
-         Assert::AreEqual<size_t>((count + 1) * count * 2, horiz.non_canonicals().size());
+         Assert::AreEqual<size_t>((count + 1) * count * 2 * 2, horiz.all().size());
+
+         for (int x = 1; x <= count; ++x)
+         {
+            for (int y = 1; y <= count; ++y)
+            {
+               Assert::AreEqual<size_t>(4, range_size(horiz.outbounds(point(x / 2., y / 2.))));
+            }
+         }
       }
    };
 }

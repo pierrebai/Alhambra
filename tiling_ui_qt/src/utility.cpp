@@ -5,8 +5,9 @@
 
 #include <dak/tiling_style/colored.h>
 
-#include <QtGui/qpixmap.h>
 #include <QtGui/qpainter.h>
+
+#include <QtWinExtras/qwinfunctions.h>
 
 namespace dak
 {
@@ -39,6 +40,24 @@ namespace dak
 
          return QIcon(pixmap);
       }
+
+      QPixmap create_pixmap_from_resource(int res)
+      {
+         QPixmap pixmap = QtWin::fromHBITMAP((HBITMAP)::LoadBitmap(GetModuleHandle(0), MAKEINTRESOURCE(res)), QtWin::HBitmapNoAlpha);
+         pixmap.setMask(pixmap.createMaskFromColor(QColor(255, 255, 255, 255)));
+         return pixmap;
+      }
+
+      QToolButton* create_tool_button(const wchar_t* text, int icon)
+      {
+         QToolButton* button = new QToolButton;
+         button->setText(QString::fromWCharArray(text));
+         button->setIcon(QIcon(create_pixmap_from_resource(icon)));
+         button->setIconSize(QSize(48, 48));
+         button->setToolButtonStyle(Qt::ToolButtonStyle::ToolButtonTextUnderIcon);
+         return button;
+      }
+
    }
 }
 

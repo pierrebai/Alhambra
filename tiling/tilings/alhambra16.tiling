@@ -61,7 +61,7 @@ tiling "alhambra16" 4
             0.4436625974595772 0.183771064985432 1.367542129970864
             -0.183771064985432 0.4436625974595772 0.5664544973505217
 
-    "Ce tuilage donne l'un des designs les plus connus de l'Alhambra, comprenant de grandes étoiles à 16 branches. Malheureusement, l'algorithme de Taprats n'est pas assez sophistiqué pour remplir tous les détails du design original.Ils doivent être ajoutés à la main."
+    "This tiling leads to one of the most well-known designs in the Alhambra, featuring large 16-pointed stars.  Unfortunately, the algorithm isn't smart enough to fill in all of the details of the original design. They must be added in by hand."
 
     "Craig S. Kaplan"
 

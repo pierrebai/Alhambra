@@ -45,9 +45,16 @@ namespace dak
          for (const auto &e : edges)
          {
             const auto e2 = map.continuation(e);
-            const auto p1 = e.p1.convex_sum(e.p2, 0.4);
-            const auto p3 = e2.p1.convex_sum(e2.p2, 0.6);
-            drw.draw_corner(p1, e.p2, p3);
+            if (e2.is_invalid())
+            {
+               drw.draw_line(e.p1, e.p2);
+            }
+            else
+            {
+               const auto p1 = e.p1.convex_sum(e.p2, 0.4);
+               const auto p3 = e2.p1.convex_sum(e2.p2, 0.6);
+               drw.draw_corner(p1, e.p2, p3);
+            }
          }
       }
 
@@ -60,13 +67,11 @@ namespace dak
          {
             drw.set_color(outline_color);
             drw.set_stroke(get_stroke(drw, outline_width + width * 2.));
-            draw_edges(drw, map, map.canonicals());
-            draw_edges(drw, map, map.non_canonicals());
+            draw_edges(drw, map, map.all());
          }
          drw.set_color(color);
          drw.set_stroke(get_stroke(drw, width * 2));
-         draw_edges(drw, map, map.canonicals());
-         draw_edges(drw, map, map.non_canonicals());
+         draw_edges(drw, map, map.all());
       }
    }
 }

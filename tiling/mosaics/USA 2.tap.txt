@@ -1,0 +1,52 @@
+layers 7
+  interlace 0 0.029999999999999999
+  thick 0.050000000000000003 0
+  colored 222 20 20 255
+  mosaic "4.8^2" 2
+    regular 8
+    rosette 8 0.01 3
+    regular 4
+    irregular Rosette 0.25 0.70999999999999996 1
+  interlace 0 0.029999999999999999
+  thick 0.050000000000000003 0
+  colored 240 234 228 255
+  mosaic "4.8^2" 2
+    regular 8
+    rosette 8 0.01 3
+    regular 4
+    irregular Rosette 0.25 0.70999999999999996 1
+  thick 0.060000000000000019 0
+  colored 0 0 0 255
+  mosaic "4.8^2" 2
+    regular 8
+    rosette 8 0.01 3
+    regular 4
+    irregular Rosette 0.25 0.70999999999999996 1
+  thick 0.11 0
+  colored 255 255 255 255
+  mosaic "4.8^2" 2
+    regular 8
+    rosette 8 0.01 3
+    regular 4
+    irregular Rosette 0.25 0.70999999999999996 1
+  thick 0.18000000000000005 0
+  colored 0 51 153 255
+  mosaic "4.8^2" 2
+    regular 8
+    rosette 8 0.01 3
+    regular 4
+    irregular Rosette 0.25 0.70999999999999996 1
+  filled false false
+  colored 0 51 153 255
+  mosaic "4.8^2" 2
+    regular 8
+    rosette 8 0.01 3
+    regular 4
+    irregular Rosette 0.25 0.70999999999999996 1
+  filled false true
+  colored 255 255 255 255
+  mosaic "4.8^2" 2
+    regular 8
+    rosette 8 0.01 3
+    regular 4
+    irregular Rosette 0.25 0.70999999999999996 1

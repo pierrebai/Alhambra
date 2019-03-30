@@ -84,9 +84,9 @@ namespace dak
          drw.fill_polygon(poly);
       }
 
-      std::pair<point, point> emboss::get_points_many_connections(const edge& an_edge, double width, geometry::map::edges& connections)
+      std::pair<point, point> emboss::get_points_many_connections(const edge& an_edge, size_t index, double width, const geometry::map::range& connections)
       {
-         return get_points_intersection(an_edge, width, connections);
+         return get_points_intersection(an_edge, index, width, width, connections);
       }
    }
 }

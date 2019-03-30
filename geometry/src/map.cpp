@@ -14,26 +14,6 @@ namespace dak
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // map edges.
-
-      void map_edges::internal_clear_inverted_edges()
-      {
-         _sorted_inverted_edges.clear();
-      }
-
-      void map_edges::internal_fill_sorted_inverted_edges() const
-      {
-         if (_sorted_inverted_edges.size() > 0)
-            return;
-
-         _sorted_inverted_edges.reserve(_sorted_canonical_edges.size());
-         for (const auto& edge : _sorted_canonical_edges)
-            _sorted_inverted_edges.emplace_back(edge.twin());
-         std::sort(_sorted_inverted_edges.begin(), _sorted_inverted_edges.end());
-      }
-
-      ////////////////////////////////////////////////////////////////////////////
-      //
       // map.
 
       map::map(const edges& from_edges)
@@ -43,178 +23,143 @@ namespace dak
 
       bool map::are_connected(const point& a, const point& b) const
       {
-         const edge e( (a < b) ? edge(a, b) : edge(b, a) );
-         const auto iter = std::lower_bound(_sorted_canonical_edges.begin(), _sorted_canonical_edges.end(), e);
-         return iter != _sorted_canonical_edges.end() && *iter == e;
+         const edge e(a, b);
+         const auto iter = std::lower_bound(_sorted_edges.begin(), _sorted_edges.end(), e);
+         return iter != _sorted_edges.end() && *iter == e;
       }
 
       bool map::contains(const point& p) const
       {
-         return internal_contains(_sorted_canonical_edges, p)
-             || internal_contains(non_canonicals(),  p);
-      }
-
-      bool map::internal_contains(const edges& from_edges, const point& p)
-      {
-         const auto iter = std::lower_bound(from_edges.begin(), from_edges.end(), edge::lowest_edge(p));
-         return (iter != from_edges.end() && iter->p1 == p);
+         const auto iter = std::lower_bound(_sorted_edges.begin(), _sorted_edges.end(), edge::lowest_edge(p));
+         return (iter != _sorted_edges.end() && iter->p1 == p);
       }
 
       bool map::contains(const edge& e) const
       {
-         if (e.is_canonical())
-         {
-            const auto iter = std::lower_bound(_sorted_canonical_edges.begin(), _sorted_canonical_edges.end(), e);
-            return iter != _sorted_canonical_edges.end() && *iter == e;
-         }
-         else
-         {
-            const auto iter = std::lower_bound(non_canonicals().begin(), non_canonicals().end(), e);
-            return iter != non_canonicals().end() && *iter == e;
-         }
+         const auto iter = std::lower_bound(_sorted_edges.begin(), _sorted_edges.end(), e);
+         return iter != _sorted_edges.end() && *iter == e;
       }
 
-      map::edges map::connections(const point& p) const
+      map::range map::outbounds(const point& p) const
       {
-         edges conns;
-         internal_fill_connections(_sorted_canonical_edges, p, conns, true, true);
-         internal_fill_connections(non_canonicals(), p, conns, true, true);
-         return conns;
-      }
-
-      map::edges map::inbounds(const point& p) const
-      {
-         edges conns;
-         internal_fill_connections(_sorted_canonical_edges, p, conns, true, false);
-         internal_fill_connections(non_canonicals(), p, conns, true, false);
-         return conns;
-      }
-
-      map::edges map::outbounds(const point& p) const
-      {
-         edges conns;
-         internal_fill_connections(_sorted_canonical_edges, p, conns, false, true);
-         internal_fill_connections(non_canonicals(), p, conns, false, true);
-         return conns;
+         auto lower = std::lower_bound(_sorted_edges.begin(), _sorted_edges.end(), edge::lowest_edge(p));
+         auto upper = std::upper_bound(_sorted_edges.begin(), _sorted_edges.end(), edge::highest_edge(p));
+         while (lower != upper && lower->p1 != p)
+            ++lower;
+         return range(lower, upper);
       }
 
       std::pair<edge, edge> map::before_after(const edge& e) const
       {
-         edges conns = outbounds(e.p2);
+         const range conns = outbounds(e.p2);
          return before_after(conns, e);
       }
 
-      std::pair<edge, edge> map::before_after(edges& outbounds, const edge& e)
+      std::pair<edge, edge> map::before_after(const range& outbounds, const edge& e)
       {
-         std::sort(outbounds.begin(), outbounds.end());
+         // TODO: maybe return pair of iter instead? Same for before and after.
          const auto iter = std::lower_bound(outbounds.begin(), outbounds.end(), e.twin());
          if (iter == outbounds.end())
             return std::pair<edge, edge>();
 
-         const auto before = (iter == outbounds.begin()) ? outbounds.back() : *std::prev(iter);
-         const auto after = (iter == std::prev(outbounds.end())) ? outbounds.front() : *std::next(iter);
+         const auto before = (iter == outbounds.begin()) ? *std::prev(outbounds.end()) : *std::prev(iter);
+         const auto after = (iter == std::prev(outbounds.end())) ? *outbounds.begin() : *std::next(iter);
          return std::pair<edge, edge>(before, after);
       }
 
       const edge& map::before(const edge& e) const
       {
-         edges conns = outbounds(e.p2);
+         const range conns = outbounds(e.p2);
          return before(conns, e);
       }
 
-      const edge& map::before(edges& outbounds, const edge& e)
+      const edge& map::before(const range& outbounds, const edge& e)
       {
-         std::sort(outbounds.begin(), outbounds.end());
          const auto iter = std::lower_bound(outbounds.begin(), outbounds.end(), e.twin());
          if (iter == outbounds.end())
             return edge::invalid;
 
-         return (iter == outbounds.begin()) ? outbounds.back() : *std::prev(iter);
+         return (iter == outbounds.begin()) ? *std::prev(outbounds.end()) : *std::prev(iter);
       }
 
       const edge& map::after(const edge& e) const
       {
-         edges conns = outbounds(e.p2);
+         const range conns = outbounds(e.p2);
          return after(conns, e);
       }
 
-      const edge& map::after(edges& outbounds, const edge& e)
+      const edge& map::after(const range& outbounds, const edge& e)
       {
-         std::sort(outbounds.begin(), outbounds.end());
          const auto iter = std::lower_bound(outbounds.begin(), outbounds.end(), e.twin());
          if (iter == outbounds.end())
             return edge::invalid;
 
-         return (iter == std::prev(outbounds.end())) ? outbounds.front() : *std::next(iter);
+         return (iter == std::prev(outbounds.end())) ? *(outbounds.begin()) : *std::next(iter);
       }
 
       const edge& map::continuation(const edge& e) const
       {
-         edges conns = outbounds(e.p2);
+         const range conns = outbounds(e.p2);
          return continuation(conns, e);
       }
 
-      const edge& map::continuation(edges& outbounds, const edge& e)
+      const edge& map::continuation(const range& outbounds, const edge& e)
       {
-         std::sort(outbounds.begin(), outbounds.end());
          const auto iter = std::lower_bound(outbounds.begin(), outbounds.end(), e.twin());
          if (iter == outbounds.end())
             return edge::invalid;
 
-         const ptrdiff_t delta = outbounds.size() / 2;
+         const ptrdiff_t delta = (outbounds.end() - outbounds.begin()) / 2;
          const auto opposite = ((iter - outbounds.begin()) >= delta) ? std::prev(iter, delta) : std::next(iter, delta);
          return *opposite;
       }
 
       void map::remove(const point& p)
       {
-         // Note: we could improve the performance by directly erasing lower_bound to upper_bound,
-         //       and removing the other edges after.
-         const edges to_remove = connections(p);
-         for (const auto& edge : to_remove)
-            remove(edge);
+         const range range_to_remove = outbounds(p);
+         const edges to_remove = edges(range_to_remove.begin(), range_to_remove.end());
+         _sorted_edges.erase(range_to_remove.begin(), range_to_remove.end());
+         for (const auto e : to_remove)
+         {
+            remove(e.twin());
+         }
       }
 
       void map::remove(const edge& e)
       {
-         edge inverted(e.twin());
-         internal_remove(_sorted_canonical_edges, e.is_canonical() ? e : inverted);
-         internal_clear_inverted_edges();
+         auto i = std::lower_bound(_sorted_edges.begin(), _sorted_edges.end(), e);
+         if (i != _sorted_edges.end() && *i == e)
+            _sorted_edges.erase(i);
+         i = std::lower_bound(_sorted_edges.begin(), _sorted_edges.end(), e.twin());
+         if (i != _sorted_edges.end() && *i == e.twin())
+            _sorted_edges.erase(i);
          internal_verify();
-      }
-
-      void map::internal_remove(edges& from_edges, const edge& e)
-      {
-         auto i = std::lower_bound(from_edges.begin(), from_edges.end(), e);
-         if (i != from_edges.end() && *i == e)
-            from_edges.erase(i);
       }
 
       void map::merge_non_overlapping(const map& other)
       {
-         _sorted_canonical_edges.reserve(_sorted_canonical_edges.size() + other._sorted_canonical_edges.size());
-         _sorted_canonical_edges.insert(_sorted_canonical_edges.end(), other._sorted_canonical_edges.begin(), other._sorted_canonical_edges.end());
+         _sorted_edges.reserve(_sorted_edges.size() + other._sorted_edges.size());
+         _sorted_edges.insert(_sorted_edges.end(), other._sorted_edges.begin(), other._sorted_edges.end());
          internal_sort_edges();
-         internal_clear_inverted_edges();
          internal_verify();
       }
 
       void map::merge(const map& other)
       {
          std::vector<std::pair<edge, point>> temp_edge_intersections;
-         temp_edge_intersections.reserve(_sorted_canonical_edges.size() + other._sorted_canonical_edges.size());
-         for (const auto& new_edge : other._sorted_canonical_edges)
-            if (!contains(new_edge))
-               internal_connect(new_edge, temp_edge_intersections);
+         temp_edge_intersections.reserve(_sorted_edges.size() + other._sorted_edges.size());
+         for (const auto& new_edge : other._sorted_edges)
+            if (new_edge.is_canonical())
+               if (!contains(new_edge))
+                  internal_connect(new_edge, temp_edge_intersections);
          internal_add_intersections_and_sort(temp_edge_intersections);
-         internal_clear_inverted_edges();
          internal_verify();
       }
 
       void map::insert(const edges& from_edges)
       {
          std::vector<std::pair<edge, point>> temp_edge_intersections;
-         temp_edge_intersections.reserve(_sorted_canonical_edges.size() + from_edges.size());
+         temp_edge_intersections.reserve(_sorted_edges.size() + from_edges.size());
          for (const auto& new_edge : from_edges)
          {
             if (new_edge.is_trivial())
@@ -227,7 +172,6 @@ namespace dak
             internal_connect(new_edge.canonical(), temp_edge_intersections);
             internal_add_intersections_and_sort(temp_edge_intersections);
          }
-         internal_clear_inverted_edges();
          internal_verify();
       }
 
@@ -242,7 +186,6 @@ namespace dak
          std::vector<std::pair<edge, point>> temp_edge_intersections;
          internal_connect(new_edge.canonical(), temp_edge_intersections);
          internal_add_intersections_and_sort(temp_edge_intersections);
-         internal_clear_inverted_edges();
          internal_verify();
       }
 
@@ -253,10 +196,9 @@ namespace dak
 
       map& map::apply_to_self(const transform& t)
       {
-         for (auto& e : _sorted_canonical_edges)
-            e = edge(e.p1.apply(t), e.p2.apply(t)).make_canonical();
+         for (auto& e : _sorted_edges)
+            e = edge(e.p1.apply(t), e.p2.apply(t));
          internal_sort_edges();
-         internal_clear_inverted_edges();
          internal_verify();
          return *this;
       }
@@ -270,23 +212,7 @@ namespace dak
 
       void map::internal_sort_edges()
       {
-         std::sort(_sorted_canonical_edges.begin(), _sorted_canonical_edges.end());
-      }
-
-      void map::internal_fill_connections(const edges& from_edges, const point& p, edges& conns, bool inbound, bool outbound)
-      {
-         const auto lower = std::lower_bound(from_edges.begin(), from_edges.end(), edge::lowest_edge(p));
-         const auto upper = std::upper_bound(from_edges.begin(), from_edges.end(), edge::highest_edge(p));
-         for (auto i = lower; i < upper; ++i)
-         {
-            if (i->p1 == p)
-            {
-               if (outbound)
-                  conns.emplace_back(*i);
-               if (inbound)
-                  conns.emplace_back(i->twin());
-            }
-         }
+         std::sort(_sorted_edges.begin(), _sorted_edges.end());
       }
 
       // Split existing edges and record the intersections for each edge, old and new.
@@ -300,8 +226,11 @@ namespace dak
 
          int intersection_count = 0;
 
-         for (auto& my_edge : _sorted_canonical_edges)
+         for (auto& my_edge : _sorted_edges)
          {
+            if (!my_edge.is_canonical())
+               continue;
+
             const point& my_p1 = my_edge.p1;
             const point& my_p2 = my_edge.p2;
 
@@ -341,11 +270,12 @@ namespace dak
          // Sort intersections.
          std::sort(temp_edge_intersections.begin(), temp_edge_intersections.end());
 
+
          // We will build a new vector of sorted edges.
          // It will be filled by iterating over the existing sorted edges and the intersections
          // in parallel so that edges are inserted in already sorted order.
          edges new_sorted_canonical_edges;
-         new_sorted_canonical_edges.reserve(_sorted_canonical_edges.size() + temp_edge_intersections.size());
+         new_sorted_canonical_edges.reserve(_sorted_edges.size() + temp_edge_intersections.size());
 
          // Keep track of previous edge and point so we can detect when
          // we've finished splitting one particular edge.
@@ -356,8 +286,8 @@ namespace dak
          auto inter_iter = temp_edge_intersections.begin();
          const auto inter_end = temp_edge_intersections.end();
 
-         auto edges_iter = _sorted_canonical_edges.begin();
-         const auto edges_end = _sorted_canonical_edges.end();
+         auto edges_iter = _sorted_edges.begin();
+         const auto edges_end = _sorted_edges.end();
 
          while (true)
          {
@@ -367,7 +297,11 @@ namespace dak
             if (do_edges)
             {
                const edge& old_edge = *edges_iter;
-               new_sorted_canonical_edges.emplace_back(old_edge);
+               if (old_edge.is_canonical())
+               {
+                  new_sorted_canonical_edges.emplace_back(old_edge);
+                  new_sorted_canonical_edges.emplace_back(old_edge.twin());
+               }
                ++edges_iter;
             }
             else if (valid_inter)
@@ -386,7 +320,8 @@ namespace dak
                   // If the edge was not split, then it was a new edge
                   // that didn't touch any existing edges.
                   // Just add it straight to the map.
-                  new_sorted_canonical_edges.emplace_back(split_edge.canonical());
+                  new_sorted_canonical_edges.emplace_back(split_edge);
+                  new_sorted_canonical_edges.emplace_back(split_edge.twin());
                }
                else
                {
@@ -399,7 +334,8 @@ namespace dak
                      // Finish any previous splitted edge.
                      if (!prev_point.is_invalid())
                      {
-                        new_sorted_canonical_edges.emplace_back(edge(prev_point, last_point).canonical());
+                        new_sorted_canonical_edges.emplace_back(prev_point, last_point);
+                        new_sorted_canonical_edges.emplace_back(last_point, prev_point);
                      }
                      prev_edge = split_edge;
                      prev_point = split_edge.p1 < split_edge.p2 ? split_edge.p1 : split_edge.p2;
@@ -410,7 +346,10 @@ namespace dak
                   // if it is intersected by an end-point of the other map, which result in two identical
                   // intersections.
                   if (prev_point != intersection)
-                     new_sorted_canonical_edges.emplace_back(edge(prev_point, intersection).canonical());
+                  {
+                     new_sorted_canonical_edges.emplace_back(prev_point, intersection);
+                     new_sorted_canonical_edges.emplace_back(intersection, prev_point);
+                  }
                   prev_point = intersection;
                }
                ++inter_iter;
@@ -424,12 +363,13 @@ namespace dak
          // Finish any previous splitted edge.
          if (!prev_point.is_invalid())
          {
-            new_sorted_canonical_edges.emplace_back(edge(prev_point, last_point).canonical());
+            new_sorted_canonical_edges.emplace_back(prev_point, last_point);
+            new_sorted_canonical_edges.emplace_back(last_point, prev_point);
          }
 
-         _sorted_canonical_edges.swap(new_sorted_canonical_edges);
+         _sorted_edges.swap(new_sorted_canonical_edges);
          internal_sort_edges();
-         _sorted_canonical_edges.erase(std::unique(_sorted_canonical_edges.begin(), _sorted_canonical_edges.end()), _sorted_canonical_edges.end());
+         _sorted_edges.erase(std::unique(_sorted_edges.begin(), _sorted_edges.end()), _sorted_edges.end());  // TODO: needed?
       }
 
       void map::internal_verify() const
@@ -452,7 +392,7 @@ namespace dak
          wchar_t error[200];
 
          // Make sure there are no trivial edges.
-         for (const auto& e : _sorted_canonical_edges)
+         for (const auto& e : _sorted_edges)
          {
             if (e.p1 == e.p2)
             {
@@ -467,49 +407,16 @@ namespace dak
             }
          }
 
-         // Make sure there are no trivial edges.
-         for (const auto& e : non_canonicals())
-         {
-            if (e.p1 == e.p2)
-            {
-               _snwprintf_s(error, sizeof(error) / sizeof(error[0]), L::t(L"Trivial edge %f/%f - %f/%f."), e.p1.x, e.p1.y, e.p2.x, e.p2.y);
-               errors.emplace_back(error);
-            }
-
-            if (e.p1.is_invalid() || e.p2.is_invalid())
-            {
-               _snwprintf_s(error, sizeof(error) / sizeof(error[0]), L::t(L"Invalid edge %f/%f - %f/%f."), e.p1.x, e.p1.y, e.p2.x, e.p2.y);
-               errors.emplace_back(error);
-            }
-         }
-
          // Make sure the edges are in sorted order.
          {
             edge prev;
-            for (const auto& e : _sorted_canonical_edges)
+            for (const auto& e : _sorted_edges)
             {
                if (!prev.is_invalid())
                {
                   if (e < prev)
                   {
                      _snwprintf_s(error, sizeof(error) / sizeof(error[0]), L::t(L"Canonical edges are not sorted."));
-                     errors.emplace_back(error);
-                  }
-               }
-               prev = e;
-            }
-         }
-
-         // Make sure the edges are in sorted order.
-         {
-            edge prev;
-            for (const auto& e : non_canonicals())
-            {
-               if (!prev.is_invalid())
-               {
-                  if (e < prev)
-                  {
-                     _snwprintf_s(error, sizeof(error) / sizeof(error[0]), L::t(L"Inverted edges are not sorted."));
                      errors.emplace_back(error);
                   }
                }

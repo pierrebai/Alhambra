@@ -13,7 +13,7 @@ namespace dak
       std::wstring explicit_figure::describe() const
       {
          std::wstringstream ss;
-         ss << L::t(L"Explicit Figure") << L" " << get_map().canonicals().size();
+         ss << L::t(L"Explicit Figure") << L" " << get_map().all().size();
          return ss.str();
       }
 

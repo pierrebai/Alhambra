@@ -3,8 +3,7 @@
 - Undo framework.
 - Show/hide of layers.
 - Manipulate canvas for a single layer.
-- Degenrate cases of inferring.
+- Degenerate cases of inferring.
 - Wix for the installer.
-- Change implementation of interlace style to have gap.
 - Move stuff to a dak/utility project: number_utility, text_utility.
-- Keep list of edges around points in map: we calculate it anyway when merging, might as weel keep it afterward.
+- Put combo-box for style directly in list?

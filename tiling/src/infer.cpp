@@ -309,8 +309,10 @@ namespace dak
             const map& map = amaps[idx];
             const adjacency_info& adj = adjs[idx];
 
-            for (const auto& v : map.canonicals())
+            for (const auto& v : map.all())
             {
+               if (!v.is_canonical())
+                  continue;
                const point& pos = v.p1;
                const double distance_2 = pos.distance_2_to_line(a, b);
                if (geometry::near_zero(distance_2, adj.tolerance)
@@ -576,7 +578,7 @@ namespace dak
          for (int side = 0; side < side_count; ++side)
          {
             map branchMap = buildGirihBranch(side, requiredRotation, points, mid_points);
-            if (branchMap.canonicals().size() > 0)
+            if (branchMap.all().size() > 0)
                infer_map.merge(branchMap);
          }
 

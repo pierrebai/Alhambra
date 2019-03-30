@@ -20,7 +20,7 @@ namespace dak
 
       bool figure::is_cache_valid() const
       {
-         return cached_map.canonicals().size() > 0;
+         return cached_map.all().size() > 0;
       }
    }
 }

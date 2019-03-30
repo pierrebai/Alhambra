@@ -104,19 +104,19 @@ namespace dak
             return edge(p2, p1, (order <= 0.) ? (order + PI) : (order - PI));
          }
 
-         // Verify of the edge is canonical.
+         // Verify if the edge is canonical.
          bool is_canonical() const
          {
             return p1 < p2;
          }
 
-         // Verify of the edge is invalid.
+         // Verify if the edge is invalid.
          constexpr bool is_invalid() const
          {
             return order == very_negative;
          }
 
-         // Verify of the edge is trivial (both points are equal).
+         // Verify if the edge is trivial (both points are equal).
          constexpr bool is_trivial() const
          {
             return p1 == p2;

@@ -121,11 +121,10 @@ namespace dak
       class layers_selector_ui
       {
       public:
-         layers_selector_ui(layers_selector& parent, const layers& ed)
+         layers_selector_ui(layers_selector& parent, int copy_icon, int add_icon, int remove_icon, int move_up_icon, int move_down_icon)
          : editor(parent)
          {
-            build_ui(parent);
-            set_edited(ed);
+            build_ui(parent, copy_icon, add_icon, remove_icon, move_up_icon, move_down_icon);
          }
 
          const layers& get_edited() const
@@ -139,7 +138,12 @@ namespace dak
                return;
 
             edited = ed;
-            fill_ui(get_selected_indexes());
+
+            std::vector<int> selected = get_selected_indexes();
+            if (selected.size() == 0 && ed.size() == 1)
+               selected.emplace_back(0);
+
+            fill_ui(selected);
          }
 
          void update_list_content()
@@ -217,7 +221,15 @@ namespace dak
             return first_name;
          }
 
-         void build_ui(layers_selector& parent)
+         static std::unique_ptr<QPushButton> make_button(int icon, const wchar_t* tooltip)
+         {
+            std::unique_ptr<QPushButton> button = std::make_unique<QPushButton>();
+            button->setIcon(QIcon(create_pixmap_from_resource(icon)));
+            button->setToolTip(QString::fromWCharArray(tooltip));
+            return std::move(button);
+         }
+
+         void build_ui(layers_selector& parent, int copy_icon, int add_icon, int remove_icon, int move_up_icon, int move_down_icon)
          {
             QVBoxLayout* layout = new QVBoxLayout(&parent);
             layout->setContentsMargins(0, 0, 0, 0);
@@ -225,16 +237,16 @@ namespace dak
             QWidget* button_panel = new QWidget(&parent);
                QGridLayout* button_layout = new QGridLayout(button_panel);
                button_layout->setContentsMargins(0, 0, 0, 0);
-               clone_layer_button = std::make_unique<QPushButton>(QString::fromWCharArray(L::t(L"Copy")), button_panel);
-               button_layout->addWidget(clone_layer_button.get(), 0, 0, 1, 2);
-               add_layer_button = std::make_unique<QPushButton>(QString::fromWCharArray(L::t(L"Add")), button_panel);
-               button_layout->addWidget(add_layer_button.get(), 0, 2, 1, 2);
-               remove_layers_button = std::make_unique<QPushButton>(QString::fromWCharArray(L::t(L"Remove")), button_panel);
-               button_layout->addWidget(remove_layers_button.get(), 0, 4, 1, 2);
-               move_layers_up_button = std::make_unique<QPushButton>(QString::fromWCharArray(L::t(L"Move Up")), button_panel);
-               button_layout->addWidget(move_layers_up_button.get(), 1, 0, 1, 3);
-               move_layers_down_button = std::make_unique<QPushButton>(QString::fromWCharArray(L::t(L"Move Down")), button_panel);
-               button_layout->addWidget(move_layers_down_button.get(), 1, 3, 1, 3);
+               clone_layer_button = make_button(copy_icon, L::t(L"Copy"));
+               button_layout->addWidget(clone_layer_button.get(), 0, 0);
+               add_layer_button = make_button(add_icon, L::t(L"Add"));
+               button_layout->addWidget(add_layer_button.get(), 0, 1);
+               remove_layers_button = make_button(remove_icon, L::t(L"Remove"));
+               button_layout->addWidget(remove_layers_button.get(), 0, 2);
+               move_layers_up_button = make_button(move_up_icon, L::t(L"Move Up"));
+               button_layout->addWidget(move_layers_up_button.get(), 0, 3);
+               move_layers_down_button = make_button(move_down_icon, L::t(L"Move Down"));
+               button_layout->addWidget(move_layers_down_button.get(), 0, 4);
             layout->addWidget(button_panel);
 
             layer_list = std::make_unique<QListWidget>(&parent);
@@ -481,18 +493,8 @@ namespace dak
       //
       // A QWidget to select and order layers.
 
-      layers_selector::layers_selector(QWidget* parent)
-      : layers_selector(parent, {}, nullptr)
-      {
-      }
-
-      layers_selector::layers_selector(QWidget* parent, selection_changed_callback sc)
-      : layers_selector(parent, {}, sc)
-      {
-      }
-
-      layers_selector::layers_selector(QWidget* parent, const layers& edited, selection_changed_callback sc)
-      : QWidget(parent), ui(std::make_unique<layers_selector_ui>(*this, edited)), selection_changed(sc)
+      layers_selector::layers_selector(QWidget* parent, int copy_icon, int add_icon, int remove_icon, int move_up_icon, int move_down_icon)
+      : QWidget(parent), ui(std::make_unique<layers_selector_ui>(*this, copy_icon, add_icon, remove_icon, move_up_icon, move_down_icon))
       {
       }
 

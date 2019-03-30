@@ -96,25 +96,25 @@
     <ClInclude Include="inc\dak\geometry\edge.h" />
     <ClInclude Include="inc\dak\geometry\face.h" />
     <ClInclude Include="inc\dak\geometry\intersect.h" />
-    <ClInclude Include="inc\dak\geometry\map.h" />
     <ClInclude Include="inc\dak\geometry\point.h" />
     <ClInclude Include="inc\dak\geometry\point_utility.h" />
     <ClInclude Include="inc\dak\geometry\polygon.h" />
     <ClInclude Include="inc\dak\geometry\rect.h" />
     <ClInclude Include="inc\dak\geometry\transform.h" />
     <ClInclude Include="inc\dak\geometry\number_utility.h" />
+    <ClInclude Include="inc\dak\geometry\map.h" />
     <ClInclude Include="inc\dak\geometry\utility.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\face.cpp" />
     <ClCompile Include="src\filler.cpp" />
     <ClCompile Include="src\intersect.cpp" />
-    <ClCompile Include="src\map.cpp" />
     <ClCompile Include="src\point.cpp" />
     <ClCompile Include="src\polygon.cpp" />
     <ClCompile Include="src\rect.cpp" />
     <ClCompile Include="src\text_utility.cpp" />
     <ClCompile Include="src\transform.cpp" />
+    <ClCompile Include="src\map.cpp" />
     <ClCompile Include="src\utility.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

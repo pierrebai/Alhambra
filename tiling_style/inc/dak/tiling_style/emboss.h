@@ -53,7 +53,7 @@ namespace dak
 
          void draw_trap(ui::drawing& drw, const point& a, const point& b, const point& c, const point& d, const point& light, const ui::color* greys);
 
-         std::pair<point, point> get_points_many_connections(const edge& an_edge, double width, geometry::map::edges& connections) override;
+         std::pair<point, point> get_points_many_connections(const edge& an_edge, size_t index, double width, const geometry::map::range& connections) override;
       };
    }
 }

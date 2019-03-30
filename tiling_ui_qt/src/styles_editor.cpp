@@ -7,6 +7,7 @@
 #include <dak/tiling_style/thick.h>
 #include <dak/tiling_style/emboss.h>
 #include <dak/tiling_style/filled.h>
+#include <dak/tiling_style/interlace.h>
 
 #include <dak/geometry/utility.h>
 
@@ -27,6 +28,7 @@ namespace dak
       using tiling_style::thick;
       using tiling_style::emboss;
       using tiling_style::filled;
+      using tiling_style::interlace;
 
       using geometry::L;
       typedef std::vector<std::shared_ptr<style>> styles;
@@ -147,23 +149,27 @@ namespace dak
                   fill_layout->addWidget(fill_outside_check.get());
                layout->addWidget(fill_panel);
 
-               QWidget* style_outline_panel = new QWidget(&parent);
-               QVBoxLayout* style_outline_layout = new QVBoxLayout(style_outline_panel);
-                  style_outline_layout->setContentsMargins(0, 0, 0, 0);
-                  width_editor = std::make_unique<dak::ui_qt::double_editor>(style_outline_panel, L::t(L"Width"));
+               QWidget* style_panel = new QWidget(&parent);
+               QVBoxLayout* style_layout = new QVBoxLayout(style_panel);
+                  style_layout->setContentsMargins(0, 0, 0, 0);
+                  width_editor = std::make_unique<dak::ui_qt::double_editor>(style_panel, L::t(L"Width"));
                   width_editor->set_limits(0.01, 40, 0.01);
-                  style_outline_layout->addWidget(width_editor.get());
-                  outline_width_editor = std::make_unique<dak::ui_qt::double_editor>(style_outline_panel, L::t(L"Outline Width"));
+                  style_layout->addWidget(width_editor.get());
+                  outline_width_editor = std::make_unique<dak::ui_qt::double_editor>(style_panel, L::t(L"Outline Width"));
                   outline_width_editor->set_limits(0, 20, 0.01);
-                  style_outline_layout->addWidget(outline_width_editor.get());
-                  angle_editor = std::make_unique<ui_qt::double_editor>(style_outline_panel, L::t(L"Angle"));
-                  style_outline_layout->addWidget(angle_editor.get());
-               layout->addWidget(style_outline_panel);
+                  style_layout->addWidget(outline_width_editor.get());
+                  gap_width_editor = std::make_unique<dak::ui_qt::double_editor>(style_panel, L::t(L"Gap Width"));
+                  gap_width_editor->set_limits(0, 20, 0.01);
+                  style_layout->addWidget(gap_width_editor.get());
+                  angle_editor = std::make_unique<ui_qt::double_editor>(style_panel, L::t(L"Angle"));
+                  style_layout->addWidget(angle_editor.get());
+               layout->addWidget(style_panel);
 
             color_button->setEnabled(false);
             outline_color_button->setEnabled(false);
             width_editor->setEnabled(false);
             outline_width_editor->setEnabled(false);
+            gap_width_editor->setEnabled(false);
             fill_inside_check->setEnabled(false);
             fill_outside_check->setEnabled(false);
             angle_editor->setEnabled(false);
@@ -173,6 +179,7 @@ namespace dak
             outline_color_button->connect(outline_color_button.get(), &QPushButton::clicked, [&]() { update_outline_color(); });
             width_editor->value_changed_callback = std::bind(&styles_editor_ui::update_width, this, std::placeholders::_1);
             outline_width_editor->value_changed_callback = std::bind(&styles_editor_ui::update_outline_width, this, std::placeholders::_1);
+            gap_width_editor->value_changed_callback = std::bind(&styles_editor_ui::update_gap_width, this, std::placeholders::_1);
             fill_inside_check->connect(fill_inside_check.get(), &QCheckBox::stateChanged, [&](int new_state) { update_fill_inside(new_state); });
             fill_outside_check->connect(fill_outside_check.get(), &QCheckBox::stateChanged, [&](int new_state) { update_fill_outside(new_state); });
             angle_editor->value_changed_callback = std::bind(&styles_editor_ui::update_angle, this, std::placeholders::_1);
@@ -201,6 +208,19 @@ namespace dak
                outline_width_editor->setEnabled(false);
                outline_color_button->setEnabled(false);
                join_combo->setEnabled(false);
+            }
+
+            if (get_styles<interlace>().size() > 0)
+            {
+               gap_width_editor->setEnabled(true);
+               for (auto inter : get_styles<interlace>())
+               {
+                  gap_width_editor->set_value(inter->gap_width);
+               }
+            }
+            else
+            {
+               gap_width_editor->setEnabled(false);
             }
 
             if (get_styles<colored>().size() > 0)
@@ -332,6 +352,16 @@ namespace dak
             update();
          }
 
+         void update_gap_width(double new_value)
+         {
+            if (disable_feedback)
+               return;
+
+            for (auto style : get_styles<interlace>())
+               style->gap_width = new_value;
+            update();
+         }
+
          void update_angle(double new_value)
          {
             if (disable_feedback)
@@ -392,6 +422,7 @@ namespace dak
          std::unique_ptr<QPushButton> outline_color_button;
          std::unique_ptr<ui_qt::double_editor> width_editor;
          std::unique_ptr<ui_qt::double_editor> outline_width_editor;
+         std::unique_ptr<ui_qt::double_editor> gap_width_editor;
          std::unique_ptr<ui_qt::double_editor> angle_editor;
          std::unique_ptr<QCheckBox> fill_inside_check;
          std::unique_ptr<QCheckBox> fill_outside_check;

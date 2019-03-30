@@ -166,8 +166,10 @@ namespace tiling_tests
                      //   file << p1.x << L", " << p1.y << L", " << p2.x << L", " << p2.y << L"\n";
                      //   p1 = p2;
                      //}
-                     for (const auto& edge : map.canonicals())
+                     for (const auto& edge : map.all())
                      {
+                        if (!edge.is_canonical())
+                           continue;
                         const auto placed = edge.apply(trf).apply(receive_trf);
                         drawing_file << placed.p1.x << L", " << placed.p1.y << L", " << placed.p2.x << L", " << placed.p2.y << L"\n";
                      }

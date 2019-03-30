@@ -39,7 +39,7 @@ namespace dak
          {
             cached_width = width;
             cached_outline_width  = outline_width;
-            cached_fat_lines = generate_fat_lines();
+            cached_fat_lines = generate_fat_lines(false);
          }
          internal_draw_fat_lines(drw, cached_fat_lines);
       }
@@ -95,69 +95,80 @@ namespace dak
          }
       }
 
-      outline::fat_lines outline::generate_fat_lines()
+      outline::fat_lines outline::generate_fat_lines(bool all_edges)
       {
          fat_lines fat_lines;
-         fat_lines.reserve(map.canonicals().size());
+         fat_lines.reserve(map.all().size() / (all_edges ? 1 : 2));
 
-         for (const auto& edge : map.canonicals())
+         const edge* const first_edge = &*(map.all().begin());
+
+         for (const auto& edge : map.all())
          {
-            fat_line fat_line;
-            const auto top = get_points(edge,        width, fat_line.p2_is_line_end);
-            const auto bot = get_points(edge.twin(), width, fat_line.p1_is_line_end);
-
-            fat_line.hexagon = polygon({ bot.first, edge.p1, bot.second,
-                                         top.first, edge.p2, top.second, });
-
-            fat_lines.emplace_back(fat_line);
+            if (!all_edges && !edge.is_canonical())
+               continue;
+            const size_t edge_index = &edge - first_edge;
+            fat_lines.emplace_back(generate_fat_line(edge, edge_index, width));
          }
 
          return fat_lines;
       }
 
+      outline::fat_line outline::generate_fat_line(const edge& edge, const size_t edge_index, double width)
+      {
+         fat_line fat_line;
+
+         const auto tops = get_points(edge,        edge_index, width, fat_line.p2_is_line_end);
+         const auto bots = get_points(edge.twin(), edge_index, width, fat_line.p1_is_line_end);
+
+         fat_line.hexagon = polygon({ bots.first, edge.p1, bots.second,
+                                      tops.first, edge.p2, tops.second, });
+
+         return fat_line;
+      }
+
       // Look at a given edge and construct a plausible set of points
       // to draw at the edge's 'p2' point.  Call this twice to get the
       // complete outline of the hexagon to draw for this edge.
-      std::pair<point, point> outline::get_points(const edge& an_edge, double width, bool& is_line_end)
+      std::pair<point, point> outline::get_points(const edge& an_edge, size_t index, double width, bool& is_line_end)
       {
-         geometry::map::edges connections = map.outbounds(an_edge.p2);
+         const geometry::map::range connections = map.outbounds(an_edge.p2);
          const size_t connection_count = connections.size();
 
          if (connection_count == 1)
          {
             is_line_end = true;
-            return get_points_one_connection(an_edge, width, connections);
+            return get_points_one_connection(an_edge, index, width, connections);
          }
          else
          {
             if (connection_count == 2)
             {
-               return get_points_two_connections(an_edge, width, connections);
+               return get_points_two_connections(an_edge, index, width, connections);
             }
             else
             {
-               return get_points_many_connections(an_edge, width, connections);
+               return get_points_many_connections(an_edge, index, width, connections);
             }
 
          }
       }
 
-      std::pair<point, point> outline::get_points_one_connection(const edge& an_edge, double width, geometry::map::edges&)
+      std::pair<point, point> outline::get_points_one_connection(const edge& an_edge, size_t index, double width, const geometry::map::range&)
       {
-         return get_points_dead_end(an_edge, width);
+         return get_points_dead_end(an_edge, index, width);
       }
 
-      std::pair<point, point> outline::get_points_two_connections(const edge& an_edge, double width, geometry::map::edges& connections)
+      std::pair<point, point> outline::get_points_two_connections(const edge& an_edge, size_t index, double width, const geometry::map::range& connections)
       {
-         return get_points_continuation(an_edge, width, connections);
+         return get_points_continuation(an_edge, index, width, connections);
       }
 
-      std::pair<point, point> outline::get_points_many_connections(const edge& an_edge, double width, geometry::map::edges& connections)
+      std::pair<point, point> outline::get_points_many_connections(const edge& an_edge, size_t index, double width, const geometry::map::range& connections)
       {
-         return get_points_intersection(an_edge, width, connections);
+         return get_points_intersection(an_edge, index, width, width, connections);
       }
 
-      std::pair<point, point> outline::get_points_dead_end(const edge& an_edge, double width)
+      std::pair<point, point> outline::get_points_dead_end(const edge& an_edge, size_t index, double width)
       {
          const point dir = (an_edge.p2 - an_edge.p1).normalize();
          const point perp = dir.perp();
@@ -166,7 +177,7 @@ namespace dak
          return std::pair<point, point>(below, above);
       }
 
-      std::pair<point, point> outline::get_points_continuation(const edge& an_edge, double width, geometry::map::edges& connections)
+      std::pair<point, point> outline::get_points_continuation(const edge& an_edge, size_t index, double width, const geometry::map::range& connections)
       {
          const auto continuation = geometry::map::continuation(connections, an_edge);
 
@@ -174,12 +185,12 @@ namespace dak
          //       should be an edge before and an edge after the edge,
          //       but we need to handle failure just in case.
          if (continuation.is_invalid())
-            return get_points_dead_end(an_edge, width);
+            return get_points_dead_end(an_edge, index, width);
 
-         const point jp = get_join(an_edge.p2, an_edge.p1, continuation.p2, width);
+         const point jp = get_join(an_edge.p2, an_edge.p1, continuation.p2, width, width);
 
          if (jp.is_invalid())
-            return get_points_dead_end(an_edge, width);
+            return get_points_dead_end(an_edge, index, width);
 
          const point below = jp;
          const point above = jp.convex_sum(an_edge.p2, 2.0);
@@ -187,7 +198,7 @@ namespace dak
          return std::pair<point, point>(below, above);
       }
 
-      std::pair<point, point> outline::get_points_intersection(const edge& an_edge, double width, geometry::map::edges& connections)
+      std::pair<point, point> outline::get_points_intersection(const edge& an_edge, size_t index, double width, double other_edges_width, const geometry::map::range& connections)
       {
          const auto before_after = geometry::map::before_after(connections, an_edge);
 
@@ -195,7 +206,7 @@ namespace dak
          //       should be an edge before and an edge after the edge,
          //       but we need to handle failure just in case.
          if (before_after.first.is_invalid())
-            return get_points_dead_end(an_edge, width);
+            return get_points_dead_end(an_edge, index, width);
 
          // TODO: the code below is bad when the width is large and multiple
          //       intersections are nearer to each other than the width.
@@ -203,11 +214,11 @@ namespace dak
          const point dir = (an_edge.p2 - an_edge.p1).normalize();
          const point perp = dir.perp();
 
-         point below = get_join(an_edge.p2, an_edge.p1, before_after.second.p2, width);
+         point below = get_join(an_edge.p2, an_edge.p1, before_after.second.p2, width, other_edges_width);
          if (below.is_invalid())
             below = an_edge.p2 - perp.scale(width);
 
-         point above = get_join(an_edge.p2, before_after.first.p2, an_edge.p1, width);
+         point above = get_join(an_edge.p2, before_after.first.p2, an_edge.p1, other_edges_width, width);
          if (above.is_invalid())
             above = an_edge.p2 + perp.scale(width);
 
@@ -217,7 +228,7 @@ namespace dak
       // Do a mitered join of the two fat lines (a la postscript, for example).
       // The join point on the other side of the joint can be computed by
       // reflecting the point returned by this function through the joint.
-      point outline::get_join(const point& joint, const point& a, const point& b, double width)
+      point outline::get_join(const point& joint, const point& a, const point& b, double width_a, double width_b)
       {
          double th = joint.sweep(a, b);
 
@@ -227,12 +238,13 @@ namespace dak
          }
          else
          {
-            const point d1 = (joint - a).normalize();
-            const point d2 = (joint - b).normalize();
+            const point da = (joint - a).normalize();
+            const point db = (joint - b).normalize();
 
-            const double l = width / std::sin(th);
-            const double isx = joint.x - (d1.x + d2.x) * l;
-            const double isy = joint.y - (d1.y + d2.y) * l;
+            const double la = width_b / std::sin(th);
+            const double lb = width_a / std::sin(th);
+            const double isx = joint.x - (da.x * la + db.x * lb);
+            const double isy = joint.y - (da.y * la + db.y * lb);
             return point(isx, isy);
          }
       }

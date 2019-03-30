@@ -12,9 +12,11 @@
 #include <dak/tiling_ui_qt/figure_editor.h>
 #include <dak/tiling_ui_qt/layers_selector.h>
 #include <dak/tiling_ui_qt/tiling_selector.h>
+#include <dak/tiling_ui_qt/utility.h>
 
 #include <dak/geometry/utility.h>
 
+#include <QtWidgets/qapplication>
 #include <QtWidgets/qapplication>
 #include <QtWidgets/qboxlayout.h>
 #include <QtWidgets/qlistwidget.h>
@@ -25,6 +27,7 @@
 #include <QtWidgets/qlabel.h>
 #include <QtWidgets/qfiledialog.h>
 #include <QtWidgets/qtoolbar.h>
+#include <QtWidgets/qtoolbutton.h>
 #include <QtWidgets/qerrormessage.h>
 
 #include <QtGui/qpainter.h>
@@ -57,27 +60,38 @@ int main(int argc, char **argv)
    // The window UI contents.
 
    QToolBar* toolbar = new QToolBar();
-      QPushButton* previous_mosaic_button = new QPushButton(QString::fromWCharArray(L::t(L"Previous Mosaic")), toolbar);
+      QToolButton* previous_mosaic_button = create_tool_button(L::t(L"Previous Mosaic"), IDB_MOSAIC_PREVIOUS);
       toolbar->addWidget(previous_mosaic_button);
-      QPushButton* next_mosaic_button = new QPushButton(QString::fromWCharArray(L::t(L"Next Mosaic")), toolbar);
+
+      QToolButton* next_mosaic_button = create_tool_button(L::t(L"Next Mosaic"), IDB_MOSAIC_NEXT);
+      next_mosaic_button->setIconSize(QSize(48, 48));
       toolbar->addWidget(next_mosaic_button);
+
       toolbar->addSeparator();
-      QPushButton* load_mosaic_button = new QPushButton(QString::fromWCharArray(L::t(L"Load Mosaic")), toolbar);
+
+      QToolButton* load_mosaic_button = create_tool_button(L::t(L"Load Mosaic"), IDB_MOSAIC_OPEN);
       toolbar->addWidget(load_mosaic_button);
-      QPushButton* save_mosaic_button = new QPushButton(QString::fromWCharArray(L::t(L"Save Mosaic")), toolbar);
+
+      QToolButton* save_mosaic_button = create_tool_button(L::t(L"Save Mosaic"), IDB_MOSAIC_SAVE);
       toolbar->addWidget(save_mosaic_button);
-      QPushButton* export_image_button = new QPushButton(QString::fromWCharArray(L::t(L"Export Image")), toolbar);
+
+      QToolButton* export_image_button = create_tool_button(L::t(L"Export Image"), IDB_EXPORT_IMG);
       toolbar->addWidget(export_image_button);
-      QPushButton* export_svg_button = new QPushButton(QString::fromWCharArray(L::t(L"Export SVG")), toolbar);
+
+      QToolButton* export_svg_button = create_tool_button(L::t(L"Export SVG"), IDB_EXPORT_SVG);
       toolbar->addWidget(export_svg_button);
+
       toolbar->addSeparator();
-      QPushButton* translate_button = new QPushButton(QString::fromWCharArray(L::t(L"Translate")), toolbar);
+
+      QToolButton* translate_button = create_tool_button(L::t(L"Translate"), IDB_CANVAS_TRANSLATE);
       translate_button->setCheckable(true);
+
       toolbar->addWidget(translate_button);
-      QPushButton* rotate_button = new QPushButton(QString::fromWCharArray(L::t(L"Rotate")), toolbar);
+      QToolButton* rotate_button = create_tool_button(L::t(L"Rotate"), IDB_CANVAS_ROTATE);
       rotate_button->setCheckable(true);
+
       toolbar->addWidget(rotate_button);
-      QPushButton* scale_button = new QPushButton(QString::fromWCharArray(L::t(L"Zoom")), toolbar);
+      QToolButton* scale_button = create_tool_button(L::t(L"Zoom"), IDB_CANVAS_ZOOM);
       scale_button->setCheckable(true);
       toolbar->addWidget(scale_button);
 
@@ -86,7 +100,7 @@ int main(int argc, char **argv)
       QWidget* layers_container = new QWidget();
       QVBoxLayout* layers_layout = new QVBoxLayout(layers_container);
 
-      layers_selector* layer_list = new layers_selector(layers_container);
+      layers_selector* layer_list = new layers_selector(layers_container, IDB_LAYER_COPY, IDB_LAYER_ADD, IDB_LAYER_DELETE, IDB_LAYER_MOVE_UP, IDB_LAYER_MOVE_DOWN);
       layers_layout->addWidget(layer_list);
 
       styles_editor* styles_editor = new dak::tiling_ui_qt::styles_editor(layers_container);
@@ -405,12 +419,17 @@ int main(int argc, char **argv)
    {
       auto mo_layer = std::make_shared<styled_mosaic>();
       mo_layer->mosaic = new_mosaic;
-      mo_layer->style = std::make_shared<thick>(color(20, 90, 180, 255));
+      mo_layer->style = std::make_shared<thick>(color(20, 140, 220, 255));
       mo_layer->update_style(window_filling_region());
       auto layers = layered.get_layers();
+      const bool was_empty = (layers.size() <= 0);
       layers.emplace_back(mo_layer);
       layered.set_layers(layers);
       fill_layer_list();
+
+      if (was_empty)
+         update_layered_transform(mo_layer->mosaic->tiling.bounds());
+
       canvas->update();
    };
 

@@ -30,13 +30,13 @@
     <ClCompile Include="rect_tests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="map_tests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="utility_tests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="face_tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="map_tests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

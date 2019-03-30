@@ -40,6 +40,8 @@ namespace dak
       {
          if (cached_inside.empty())
          {
+            cached_outside.clear();
+            cached_odd.clear();
             geometry::face::faces exteriors;
             geometry::face::make_faces(map, cached_inside, cached_outside, cached_odd, exteriors);
          }

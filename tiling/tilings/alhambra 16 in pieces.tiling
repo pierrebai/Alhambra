@@ -69,7 +69,7 @@ tiling "alhambra 16 in pieces" 4
             0.18377106498543166 0.4436625974595771 2.168629762591206
             -0.4436625974595771 0.18377106498543166 1.3675421299708634
 
-    "This tiling leads to one of the most well-known designs in the Alhambra, featuring large 16-pointed stars.  Unfortunately, the Taprats algorithm isn't smart enough to fill in all of the details of the original design. They must be added in by hand."
+    "This tiling leads to one of the most well-known designs in the Alhambra, featuring large 16-pointed stars.  Unfortunately, the algorithm isn't smart enough to fill in all of the details of the original design. They must be added in by hand."
 
     "Pierre Baillargeon, Craig S. Kaplan"
 

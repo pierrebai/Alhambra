@@ -50,9 +50,7 @@ namespace dak
          new_layer_requested_callback new_layer_requested;
 
          // Create a layer selector with the given parent widget and layers.
-         layers_selector(QWidget* parent);
-         layers_selector(QWidget* parent, selection_changed_callback selection_changed);
-         layers_selector(QWidget* parent, const layers& edited, selection_changed_callback selection_changed);
+         layers_selector(QWidget* parent, int copy_icon, int add_icon, int remove_icon, int move_up_icon, int move_down_icon);
 
          // Set the layers being edited.
          void set_edited(const layers& edited);

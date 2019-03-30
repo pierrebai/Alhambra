@@ -105,6 +105,7 @@ namespace dak
             { L"Outline", L"Contour" },
             { L"Width", L"Largeur" },
             { L"Outline Width", L"Largeur du contour" },
+            { L"Gap Width", L"Largeur de saut" },
 
             { L"Beveled Corners", L"Coins coupés" },
             { L"Mitered Corners", L"Coins pointus" },

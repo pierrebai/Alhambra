@@ -22,7 +22,7 @@ tiling "18" 2
             1.0 0.0 0.0
             0.0 1.0 0.0
 
-    "Une modification simple du tuilage 3.12^2 donne cette variante avec des polygones à 18 côtés et les triangles. Aussi trouvé dans la figure 2.5.4(m) du livre de Grunbaum et Shephard."
+    "A simple modification of the 3.12^2 tiling yields this variant with 18-gons and 3-star fillers.  Also found in figure 2.5.4(m) of Grunbaum and Shephard."
 
     "Craig S. Kaplan"
 

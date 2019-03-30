@@ -90,10 +90,10 @@
     <ClCompile Include="edge_tests.cpp" />
     <ClCompile Include="face_tests.cpp" />
     <ClCompile Include="intersect_tests.cpp" />
-    <ClCompile Include="map_tests.cpp" />
     <ClCompile Include="point_tests.cpp" />
     <ClCompile Include="polygon_tests.cpp" />
     <ClCompile Include="rect_tests.cpp" />
+    <ClCompile Include="map_tests.cpp" />
     <ClCompile Include="utility_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
