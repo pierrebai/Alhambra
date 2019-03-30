@@ -138,8 +138,8 @@ int main(int argc, char **argv)
 
    // These will generate tilings and mosaics from files.
    std::vector<std::wstring> errors;
-   known_tilings known_tilings(KNOWN_TILINGS_DIR, errors);
-   known_mosaics_generator mosaic_gen(KNOWN_TILINGS_DIR LR"(\..\mosaics)", known_tilings);
+   known_tilings known_tilings(LR"(./tilings)", errors);
+   known_mosaics_generator mosaic_gen(LR"(./mosaics)", known_tilings);
 
    // This will allow to have layers of tilings.
    // Set initial transform to a proper scale.

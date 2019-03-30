@@ -31,7 +31,7 @@ namespace dak
       {
       public:
          tiling_selector_ui(tiling_selector& parent)
-         : editor(parent), tiling_gen(KNOWN_TILINGS_DIR, errors)
+         : editor(parent), tiling_gen(LR"(./tilings)", errors)
          {
             build_ui(parent);
             fill_ui(get_selected_index());

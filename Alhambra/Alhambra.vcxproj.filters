@@ -13,6 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Resource Files\DLLs">
+      <UniqueIdentifier>{0d353d3a-2c90-4d1e-97fe-9c9a85536ffd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Images">
+      <UniqueIdentifier>{aab0d65f-7c1c-4a79-b88c-bf08d0f2a14d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Tilings">
+      <UniqueIdentifier>{dc8a4bd7-4127-4b9c-a05c-98781b2ef5be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Mosaics">
+      <UniqueIdentifier>{e748079a-a13e-4475-9c49-a985425a84b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Alhambra.cpp">
@@ -20,56 +32,53 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Icon.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="icons\canvas-rotate.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="icons\canvas-translate.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="icons\canvas-zoom.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="icons\layer-add.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="icons\layer-copy.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="icons\layer-delete.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="icons\layer-move-down.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="icons\layer-move-up.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="icons\mosaic-next.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="icons\mosaic-open.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="icons\mosaic-previous.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="icons\mosaic-save.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="icons\save-img.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="icons\save-svg.bmp">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Images</Filter>
     </Image>
     <Image Include="icons\canvas-rotate.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Images</Filter>
     </Image>
-    <Image Include="icons\icon2.ico">
-      <Filter>Resource Files</Filter>
+    <Image Include="icons\canvas-translate.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\canvas-zoom.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\layer-add.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\layer-copy.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\layer-delete.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\layer-move-down.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\layer-move-up.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\mosaic-next.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\mosaic-open.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\mosaic-previous.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\mosaic-save.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\save-img.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\save-svg.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="Icon.ico">
+      <Filter>Resource Files\Images</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
@@ -83,20 +92,323 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\x64\Release\imageformats\qgif.dll">
+      <Filter>Resource Files\DLLs</Filter>
+    </None>
+    <None Include="..\x64\Release\imageformats\qicns.dll">
+      <Filter>Resource Files\DLLs</Filter>
+    </None>
+    <None Include="..\x64\Release\imageformats\qico.dll">
+      <Filter>Resource Files\DLLs</Filter>
+    </None>
+    <None Include="..\x64\Release\imageformats\qjpeg.dll">
+      <Filter>Resource Files\DLLs</Filter>
+    </None>
+    <None Include="..\x64\Release\imageformats\qsvg.dll">
+      <Filter>Resource Files\DLLs</Filter>
+    </None>
     <None Include="..\x64\Release\Qt5Core.dll">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\DLLs</Filter>
     </None>
     <None Include="..\x64\Release\Qt5Gui.dll">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\x64\Release\Qt5Widgets.dll">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\x64\Release\Qt5WinExtras.dll">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\DLLs</Filter>
     </None>
     <None Include="..\x64\Release\Qt5Svg.dll">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\DLLs</Filter>
+    </None>
+    <None Include="..\x64\Release\Qt5Widgets.dll">
+      <Filter>Resource Files\DLLs</Filter>
+    </None>
+    <None Include="..\x64\Release\Qt5WinExtras.dll">
+      <Filter>Resource Files\DLLs</Filter>
+    </None>
+    <None Include="..\x64\Release\imageformats\qtiff.dll">
+      <Filter>Resource Files\DLLs</Filter>
+    </None>
+    <None Include="..\x64\Release\imageformats\qwbmp.dll">
+      <Filter>Resource Files\DLLs</Filter>
+    </None>
+    <None Include="..\x64\Release\imageformats\qwebp.dll">
+      <Filter>Resource Files\DLLs</Filter>
+    </None>
+    <None Include="..\x64\Release\platforms\qwindows.dll">
+      <Filter>Resource Files\DLLs</Filter>
+    </None>
+    <None Include="..\x64\Release\styles\qwindowsvistastyle.dll">
+      <Filter>Resource Files\DLLs</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\wonka.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\var_5.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Two Monsters.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Trigon of nanites.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\trigon nanites.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Tricorn.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Timurid Tumaq Aqa.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Sultan lodge.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Squoctogon2.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Squoctogon.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Squoctogon 2.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\square_12.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Square Wave.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Square 12.4.3.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Seville Alcazar 12.8.6.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Sacawere.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Recursive Lock.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Pentaflower.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Penrose.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Penrose Monster.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\pbn_7.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Mughal.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\More alien.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Mamluk Quran.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Malatya.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Ilkhanid Uljaytu.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Ilkhanid Uljaytu Vault.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Harem Lodge.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Green Mosque.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Girih Tiles.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Girih Star.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Girih Inflation 10.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Girih Crab.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Diamond Hive.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Curvy Hex.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\csk_9.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\csk_7.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\csk_5.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\chikipoo.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Angel.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Almost.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\alhambra16.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\alhambra 16 pieces.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\alhambra 16 in pieces.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Alcazar 12 8.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\Abbasid Al-Mustansiriyya Madrasa.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\24.12.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\18.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\18.9.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\16.8.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\14.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\12-6-trigon.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\12.18.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\12.4.3.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\10.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\9-6 hat and kites.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\9-6 hat and kites 2.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\9.12.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\9.6.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\9.6 almost 5.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\9.5.3.6.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\8-6-5.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\8_var.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\8.12.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\8.5.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\8.5 and some.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\8 Ring.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\8 and 8.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\8 6 almost 5.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\7.6.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\7.6.5.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\7.4.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\7 et 8.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\6.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\6.5x6.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\6.5.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\6.5 flower.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\6.4 circles.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\6.4 Boats.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\6 Losange.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\4^4.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\4.8^2.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\4.7 Stars.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\4.7 Star.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\4.6.12.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\4.5.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\3-8-12.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\3-8-12 pieces.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\3-8-4-6.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\3.12^2.tiling">
+      <Filter>Resource Files\Tilings</Filter>
+    </None>
+    <None Include="..\x64\Release\tilings\3.4.6.tiling">
+      <Filter>Resource Files\Tilings</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -105,6 +417,204 @@
     </Text>
     <Text Include="TODO.txt">
       <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\3-8-4-6.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\3-8-12.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\6.5.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\7.4.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\7.6.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\7-shadow.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\8 6 almost 5 -- starred.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\8 and 8 rings carpet.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\8.5.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\8-6-5.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\9.6 almost 5.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\9-6 Losange.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\12.4.3.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\12-6-trigon.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Abbasid Al-Mustansiriyya Madrasa.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Add Doubt Sin.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\African Birds Migration.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Alcazar of Seville.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Alien TO.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Almost.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Al-Mustansiriyya Gold.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Are you a square.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Blood Vessels.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Bloom of May.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Bluer shade of sky.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Candyland.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Chikipoo.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Child sky of a thousand suns.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Circulatory System.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Circus.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Coffee Hankerchief.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Curvy Hex.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\dentelle.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Elegant Monster.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Flying Vistas of Earth.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Girih Crab.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Golden Cage.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Green Islands.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Green Mosque.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Ilkhanid Uljaytu.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Locked Ribbon.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Malatya.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Mamluk Quran.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Mexican Suns.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\More alien.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Ochre Silicate.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\pbn_7.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Penrose Dots.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Penrose Monster.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\pipes.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Rock the Hive.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\SimpleStar.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Squoc.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Squoctogon.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\star.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Sultan Lodge.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Tangle Diamonds.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\thickness.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Timurid Tumaq Aqa.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Triangulated.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\USA 2.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\USA.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\Water Rings.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\wawa.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\white stars.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
+    </Text>
+    <Text Include="..\x64\Release\mosaics\wonka.tap.txt">
+      <Filter>Resource Files\Mosaics</Filter>
     </Text>
   </ItemGroup>
 </Project>
