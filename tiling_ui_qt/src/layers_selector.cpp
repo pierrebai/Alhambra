@@ -1,4 +1,5 @@
 #include <dak/tiling_ui_qt/layers_selector.h>
+#include <dak/tiling_ui_qt/table_widget_with_combo.h>
 #include <dak/tiling_ui_qt/utility.h>
 
 #include <dak/ui_qt/convert.h>
@@ -17,8 +18,8 @@
 #include <QtWidgets/qgridlayout.h>
 #include <QtWidgets/qcombobox.h>
 #include <QtWidgets/qlabel.h>
-#include <QtWidgets/qlistwidget.h>
 #include <QtWidgets/qpushbutton.h>
+#include <QtWidgets/qheaderview.h>
 
 #include <algorithm>
 #include <typeindex>
@@ -86,7 +87,6 @@ namespace dak
          }
          style_names[] =
          {
-            { typeid(int), L"Mixed", nullptr },
             { typeid(plain), L"Plain", make_plain },
             { typeid(thick), L"Thick", make_thick },
             { typeid(sketch), L"Sketched", make_sketch },
@@ -146,25 +146,6 @@ namespace dak
             fill_ui(selected);
          }
 
-         void update_list_content()
-         {
-            int row = 0;
-            for (auto& layer : edited)
-            {
-               if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
-               {
-                  std::wstring text = mo_layer->mosaic->tiling.name + std::wstring(L"\n") + mo_layer->style->describe();
-                  QString qtext = QString::fromWCharArray(text.c_str());
-                  // Note: make icon larger so that it gets scaled down with some smoothing.
-                  QIcon qicon = get_icon(mo_layer, 128, 64);
-                  auto item = layer_list->item(row);
-                  item->setText(qtext);
-                  item->setIcon(qicon);
-                  row++;
-               }
-            }
-         }
-
          layers get_selected_layers() const
          {
             std::vector<std::shared_ptr<layer>> selected;
@@ -188,6 +169,32 @@ namespace dak
             return selected;
          };
 
+         void update_list_content()
+         {
+            disable_feedback++;
+
+            int row = 0;
+            for (auto& layer : edited)
+            {
+               if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
+               {
+                  const QString tiling_name = QString::fromWCharArray(mo_layer->mosaic->tiling.name.c_str());
+                  const QString style_name = QString::fromWCharArray(get_style_name(mo_layer->style));
+                  // Note: make icon larger than what was set in the table view
+                  //       so that it gets scaled down with some smoothing.
+                  QIcon qicon = get_icon(mo_layer, 128, 64);
+                  auto tiling_item = layer_list->item(row, tiling_column);
+                  auto style_item = layer_list->item(row, style_column);
+                  tiling_item->setText(tiling_name);
+                  tiling_item->setIcon(qicon);
+                  style_item->setText(style_name);
+                  row++;
+               }
+            }
+
+            disable_feedback--;
+         }
+
       private:
          static std::shared_ptr<style> extract_style(const std::shared_ptr<layer>& layer)
          {
@@ -199,26 +206,6 @@ namespace dak
             {
                return nullptr;
             }
-         }
-
-         const wchar_t* get_common_style_name() const
-         {
-            auto selected = get_selected_styles();
-            if (selected.size() <= 0)
-               return nullptr;
-
-            if (selected.size() == 1)
-               return get_style_name(selected[0]);
-
-            const wchar_t* first_name = get_style_name(selected[0]);
-            for (const auto& style : selected)
-            {
-               if (first_name != get_style_name(style))
-               {
-                  return L::t(L"Mixed");
-               }
-            }
-            return first_name;
          }
 
          static std::unique_ptr<QPushButton> make_button(int icon, const wchar_t* tooltip)
@@ -249,16 +236,21 @@ namespace dak
                button_layout->addWidget(move_layers_down_button.get(), 0, 4);
             layout->addWidget(button_panel);
 
-            layer_list = std::make_unique<QListWidget>(&parent);
-            layer_list->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
-            layer_list->setSelectionMode(QAbstractItemView::SelectionMode::ExtendedSelection);
-            layer_list->setIconSize(QSize(64, 32));
-            layout->addWidget(layer_list.get());
+            QStringList combo_items;
+            for (const auto& item : style_names)
+               combo_items.append(QString::fromWCharArray(L::t(item.name)));
 
-            style_editor = std::make_unique<QComboBox>(&parent);
-            for (const auto name : style_names)
-               style_editor->addItem(QString::fromWCharArray(L::t(name.name)));
-            layout->addWidget(style_editor.get());
+            layer_list = std::make_unique<table_widget_with_combo>(1, combo_items, &parent);
+            layer_list->setIconSize(QSize(64, 32));
+            layer_list->setColumnCount(2);
+            layer_list->setHorizontalHeaderLabels(QStringList(
+               {
+                  QString::fromWCharArray(L::t(L"Mosaic")),
+                  QString::fromWCharArray(L::t(L"Style"))
+               }));
+            layer_list->setShowGrid(false);
+            layer_list->horizontalHeader()->setSectionResizeMode(tiling_column, QHeaderView::ResizeMode::Stretch);
+            layout->addWidget(layer_list.get());
 
             layer_list->setEnabled(false);
             clone_layer_button->setEnabled(false);
@@ -266,55 +258,49 @@ namespace dak
             remove_layers_button->setEnabled(false);
             move_layers_up_button->setEnabled(false);
             move_layers_down_button->setEnabled(false);
-            style_editor->setEnabled(false);
 
-            layer_list->connect(layer_list.get(), &QListWidget::itemSelectionChanged, [&]() { update_selection(); });
+            layer_list->connect(layer_list.get(), &QTableWidget::itemSelectionChanged, [&]() { update_selection(); });
+            layer_list->connect(layer_list.get(), &QTableWidget::itemChanged, [&](QTableWidgetItem * item) { update_style(item); });
             clone_layer_button->connect(clone_layer_button.get(), &QPushButton::clicked, [&]() { clone_layer(); });
             add_layer_button->connect(add_layer_button.get(), &QPushButton::clicked, [&]() { add_layer(); });
             remove_layers_button->connect(remove_layers_button.get(), &QPushButton::clicked, [&]() { remove_layers(); });
             move_layers_up_button->connect(move_layers_up_button.get(), &QPushButton::clicked, [&]() { move_layers_up(); });
             move_layers_down_button->connect(move_layers_down_button.get(), &QPushButton::clicked, [&]() { move_layers_down(); });
-            style_editor->connect(style_editor.get(), &QComboBox::currentTextChanged, [&](const QString& text) { update_style(text); });
          }
 
          void fill_ui(const std::vector<int>& selected)
          {
-            disable_feedback = true;
+            disable_feedback++;
 
-            layer_list->clear();
+            layer_list->setRowCount(0);
 
             for (auto& layer : edited)
             {
                if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
                {
-                  std::wstring text = mo_layer->mosaic->tiling.name + std::wstring(L"\n") + mo_layer->style->describe();
-                  QString qtext = QString::fromWCharArray(text.c_str());
-                  // Note: make icon larger so that it gets scaled down with some smoothing.
+                  const QString tiling_name = QString::fromWCharArray(mo_layer->mosaic->tiling.name.c_str());
+                  const QString style_name = QString::fromWCharArray(get_style_name(mo_layer->style));
+                  // Note: make icon larger than what was set in the table view
+                  //       so that it gets scaled down with some smoothing.
                   QIcon qicon = get_icon(mo_layer, 128, 64);
-                  auto item = new QListWidgetItem(qicon, qtext);
-                  layer_list->addItem(item);
+                  auto tiling_item = new QTableWidgetItem(qicon, tiling_name);
+                  tiling_item->setFlags(Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsSelectable);
+                  auto style_item = new QTableWidgetItem(style_name);
+                  const int row = layer_list->rowCount();
+                  layer_list->setRowCount(row + 1);
+                  layer_list->setItem(row, tiling_column, tiling_item);
+                  layer_list->setItem(row, style_column, style_item);
                }
             }
 
-            fill_style_editor();
+            layer_list->resizeColumnsToContents();
+            layer_list->horizontalHeader()->setSectionResizeMode(tiling_column, QHeaderView::ResizeMode::Stretch);
 
             set_selected_indexes(selected);
 
             update_enabled();
 
-            disable_feedback = false;
-         }
-
-         void fill_style_editor()
-         {
-            if (const wchar_t* name = get_common_style_name())
-            {
-               const QString new_name = QString::fromWCharArray(name);
-               if (style_editor->currentText() != new_name)
-               {
-                  style_editor->setCurrentText(new_name);
-               }
-            }
+            disable_feedback--;
          }
 
          void update_enabled()
@@ -327,41 +313,34 @@ namespace dak
             remove_layers_button->setEnabled(selected.size() > 0);
             move_layers_up_button->setEnabled(edited.size() > 1 && selected.size() > 0);
             move_layers_down_button->setEnabled(edited.size() > 1 && selected.size() > 0);
-            style_editor->setEnabled(get_common_style_name() != nullptr);
          }
 
          void update_selection()
          {
-            disable_feedback = true;
-            fill_style_editor();
-            disable_feedback = false;
             update_enabled();
-
             if (editor.selection_changed)
                editor.selection_changed(edited);
          }
 
-         void update_style(const QString& new_style_name)
+         void update_style(QTableWidgetItem * item)
          {
-            if (disable_feedback)
+            if (!item)
                return;
 
-            auto selected = get_selected_indexes();
-            for (int index : selected)
+            const int row = item->row();
+            const auto old_style = extract_style(edited[row]);
+            auto new_style = make_style(item->text().toStdWString());
+            if (new_style)
             {
-               const auto old_style = extract_style(edited[index]);
-               auto new_style = make_style(new_style_name.toStdWString());
-               if (new_style)
-               {
-                  if (old_style)
-                     new_style->make_similar(*old_style);
-                  if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(edited[index]))
-                     mo_layer->style = new_style;
-                  else
-                     edited[index] = new_style;
-               }
+               if (old_style)
+                  new_style->make_similar(*old_style);
+               if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(edited[row]))
+                  mo_layer->style = new_style;
+               else
+                  edited[row] = new_style;
             }
-            fill_ui(selected);
+            // TODO: select the row using a column other than the combo-box column.
+            //layer_list->setCurrentItem(layer_list->item(row, 0));
             update_layers();
          }
 
@@ -383,20 +362,27 @@ namespace dak
             layer_list->clearSelection();
             for (const int row : indexes)
             {
-               const auto item = layer_list->item(row);
-               item->setSelected(true);
+               for (int col = 0; col < layer_list->columnCount(); ++col)
+               {
+                  const auto item = layer_list->item(row, col);
+                  item->setSelected(true);
+               }
             }
          }
 
          std::vector<int> get_selected_indexes() const
          {
             std::vector<int> selected;
-            for (int row = 0; row < layer_list->count() && row < edited.size(); ++row)
+            for (int row = 0; row < layer_list->rowCount() && row < edited.size(); ++row)
             {
-               const auto item = layer_list->item(row);
-               if (item->isSelected())
+               for (int col = 0; col < layer_list->columnCount(); ++col)
                {
-                  selected.emplace_back(row);
+                  const auto item = layer_list->item(row, col);
+                  if (item->isSelected())
+                  {
+                     selected.emplace_back(row);
+                     break;
+                  }
                }
             }
             return selected;
@@ -475,18 +461,20 @@ namespace dak
             update_selection();
          }
 
+         static constexpr int tiling_column = 0;
+         static constexpr int style_column = 1;
+
          layers_selector& editor;
          layers edited;
 
-         std::unique_ptr<QListWidget> layer_list;
+         std::unique_ptr<table_widget_with_combo> layer_list;
          std::unique_ptr<QPushButton> clone_layer_button;
          std::unique_ptr<QPushButton> add_layer_button;
          std::unique_ptr<QPushButton> remove_layers_button;
          std::unique_ptr<QPushButton> move_layers_up_button;
          std::unique_ptr<QPushButton> move_layers_down_button;
-         std::unique_ptr<QComboBox> style_editor;
 
-         bool disable_feedback = false;
+         int disable_feedback = 0;
       };
 
       ////////////////////////////////////////////////////////////////////////////

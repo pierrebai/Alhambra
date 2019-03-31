@@ -9,9 +9,10 @@ namespace dak
    {
       rect rect::apply(const transform& trf) const
       {
-         const point top_left = point(x, y).apply(trf);
-         const point bottom_right = point(x + width, y + height).apply(trf);
-         return rect(top_left, bottom_right);
+         rect applied(top_left().apply(trf), bottom_right().apply(trf));
+         applied = applied.combine(top_right().apply(trf));
+         applied = applied.combine(bottom_left().apply(trf));
+         return applied;
       }
 
       rect rect::combine(const rect& other) const
