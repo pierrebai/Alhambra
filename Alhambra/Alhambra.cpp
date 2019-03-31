@@ -415,6 +415,7 @@ int main(int argc, char **argv)
    layer_list->layers_changed = [&](const layers_selector::layers& layers)
    {
       update_layer_list();
+      styles_editor->set_edited(get_selected_styles());
       update_canvas_layers(layers);
    };
 

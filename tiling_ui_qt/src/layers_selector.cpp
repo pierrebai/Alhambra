@@ -339,8 +339,6 @@ namespace dak
                else
                   edited[row] = new_style;
             }
-            // TODO: select the row using a column other than the combo-box column.
-            //layer_list->setCurrentItem(layer_list->item(row, 0));
             update_layers();
          }
 

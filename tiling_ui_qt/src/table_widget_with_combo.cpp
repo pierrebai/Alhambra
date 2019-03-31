@@ -23,7 +23,7 @@ namespace dak
          const int row = index.row();
          for (const auto text : combo_items)
             cb->addItem(text);
-         cb->connect(cb, &QComboBox::currentTextChanged, [self = this, cb = cb, index = index]()
+         cb->connect(cb, &QComboBox::currentTextChanged, [self = this, cb = cb, index = index](const QString& text)
          {
             if (cb->isVisible())
             {
@@ -108,9 +108,11 @@ namespace dak
             const QModelIndex index = indexAt(event->pos());
             if (index.column() == combo_column)
             {
-               for (int row = 0; row < rowCount(); ++row)
-                  if (auto other_item = item(row, combo_column > 0 ? 0 : 1))
-                     other_item->setSelected(row == index.row());
+               if (auto selection = selectionModel())
+               {
+                  const QModelIndex other_index = model()->index(index.row(), combo_column > 0 ? 0 : 1);
+                  selection->setCurrentIndex(other_index, QItemSelectionModel::SelectionFlag::ClearAndSelect);
+               }
                QTimer::singleShot(1, [self=this,index=index]()
                {
                   self->edit(index);
