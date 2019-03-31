@@ -29,7 +29,7 @@ namespace dak
       void canvas::paintEvent(QPaintEvent * pe)
       {
          QPainter painter(this);
-         painter.setRenderHint(QPainter::RenderHint::HighQualityAntialiasing);
+         painter.setRenderHint(QPainter::RenderHint::Antialiasing);
          painter.setRenderHint(QPainter::RenderHint::TextAntialiasing);
          painter.setRenderHint(QPainter::RenderHint::SmoothPixmapTransform);
 

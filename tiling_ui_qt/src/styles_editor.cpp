@@ -153,7 +153,7 @@ namespace dak
                QVBoxLayout* style_layout = new QVBoxLayout(style_panel);
                   style_layout->setContentsMargins(0, 0, 0, 0);
                   width_editor = std::make_unique<dak::ui_qt::double_editor>(style_panel, L::t(L"Width"));
-                  width_editor->set_limits(0.01, 40, 0.01);
+                  width_editor->set_limits(0.001, 40, 0.01);
                   style_layout->addWidget(width_editor.get());
                   outline_width_editor = std::make_unique<dak::ui_qt::double_editor>(style_panel, L::t(L"Outline Width"));
                   outline_width_editor->set_limits(0, 20, 0.01);
@@ -195,12 +195,19 @@ namespace dak
                outline_color_button->setEnabled(true);
                join_combo->setEnabled(true);
                fill_ui_outline_color();
+               double max_width = 0.1;
+               double max_outline_width = 0.1;
                for (auto thick : get_styles<thick>())
                {
+                  max_width = std::max(max_width, thick->width);
+                  max_outline_width = std::max(max_outline_width, thick->outline_width);
+
                   width_editor->set_value(thick->width);
                   outline_width_editor->set_value(thick->outline_width);
                   join_combo->setCurrentText(QString::fromWCharArray(get_join_style_name(thick->join)));
                }
+               width_editor->set_limits(0.001, std::max(1., max_width * 10.), 0.01);
+               outline_width_editor->set_limits(0., std::max(1., max_outline_width * 10.), 0.01);
             }
             else
             {
@@ -213,10 +220,13 @@ namespace dak
             if (get_styles<interlace>().size() > 0)
             {
                gap_width_editor->setEnabled(true);
+               double max_gap_width = 0.1;
                for (auto inter : get_styles<interlace>())
                {
+                  max_gap_width = std::max(max_gap_width, inter->gap_width);
                   gap_width_editor->set_value(inter->gap_width);
                }
+               gap_width_editor->set_limits(0.001, std::max(1., max_gap_width * 10.), 0.01);
             }
             else
             {

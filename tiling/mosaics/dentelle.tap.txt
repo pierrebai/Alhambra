@@ -1,62 +1,28 @@
 layers 3
-
-  thick 0.04 0.008
+  thick 0.040000000000000001 0.0080000000000000002
   color 255 255 255 255
-
   mosaic "Square 12.4.3" 3
-
-    regular 3
-
-    explicit 
-
-
     regular 12
-
-    star 12 3.0 2
-
-
+    star 12 3.0800000000000001 2
     regular 4
-
-    explicit 
-
-
+    irregular "Girih" 0 1.4399999999999999 1
+    regular 3
+    irregular "Girih" 0 1.6299999999999999 1
   filled true false
   color 0 153 255 255
-
   mosaic "Square 12.4.3" 3
-
-    regular 3
-
-    explicit 
-
-
     regular 12
-
-    star 12 3.0 2
-
-
+    star 12 3.0800000000000001 2
     regular 4
-
-    explicit 
-
-
-  thick 0.08 0.016
+    irregular "Girih" 0 1.4399999999999999 1
+    regular 3
+    irregular "Girih" 0 1.6299999999999999 1
+  thick 0.080000000000000002 0.016
   color 20 150 210 255
-
   mosaic "Square 12.4.3" 3
-
-    regular 3
-
-    explicit 
-
-
     regular 12
-
-    star 12 3.0 2
-
-
+    star 12 3.0800000000000001 2
     regular 4
-
-    explicit 
-
-
+    irregular "Girih" 0 1.4399999999999999 1
+    regular 3
+    irregular "Girih" 0 1.6299999999999999 1

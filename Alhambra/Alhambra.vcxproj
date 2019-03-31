@@ -60,28 +60,28 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(QT5_DIR)msvc2017_64\bin\Qt5Core.dll $(OutputPath)
-copy $(QT5_DIR)msvc2017_64\bin\Qt5Gui.dll $(OutputPath)
-copy $(QT5_DIR)msvc2017_64\bin\Qt5Widgets.dll $(OutputPath)
-copy $(QT5_DIR)msvc2017_64\bin\Qt5WinExtras.dll $(OutputPath)
-copy $(QT5_DIR)msvc2017_64\bin\Qt5Svg.dll $(OutputPath)
+      <Command>xcopy /D /Y $(QT5_DIR)msvc2017_64\bin\Qt5Core.dll $(OutputPath)
+xcopy /D /Y $(QT5_DIR)msvc2017_64\bin\Qt5Gui.dll $(OutputPath)
+xcopy /D /Y $(QT5_DIR)msvc2017_64\bin\Qt5Widgets.dll $(OutputPath)
+xcopy /D /Y $(QT5_DIR)msvc2017_64\bin\Qt5WinExtras.dll $(OutputPath)
+xcopy /D /Y $(QT5_DIR)msvc2017_64\bin\Qt5Svg.dll $(OutputPath)
 mkdir $(OutputPath)platforms
 mkdir $(OutputPath)styles
 mkdir $(OutputPath)imageformats
-copy $(QT5_DIR)msvc2017_64\plugins\styles\qwindowsvistastyle.dll $(OutputPath)styles
-copy $(QT5_DIR)msvc2017_64\plugins\platforms\qwindows.dll $(OutputPath)platforms
-copy $(QT5_DIR)msvc2017_64\plugins\imageformats\qicns.dll $(OutputPath)imageformats
-copy $(QT5_DIR)msvc2017_64\plugins\imageformats\qico.dll $(OutputPath)imageformats
-copy $(QT5_DIR)msvc2017_64\plugins\imageformats\qjpeg.dll $(OutputPath)imageformats
-copy $(QT5_DIR)msvc2017_64\plugins\imageformats\qsvg.dll $(OutputPath)imageformats
-copy $(QT5_DIR)msvc2017_64\plugins\imageformats\qwebp.dll $(OutputPath)imageformats
-copy $(QT5_DIR)msvc2017_64\plugins\imageformats\qwbmp.dll $(OutputPath)imageformats
-copy $(QT5_DIR)msvc2017_64\plugins\imageformats\qtiff.dll $(OutputPath)imageformats
-copy $(QT5_DIR)msvc2017_64\plugins\imageformats\qgif.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\styles\qwindowsvistastyle.dll $(OutputPath)styles
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\platforms\qwindows.dll $(OutputPath)platforms
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qicns.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qico.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qjpeg.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qsvg.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qwebp.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qwbmp.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qtiff.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qgif.dll $(OutputPath)imageformats
 mkdir $(OutputPath)tilings
 mkdir $(OutputPath)mosaics
-copy $(SolutionDir)tiling\tilings\*.tiling $(OutputPath)tilings\
-copy $(SolutionDir)tiling\mosaics\*.tap.txt $(OutputPath)mosaics\</Command>
+xcopy /D /Y $(SolutionDir)tiling\tilings\*.tiling $(OutputPath)tilings\
+xcopy /D /Y $(SolutionDir)tiling\mosaics\*.tap.txt $(OutputPath)mosaics\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -103,28 +103,28 @@ copy $(SolutionDir)tiling\mosaics\*.tap.txt $(OutputPath)mosaics\</Command>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(QT5_DIR)msvc2017_64\bin\Qt5Core.dll $(OutputPath)
-copy $(QT5_DIR)msvc2017_64\bin\Qt5Gui.dll $(OutputPath)
-copy $(QT5_DIR)msvc2017_64\bin\Qt5Widgets.dll $(OutputPath)
-copy $(QT5_DIR)msvc2017_64\bin\Qt5WinExtras.dll $(OutputPath)
-copy $(QT5_DIR)msvc2017_64\bin\Qt5Svg.dll $(OutputPath)
+      <Command>xcopy /D /Y $(QT5_DIR)msvc2017_64\bin\Qt5Core.dll $(OutputPath)
+xcopy /D /Y $(QT5_DIR)msvc2017_64\bin\Qt5Gui.dll $(OutputPath)
+xcopy /D /Y $(QT5_DIR)msvc2017_64\bin\Qt5Widgets.dll $(OutputPath)
+xcopy /D /Y $(QT5_DIR)msvc2017_64\bin\Qt5WinExtras.dll $(OutputPath)
+xcopy /D /Y $(QT5_DIR)msvc2017_64\bin\Qt5Svg.dll $(OutputPath)
 mkdir $(OutputPath)platforms
 mkdir $(OutputPath)styles
 mkdir $(OutputPath)imageformats
-copy $(QT5_DIR)msvc2017_64\plugins\styles\qwindowsvistastyle.dll $(OutputPath)styles
-copy $(QT5_DIR)msvc2017_64\plugins\platforms\qwindows.dll $(OutputPath)platforms
-copy $(QT5_DIR)msvc2017_64\plugins\imageformats\qicns.dll $(OutputPath)imageformats
-copy $(QT5_DIR)msvc2017_64\plugins\imageformats\qico.dll $(OutputPath)imageformats
-copy $(QT5_DIR)msvc2017_64\plugins\imageformats\qjpeg.dll $(OutputPath)imageformats
-copy $(QT5_DIR)msvc2017_64\plugins\imageformats\qsvg.dll $(OutputPath)imageformats
-copy $(QT5_DIR)msvc2017_64\plugins\imageformats\qwebp.dll $(OutputPath)imageformats
-copy $(QT5_DIR)msvc2017_64\plugins\imageformats\qwbmp.dll $(OutputPath)imageformats
-copy $(QT5_DIR)msvc2017_64\plugins\imageformats\qtiff.dll $(OutputPath)imageformats
-copy $(QT5_DIR)msvc2017_64\plugins\imageformats\qgif.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\styles\qwindowsvistastyle.dll $(OutputPath)styles
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\platforms\qwindows.dll $(OutputPath)platforms
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qicns.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qico.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qjpeg.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qsvg.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qwebp.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qwbmp.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qtiff.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qgif.dll $(OutputPath)imageformats
 mkdir $(OutputPath)tilings
 mkdir $(OutputPath)mosaics
-copy $(SolutionDir)tiling\tilings\*.tiling $(OutputPath)tilings\
-copy $(SolutionDir)tiling\mosaics\*.tap.txt $(OutputPath)mosaics\</Command>
+xcopy /D /Y $(SolutionDir)tiling\tilings\*.tiling $(OutputPath)tilings\
+xcopy /D /Y $(SolutionDir)tiling\mosaics\*.tap.txt $(OutputPath)mosaics\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

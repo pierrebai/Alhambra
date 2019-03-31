@@ -202,13 +202,13 @@ namespace dak
          {
             std::wstring dummy;
             std::wstring infer;
-            file >> dummy >> infer >> new_irregular.q >> new_irregular.d >> new_irregular.s;
+            file >> dummy >> std::quoted(infer) >> new_irregular.q >> new_irregular.d >> new_irregular.s;
             new_irregular.infer = infer_mode_from_name(infer.c_str());
          }
 
          void write_irregular_figure(std::wostream& file, const tiling::irregular_figure& irregular)
          {
-            file << L"    irregular " << infer_mode_name(irregular.infer) << " " << irregular.q << " " << irregular.d << " " << irregular.s << L"\n";
+            file << L"    irregular " << std::quoted(infer_mode_name(irregular.infer)) << " " << irregular.q << " " << irregular.d << " " << irregular.s << L"\n";
          }
 
          void read_extended_figure(std::wistream& file, tiling::extended_figure& new_extended_figure)
