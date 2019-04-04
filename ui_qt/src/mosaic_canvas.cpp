@@ -17,6 +17,7 @@ namespace dak
       : canvas(parent, mosaic_drawing)
       , mosaic(nullptr)
       {
+         transformer.manipulated = &mosaic_drawing;
       }
 
       void mosaic_canvas::paint(QPainter& painter)

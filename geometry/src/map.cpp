@@ -1,6 +1,6 @@
 #include <dak/geometry/map.h>
 #include <dak/geometry/intersect.h>
-#include <dak/geometry/utility.h>
+#include <dak/utility/text.h>
 
 #include <algorithm>
 
@@ -8,6 +8,8 @@ namespace dak
 {
    namespace geometry
    {
+      using utility::L;
+
       const edge edge::invalid;
 
       //#define DAK_GEOMETRY_MAP_INTERNAL_VERIFY

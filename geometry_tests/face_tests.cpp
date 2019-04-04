@@ -41,8 +41,11 @@ namespace geometry_tests
 
          face::faces white, black, red, exteriors;
          face::make_faces(m1, white, black, red, exteriors);
-         Assert::AreEqual<size_t>(1, white.size());
-         Assert::AreEqual<size_t>(8, white[0].points.size());
+         Assert::AreEqual<size_t>(0, white.size());
+         Assert::AreEqual<size_t>(0, black.size());
+         Assert::AreEqual<size_t>(0, exteriors.size());
+         Assert::AreEqual<size_t>(1, red.size());
+         Assert::AreEqual<size_t>(8, red[0].points.size());
       }
    };
 }

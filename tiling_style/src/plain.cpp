@@ -1,6 +1,6 @@
 #include <dak/tiling_style/plain.h>
 
-#include <dak/geometry/utility.h>
+#include <dak/utility/text.h>
 
 #include <dak/ui/drawing.h>
 
@@ -9,6 +9,7 @@ namespace dak
    namespace tiling_style
    {
       using ui::stroke;
+      using utility::L;
 
       std::shared_ptr<layer> plain::clone() const
       {
@@ -17,7 +18,7 @@ namespace dak
 
       std::wstring plain::describe() const
       {
-         return geometry::L::t(L"Plain");
+         return L::t(L"Plain");
       }
 
       // The internal draw is called with the layer transform already applied.

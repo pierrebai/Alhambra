@@ -8,7 +8,7 @@
 #include <dak/ui_qt/int_editor.h>
 #include <dak/ui_qt/double_editor.h>
 
-#include <dak/geometry/utility.h>
+#include <dak/utility/text.h>
 
 #include <QtWidgets/qboxlayout.h>
 #include <QtWidgets/qcombobox.h>
@@ -21,7 +21,7 @@ namespace dak
       using tiling::rosette;
       using tiling::irregular_figure;
       using tiling::extended_figure;
-      using geometry::L;
+      using utility::L;
       typedef std::function<void(std::shared_ptr<figure>)> figure_changed_callback;
 
       namespace
@@ -70,22 +70,6 @@ namespace dak
 
             return nullptr;
          }
-
-         tiling::infer_mode infer_modes[] = 
-         {
-            tiling::infer_mode::star,
-            tiling::infer_mode::girih,
-            tiling::infer_mode::intersect,
-            tiling::infer_mode::hourglass,
-            tiling::infer_mode::rosette,
-            tiling::infer_mode::extended_rosette,
-            tiling::infer_mode::simple,
-         };
-
-         int infer_mode_index(tiling::infer_mode inf)
-         {
-            return std::find(infer_modes, infer_modes + sizeof(infer_modes) / sizeof(infer_modes[0]), inf) - infer_modes;
-         }
       }
 
       ////////////////////////////////////////////////////////////////////////////
@@ -99,7 +83,7 @@ namespace dak
          : editor(parent), edited(nullptr)
          {
             build_ui(parent);
-            set_edited(ed);
+            set_edited(ed, false);
          }
 
          std::shared_ptr<figure> get_edited() const
@@ -107,9 +91,9 @@ namespace dak
             return edited;
          }
 
-         void set_edited(std::shared_ptr<figure> ed)
+         void set_edited(std::shared_ptr<figure> ed, bool force_ui_update)
          {
-            if (ed == edited)
+            if (!force_ui_update && ed == edited)
                return;
 
             edited = ed;
@@ -122,19 +106,6 @@ namespace dak
             QVBoxLayout* layout = new QVBoxLayout(&parent);
             layout->setContentsMargins(0, 0, 0, 0);
 
-            infer_mode_editor = std::make_unique<QComboBox>(&parent);
-            for (const auto inf : infer_modes)
-               infer_mode_editor->addItem(QString::fromWCharArray(L::t(tiling::infer_mode_name(inf))));
-            infer_mode_editor->connect(infer_mode_editor.get(), &QComboBox::currentTextChanged, [&](const QString& text){
-               for (const auto inf : infer_modes)
-               {
-                  if (text == QString::fromWCharArray(L::t(tiling::infer_mode_name(inf))))
-                  {
-                     update_infer(inf);
-                  }
-               }
-            });
-
             d_editor = std::make_unique<ui_qt::double_editor>(&parent, L::t(L"Branch Sharpness"), 0, std::bind(&figure_editor_ui::update_d, this, std::placeholders::_1));
             q_editor = std::make_unique<ui_qt::double_editor>(&parent, L::t(L"Flatness"), 0, std::bind(&figure_editor_ui::update_q, this, std::placeholders::_1));
             s_editor = std::make_unique<ui_qt::int_editor>(&parent, L::t(L"Intersections"), 0, std::bind(&figure_editor_ui::update_s, this, std::placeholders::_1));
@@ -143,12 +114,10 @@ namespace dak
             q_editor->set_limits(-1., 1., 0.01);
             s_editor->set_limits(1, 6);
 
-            infer_mode_editor->setEnabled(false);
             d_editor->setEnabled(false);
             s_editor->setEnabled(false);
             q_editor->setEnabled(false);
 
-            layout->addWidget(infer_mode_editor.get());
             layout->addWidget(d_editor.get());
             layout->addWidget(q_editor.get());
             layout->addWidget(s_editor.get());
@@ -175,30 +144,7 @@ namespace dak
                s_editor->set_value(edited_irregular->s);
             }
 
-            fill_infer_ui();
-
             update_enabled();
-
-            disable_feedback--;
-         }
-
-         void fill_infer_ui()
-         {
-            disable_feedback++;
-
-            tiling::infer_mode infer = tiling::infer_mode::girih;
-            if (std::dynamic_pointer_cast<extended_figure>(edited))
-               infer = tiling::infer_mode::extended_rosette;
-            else if (std::dynamic_pointer_cast<rosette>(edited))
-               infer = tiling::infer_mode::rosette;
-            else if (std::dynamic_pointer_cast<star>(edited))
-               infer = tiling::infer_mode::star;
-            else if (auto edited_irregular = std::dynamic_pointer_cast<irregular_figure>(edited))
-               infer = edited_irregular->infer;
-
-            const int new_index = infer_mode_index(infer);
-            if (new_index != infer_mode_editor->currentIndex())
-               infer_mode_editor->setCurrentIndex(new_index);
 
             disable_feedback--;
          }
@@ -207,21 +153,18 @@ namespace dak
          {
             if (star* edited_star = get_star(edited))
             {
-               infer_mode_editor->setEnabled(true);
                d_editor->setEnabled(true);
                s_editor->setEnabled(true);
                q_editor->setEnabled(false);
             }
             else if (rosette* edited_rosette = get_rosette(edited))
             {
-               infer_mode_editor->setEnabled(true);
                d_editor->setEnabled(false);
                s_editor->setEnabled(true);
                q_editor->setEnabled(true);
             }
             else if (irregular_figure* edited_irregular = get_irregular_figure(edited))
             {
-               infer_mode_editor->setEnabled(true);
                switch (edited_irregular->infer)
                {
                   case tiling::infer_mode::star:
@@ -264,7 +207,6 @@ namespace dak
             }
             else
             {
-               infer_mode_editor->setEnabled(false);
                d_editor->setEnabled(false);
                s_editor->setEnabled(false);
                q_editor->setEnabled(false);
@@ -278,7 +220,7 @@ namespace dak
 
             if (star* edited_star = dynamic_cast<star *>(edited.get()))
             {
-               if (geometry::near(new_value, edited_star->d))
+               if (utility::near(new_value, edited_star->d))
                   return;
 
                edited_star->d = new_value;
@@ -286,7 +228,7 @@ namespace dak
             }
            else if (irregular_figure* edited_irregular_figure = dynamic_cast<irregular_figure *>(edited.get()))
             {
-               if (geometry::near(new_value, edited_irregular_figure->d))
+               if (utility::near(new_value, edited_irregular_figure->d))
                   return;
 
                edited_irregular_figure->d = new_value;
@@ -301,7 +243,7 @@ namespace dak
 
             if (rosette* edited_rosette = get_rosette(edited))
             {
-               if (geometry::near(new_value, edited_rosette->q))
+               if (utility::near(new_value, edited_rosette->q))
                   return;
 
                edited_rosette->q = new_value;
@@ -309,7 +251,7 @@ namespace dak
             }
             else if (irregular_figure* edited_irregular_figure = dynamic_cast<irregular_figure *>(edited.get()))
             {
-               if (geometry::near(new_value, edited_irregular_figure->q))
+               if (utility::near(new_value, edited_irregular_figure->q))
                   return;
 
                edited_irregular_figure->q = new_value;
@@ -348,59 +290,6 @@ namespace dak
             }
          }
 
-         void update_infer(tiling::infer_mode new_infer_mode)
-         {
-            if (disable_feedback)
-               return;
-
-            if (!edited)
-               return;
-
-            if (auto edited_irregular_figure = get_irregular_figure(edited))
-            {
-               if (new_infer_mode == edited_irregular_figure->infer)
-                  return;
-
-               edited_irregular_figure->infer = new_infer_mode;
-
-               update_enabled();
-               fill_infer_ui();
-               update();
-            }
-            else if (auto edited_radial = std::dynamic_pointer_cast<tiling::radial_figure>(edited))
-            {
-               auto old_edited = edited;
-               switch (new_infer_mode)
-               {
-                  case tiling::infer_mode::star:
-                     edited = std::make_shared<star>(edited_radial->n);
-                     break;
-                  case tiling::infer_mode::girih:
-                     break;
-                  case tiling::infer_mode::intersect:
-                     break;
-                  case tiling::infer_mode::progressive:
-                     break;
-                  case tiling::infer_mode::hourglass:
-                     break;
-                  case tiling::infer_mode::rosette:
-                     edited = std::make_shared<rosette>(edited_radial->n);
-                     break;
-                  case tiling::infer_mode::extended_rosette:
-                     edited = std::make_shared<extended_figure>(std::make_shared<rosette>(edited_radial->n));
-                     break;
-                  case tiling::infer_mode::simple:
-                     break;
-               }
-
-               edited->make_similar(*old_edited);
-
-               update_enabled();
-               fill_infer_ui();
-               update_swap(old_edited);
-            }
-         }
-
          void update()
          {
             if (!edited)
@@ -414,23 +303,9 @@ namespace dak
                editor.figure_changed(edited);
          }
 
-         void update_swap(std::shared_ptr<figure> before)
-         {
-            if (!edited)
-               return;
-
-            // Note: used to avoid re-calculating the figure when just setting its value in the UI.
-            if (disable_feedback)
-               return;
-
-            if (editor.figure_swapped)
-               editor.figure_swapped(before, edited);
-         }
-
          figure_editor& editor;
          std::shared_ptr<figure> edited;
 
-         std::unique_ptr<QComboBox> infer_mode_editor;
          std::unique_ptr<ui_qt::double_editor> d_editor;
          std::unique_ptr<ui_qt::int_editor> s_editor;
          std::unique_ptr<ui_qt::double_editor> q_editor;
@@ -457,9 +332,9 @@ namespace dak
       {
       }
 
-      void figure_editor::set_edited(std::shared_ptr<figure> edited)
+      void figure_editor::set_edited(std::shared_ptr<figure> edited, bool force_ui_update)
       {
-         ui->set_edited(edited);
+         ui->set_edited(edited, force_ui_update);
       }
 
       std::shared_ptr<figure> figure_editor::get_edited() const

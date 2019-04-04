@@ -3,7 +3,8 @@
 #include <dak/geometry/constants.h>
 #include <dak/geometry/intersect.h>
 #include <dak/geometry/transform.h>
-#include <dak/geometry/utility.h>
+
+#include <dak/utility/text.h>
 
 #include <cmath>
 #include <algorithm>
@@ -20,7 +21,7 @@ namespace dak
       using geometry::map;
       using geometry::PI;
       using geometry::TOLERANCE;
-      using geometry::L;
+      using utility::L;
 
       extended_figure::extended_figure(const std::shared_ptr<radial_figure>& c)
       : scale_figure(c ? c->n : 6), child(c)
@@ -127,7 +128,7 @@ namespace dak
 
          // We want the tip of the new figure to still be at (1,0).
          const double s = compute_scale();
-         if (!geometry::near(s, 1.0))
+         if (!utility::near(s, 1.0))
             cunit.apply_to_self(transform::rotate(PI / n));
 
          scale_to_unit(cunit);

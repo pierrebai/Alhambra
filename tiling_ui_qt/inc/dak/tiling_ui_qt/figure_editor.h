@@ -28,15 +28,13 @@ namespace dak
          typedef std::function<void(std::shared_ptr<figure>)> figure_changed_callback;
          figure_changed_callback figure_changed;
 
-         typedef std::function<void(std::shared_ptr<figure> before, std::shared_ptr<figure> after)> figure_swapped_callback;
-         figure_swapped_callback figure_swapped;
-
          // Create a figure editor with the given parent widget and figure.
          figure_editor(QWidget* parent);
          figure_editor(QWidget* parent, figure_changed_callback figure_changed);
          figure_editor(QWidget* parent, std::shared_ptr<figure> edited, figure_changed_callback figure_changed);
 
-         void set_edited(std::shared_ptr<figure> edited);
+         // Set the figures being edited.
+         void set_edited(std::shared_ptr<figure> edited, bool force_ui_update = false);
          std::shared_ptr<figure> get_edited() const;
 
       protected:

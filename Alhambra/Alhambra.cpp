@@ -10,11 +10,12 @@
 
 #include <dak/tiling_ui_qt/styles_editor.h>
 #include <dak/tiling_ui_qt/figure_editor.h>
+#include <dak/tiling_ui_qt/figure_selector.h>
 #include <dak/tiling_ui_qt/layers_selector.h>
 #include <dak/tiling_ui_qt/tiling_selector.h>
 #include <dak/tiling_ui_qt/utility.h>
 
-#include <dak/geometry/utility.h>
+#include <dak/utility/text.h>
 
 #include <QtWidgets/qapplication>
 #include <QtWidgets/qapplication>
@@ -46,6 +47,7 @@ using namespace dak::tiling_style;
 using namespace dak::tiling_style;
 using namespace dak::ui_qt;
 using namespace dak::tiling_ui_qt;
+using dak::utility::L;
 
 static HINSTANCE appInstance;
 
@@ -116,9 +118,7 @@ int main(int argc, char **argv)
       QWidget* figures_container = new QWidget();
       QVBoxLayout* figures_layout = new QVBoxLayout(figures_container);
 
-      QListWidget* figure_list = new QListWidget(figures_container);
-      figure_list->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
-      figure_list->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
+      dak::tiling_ui_qt::figure_selector* figure_list = new dak::tiling_ui_qt::figure_selector(figures_container);
       figures_layout->addWidget(figure_list);
 
       figure_editor* figure_editor = new dak::tiling_ui_qt::figure_editor(figures_container);
@@ -314,30 +314,37 @@ int main(int argc, char **argv)
 
    auto fill_figure_list = [&]()
    {
-      const int previousSelection = std::max(0, figure_list->currentRow());
-      figure_list->clear();
-
-      for (auto fig : get_merged_avail_figures())
-      {
-         figure_list->addItem(QString::fromWCharArray(fig->describe().c_str()));
-      }
-
-      figure_list->setCurrentRow(std::min(figure_list->count() - 1, previousSelection));
+      figure_list->set_edited(get_merged_avail_figures());
    };
 
    auto get_selected_figures = [&]() -> std::vector<std::shared_ptr<figure>>
    {
       std::vector<std::shared_ptr<figure>> selected;
-      auto avail = get_merged_avail_figures();
-      for (int row = 0; row < figure_list->count() && row < avail.size(); ++row)
-      {
-         const auto item = figure_list->item(row);
-         if (item->isSelected())
-         {
-            selected.emplace_back(avail[row]);
-         }
-      }
+      if (figure_list->get_selected_figure())
+         selected.emplace_back(figure_list->get_selected_figure());
       return selected;
+   };
+
+   figure_list->selection_changed = [&](const std::shared_ptr<figure>& figure)
+   {
+      figure_editor->set_edited(figure);
+   };
+
+   figure_list->figure_changed = [&](std::shared_ptr<figure> modified)
+   {
+      for (auto fig : get_all_avail_figures())
+      {
+         if (!fig->is_similar(*modified))
+            continue;
+
+         fig->make_similar(*modified);
+      }
+
+      const bool force_update = true;
+      figure_editor->set_edited(modified, force_update);
+      fill_figure_list();
+
+      update_canvas_layers(get_selected_layers());
    };
 
    figure_editor->figure_changed = [&](std::shared_ptr<figure> modified)
@@ -355,7 +362,7 @@ int main(int argc, char **argv)
       update_canvas_layers(get_selected_layers());
    };
 
-   figure_editor->figure_swapped = [&](std::shared_ptr<figure> before, std::shared_ptr<figure> after)
+   figure_list->figure_swapped = [&](std::shared_ptr<figure> before, std::shared_ptr<figure> after)
    {
       for (auto mosaic : get_selected_mosaics())
       {
@@ -369,6 +376,7 @@ int main(int argc, char **argv)
          }
       }
 
+      figure_editor->set_edited(after);
       fill_figure_list();
 
       update_canvas_layers(get_selected_layers());
@@ -442,15 +450,6 @@ int main(int argc, char **argv)
       auto selector = new tiling_selector(nullptr, add_layer);
       selector->show();
    };
-
-   figure_list->connect(figure_list, &QListWidget::itemSelectionChanged, [&]()
-   {
-      for (auto figure : get_selected_figures())
-      {
-         figure_editor->set_edited(figure);
-         break;
-      }
-   });
 
    /////////////////////////////////////////////////////////////////////////
    //

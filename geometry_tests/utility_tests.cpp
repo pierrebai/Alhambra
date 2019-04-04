@@ -10,6 +10,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace dak::geometry;
+using namespace dak::utility;
 
 namespace geometry_tests
 {
@@ -24,41 +25,41 @@ namespace geometry_tests
          Assert::IsTrue(near_zero(0.1, 0.1));
          Assert::IsTrue(near_zero(0.));
 
-         Assert::IsTrue(near_zero(TOLERANCE, TOLERANCE));
-         Assert::IsTrue(near_zero(TOLERANCE/2, TOLERANCE));
-         Assert::IsTrue(near_zero(TOLERANCE, 0.1));
-         Assert::IsTrue(near_zero(TOLERANCE));
-         Assert::IsTrue(near_zero(TOLERANCE/2));
+         Assert::IsTrue(near_zero(dak::utility::TOLERANCE, dak::utility::TOLERANCE));
+         Assert::IsTrue(near_zero(dak::utility::TOLERANCE/2, dak::utility::TOLERANCE));
+         Assert::IsTrue(near_zero(dak::utility::TOLERANCE, 0.1));
+         Assert::IsTrue(near_zero(dak::utility::TOLERANCE));
+         Assert::IsTrue(near_zero(dak::utility::TOLERANCE/2));
 
-         Assert::IsFalse(near_zero(TOLERANCE, 0.));
-         Assert::IsFalse(near_zero(TOLERANCE/2, 0.));
-         Assert::IsFalse(near_zero(TOLERANCE * 2, TOLERANCE));
+         Assert::IsFalse(near_zero(dak::utility::TOLERANCE, 0.));
+         Assert::IsFalse(near_zero(dak::utility::TOLERANCE/2, 0.));
+         Assert::IsFalse(near_zero(dak::utility::TOLERANCE * 2, dak::utility::TOLERANCE));
          Assert::IsFalse(near_zero(0.1 + 0.00000001, 0.1));
-         Assert::IsFalse(near_zero(TOLERANCE * 2));
+         Assert::IsFalse(near_zero(dak::utility::TOLERANCE * 2));
 
          Assert::IsTrue(near_zero(point::origin()));
          Assert::IsTrue(near_zero(point(0., 0.)));
-         Assert::IsTrue(near_zero(point(TOLERANCE, 0.)));
-         Assert::IsTrue(near_zero(point(0., TOLERANCE)));
-         Assert::IsTrue(near_zero(point(TOLERANCE/2, TOLERANCE/2)));
+         Assert::IsTrue(near_zero(point(dak::utility::TOLERANCE, 0.)));
+         Assert::IsTrue(near_zero(point(0., dak::utility::TOLERANCE)));
+         Assert::IsTrue(near_zero(point(dak::utility::TOLERANCE/2, dak::utility::TOLERANCE/2)));
 
-         Assert::IsFalse(near_zero(point(TOLERANCE * TOLERANCE + TOLERANCE, 0.)));
-         Assert::IsFalse(near_zero(point(0., TOLERANCE * TOLERANCE + TOLERANCE)));
-         Assert::IsFalse(near_zero(point(TOLERANCE * TOLERANCE + TOLERANCE, 0.)));
-         Assert::IsFalse(near_zero(point(TOLERANCE * 1.1, 0.)));
-         Assert::IsFalse(near_zero(point(0., TOLERANCE * 1.1)));
-         Assert::IsFalse(near_zero(point(TOLERANCE, TOLERANCE)));
-         Assert::IsFalse(near_zero(point(TOLERANCE, TOLERANCE * 2)));
-         Assert::IsFalse(near_zero(point(TOLERANCE * 2, TOLERANCE * 2)));
+         Assert::IsFalse(near_zero(point(dak::utility::TOLERANCE * dak::utility::TOLERANCE + dak::utility::TOLERANCE, 0.)));
+         Assert::IsFalse(near_zero(point(0., dak::utility::TOLERANCE * dak::utility::TOLERANCE + dak::utility::TOLERANCE)));
+         Assert::IsFalse(near_zero(point(dak::utility::TOLERANCE * dak::utility::TOLERANCE + dak::utility::TOLERANCE, 0.)));
+         Assert::IsFalse(near_zero(point(dak::utility::TOLERANCE * 1.1, 0.)));
+         Assert::IsFalse(near_zero(point(0., dak::utility::TOLERANCE * 1.1)));
+         Assert::IsFalse(near_zero(point(dak::utility::TOLERANCE, dak::utility::TOLERANCE)));
+         Assert::IsFalse(near_zero(point(dak::utility::TOLERANCE, dak::utility::TOLERANCE * 2)));
+         Assert::IsFalse(near_zero(point(dak::utility::TOLERANCE * 2, dak::utility::TOLERANCE * 2)));
 
          Assert::IsTrue(near(0., 0.));
-         Assert::IsTrue(near(0., TOLERANCE));
-         Assert::IsTrue(near(0., TOLERANCE/2));
-         Assert::IsTrue(near(0.25, 0.25 + TOLERANCE - DBL_EPSILON));
-         Assert::IsTrue(near(0.25, 0.25 + TOLERANCE/2));
+         Assert::IsTrue(near(0., dak::utility::TOLERANCE));
+         Assert::IsTrue(near(0., dak::utility::TOLERANCE/2));
+         Assert::IsTrue(near(0.25, 0.25 + dak::utility::TOLERANCE - DBL_EPSILON));
+         Assert::IsTrue(near(0.25, 0.25 + dak::utility::TOLERANCE/2));
 
-         Assert::IsFalse(near(0.,    0. + TOLERANCE * 2));
-         Assert::IsFalse(near(0.25,  0.25 + TOLERANCE * 2));
+         Assert::IsFalse(near(0.,    0. + dak::utility::TOLERANCE * 2));
+         Assert::IsFalse(near(0.25,  0.25 + dak::utility::TOLERANCE * 2));
          Assert::IsFalse(near(0.25,  0.26));
          Assert::IsFalse(near(0.25, -3.26));
          Assert::IsFalse(near(0.25, -0.25));
@@ -66,17 +67,17 @@ namespace geometry_tests
          Assert::IsTrue(near(point::origin(), point::origin()));
          Assert::IsTrue(near(point(0., 0.), point(0., 0.)));
          Assert::IsTrue(near(point(1., 1.), point(1., 1.)));
-         Assert::IsTrue(near(point(0., 0.), point(TOLERANCE, 0.)));
-         Assert::IsTrue(near(point(0., 0.), point(0., TOLERANCE)));
-         Assert::IsTrue(near(point(0., 0.), point(TOLERANCE/2, TOLERANCE/2)));
+         Assert::IsTrue(near(point(0., 0.), point(dak::utility::TOLERANCE, 0.)));
+         Assert::IsTrue(near(point(0., 0.), point(0., dak::utility::TOLERANCE)));
+         Assert::IsTrue(near(point(0., 0.), point(dak::utility::TOLERANCE/2, dak::utility::TOLERANCE/2)));
 
-         Assert::IsFalse(near(point(0., 0.), point(TOLERANCE * 1.1, 0.)));
-         Assert::IsFalse(near(point(0., 0.), point(0., TOLERANCE * 1.1)));
-         Assert::IsFalse(near(point(0., 0.), point(TOLERANCE * 2, TOLERANCE)));
-         Assert::IsFalse(near(point(0., 0.), point(TOLERANCE, TOLERANCE * 2)));
-         Assert::IsFalse(near(point(0., 0.), point(TOLERANCE * 2, TOLERANCE * 2)));
-         Assert::IsFalse(near(point(0., 0.), point(TOLERANCE * TOLERANCE + TOLERANCE, 0.)));
-         Assert::IsFalse(near(point(0., 0.), point(0., TOLERANCE * TOLERANCE + TOLERANCE)));
+         Assert::IsFalse(near(point(0., 0.), point(dak::utility::TOLERANCE * 1.1, 0.)));
+         Assert::IsFalse(near(point(0., 0.), point(0., dak::utility::TOLERANCE * 1.1)));
+         Assert::IsFalse(near(point(0., 0.), point(dak::utility::TOLERANCE * 2, dak::utility::TOLERANCE)));
+         Assert::IsFalse(near(point(0., 0.), point(dak::utility::TOLERANCE, dak::utility::TOLERANCE * 2)));
+         Assert::IsFalse(near(point(0., 0.), point(dak::utility::TOLERANCE * 2, dak::utility::TOLERANCE * 2)));
+         Assert::IsFalse(near(point(0., 0.), point(dak::utility::TOLERANCE * dak::utility::TOLERANCE + dak::utility::TOLERANCE, 0.)));
+         Assert::IsFalse(near(point(0., 0.), point(0., dak::utility::TOLERANCE * dak::utility::TOLERANCE + dak::utility::TOLERANCE)));
 
          const double tolerance = 0.1;
          Assert::IsTrue(near(point::origin(), point::origin(), tolerance * tolerance));
@@ -97,19 +98,19 @@ namespace geometry_tests
 
          Assert::IsTrue(near_less( 0.,  0.1));
          Assert::IsTrue(near_less(-0.1, 0.));
-         Assert::IsTrue(near_less(0., 0. + TOLERANCE * 2));
+         Assert::IsTrue(near_less(0., 0. + dak::utility::TOLERANCE * 2));
 
          Assert::IsFalse(near_less(0., 0.));
-         Assert::IsFalse(near_less(0., 0. + TOLERANCE));
-         Assert::IsFalse(near_less(0., 0. + TOLERANCE/2));
+         Assert::IsFalse(near_less(0., 0. + dak::utility::TOLERANCE));
+         Assert::IsFalse(near_less(0., 0. + dak::utility::TOLERANCE/2));
 
          Assert::IsTrue(near_greater(0.1, 0.));
          Assert::IsTrue(near_greater(0., -0.1));
-         Assert::IsTrue(near_greater(0. + TOLERANCE * 2., 0.));
+         Assert::IsTrue(near_greater(0. + dak::utility::TOLERANCE * 2., 0.));
 
          Assert::IsFalse(near_greater(0., 0.));
-         Assert::IsFalse(near_greater(0. + TOLERANCE, 0.));
-         Assert::IsFalse(near_greater(0. + TOLERANCE / 2, 0.));
+         Assert::IsFalse(near_greater(0. + dak::utility::TOLERANCE, 0.));
+         Assert::IsFalse(near_greater(0. + dak::utility::TOLERANCE / 2, 0.));
       }
 
       TEST_METHOD(utility_center)

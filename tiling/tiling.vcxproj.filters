@@ -573,5 +573,8 @@
     <Text Include="mosaics\wonka.tap.txt">
       <Filter>Known Mosaics</Filter>
     </Text>
+    <Text Include="mosaics\Library of Babel.tap.txt">
+      <Filter>Known Mosaics</Filter>
+    </Text>
   </ItemGroup>
 </Project>

@@ -6,6 +6,8 @@
 #include <dak/geometry/polygon.h>
 #include <dak/geometry/utility.h>
 
+#include <dak/utility/text.h>
+
 #include <fstream>
 
 namespace dak
@@ -59,7 +61,7 @@ namespace dak
          }
          catch (const std::exception& ex)
          {
-            errors.emplace_back(geometry::convert(ex.what()));
+            errors.emplace_back(utility::convert(ex.what()));
             return empty;
          }
       }

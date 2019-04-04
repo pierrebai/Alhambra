@@ -1,6 +1,6 @@
 #include <dak/tiling/mosaic.h>
 
-#include <dak/geometry/point_utility.h>
+#include <dak/geometry/utility.h>
 #include <dak/geometry/transform.h>
 
 namespace dak

@@ -9,7 +9,7 @@
 #include <dak/tiling_style/filled.h>
 #include <dak/tiling_style/interlace.h>
 
-#include <dak/geometry/utility.h>
+#include <dak/utility/text.h>
 
 #include <QtGui/qicon.h>
 #include <QtGui/qpixmap.h>
@@ -30,7 +30,7 @@ namespace dak
       using tiling_style::filled;
       using tiling_style::interlace;
 
-      using geometry::L;
+      using utility::L;
       typedef std::vector<std::shared_ptr<style>> styles;
       typedef std::function<void(const styles& )> styles_changed_callback;
 
@@ -226,7 +226,7 @@ namespace dak
                   max_gap_width = std::max(max_gap_width, inter->gap_width);
                   gap_width_editor->set_value(inter->gap_width);
                }
-               gap_width_editor->set_limits(0.001, std::max(1., max_gap_width * 10.), 0.01);
+               gap_width_editor->set_limits(0., std::max(1., max_gap_width * 10.), 0.01);
             }
             else
             {

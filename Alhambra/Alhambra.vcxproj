@@ -51,7 +51,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)geometry\inc;$(SolutionDir)tiling\inc;$(SolutionDir)tiling_style\inc;$(SolutionDir)ui\inc;$(SolutionDir)ui_qt\inc;$(SolutionDir)tiling_ui_qt\inc;$(QT5_DIR)msvc2017_64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)utility\inc;$(SolutionDir)geometry\inc;$(SolutionDir)tiling\inc;$(SolutionDir)tiling_style\inc;$(SolutionDir)ui\inc;$(SolutionDir)ui_qt\inc;$(SolutionDir)tiling_ui_qt\inc;$(QT5_DIR)msvc2017_64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>KNOWN_TILINGS_DIR=LR"($(SolutionDir)\tiling\tilings)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -92,7 +92,7 @@ xcopy /D /Y $(SolutionDir)tiling\mosaics\*.tap.txt $(OutputPath)mosaics\</Comman
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)geometry\inc;$(SolutionDir)tiling\inc;$(SolutionDir)tiling_style\inc;$(SolutionDir)ui\inc;$(SolutionDir)ui_qt\inc;$(SolutionDir)tiling_ui_qt\inc;$(QT5_DIR)msvc2017_64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)utility\inc;$(SolutionDir)geometry\inc;$(SolutionDir)tiling\inc;$(SolutionDir)tiling_style\inc;$(SolutionDir)ui\inc;$(SolutionDir)ui_qt\inc;$(SolutionDir)tiling_ui_qt\inc;$(QT5_DIR)msvc2017_64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>KNOWN_TILINGS_DIR=LR"($(SolutionDir)\tiling\tilings)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -148,6 +148,9 @@ xcopy /D /Y $(SolutionDir)tiling\mosaics\*.tap.txt $(OutputPath)mosaics\</Comman
     </ProjectReference>
     <ProjectReference Include="..\ui_qt\ui_qt.vcxproj">
       <Project>{f81ccac2-ef9a-495f-8f73-d0d41002bef2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\utility\utility.vcxproj">
+      <Project>{eb425f43-ebf8-416e-8e30-27765b141d71}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

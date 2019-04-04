@@ -80,7 +80,7 @@ namespace dak
          }
       }
 
-      double point::parameterization_on_line(const point& p, const point& q)
+      double point::parameterization_on_line(const point& p, const point& q) const
       {
          point qmp = q - p;
          return (*this - p).dot(qmp) / qmp.dot(qmp);

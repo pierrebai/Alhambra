@@ -97,7 +97,7 @@ namespace dak
          setEditTriggers(QAbstractItemView::EditTrigger::EditKeyPressed | QAbstractItemView::EditTrigger::SelectedClicked | QAbstractItemView::EditTrigger::AnyKeyPressed);
          verticalHeader()->hide();
          setColumnCount(col + 1);
-         setItemDelegateForColumn(1, new item_delegate_with_combo(items, this));
+         setItemDelegateForColumn(col, new item_delegate_with_combo(items, this));
       }
 
       // Process mouse events to create the combo-box on the first mouse click.

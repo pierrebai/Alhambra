@@ -1,4 +1,4 @@
-#include <dak/geometry/point_utility.h>
+#include <dak/geometry/utility.h>
 #include <dak/geometry/rect.h>
 #include <dak/geometry/polygon.h>
 
@@ -14,13 +14,7 @@ namespace dak
       void fill(const rect& region, const point& T1, const point& T2, std::function<void(int, int)> fill_callback)
       {
          const transform basis_change = transform::to_basis(T1, T2);
-         const polygon region_in_t1_t2(
-         {
-             region.top_left().apply(basis_change),
-             region.top_right().apply(basis_change),
-             region.bottom_right().apply(basis_change),
-             region.bottom_left().apply(basis_change),
-         });
+         const polygon region_in_t1_t2(polygon::from_rect(region).apply(basis_change));
 
          point minimums(1.0e100, 1.0e100);
          point maximums(-1.0e100, -1.0e100);

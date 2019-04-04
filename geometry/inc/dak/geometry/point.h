@@ -3,7 +3,7 @@
 #ifndef DAK_GEOMETRY_POINT_H
 #define DAK_GEOMETRY_POINT_H
 
-#include <dak/geometry/number_utility.h>
+#include <dak/utility/number.h>
 
 #include <cmath>
 #include <cstdint>
@@ -56,7 +56,7 @@ namespace dak
             if (is_invalid())
                return other.is_invalid();
 
-            return near(x, other.x) && near(y, other.y);
+            return utility::near(x, other.x) && utility::near(y, other.y);
          }
 
          constexpr bool operator !=(const point& other) const
@@ -67,13 +67,13 @@ namespace dak
          // Less-than compares x coordinates first, then y, using the default tolerance.
          bool operator <(const point& other) const
          {
-            if (near_less(x, other.x))
+            if (utility::near_less(x, other.x))
                return true;
 
-            if (near_greater(x, other.x))
+            if (utility::near_greater(x, other.x))
                return false;
 
-            if (near_less(y, other.y))
+            if (utility::near_less(y, other.y))
                return true;
 
             return false;
@@ -153,7 +153,7 @@ namespace dak
          // Verify if this point is perpendicular to another. (Treated as vectors.)
          bool is_perp(const point& other) const
          {
-            return near_zero(dot(other));
+            return utility::near_zero(dot(other));
          }
 
          // Add two points with reciprocal scaling (reciprocal to 1.)
@@ -184,7 +184,7 @@ namespace dak
 
          // Return the proportion between zero and one of the point on the given line.
          // The result can be out of the range if not on the line.
-         double parameterization_on_line(const point& p, const point& q);
+         double parameterization_on_line(const point& p, const point& q) const;
 
          // Apply a transform to the point.
          point apply(const transform& t) const;

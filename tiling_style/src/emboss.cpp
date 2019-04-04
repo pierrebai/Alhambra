@@ -1,6 +1,6 @@
 #include <dak/tiling_style/emboss.h>
 
-#include <dak/geometry/utility.h>
+#include <dak/utility/text.h>
 
 #include <dak/ui/drawing.h>
 
@@ -10,6 +10,8 @@ namespace dak
 {
    namespace tiling_style
    {
+      using utility::L;
+
       std::shared_ptr<layer> emboss::clone() const
       {
          return std::make_shared<emboss>(*this);
@@ -27,7 +29,7 @@ namespace dak
 
       std::wstring emboss::describe() const
       {
-         return geometry::L::t(L"Embossed");
+         return L::t(L"Embossed");
       }
 
       void emboss::internal_draw_fat_lines(ui::drawing& drw, const fat_lines& fat_lines)
@@ -55,7 +57,7 @@ namespace dak
             draw_trap(drw, pts[4], pts[5], pts[0], pts[1], light, greys);
          }
 
-         if (geometry::near_zero(outline_width))
+         if (utility::near_zero(outline_width))
             return;
 
          drw.set_stroke(ui::stroke(1.));

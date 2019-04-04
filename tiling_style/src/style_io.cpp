@@ -17,7 +17,7 @@
 #include <dak/tiling/extended_figure.h>
 #include <dak/tiling/infer.h>
 
-#include <dak/geometry/utility.h>
+#include <dak/utility/text.h>
 
 #include <iomanip>
 #include <string>
@@ -26,12 +26,21 @@ namespace dak
 {
    namespace tiling_style
    {
-      using geometry::L;
+      using utility::L;
       using tiling::infer_mode_from_name;
       using tiling::mosaic;
 
       namespace
       {
+         const wchar_t* colored_name   = L"color";
+         const wchar_t* plain_name     = L"plain";
+         const wchar_t* sketch_name    = L"sketch";
+         const wchar_t* filled_name    = L"filled";
+         const wchar_t* thick_name     = L"thick";
+         const wchar_t* outline_name   = L"outline";
+         const wchar_t* interlace_name = L"interlace";
+         const wchar_t* emboss_name    = L"emboss";
+
          ////////////////////////////////////////////////////////////////////////////
          //
          // Functions for reading and writing the styles.
@@ -47,7 +56,7 @@ namespace dak
          void write_colored(std::wostream& file, const colored& style)
          {
             const int r = style.color.r, g = style.color.g, b = style.color.b, a = style.color.a;
-            file << "  color " << r << " " << g << " " << b << " " << a << L"\n";
+            file << "  " << colored_name << " " << r << " " << g << " " << b << " " << a << L"\n";
          }
 
          void read_plain(std::wistream& file, plain& new_style)
@@ -59,7 +68,7 @@ namespace dak
 
          void write_plain(std::wostream& file, const plain& style)
          {
-            file << L"  plain" << L"\n";
+            file << L"  " << plain_name << " " << L"\n";
             write_colored(file, style);
          }
 
@@ -74,8 +83,8 @@ namespace dak
          void write_sketch(std::wostream& file, const sketch& style)
          {
             // Note: in the text format, sketch derives from plain... so we read two sentinels.
-            file << L"  sktech" << L"\n"
-                 << L"  plain" << L"\n";
+            file << L"  " << sketch_name << L"\n"
+                 << L"  " << plain_name << L"\n";
             write_colored(file, style);
          }
 
@@ -88,7 +97,7 @@ namespace dak
 
          void write_filled(std::wostream& file, const filled& style)
          {
-            file << L"  filled " << std::boolalpha << style.draw_inside << " " << std::boolalpha << style.draw_outside << L"\n";
+            file << L"  " << filled_name << " " << std::boolalpha << style.draw_inside << " " << std::boolalpha << style.draw_outside << L"\n";
             write_colored(file, style);
          }
 
@@ -101,7 +110,7 @@ namespace dak
 
          void write_thick(std::wostream& file, const thick& style)
          {
-            file << L"  thick " << style.width << " " << style.outline_width << L"\n";
+            file << L"  " << thick_name << " " << style.width << " " << style.outline_width << L"\n";
             write_colored(file, style);
          }
 
@@ -114,7 +123,7 @@ namespace dak
 
          void write_outline(std::wostream& file, const outline& style)
          {
-            file << L"  outline" << L"\n";
+            file << L"  " << outline_name << L"\n";
             write_thick(file, style);
          }
 
@@ -127,7 +136,7 @@ namespace dak
 
          void write_emboss(std::wostream& file, const emboss& style)
          {
-            file << L"  emboss " << style.angle << L"\n";
+            file << L"  " << emboss_name << " " << style.angle << L"\n";
             write_outline(file, style);
          }
 
@@ -141,7 +150,7 @@ namespace dak
 
          void write_interlace(std::wostream& file, const interlace& style)
          {
-            file << L"  interlace " << style.gap_width << " " << style.shadow_width << L"\n";
+            file << L"  " << interlace_name << " " << style.gap_width << " " << style.shadow_width << L"\n";
             // In the text format, interlace derives from thick, not outline.
             write_thick(file, style);
          }
@@ -380,43 +389,43 @@ namespace dak
             file.seekg(pos);
 
             std::shared_ptr<styled_mosaic> new_mosaic_layer(new styled_mosaic);
-            if (style_type == L"emboss")
+            if (style_type == emboss_name)
             {
                std::shared_ptr<emboss> new_emboss(new emboss);
                read_emboss(file, *new_emboss);
                new_mosaic_layer->style = new_emboss;
             }
-            else if (style_type == L"filled")
+            else if (style_type == filled_name)
             {
                std::shared_ptr<filled> new_filled(new filled);
                read_filled(file, *new_filled);
                new_mosaic_layer->style = new_filled;
             }
-            else if (style_type == L"interlace")
+            else if (style_type == interlace_name)
             {
                std::shared_ptr<interlace> new_interlace(new interlace);
                read_interlace(file, *new_interlace);
                new_mosaic_layer->style = new_interlace;
             }
-            else if (style_type == L"outline")
+            else if (style_type == outline_name)
             {
                std::shared_ptr<outline> new_outline(new outline);
                read_outline(file, *new_outline);
                new_mosaic_layer->style = new_outline;
             }
-            else if (style_type == L"plain")
+            else if (style_type == plain_name)
             {
                std::shared_ptr<plain> new_plain(new plain);
                read_plain(file, *new_plain);
                new_mosaic_layer->style = new_plain;
             }
-            else if (style_type == L"sketch")
+            else if (style_type == sketch_name)
             {
                std::shared_ptr<sketch> new_sketch(new sketch);
                read_sketch(file, *new_sketch);
                new_mosaic_layer->style = new_sketch;
             }
-            else if (style_type == L"thick")
+            else if (style_type == thick_name)
             {
                std::shared_ptr<thick> new_thick(new thick);
                read_thick(file, *new_thick);

@@ -2,10 +2,14 @@
 
 #include <dak/ui/drawing.h>
 
+#include <dak/utility/text.h>
+
 namespace dak
 {
    namespace tiling_style
    {
+      using utility::L;
+
       std::shared_ptr<layer> filled::clone() const
       {
          return std::make_shared<filled>(*this);
@@ -24,7 +28,7 @@ namespace dak
 
       std::wstring filled::describe() const
       {
-         return geometry::L::t(L"Filled");
+         return L::t(L"Filled");
       }
 
       void filled::set_map(const geometry::map& m)

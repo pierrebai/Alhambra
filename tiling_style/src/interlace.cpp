@@ -1,7 +1,8 @@
 #include <dak/tiling_style/interlace.h>
 
 #include <dak/geometry/intersect.h>
-#include <dak/geometry/utility.h>
+
+#include <dak/utility/text.h>
 
 #include <dak/ui/drawing.h>
 
@@ -14,6 +15,7 @@ namespace dak
    namespace tiling_style
    {
       using namespace geometry::intersect;
+      using utility::L;
 
       std::shared_ptr<layer> interlace::clone() const
       {
@@ -33,7 +35,7 @@ namespace dak
 
       std::wstring interlace::describe() const
       {
-         return geometry::L::t(L"Interlaced");
+         return L::t(L"Interlaced");
       }
 
       void interlace::propagate_over_under_at_edge_p1(const edge& cur_edge, size_t index, context& ctx)
@@ -163,7 +165,11 @@ namespace dak
                const auto& before = map.before(twin);
                const size_t before_index = std::lower_bound(edges.begin(), edges.end(), before) - edges.begin();
                const auto end1 = get_points_continuation(before.twin(), before_index, total_width(), map.outbounds(edge.p1));
-               fat_line.hexagon.points[1] = end1.first;
+               const double proj_on_line = end1.first.parameterization_on_line(fat_line.hexagon.points[0], fat_line.hexagon.points[2]);
+               if (utility::near_greater_or_equal(proj_on_line, 0.) && utility::near_less_or_equal(proj_on_line, 1.))
+                  fat_line.hexagon.points[1] = end1.first;
+               else
+                  fat_line.hexagon.points[1] = fat_line.hexagon.points[0].convex_sum(fat_line.hexagon.points[2], 0.5);
             }
 
             if (!is_p1_over[twin_index] && map.outbounds(edge.p2).size() > 2)
@@ -171,7 +177,11 @@ namespace dak
                const auto& after = map.after(edge);
                const size_t after_index = std::lower_bound(edges.begin(), edges.end(), after) - edges.begin();
                const auto end4 = get_points_continuation(after.twin(), after_index, total_width(), map.outbounds(edge.p2));
-               fat_line.hexagon.points[4] = end4.second;
+               const double proj_on_line = end4.second.parameterization_on_line(fat_line.hexagon.points[3], fat_line.hexagon.points[5]);
+               if (utility::near_greater_or_equal(proj_on_line, 0.) && utility::near_less_or_equal(proj_on_line, 1.))
+                  fat_line.hexagon.points[4] = end4.second;
+               else
+                  fat_line.hexagon.points[4] = fat_line.hexagon.points[3].convex_sum(fat_line.hexagon.points[5], 0.5);
             }
          }
 

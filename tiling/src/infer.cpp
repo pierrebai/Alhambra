@@ -103,7 +103,7 @@ namespace dak
             else if (kind1 > kind2)
                return 1;
 
-            if (geometry::near(dist1, distance_2))
+            if (utility::near(dist1, distance_2))
                return 0;
             else if (dist1 < distance_2)
                return -1;
@@ -315,7 +315,7 @@ namespace dak
                   continue;
                const point& pos = v.p1;
                const double distance_2 = pos.distance_2_to_line(a, b);
-               if (geometry::near_zero(distance_2, adj.tolerance)
+               if (utility::near_zero(distance_2, adj.tolerance)
                    && !geometry::near(pos, a, adj.tolerance)
                    && !geometry::near(pos, b, adj.tolerance))
                {
@@ -350,11 +350,11 @@ namespace dak
          s = std::min(s, d_i);
          int outer_s = std::min(s, d_i - 1);
 
-         if (geometry::near_zero(d_frac))
+         if (utility::near_zero(d_frac))
          {
             d_frac = 0.0;
          }
-         else if (geometry::near_zero(1.0 - d_frac))
+         else if (utility::near_zero(1.0 - d_frac))
          {
             d_frac = 0.0;
             d_i += 1;
@@ -493,7 +493,7 @@ namespace dak
             const point& otherMidPoint = midPoints[i_side];
 
             point intersection;
-            if (geometry::near_zero(otherMidPoint.distance_2_to_line(sideMidPoint, sideHalf)))
+            if (utility::near_zero(otherMidPoint.distance_2_to_line(sideMidPoint, sideHalf)))
             {
                // Edge meets directly the other mid-points, so the distance is the shortest possible.
                intersection = otherMidPoint.convex_sum(sideMidPoint, 0.5);
@@ -507,7 +507,7 @@ namespace dak
             if (intersection.is_invalid())
                continue;
             double distance_2 = intersection.distance_2(sideMidPoint) + intersection.distance_2(otherMidPoint);
-            if (geometry::near(distance_2, info.distance_2)) {
+            if (utility::near(distance_2, info.distance_2)) {
                // In case of absolute equality, we use the nearest side.
                if (std::abs(side - i_side) < std::abs(side - info.side))
                {
@@ -628,7 +628,7 @@ namespace dak
                if (intersection.is_invalid())
                {
                   // Lines are parallel, see if they actually point at each other.
-                  if (geometry::near_zero(otherMidPoint.distance_2_to_line(sideMidPoint, sideHalf)))
+                  if (utility::near_zero(otherMidPoint.distance_2_to_line(sideMidPoint, sideHalf)))
                   {
                      // Edge meets directly the other mid-points, so the distance is the middle in-between.
                      intersection = otherMidPoint.convex_sum(sideMidPoint, 0.5);
@@ -772,7 +772,7 @@ namespace dak
                point intersection = intersect(otherMidPoint, otherSide, sideMidPoint, sideHalf);
                if (intersection.is_invalid())
                {
-                  if (geometry::near_zero(otherMidPoint.distance_2_to_line(sideMidPoint, sideHalf))) {
+                  if (utility::near_zero(otherMidPoint.distance_2_to_line(sideMidPoint, sideHalf))) {
                      // Edge meets directly the other mid-points, so the distance is the middle in-between.
                      intersection = otherMidPoint.convex_sum(sideMidPoint, 0.5);
                   }
@@ -1142,7 +1142,7 @@ namespace dak
 
                   bool inside = fpts_poly.is_inside(isect);
 
-                  if (!geometry::near(dist, odist))
+                  if (!utility::near(dist, odist))
                   {
                      if (inside)
                         mykind = INSIDE_UNEVEN;

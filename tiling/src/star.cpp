@@ -9,6 +9,8 @@
 #include <dak/geometry/transform.h>
 #include <dak/geometry/utility.h>
 
+#include <dak/utility/text.h>
+
 #include <cmath>
 #include <algorithm>
 #include <sstream>
@@ -24,7 +26,7 @@ namespace dak
       using geometry::map;
       using geometry::PI;
       using geometry::TOLERANCE;
-      using geometry::L;
+      using utility::L;
 
       std::shared_ptr<figure> star::clone() const
       {

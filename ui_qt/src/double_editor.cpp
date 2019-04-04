@@ -1,6 +1,6 @@
 #include <dak/ui_qt/double_editor.h>
 
-#include <dak/geometry/number_utility.h>
+#include <dak/utility/number.h>
 
 #include <cmath>
 
@@ -36,7 +36,7 @@ namespace dak
 
       void double_editor::set_value(double new_value, bool call_callback)
       {
-         if (geometry::near(current_value, new_value))
+         if (utility::near(current_value, new_value))
             return;
 
          auto prev_callback = value_changed_callback;
@@ -49,7 +49,7 @@ namespace dak
          if (slider->value() != desired_slider_value)
             slider->setValue(desired_slider_value);
 
-         if (!geometry::near(text_editor->value(), new_value))
+         if (!utility::near(text_editor->value(), new_value))
             text_editor->setValue(new_value);
 
          if (value_changed_callback)
@@ -61,7 +61,7 @@ namespace dak
 
       void double_editor::set_value_from_spin_box(double new_value)
       {
-         if (geometry::near(current_value, new_value))
+         if (utility::near(current_value, new_value))
             return;
 
          current_value = new_value;
@@ -78,12 +78,12 @@ namespace dak
       {
          const double real_new_value = new_value / double_to_int_factor;
 
-         if (geometry::near(current_value, real_new_value))
+         if (utility::near(current_value, real_new_value))
             return;
 
          current_value = real_new_value;
 
-         if (!geometry::near(text_editor->value(), real_new_value))
+         if (!utility::near(text_editor->value(), real_new_value))
             text_editor->setValue(real_new_value);
 
          if (value_changed_callback)

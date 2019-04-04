@@ -12,7 +12,7 @@
 #include <dak/tiling_style/filled.h>
 #include <dak/tiling_style/interlace.h>
 
-#include <dak/geometry/utility.h>
+#include <dak/utility/text.h>
 
 #include <QtWidgets/qboxlayout.h>
 #include <QtWidgets/qgridlayout.h>
@@ -38,7 +38,7 @@ namespace dak
       using tiling_style::filled;
       using tiling_style::interlace;
 
-      using geometry::L;
+      using utility::L;
       typedef std::vector<std::shared_ptr<layer>> layers;
       typedef std::function<void(const layers& )> selection_changed_callback;
 
@@ -104,10 +104,10 @@ namespace dak
             return L::t(L"Unknown");
          }
 
-         std::shared_ptr<style> make_style(const std::wstring& new_style_name)
+         std::shared_ptr<style> make_style(const QString& new_style_name)
          {
             for (const auto& item : style_names)
-               if (new_style_name == L::t(item.name))
+               if (new_style_name == QString::fromWCharArray(L::t(item.name)))
                   if (item.maker)
                      return item.maker();
             return nullptr;
@@ -178,16 +178,22 @@ namespace dak
             {
                if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
                {
-                  const QString tiling_name = QString::fromWCharArray(mo_layer->mosaic->tiling.name.c_str());
-                  const QString style_name = QString::fromWCharArray(get_style_name(mo_layer->style));
+                  const auto state = mo_layer->hide ? Qt::CheckState::Unchecked : Qt::CheckState::Checked;
+                  auto draw_item = layer_list->item(row, draw_column);
+                  draw_item->setCheckState(state);
+
                   // Note: make icon larger than what was set in the table view
                   //       so that it gets scaled down with some smoothing.
-                  QIcon qicon = get_icon(mo_layer, 128, 64);
+                  const QIcon qicon = get_icon(mo_layer, 128, 64);
+                  const QString tiling_name = QString::fromWCharArray(mo_layer->mosaic->tiling.name.c_str());
                   auto tiling_item = layer_list->item(row, tiling_column);
-                  auto style_item = layer_list->item(row, style_column);
-                  tiling_item->setText(tiling_name);
                   tiling_item->setIcon(qicon);
+                  tiling_item->setText(tiling_name);
+
+                  const QString style_name = QString::fromWCharArray(get_style_name(mo_layer->style));
+                  auto style_item = layer_list->item(row, style_column);
                   style_item->setText(style_name);
+
                   row++;
                }
             }
@@ -240,11 +246,12 @@ namespace dak
             for (const auto& item : style_names)
                combo_items.append(QString::fromWCharArray(L::t(item.name)));
 
-            layer_list = std::make_unique<table_widget_with_combo>(1, combo_items, &parent);
+            layer_list = std::make_unique<table_widget_with_combo>(style_column, combo_items, &parent);
             layer_list->setIconSize(QSize(64, 32));
-            layer_list->setColumnCount(2);
+            layer_list->setColumnCount(3);
             layer_list->setHorizontalHeaderLabels(QStringList(
                {
+                  QString::fromWCharArray(L::t(L"Drawn")),
                   QString::fromWCharArray(L::t(L"Mosaic")),
                   QString::fromWCharArray(L::t(L"Style"))
                }));
@@ -260,7 +267,8 @@ namespace dak
             move_layers_down_button->setEnabled(false);
 
             layer_list->connect(layer_list.get(), &QTableWidget::itemSelectionChanged, [&]() { update_selection(); });
-            layer_list->connect(layer_list.get(), &QTableWidget::itemChanged, [&](QTableWidgetItem * item) { update_style(item); });
+            layer_list->connect(layer_list.get(), &QTableWidget::itemChanged, [&](QTableWidgetItem * item) { update_layer(item); });
+
             clone_layer_button->connect(clone_layer_button.get(), &QPushButton::clicked, [&]() { clone_layer(); });
             add_layer_button->connect(add_layer_button.get(), &QPushButton::clicked, [&]() { add_layer(); });
             remove_layers_button->connect(remove_layers_button.get(), &QPushButton::clicked, [&]() { remove_layers(); });
@@ -278,17 +286,24 @@ namespace dak
             {
                if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
                {
-                  const QString tiling_name = QString::fromWCharArray(mo_layer->mosaic->tiling.name.c_str());
-                  const QString style_name = QString::fromWCharArray(get_style_name(mo_layer->style));
-                  // Note: make icon larger than what was set in the table view
-                  //       so that it gets scaled down with some smoothing.
-                  QIcon qicon = get_icon(mo_layer, 128, 64);
-                  auto tiling_item = new QTableWidgetItem(qicon, tiling_name);
-                  tiling_item->setFlags(Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsSelectable);
-                  auto style_item = new QTableWidgetItem(style_name);
                   const int row = layer_list->rowCount();
                   layer_list->setRowCount(row + 1);
+
+                  const auto state = mo_layer->hide ? Qt::CheckState::Unchecked : Qt::CheckState::Checked;
+                  auto draw_item = new QTableWidgetItem();
+                  draw_item->setCheckState(state);
+                  layer_list->setItem(row, draw_column, draw_item);
+
+                  // Note: make the icon larger than what was set in the table view
+                  //       so that it gets scaled down with some smoothing.
+                  const QIcon qicon = get_icon(mo_layer, 128, 64);
+                  const QString tiling_name = QString::fromWCharArray(mo_layer->mosaic->tiling.name.c_str());
+                  auto tiling_item = new QTableWidgetItem(qicon, tiling_name);
+                  tiling_item->setFlags(Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsSelectable);
                   layer_list->setItem(row, tiling_column, tiling_item);
+
+                  const QString style_name = QString::fromWCharArray(get_style_name(mo_layer->style));
+                  auto style_item = new QTableWidgetItem(style_name);
                   layer_list->setItem(row, style_column, style_item);
                }
             }
@@ -322,14 +337,43 @@ namespace dak
                editor.selection_changed(edited);
          }
 
+         void update_layer(QTableWidgetItem * item)
+         {
+            if (!item)
+               return;
+
+            switch (item->column())
+            {
+               case draw_column:    return update_drawn(item);
+               case style_column:   return update_style(item);
+            }
+         }
+
+         void update_drawn(QTableWidgetItem * item)
+         {
+            if (!item)
+               return;
+
+            const int row = item->row();
+            if (row < 0 || row >= edited.size())
+               return;
+
+            edited[row]->hide = (item->checkState() == Qt::CheckState::Unchecked);
+
+            update_layers();
+         }
+
          void update_style(QTableWidgetItem * item)
          {
             if (!item)
                return;
 
             const int row = item->row();
+            if (row < 0 || row >= edited.size())
+               return;
+
             const auto old_style = extract_style(edited[row]);
-            auto new_style = make_style(item->text().toStdWString());
+            auto new_style = make_style(item->text());
             if (new_style)
             {
                if (old_style)
@@ -459,8 +503,9 @@ namespace dak
             update_selection();
          }
 
-         static constexpr int tiling_column = 0;
-         static constexpr int style_column = 1;
+         static constexpr int draw_column = 0;
+         static constexpr int tiling_column = 1;
+         static constexpr int style_column = 2;
 
          layers_selector& editor;
          layers edited;

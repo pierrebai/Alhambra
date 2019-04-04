@@ -4,7 +4,7 @@
 #include <dak/tiling/irregular_figure.h>
 
 #include <dak/geometry/face.h>
-#include <dak/geometry/point_utility.h>
+#include <dak/geometry/utility.h>
 
 #include <filesystem>
 #include <fstream>

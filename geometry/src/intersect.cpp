@@ -28,7 +28,7 @@ namespace dak
 
          const double det = (d1x * d2y) - (d1y * d2x);
 
-         if (near_zero(det)) {
+         if (utility::near_zero(det)) {
             // Parallel.  We won't worry about cases where endpoints touch
             // and we certainly won't worry about overlapping lines.
             // That leaves, um, nothing.  Done!

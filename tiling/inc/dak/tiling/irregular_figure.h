@@ -9,6 +9,8 @@
 
 #include <dak/geometry/polygon.h>
 
+#include <algorithm>
+
 namespace dak
 {
    namespace tiling
@@ -28,12 +30,13 @@ namespace dak
 
          infer_mode infer = infer_mode::girih;
          double q = 0.;
-         double d = 0.6;
+         double d = 1.;
          int    s = 1;
 
          irregular_figure() { }
-         irregular_figure(const std::shared_ptr<dak::tiling::mosaic>& mo, const polygon& p) : mosaic(mo), poly(p) { }
-         irregular_figure(const std::shared_ptr<dak::tiling::mosaic>& mo, const polygon& p, infer_mode i) : mosaic(mo), poly(p), infer(i) { }
+         irregular_figure(const std::shared_ptr<dak::tiling::mosaic>& mo, const polygon& p) : irregular_figure(mo, p, infer_mode::girih) { }
+         irregular_figure(const std::shared_ptr<dak::tiling::mosaic>& mo, const polygon& p, infer_mode i) : irregular_figure(mo, p, i, std::max(0.333, p.points.size() / 1.7)) { }
+         irregular_figure(const std::shared_ptr<dak::tiling::mosaic>& mo, const polygon& p, infer_mode i, double d) : mosaic(mo), poly(p), infer(i), d(d) { }
 
          // Copy a figure.
          std::shared_ptr<figure> clone() const override;

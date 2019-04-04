@@ -1,0 +1,89 @@
+layers 9
+  sketch
+  plain
+  color 0 0 0 20
+  mosaic "3.4.6" 3
+    regular 6
+    rosette 6 0 3
+    regular 4
+    star 4 2.0000000000000027 1
+    regular 3
+    star 3 1 1
+  interlace 0.029999999999999999 0.050000000000000003
+  thick 0.050000000000000003 0
+  color 20 140 220 255
+  mosaic "3.4.6" 3
+    regular 6
+    rosette 6 0 3
+    regular 4
+    star 4 2.0000000000000027 1
+    regular 3
+    star 3 1 1
+  outline
+  thick 0.050000000000000003 0
+  color 7 57 91 255
+  mosaic "3.4.6" 3
+    regular 6
+    rosette 6 0 3
+    regular 4
+    star 4 2.0000000000000027 1
+    regular 3
+    star 3 1 1
+  outline
+  thick 0.060000000000000005 0
+  color 0 0 0 255
+  mosaic "3.4.6" 3
+    regular 6
+    rosette 6 0 3
+    regular 4
+    star 4 2.0000000000000027 1
+    regular 3
+    star 3 1 1
+  outline
+  thick 0.070000000000000007 0
+  color 16 118 185 255
+  mosaic "3.4.6" 3
+    regular 6
+    rosette 6 0 3
+    regular 4
+    star 4 2.0000000000000027 1
+    regular 3
+    star 3 1 1
+  outline
+  thick 0.080000000000000002 0
+  color 255 255 255 255
+  mosaic "3.4.6" 3
+    regular 6
+    rosette 6 0 3
+    regular 4
+    star 4 2.0000000000000027 1
+    regular 3
+    star 3 1 1
+  outline
+  thick 0.099999999999999992 0
+  color 10 75 118 255
+  mosaic "3.4.6" 3
+    regular 6
+    rosette 6 0 3
+    regular 4
+    star 4 2.0000000000000027 1
+    regular 3
+    star 3 1 1
+  filled true false
+  color 7 64 99 255
+  mosaic "3.4.6" 3
+    regular 6
+    rosette 6 0 3
+    regular 4
+    star 4 2.0000000000000027 1
+    regular 3
+    star 3 1 1
+  filled false true
+  color 235 238 233 255
+  mosaic "3.4.6" 3
+    regular 6
+    rosette 6 0 3
+    regular 4
+    star 4 2.0000000000000027 1
+    regular 3
+    star 3 1 1

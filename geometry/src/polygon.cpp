@@ -175,14 +175,14 @@ namespace dak
 
          const double dist2 = poly_center.distance_2(points[0]);
          const bool equidistant = std::equal(points.begin(), std::prev(points.end()), std::next(points.begin()), [poly_center, dist2](const point& a, const point& b) {
-            return geometry::near(poly_center.distance_2(b), dist2);
+            return utility::near(poly_center.distance_2(b), dist2);
          });
          if (!equidistant)
             return false;
 
          const double angle = poly_center.sweep(points.back(), points.front());
          const bool equiangled = std::equal(points.begin(), std::prev(points.end()), std::next(points.begin()), [poly_center, angle](const point& a, const point& b) {
-            return geometry::near(poly_center.sweep(a, b), angle);
+            return utility::near(poly_center.sweep(a, b), angle);
          });
          if (!equiangled)
             return false;

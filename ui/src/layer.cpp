@@ -12,6 +12,9 @@ namespace dak
 
       void layer::draw(drawing& drw)
       {
+         if (hide)
+            return;
+
          drw.push_transform();
          drw.compose(trf);
          internal_draw(drw);

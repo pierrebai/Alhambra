@@ -62,7 +62,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeaderFile />
-      <AdditionalIncludeDirectories>$(ProjectDir)inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)inc;$(SolutionDir)utility\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -82,7 +82,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeaderFile />
-      <AdditionalIncludeDirectories>$(ProjectDir)inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)inc;$(SolutionDir)utility\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -97,11 +97,9 @@
     <ClInclude Include="inc\dak\geometry\face.h" />
     <ClInclude Include="inc\dak\geometry\intersect.h" />
     <ClInclude Include="inc\dak\geometry\point.h" />
-    <ClInclude Include="inc\dak\geometry\point_utility.h" />
     <ClInclude Include="inc\dak\geometry\polygon.h" />
     <ClInclude Include="inc\dak\geometry\rect.h" />
     <ClInclude Include="inc\dak\geometry\transform.h" />
-    <ClInclude Include="inc\dak\geometry\number_utility.h" />
     <ClInclude Include="inc\dak\geometry\map.h" />
     <ClInclude Include="inc\dak\geometry\utility.h" />
   </ItemGroup>
@@ -112,7 +110,6 @@
     <ClCompile Include="src\point.cpp" />
     <ClCompile Include="src\polygon.cpp" />
     <ClCompile Include="src\rect.cpp" />
-    <ClCompile Include="src\text_utility.cpp" />
     <ClCompile Include="src\transform.cpp" />
     <ClCompile Include="src\map.cpp" />
     <ClCompile Include="src\utility.cpp" />

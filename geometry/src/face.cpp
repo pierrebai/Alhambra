@@ -1,5 +1,5 @@
 #include <dak/geometry/face.h>
-#include <dak/geometry/utility.h>
+#include <dak/utility/text.h>
 
 #include <algorithm>
 #include <numeric>
@@ -10,6 +10,8 @@ namespace dak
 {
    namespace geometry
    {
+      using utility::L;
+
       namespace
       {
          //#define DAK_GEOMETRY_FACE_FACES_INTERNAL_VERIFY

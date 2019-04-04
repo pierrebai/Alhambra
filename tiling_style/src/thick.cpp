@@ -1,6 +1,6 @@
 #include <dak/tiling_style/thick.h>
 
-#include <dak/geometry/utility.h>
+#include <dak/utility/text.h>
 
 #include <dak/ui/drawing.h>
 
@@ -9,6 +9,7 @@ namespace dak
    namespace tiling_style
    {
       using ui::stroke;
+      using utility::L;
 
       std::shared_ptr<layer> thick::clone() const
       {
@@ -29,7 +30,7 @@ namespace dak
 
       std::wstring thick::describe() const
       {
-         return geometry::L::t(L"Thick");
+         return L::t(L"Thick");
       }
 
       ui::stroke thick::get_stroke(ui::drawing& drw, double sw) const
@@ -63,7 +64,7 @@ namespace dak
          // Note: we multiply the width by two because all other styles using
          //       the width actully widen the drawing in both perpendicular
          //       directions by that width.
-         if (!geometry::near_zero(outline_width))
+         if (!utility::near_zero(outline_width))
          {
             drw.set_color(outline_color);
             drw.set_stroke(get_stroke(drw, outline_width + width * 2.));

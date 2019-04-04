@@ -22,6 +22,8 @@ namespace dak
       class layer : public transformable
       {
       public:
+         bool hide = false;
+
          // Create a layer.
          layer() { }
 

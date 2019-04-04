@@ -1,6 +1,4 @@
 #include <dak/geometry/utility.h>
-#include <dak/geometry/constants.h>
-#include <dak/geometry/point.h>
 #include <dak/geometry/transform.h>
 
 #include <algorithm>

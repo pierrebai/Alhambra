@@ -3,7 +3,9 @@
 #include <dak/tiling/star.h>
 #include <dak/tiling/irregular_figure.h>
 
-#include <dak/geometry/point_utility.h>
+#include <dak/geometry/utility.h>
+
+#include <algorithm>
 
 namespace dak
 {
@@ -75,7 +77,7 @@ namespace dak
             const auto& tile = placed.first;
             if (!tile.is_regular())
             {
-               mo->tile_figures[tile] = std::make_shared<irregular_figure>(mo, tile, infer_mode::girih);
+               mo->tile_figures[tile] = std::make_shared<irregular_figure>(mo, tile, infer_mode::girih, std::max(1.3, tile.points.size() / 3.));
             }
          }
       }

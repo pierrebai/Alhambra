@@ -1,9 +1,9 @@
 - Tiling designer.
 - Selection framework.
 - Undo framework.
-- Show/hide of layers.
 - Manipulate canvas for a single layer.
 - Degenerate cases of inferring.
 - Wix for the installer.
-- Move stuff to a dak/utility project: number_utility, text_utility.
-- Put combo-box for style directly in list?
+- Add a list for shared mosaics?
+- Use the same draw technique in interlace as in thick.
+- Add manipulate column in layers list.

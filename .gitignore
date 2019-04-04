@@ -33,3 +33,5 @@
 /installer/Release
 *.diagsession
 /export.cmd
+/utility/x64/Release
+/utility/x64/Debug

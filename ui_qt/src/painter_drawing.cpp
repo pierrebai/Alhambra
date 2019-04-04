@@ -1,6 +1,8 @@
 #include <dak/ui_qt/painter_drawing.h>
 #include <dak/ui_qt/convert.h>
 
+#include <dak/geometry/constants.h>
+
 #include <QtGui/qpainter.h>
 #include <QtGui/qpainterpath.h>
 
@@ -114,37 +116,12 @@ namespace dak
 
       painter_drawing& painter_drawing::fill_rect(const rect& r)
       {
-         if (!painter)
-            return *this;
-
-         point top_left = point(r.x, r.y).apply(get_transform());
-         point bottom_right = point(r.x + r.width, r.y + r.height).apply(get_transform());
-
-         double min_x = std::min(top_left.x, bottom_right.x);
-         double max_x = std::max(top_left.x, bottom_right.x);
-         double min_y = std::min(top_left.y, bottom_right.y);
-         double max_y = std::max(top_left.y, bottom_right.y);
-
-         painter->fillRect(min_x, min_y, max_x - min_x, max_y - min_y, get_brush());
-         return *this;
+         return fill_polygon(polygon::from_rect(r));
       }
 
       painter_drawing& painter_drawing::draw_rect(const rect& r)
       {
-         if (!painter)
-            return *this;
-
-         point top_left = point(r.x, r.y).apply(get_transform());
-         point bottom_right = point(r.x + r.width, r.y + r.height).apply(get_transform());
-
-         double min_x = std::min(top_left.x, bottom_right.x);
-         double max_x = std::max(top_left.x, bottom_right.x);
-         double min_y = std::min(top_left.y, bottom_right.y);
-         double max_y = std::max(top_left.y, bottom_right.y);
-
-         painter->setPen(get_pen());
-         painter->drawRect(min_x, min_y, max_x - min_x, max_y - min_y);
-         return *this;
+         return draw_polygon(polygon::from_rect(r));
       }
 
       rect painter_drawing::get_bounds() const

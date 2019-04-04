@@ -1,6 +1,6 @@
 #include <dak/tiling/tiling_io.h>
 
-#include <dak/geometry/utility.h>
+#include <dak/utility/text.h>
 
 #include <iomanip>
 #include <map>
@@ -9,7 +9,7 @@ namespace dak
 {
    namespace tiling
    {
-      using geometry::L;
+      using utility::L;
 
       ////////////////////////////////////////////////////////////////////////////
       //

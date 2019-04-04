@@ -33,6 +33,9 @@
     <ClInclude Include="inc\dak\tiling_ui_qt\table_widget_with_combo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="inc\dak\tiling_ui_qt\figure_selector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\figure_editor.cpp">
@@ -51,6 +54,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\table_widget_with_combo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\figure_selector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

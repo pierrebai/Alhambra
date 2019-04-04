@@ -1,6 +1,6 @@
 #include <dak/tiling_style/sketch.h>
 
-#include <dak/geometry/utility.h>
+#include <dak/utility/text.h>
 
 #include <dak/ui/drawing.h>
 
@@ -11,6 +11,7 @@ namespace dak
    namespace tiling_style
    {
       using geometry::point;
+      using utility::L;
 
       std::shared_ptr<layer> sketch::clone() const
       {
@@ -19,7 +20,7 @@ namespace dak
 
       std::wstring sketch::describe() const
       {
-         return geometry::L::t(L"Sketched");
+         return L::t(L"Sketched");
       }
 
       void sketch::internal_draw(ui::drawing& drw)

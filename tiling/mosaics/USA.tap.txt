@@ -1,80 +1,39 @@
 layers 5
-
-  interlace 0.05 0.03
-  thick 0.05 0.0
+  interlace 0.050000000000000003 0.029999999999999999
+  thick 0.050000000000000003 0
   color 247 243 240 255
-
   mosaic "4.8^2" 2
-
     regular 8
-
-    rosette 8 0.0 3
-
-
+    rosette 8 0 3
     regular 4
-
-    explicit 
-
-
-  interlace 0.05 0.03
-  thick 0.05 0.0
+    irregular "Girih" 0 0.47999999999999998 1
+  interlace 0.050000000000000003 0.029999999999999999
+  thick 0.050000000000000003 0
   color 240 234 228 255
-
   mosaic "4.8^2" 2
-
     regular 8
-
-    rosette 8 0.0 3
-
-
+    rosette 8 0 3
     regular 4
-
-    explicit 
-
-
-  outline 
-  thick 0.10312500000000001 0.0
+    irregular "Girih" 0 0.47999999999999998 1
+  outline
+  thick 0.10312500000000001 0
   color 0 0 0 255
-
   mosaic "4.8^2" 2
-
     regular 8
-
-    rosette 8 0.0 3
-
-
+    rosette 8 0 3
     regular 4
-
-    explicit 
-
-
+    irregular "Girih" 0 0.47999999999999998 1
   filled true false
   color 0 51 153 255
-
   mosaic "4.8^2" 2
-
     regular 8
-
-    rosette 8 0.0 3
-
-
+    rosette 8 0 3
     regular 4
-
-    explicit 
-
-
+    irregular "Girih" 0 0.47999999999999998 1
   filled false true
   color 153 0 0 255
-
   mosaic "4.8^2" 2
-
     regular 8
-
-    rosette 8 0.0 3
-
-
+    rosette 8 0 3
     regular 4
-
-    explicit 
-
-
+    irregular "Girih" 0 0.47999999999999998 1

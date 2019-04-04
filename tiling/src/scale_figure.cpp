@@ -25,7 +25,7 @@ namespace dak
          map cunit = child->build_unit();
          const double s = compute_scale();
 
-         if (geometry::near(s, 1.0))
+         if (utility::near(s, 1.0))
             return cunit;
 
          // Tip of unit is initially at (1, 0).

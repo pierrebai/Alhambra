@@ -2,6 +2,8 @@
 
 #include <dak/geometry/utility.h>
 
+#include <dak/utility/text.h>
+
 #include <dak/ui/drawing.h>
 
 #include <cmath>
@@ -16,6 +18,7 @@ namespace dak
       using geometry::edge;
       using geometry::PI;
       using geometry::is_colinear;
+      using utility::L;
 
       std::shared_ptr<layer> outline::clone() const
       {
@@ -24,7 +27,7 @@ namespace dak
 
       std::wstring outline::describe() const
       {
-         return geometry::L::t(L"Outlined");
+         return L::t(L"Outlined");
       }
 
       void outline::set_map(const geometry::map& m)
@@ -77,7 +80,7 @@ namespace dak
             #endif
             drw.fill_polygon(fat_line.hexagon);
 
-            if (geometry::near_zero(outline_stroke.width))
+            if (utility::near_zero(outline_stroke.width))
                continue;
 
             drw.set_stroke(outline_stroke);
@@ -232,7 +235,7 @@ namespace dak
       {
          double th = joint.sweep(a, b);
 
-         if (geometry::near(th, 0, 0.01) || geometry::near(th, PI, 0.01) || geometry::near(th, 2 * PI, 0.01))
+         if (utility::near(th, 0, 0.01) || utility::near(th, PI, 0.01) || utility::near(th, 2 * PI, 0.01))
          {
             return point();
          }

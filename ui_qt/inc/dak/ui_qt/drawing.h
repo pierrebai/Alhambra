@@ -15,6 +15,7 @@ namespace dak
    namespace tiling
    {
       class mosaic;
+      class tiling;
    }
 
    namespace ui_qt
@@ -35,8 +36,9 @@ namespace dak
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // Draw the mosaic, if any, in the given drawing.
+      // Draw the tiling or mosaic, if any, in the given drawing.
 
+      void draw_tiling(dak::ui::drawing& drw, const tiling::tiling& tiling, const color& co, int copy_count);
       void draw_tiling(dak::ui::drawing& drw, const std::shared_ptr<tiling::mosaic>& mosaic, const color& co, int copy_count);
 
       void draw_layered(dak::ui::drawing& drw, ui::layered* layered);

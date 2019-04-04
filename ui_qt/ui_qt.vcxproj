@@ -20,6 +20,7 @@
     <ClInclude Include="inc\dak\ui_qt\mosaic_canvas.h" />
     <ClInclude Include="inc\dak\ui_qt\paint_device_transformable.h" />
     <ClInclude Include="inc\dak\ui_qt\canvas.h" />
+    <ClInclude Include="inc\dak\ui_qt\tiling_canvas.h" />
     <ClInclude Include="inc\dak\ui_qt\widget_mouse_emitter.h" />
     <ClInclude Include="inc\dak\ui_qt\painter_drawing.h" />
     <ClInclude Include="inc\dak\ui_qt\paint_device_drawing.h" />
@@ -35,6 +36,7 @@
     <ClCompile Include="src\mosaic_canvas.cpp" />
     <ClCompile Include="src\paint_device_transformable.cpp" />
     <ClCompile Include="src\canvas.cpp" />
+    <ClCompile Include="src\tiling_canvas.cpp" />
     <ClCompile Include="src\widget_mouse_emitter.cpp" />
     <ClCompile Include="src\painter_drawing.cpp" />
     <ClCompile Include="src\paint_device_drawing.cpp" />
@@ -90,7 +92,7 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile />
-      <AdditionalIncludeDirectories>$(ProjectDir)inc;$(SolutionDir)geometry\inc;$(SolutionDir)tiling\inc;$(SolutionDir)ui\inc;$(QT5_DIR)msvc2017_64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)inc;$(SolutionDir)utility\inc;$(SolutionDir)geometry\inc;$(SolutionDir)tiling\inc;$(SolutionDir)ui\inc;$(QT5_DIR)msvc2017_64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -108,7 +110,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile />
-      <AdditionalIncludeDirectories>$(ProjectDir)inc;$(SolutionDir)geometry\inc;$(SolutionDir)tiling\inc;$(SolutionDir)ui\inc;$(QT5_DIR)msvc2017_64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)inc;$(SolutionDir)utility\inc;$(SolutionDir)geometry\inc;$(SolutionDir)tiling\inc;$(SolutionDir)ui\inc;$(QT5_DIR)msvc2017_64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

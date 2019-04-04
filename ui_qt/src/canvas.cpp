@@ -17,6 +17,7 @@ namespace dak
       , emi(*this)
       {
          emi.event_receivers.push_back(&transformer);
+         setContentsMargins(0, 0, 0, 0);
       }
 
       canvas::canvas(QWidget* parent, ui::transformable& trfable)

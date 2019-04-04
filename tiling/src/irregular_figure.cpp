@@ -5,7 +5,7 @@
 #include <dak/tiling/star.h>
 #include <dak/tiling/infer.h>
 
-#include <dak/geometry/utility.h>
+#include <dak/utility/text.h>
 
 #include <sstream>
 
@@ -13,7 +13,7 @@ namespace dak
 {
    namespace tiling
    {
-      using geometry::L;
+      using utility::L;
 
       std::shared_ptr<figure> irregular_figure::clone() const
       {
