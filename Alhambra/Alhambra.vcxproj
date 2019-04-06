@@ -53,6 +53,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)utility\inc;$(SolutionDir)geometry\inc;$(SolutionDir)tiling\inc;$(SolutionDir)tiling_style\inc;$(SolutionDir)ui\inc;$(SolutionDir)ui_qt\inc;$(SolutionDir)tiling_ui_qt\inc;$(QT5_DIR)msvc2017_64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>KNOWN_TILINGS_DIR=LR"($(SolutionDir)\tiling\tilings)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(QT5_DIR)msvc2017_64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -94,6 +95,7 @@ xcopy /D /Y $(SolutionDir)tiling\mosaics\*.tap.txt $(OutputPath)mosaics\</Comman
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)utility\inc;$(SolutionDir)geometry\inc;$(SolutionDir)tiling\inc;$(SolutionDir)tiling_style\inc;$(SolutionDir)ui\inc;$(SolutionDir)ui_qt\inc;$(SolutionDir)tiling_ui_qt\inc;$(QT5_DIR)msvc2017_64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>KNOWN_TILINGS_DIR=LR"($(SolutionDir)\tiling\tilings)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -171,8 +173,10 @@ xcopy /D /Y $(SolutionDir)tiling\mosaics\*.tap.txt $(OutputPath)mosaics\</Comman
     <Image Include="icons\mosaic-open.bmp" />
     <Image Include="icons\mosaic-previous.bmp" />
     <Image Include="icons\mosaic-save.bmp" />
+    <Image Include="icons\redo.bmp" />
     <Image Include="icons\save-img.bmp" />
     <Image Include="icons\save-svg.bmp" />
+    <Image Include="icons\undo.bmp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />

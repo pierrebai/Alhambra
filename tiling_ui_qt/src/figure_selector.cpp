@@ -140,6 +140,7 @@ namespace dak
          void fill_ui(int selected)
          {
             disable_feedback++;
+            figure_list->blockSignals(disable_feedback > 0);
 
             figure_list->setRowCount(0);
 
@@ -174,6 +175,7 @@ namespace dak
             update_enabled();
 
             disable_feedback--;
+            figure_list->blockSignals(disable_feedback > 0);
          }
 
          void update_enabled()

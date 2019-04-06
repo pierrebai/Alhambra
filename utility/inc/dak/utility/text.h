@@ -16,6 +16,8 @@ namespace dak
       struct L
       {
          static void initialize();
+         static void set_english();
+         static void set_french();
          static const char* t(const char * text);
          static const wchar_t* t(const wchar_t * text);
       };

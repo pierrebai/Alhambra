@@ -19,12 +19,15 @@
 #define IDB_EXPORT_SVG                  129
 #define IDB_BITMAP1                     134
 #define IDB_CANVAS_REDRAW               134
+#define IDB_REDO                        135
+#define IDB_BITMAP3                     136
+#define IDB_UNDO                        136
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        135
+#define _APS_NEXT_RESOURCE_VALUE        137
 #define _APS_NEXT_COMMAND_VALUE         40001
 #define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           101

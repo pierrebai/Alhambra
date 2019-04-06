@@ -35,3 +35,5 @@
 /export.cmd
 /utility/x64/Release
 /utility/x64/Debug
+/utility_tests/x64/Release
+/utility_tests/x64/Debug

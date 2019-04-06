@@ -53,7 +53,7 @@ namespace dak
          QToolButton* button = new QToolButton;
          button->setText(QString::fromWCharArray(text));
          button->setIcon(QIcon(create_pixmap_from_resource(icon)));
-         button->setIconSize(QSize(48, 48));
+         button->setIconSize(QSize(64, 64));
          button->setToolButtonStyle(Qt::ToolButtonStyle::ToolButtonTextUnderIcon);
          return button;
       }

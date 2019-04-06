@@ -33,9 +33,14 @@ namespace dak
 
          // Empty mosaic.
          mosaic() { }
-         
+
          // Mosaic of the given tiling, with empty figures.
          mosaic(const dak::tiling::tiling& t) : tiling(t) { }
+
+         // Copy.
+         mosaic(const mosaic& other);
+         mosaic& operator=(const mosaic& other);
+         void swap(mosaic& other) noexcept;
 
          // Mosaic comparison.
          bool operator==(const mosaic& other) const;

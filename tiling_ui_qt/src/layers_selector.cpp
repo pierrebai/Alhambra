@@ -172,6 +172,7 @@ namespace dak
          void update_list_content()
          {
             disable_feedback++;
+            layer_list->blockSignals(disable_feedback > 0);
 
             int row = 0;
             for (auto& layer : edited)
@@ -199,6 +200,7 @@ namespace dak
             }
 
             disable_feedback--;
+            layer_list->blockSignals(disable_feedback > 0);
          }
 
       private:
@@ -279,6 +281,7 @@ namespace dak
          void fill_ui(const std::vector<int>& selected)
          {
             disable_feedback++;
+            layer_list->blockSignals(disable_feedback > 0);
 
             layer_list->setRowCount(0);
 
@@ -316,6 +319,7 @@ namespace dak
             update_enabled();
 
             disable_feedback--;
+            layer_list->blockSignals(disable_feedback > 0);
          }
 
          void update_enabled()

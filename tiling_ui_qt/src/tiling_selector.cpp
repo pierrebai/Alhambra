@@ -118,7 +118,8 @@ namespace dak
 
          void fill_ui(const int selected)
          {
-            disable_feedback = true;
+            disable_feedback++;
+            tiling_list->blockSignals(disable_feedback > 0);
 
             tiling_list->clear();
 
@@ -131,7 +132,8 @@ namespace dak
 
             update_enabled();
 
-            disable_feedback = false;
+            disable_feedback--;
+            tiling_list->blockSignals(disable_feedback > 0);
          }
 
          void update_enabled()
@@ -210,7 +212,7 @@ namespace dak
 
          std::unique_ptr<QDialogButtonBox> dialog_buttons;
 
-         bool disable_feedback = false;
+         int disable_feedback = 0;
       };
 
       ////////////////////////////////////////////////////////////////////////////

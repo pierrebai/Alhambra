@@ -10,6 +10,28 @@ namespace dak
       using geometry::map;
       using geometry::transform;
 
+      mosaic::mosaic(const mosaic& other)
+      : tiling(other.tiling)
+      {
+         for (const auto& tile_fig : other.tile_figures)
+         {
+            tile_figures[tile_fig.first] = tile_fig.second->clone();
+         }
+      }
+
+      mosaic& mosaic::operator=(const mosaic& other)
+      {
+         mosaic copy(other);
+         swap(copy);
+         return *this;
+      }
+
+      void mosaic::swap(mosaic& other) noexcept
+      {
+         tiling.swap(other.tiling);
+         tile_figures.swap(other.tile_figures);
+      }
+
       bool mosaic::operator==(const mosaic& other) const
       {
          return tiling == other.tiling && same_figures(other);

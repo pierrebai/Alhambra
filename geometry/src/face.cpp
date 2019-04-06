@@ -97,6 +97,9 @@ namespace dak
          // Because the edges are sorted by their p1, we can easily find all edges around the same point
          // as another edge by "looking around" the address of the edge in the vector.
          const std::vector<edge>& all_edges = m.all();
+         if (all_edges.empty())
+            return;
+
          const edge* const first_edge = &all_edges.front();
          const edge* const last_edge = &all_edges.back();
 
