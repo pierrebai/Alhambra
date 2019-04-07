@@ -65,49 +65,63 @@ int main(int argc, char **argv)
    QToolBar* toolbar = new QToolBar();
       toolbar->setIconSize(QSize(32, 32));
 
-      QToolButton* previous_mosaic_button = create_tool_button(L::t(L"Previous Mosaic"), IDB_MOSAIC_PREVIOUS);
+      QAction* previous_mosaic_action = create_action(L::t(L"Previous Mosaic"), IDB_MOSAIC_PREVIOUS, QKeySequence(QKeySequence::StandardKey::Back));
+      QToolButton* previous_mosaic_button = create_tool_button(previous_mosaic_action);
       toolbar->addWidget(previous_mosaic_button);
 
-      QToolButton* next_mosaic_button = create_tool_button(L::t(L"Next Mosaic"), IDB_MOSAIC_NEXT);
+      QAction* next_mosaic_action = create_action(L::t(L"Next Mosaic"), IDB_MOSAIC_NEXT, QKeySequence(QKeySequence::StandardKey::Forward));
+      QToolButton* next_mosaic_button = create_tool_button(next_mosaic_action);
       toolbar->addWidget(next_mosaic_button);
 
       toolbar->addSeparator();
 
-      QToolButton* undo_button = create_tool_button(L::t(L"Undo"), IDB_UNDO);
+      QAction* undo_action = create_action(L::t(L"Undo"), IDB_UNDO, QKeySequence(QKeySequence::StandardKey::Undo));
+      QToolButton* undo_button = create_tool_button(undo_action);
+      undo_action->setEnabled(false);
       toolbar->addWidget(undo_button);
 
-      QToolButton* redo_button = create_tool_button(L::t(L"Redo"), IDB_REDO);
+      QAction* redo_action = create_action(L::t(L"Redo"), IDB_REDO, QKeySequence(QKeySequence::StandardKey::Redo));
+      QToolButton* redo_button = create_tool_button(redo_action);
+      redo_action->setEnabled(false);
       toolbar->addWidget(redo_button);
 
       toolbar->addSeparator();
 
-      QToolButton* load_mosaic_button = create_tool_button(L::t(L"Load Mosaic"), IDB_MOSAIC_OPEN);
+      QAction* load_mosaic_action = create_action(L::t(L"Load Mosaic"), IDB_MOSAIC_OPEN, QKeySequence(QKeySequence::StandardKey::Open));
+      QToolButton* load_mosaic_button = create_tool_button(load_mosaic_action);
       toolbar->addWidget(load_mosaic_button);
 
-      QToolButton* save_mosaic_button = create_tool_button(L::t(L"Save Mosaic"), IDB_MOSAIC_SAVE);
+      QAction* save_mosaic_action = create_action(L::t(L"Save Mosaic"), IDB_MOSAIC_SAVE, QKeySequence(QKeySequence::StandardKey::Save));
+      QToolButton* save_mosaic_button = create_tool_button(save_mosaic_action);
       toolbar->addWidget(save_mosaic_button);
 
-      QToolButton* export_image_button = create_tool_button(L::t(L"Export Image"), IDB_EXPORT_IMG);
+      QAction* export_image_action = create_action(L::t(L"Export Image"), IDB_EXPORT_IMG);
+      QToolButton* export_image_button = create_tool_button(export_image_action);
       toolbar->addWidget(export_image_button);
 
-      QToolButton* export_svg_button = create_tool_button(L::t(L"Export SVG"), IDB_EXPORT_SVG);
+      QAction* export_svg_action = create_action(L::t(L"Export SVG"), IDB_EXPORT_SVG);
+      QToolButton* export_svg_button = create_tool_button(export_svg_action);
       toolbar->addWidget(export_svg_button);
 
       toolbar->addSeparator();
 
-      QToolButton* translate_button = create_tool_button(L::t(L"Translate"), IDB_CANVAS_TRANSLATE);
+      QAction* translate_action = create_action(L::t(L"Translate"), IDB_CANVAS_TRANSLATE);
+      QToolButton* translate_button = create_tool_button(translate_action);
       translate_button->setCheckable(true);
       toolbar->addWidget(translate_button);
 
-      QToolButton* rotate_button = create_tool_button(L::t(L"Rotate"), IDB_CANVAS_ROTATE);
+      QAction* rotate_action = create_action(L::t(L"Rotate"), IDB_CANVAS_ROTATE);
+      QToolButton* rotate_button = create_tool_button(rotate_action);
       rotate_button->setCheckable(true);
       toolbar->addWidget(rotate_button);
 
-      QToolButton* scale_button = create_tool_button(L::t(L"Zoom"), IDB_CANVAS_ZOOM);
+      QAction* scale_action = create_action(L::t(L"Zoom"), IDB_CANVAS_ZOOM);
+      QToolButton* scale_button = create_tool_button(scale_action);
       scale_button->setCheckable(true);
       toolbar->addWidget(scale_button);
 
-      QToolButton* redraw_button = create_tool_button(L::t(L"Redraw"), IDB_CANVAS_REDRAW);
+      QAction* redraw_action = create_action(L::t(L"Redraw"), IDB_CANVAS_REDRAW, QKeySequence(QKeySequence::StandardKey::Refresh));
+      QToolButton* redraw_button = create_tool_button(redraw_action);
       toolbar->addWidget(redraw_button);
 
       QDockWidget* layers_dock = new QDockWidget(QString::fromWCharArray(L::t(L"Layers")));
@@ -383,6 +397,12 @@ int main(int argc, char **argv)
       }
    };
 
+   auto update_undo_redo_actions = [&]()
+   {
+      undo_action->setEnabled(undo_stack.has_undo());
+      redo_action->setEnabled(undo_stack.has_redo());
+   };
+
    auto awaken_styled_mosaic = [&](const std::any& data)
    {
       dak::ui::layered::layers layers = clone_layers(std::any_cast<const dak::ui::layered::layers&>(data));
@@ -404,30 +424,53 @@ int main(int argc, char **argv)
       update_canvas_layers(layered.get_layers());
    };
 
+   auto awaken_to_empty_canvas = [&](const std::any& data)
+   {
+      layered.set_layers({});
+
+      fill_layer_list();
+
+      const bool force_update = true;
+      fill_figure_editor(force_update);
+
+      update_canvas_layers(layered.get_layers());
+   };
+
+   auto clear_undo_stack = [&]()
+   {
+      undo_stack.clear();
+   };
+
    auto commit_to_undo = [&]()
    {
       const dak::ui::layered::layers& layers = layered.get_layers();
       undo_stack.commit({ clone_layers(layers), deaden_styled_mosaic, awaken_styled_mosaic });
+      update_undo_redo_actions();
    };
 
-   undo_button->connect(undo_button, &QToolButton::clicked, [&]()
+   undo_action->connect(undo_action, &QAction::triggered, [&]()
    {
       undo_stack.undo();
+      update_undo_redo_actions();
    });
 
-   redo_button->connect(redo_button, &QToolButton::clicked, [&]()
+   redo_action->connect(redo_action, &QAction::triggered, [&]()
    {
       undo_stack.redo();
+      update_undo_redo_actions();
    });
 
    /////////////////////////////////////////////////////////////////////////
    //
    // The style editor UI call-backs.
 
-   styles_editor->styles_changed = [&](const styles_editor::styles& styles)
+   styles_editor->styles_changed = [&](const styles_editor::styles& styles, bool interacting)
    {
       update_layer_list();
-      commit_to_undo();
+
+      if (!interacting)
+         commit_to_undo();
+
       update_canvas_layers(find_styles_layers(styles));
    };
 
@@ -448,12 +491,13 @@ int main(int argc, char **argv)
       const bool force_update = true;
       fill_figure_editor(force_update);
       fill_figure_list();
+
       commit_to_undo();
 
       update_canvas_layers(get_selected_layers());
    };
 
-   figure_editor->figure_changed = [&](std::shared_ptr<figure> modified)
+   figure_editor->figure_changed = [&](std::shared_ptr<figure> modified, bool interacting)
    {
       for (auto fig : get_all_avail_figures())
       {
@@ -464,7 +508,9 @@ int main(int argc, char **argv)
       }
 
       fill_figure_list();
-      commit_to_undo();
+
+      if (!interacting)
+         commit_to_undo();
 
       update_canvas_layers(get_selected_layers());
    };
@@ -497,8 +543,8 @@ int main(int argc, char **argv)
    layer_list->layers_changed = [&](const layers_selector::layers& layers)
    {
       update_layer_list();
-      commit_to_undo();
       styles_editor->set_edited(get_selected_styles());
+      commit_to_undo();
       update_canvas_layers(layers);
    };
 
@@ -513,10 +559,16 @@ int main(int argc, char **argv)
       layers.emplace_back(mo_layer);
       layered.set_layers(layers);
       fill_layer_list();
-      commit_to_undo();
 
       if (was_empty)
+      {
          update_layered_transform(mo_layer->mosaic->tiling.bounds());
+         clear_undo_stack();
+         // Note: when adding layers, allow undoing back to an empty canvas.
+         undo_stack.commit({ 0, nullptr, awaken_to_empty_canvas });
+      }
+
+      commit_to_undo();
 
       canvas->update();
    };
@@ -546,19 +598,21 @@ int main(int argc, char **argv)
       update_canvas_layers(get_avail_layers());
    };
 
-   previous_mosaic_button->connect(previous_mosaic_button, &QToolButton::clicked, [&]()
+   previous_mosaic_action->connect(previous_mosaic_action, &QAction::triggered, [&]()
    {
       mosaic_gen.previous();
+      clear_undo_stack();
       update_mosaic_map(mosaic_gen.generate_current(errors), mosaic_gen.current_name());
    });
 
-   next_mosaic_button->connect(next_mosaic_button, &QToolButton::clicked, [&]()
+   next_mosaic_action->connect(next_mosaic_action, &QAction::triggered, [&]()
    {
       mosaic_gen.next();
+      clear_undo_stack();
       update_mosaic_map(mosaic_gen.generate_current(errors), mosaic_gen.current_name());
    });
 
-   load_mosaic_button->connect(load_mosaic_button, &QToolButton::clicked, [&]()
+   load_mosaic_action->connect(load_mosaic_action, &QAction::triggered, [&]()
    {
       std::wstring fileName = QFileDialog::getOpenFileName(
          mainWindow, QString::fromWCharArray(L::t(L"Load Mosaic")), QString(),
@@ -570,6 +624,7 @@ int main(int argc, char **argv)
          std::wifstream file(fileName);
          auto layers = read_layered_mosaic(file, mosaic_gen.known_tilings);
          std::experimental::filesystem::path path(fileName);
+         clear_undo_stack();
          update_mosaic_map(layers, path.filename());
       }
       catch (std::exception& ex)
@@ -579,7 +634,7 @@ int main(int argc, char **argv)
       }
    });
 
-   save_mosaic_button->connect(save_mosaic_button, &QToolButton::clicked, [&]()
+   save_mosaic_action->connect(save_mosaic_action, &QAction::triggered, [&]()
    {
       std::wstring fileName = QFileDialog::getSaveFileName(
          mainWindow, QString::fromWCharArray(L::t(L"Save Mosaic")), QString(),
@@ -600,9 +655,9 @@ int main(int argc, char **argv)
 
    /////////////////////////////////////////////////////////////////////////
    //
-   // The export tool-bar buttons.
+   // The export tool-bar actions.
 
-   export_image_button->connect(export_image_button, &QToolButton::clicked, [&]()
+   export_image_action->connect(export_image_action, &QAction::triggered, [&]()
    {
       auto fileName = QFileDialog::getSaveFileName(
          mainWindow, QString::fromWCharArray(L::t(L"Export Mosaic to an Image")), QString(),
@@ -612,7 +667,7 @@ int main(int argc, char **argv)
       canvas->grab().save(fileName);
    });
 
-   export_svg_button->connect(export_svg_button, &QToolButton::clicked, [&]()
+   export_svg_action->connect(export_svg_action, &QAction::triggered, [&]()
    {
       auto fileName = QFileDialog::getSaveFileName(
          mainWindow, QString::fromWCharArray(L::t(L"Export Mosaic to a Scalable Vector Graphics File")), QString(),
@@ -645,37 +700,37 @@ int main(int argc, char **argv)
       canvas->transformer.forced_interaction_mode = forced_mode;
    };
 
-   translate_button->connect(translate_button, &QToolButton::clicked, [&]()
+   translate_action->connect(translate_action, &QAction::triggered, [&]()
    {
-      if (translate_button->isChecked())
+      if (translate_action->isChecked())
       {
-         rotate_button->setChecked(false);
-         scale_button->setChecked(false);
+         rotate_action->setChecked(false);
+         scale_action->setChecked(false);
       }
       update_canvas_mode();
    });
 
-   rotate_button->connect(rotate_button, &QToolButton::clicked, [&]()
+   rotate_action->connect(rotate_action, &QAction::triggered, [&]()
    {
-      if (rotate_button->isChecked())
+      if (rotate_action->isChecked())
       {
-         translate_button->setChecked(false);
-         scale_button->setChecked(false);
+         translate_action->setChecked(false);
+         scale_action->setChecked(false);
       }
       update_canvas_mode();
    });
 
-   scale_button->connect(scale_button, &QToolButton::clicked, [&]()
+   scale_action->connect(scale_action, &QAction::triggered, [&]()
    {
-      if (scale_button->isChecked())
+      if (scale_action->isChecked())
       {
-         translate_button->setChecked(false);
-         rotate_button->setChecked(false);
+         translate_action->setChecked(false);
+         rotate_action->setChecked(false);
       }
       update_canvas_mode();
    });
 
-   redraw_button->connect(redraw_button, &QToolButton::clicked, [&]()
+   redraw_action->connect(redraw_action, &QAction::triggered, [&]()
    {
       update_canvas_layers(layered.get_layers());
    });

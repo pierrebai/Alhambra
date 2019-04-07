@@ -48,14 +48,36 @@ namespace dak
          return pixmap;
       }
 
-      QToolButton* create_tool_button(const wchar_t* text, int icon)
+      QToolButton* create_tool_button()
       {
          QToolButton* button = new QToolButton;
-         button->setText(QString::fromWCharArray(text));
-         button->setIcon(QIcon(create_pixmap_from_resource(icon)));
          button->setIconSize(QSize(64, 64));
          button->setToolButtonStyle(Qt::ToolButtonStyle::ToolButtonTextUnderIcon);
          return button;
+      }
+
+      QToolButton* create_tool_button(const wchar_t* text, int icon)
+      {
+         QToolButton* button = create_tool_button();
+         button->setText(QString::fromWCharArray(text));
+         button->setIcon(QIcon(create_pixmap_from_resource(icon)));
+         return button;
+      }
+
+      QToolButton* create_tool_button(QAction* action)
+      {
+         QToolButton* button = create_tool_button();
+         button->setDefaultAction(action);
+         return button;
+      }
+
+      QAction* create_action(const wchar_t* text, int icon, QKeySequence key)
+      {
+         QAction* action = new QAction;
+         action->setText(QString::fromWCharArray(text));
+         action->setIcon(QIcon(create_pixmap_from_resource(icon)));
+         action->setShortcut(key);
+         return action;
       }
 
    }

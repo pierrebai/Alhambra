@@ -33,18 +33,20 @@ namespace dak
       //
       // An object tracking data changing transactions and undo / redo stack.
       //
-      // You add data that you want to be able to undo to a transaction object.
-      // (Before modifying the data, obviously...)
+      // You initially commit the data that you want to be able to undo back
+      // to a transaction object.
       //
-      // Call commit with a transaction full of new data to commit that
-      // modified data to the undo_keeper.
+      // ***  You cannot undo if the stack is empty, so don't forget  ***
+      // ***  that initial commit!                                    ***
       //
-      // Calling the undo function returns to you the data that was saved
-      // before that last commit. If there are not commit, an empty transaction
-      // is returned.
+      // Call commit with a transaction filled with the new data in order
+      // to commit that data to the undo stack.
       //
-      // Calling redo returns to you the data that was saved. It will return
-      // the same data if the top the stack is reached.
+      // The undo function awakens the data that was saved before
+      // that last commit. If there are not commit, nothing happens.
+      //
+      // The redo function awakens the data that was saved. It does nothing
+      // if the top the stack is reached.
 
       class undo_stack
       {
@@ -55,6 +57,9 @@ namespace dak
 
          // Create an empty undo stack.
          undo_stack();
+
+         // Clear the undo stack.
+         void clear();
 
          // Commit the given modified data to the undo stack.
          // Deaden the transaction data.
@@ -68,7 +73,13 @@ namespace dak
          // Does nothing if at the end of the undo stack.
          void redo();
 
-         // Return teh current full contents of the undo stack.
+         // Verify if there is anything to undo.
+         bool has_undo() const { return top != undos.begin(); }
+
+         // Verify if there is anything to redo.
+         bool has_redo() const { return top != undos.end() && top != undos.end() - 1; }
+
+         // Return the current full contents of the undo stack.
          const transactions& contents() const { return undos; }
 
       private:

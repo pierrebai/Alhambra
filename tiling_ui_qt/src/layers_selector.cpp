@@ -399,6 +399,8 @@ namespace dak
             if (disable_feedback)
                return;
 
+            update_enabled();
+
             if (editor.layers_changed)
                editor.layers_changed(get_selected_layers());
          }
@@ -444,7 +446,7 @@ namespace dak
                edited.emplace(edited.begin() + index, edited[index]->clone());
             }
             fill_ui({});
-            update_selection();
+            update_layers();
          }
 
          void add_layer()
@@ -463,7 +465,7 @@ namespace dak
                edited.erase(edited.begin() + index);
             }
             fill_ui({});
-            update_selection();
+            update_layers();
          }
 
          void move_layers_up()
@@ -483,7 +485,7 @@ namespace dak
                target++;
             }
             fill_ui(selected);
-            update_selection();
+            update_layers();
          }
 
          void move_layers_down()
@@ -504,7 +506,7 @@ namespace dak
                target--;
             }
             fill_ui(selected);
-            update_selection();
+            update_layers();
          }
 
          static constexpr int draw_column = 0;

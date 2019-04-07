@@ -177,12 +177,12 @@ namespace dak
 
             color_button->connect(color_button.get(), &QPushButton::clicked, [&]() { update_color(); });
             outline_color_button->connect(outline_color_button.get(), &QPushButton::clicked, [&]() { update_outline_color(); });
-            width_editor->value_changed_callback = std::bind(&styles_editor_ui::update_width, this, std::placeholders::_1);
-            outline_width_editor->value_changed_callback = std::bind(&styles_editor_ui::update_outline_width, this, std::placeholders::_1);
-            gap_width_editor->value_changed_callback = std::bind(&styles_editor_ui::update_gap_width, this, std::placeholders::_1);
+            width_editor->value_changed = [self=this](double new_value, bool interacting) { self->update_width(new_value, interacting); };
+            outline_width_editor->value_changed = [self=this](double new_value, bool interacting) { self->update_outline_width(new_value, interacting); };
+            gap_width_editor->value_changed = [self=this](double new_value, bool interacting) { self->update_gap_width(new_value, interacting); };
             fill_inside_check->connect(fill_inside_check.get(), &QCheckBox::stateChanged, [&](int new_state) { update_fill_inside(new_state); });
             fill_outside_check->connect(fill_outside_check.get(), &QCheckBox::stateChanged, [&](int new_state) { update_fill_outside(new_state); });
-            angle_editor->value_changed_callback = std::bind(&styles_editor_ui::update_angle, this, std::placeholders::_1);
+            angle_editor->value_changed = [self=this](double new_value, bool interacting) { self->update_angle(new_value, interacting); };
             join_combo->connect(join_combo.get(), &QComboBox::currentTextChanged, [&](const QString& text) { update_join(text); });
          }
 
@@ -318,7 +318,7 @@ namespace dak
 
             fill_ui_color();
 
-            update();
+            update(false);
          }
 
          void update_outline_color()
@@ -339,47 +339,47 @@ namespace dak
 
             fill_ui_outline_color();
 
-            update();
+            update(false);
          }
 
-         void update_width(double new_value)
+         void update_width(double new_value, bool interacting)
          {
             if (disable_feedback)
                return;
 
             for (auto style : get_styles<thick>())
                style->width = new_value;
-            update();
+            update(interacting);
          }
 
-         void update_outline_width(double new_value)
+         void update_outline_width(double new_value, bool interacting)
          {
             if (disable_feedback)
                return;
 
             for (auto style : get_styles<thick>())
                style->outline_width = new_value;
-            update();
+            update(interacting);
          }
 
-         void update_gap_width(double new_value)
+         void update_gap_width(double new_value, bool interacting)
          {
             if (disable_feedback)
                return;
 
             for (auto style : get_styles<interlace>())
                style->gap_width = new_value;
-            update();
+            update(interacting);
          }
 
-         void update_angle(double new_value)
+         void update_angle(double new_value, bool interacting)
          {
             if (disable_feedback)
                return;
 
             for (auto style : get_styles<emboss>())
                style->angle = new_value;
-            update();
+            update(interacting);
          }
 
          void update_fill_inside(int new_value)
@@ -389,7 +389,7 @@ namespace dak
 
             for (auto style : get_styles<filled>())
                style->draw_inside = (new_value != 0);
-            update();
+            update(false);
          }
 
          void update_fill_outside(int new_value)
@@ -399,7 +399,7 @@ namespace dak
 
             for (auto style : get_styles<filled>())
                style->draw_outside = (new_value != 0);
-            update();
+            update(false);
          }
 
          void update_join(const QString& new_value)
@@ -409,10 +409,10 @@ namespace dak
 
             for (auto style : get_styles<thick>())
                style->join = get_join_style_from_name(new_value.toStdWString());
-            update();
+            update(false);
          }
 
-         void update()
+         void update(bool interacting)
          {
             if (edited.size() <= 0)
                return;
@@ -422,7 +422,7 @@ namespace dak
                return;
 
             if (editor.styles_changed)
-               editor.styles_changed(edited);
+               editor.styles_changed(edited, interacting);
          }
 
          styles_editor& editor;

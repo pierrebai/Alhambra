@@ -14,8 +14,8 @@ namespace dak
       {
       }
 
-      int_editor::int_editor(QWidget* parent, const wchar_t* label_text, int value, std::function<void(int)> changed_callback)
-         : QWidget(parent), current_value(~value), value_changed_callback(changed_callback)
+      int_editor::int_editor(QWidget* parent, const wchar_t* label_text, int value, value_changed_callback changed_callback)
+         : QWidget(parent), current_value(~value), value_changed(changed_callback)
       {
          build_ui(label_text);
          set_value(value);
@@ -32,9 +32,9 @@ namespace dak
          if (current_value == new_value)
             return;
 
-         auto prev_callback = value_changed_callback;
+         auto prev_callback = value_changed;
          if (!call_callback)
-            value_changed_callback = nullptr;
+            value_changed = nullptr;
 
          current_value = new_value;
 
@@ -44,11 +44,11 @@ namespace dak
          if (slider->value() != new_value)
             slider->setValue(new_value);
 
-         if (call_callback && value_changed_callback)
-            value_changed_callback(new_value);
+         if (call_callback && value_changed)
+            value_changed(new_value, false);
 
          if (!call_callback)
-            value_changed_callback = prev_callback;
+            value_changed = prev_callback;
       }
 
       void int_editor::set_value_from_spin_box(int new_value)
@@ -61,13 +61,13 @@ namespace dak
          if (slider->value() != new_value)
             slider->setValue(new_value);
 
-         if (value_changed_callback)
-            value_changed_callback(new_value);
+         if (value_changed)
+            value_changed(new_value, false);
       }
 
-      void int_editor::set_value_from_slider(int new_value)
+      void int_editor::set_value_from_slider(int new_value, bool force_update)
       {
-         if (current_value == new_value)
+         if (!force_update && current_value == new_value)
             return;
 
          current_value = new_value;
@@ -75,8 +75,23 @@ namespace dak
          if (text_editor->value() != new_value)
             text_editor->setValue(new_value);
 
-         if (value_changed_callback)
-            value_changed_callback(new_value);
+         if (value_changed)
+            value_changed(new_value, slider->isSliderDown());
+      }
+
+      void int_editor::set_value_from_slider(int new_value)
+      {
+         set_value_from_slider(new_value, false);
+      }
+
+      void int_editor::slider_pressed()
+      {
+         start_value = current_value;
+      }
+
+      void int_editor::slider_released()
+      {
+         set_value_from_slider(slider->value(), start_value != current_value);
       }
 
       void int_editor::build_ui(const wchar_t* label_text)
@@ -95,7 +110,9 @@ namespace dak
          text_editor->setRange(0, 30);
          text_editor->setSingleStep(1);
 
-         slider->connect(slider, &QSlider::valueChanged, this, &int_editor::set_value_from_slider);
+         slider->connect(slider, &QSlider::valueChanged, [self=this](int new_value) { self->set_value_from_slider(new_value); });
+         slider->connect(slider, &QSlider::sliderPressed, this, &int_editor::slider_pressed);
+         slider->connect(slider, &QSlider::sliderReleased, this, &int_editor::slider_released);
 
          void (QSpinBox::*vc)(int) = &QSpinBox::valueChanged;
          text_editor->connect(text_editor, vc, this, &int_editor::set_value_from_spin_box);

@@ -13,6 +13,7 @@
 #include <QtGui/qpixmap.h>
 #include <QtGui/qbitmap.h>
 
+#include <QtWidgets/qaction.h>
 #include <QtWidgets/qtoolbutton.h>
 
 namespace dak
@@ -26,7 +27,13 @@ namespace dak
       // Create an icon for the given mosaic.
       QIcon get_icon(const std::shared_ptr<styled_mosaic>& sm, int w, int h);
       QIcon get_icon(const std::shared_ptr<mosaic>& mosaic, const color& co, int w, int h);
+
       QToolButton* create_tool_button(const wchar_t* text, int icon);
+      QToolButton* create_tool_button(QAction* action);
+      QToolButton* create_tool_button();
+
+      QAction* create_action(const wchar_t* text, int icon, QKeySequence key = QKeySequence());
+
       QPixmap create_pixmap_from_resource(int res);
    }
 }

@@ -10,16 +10,25 @@ namespace dak
       {
       }
 
+      // Clear the undo stack.
+      void undo_stack::clear()
+      {
+         undos.clear();
+         top = undos.end();
+      }
+
       // Deaden the current top transaction data.
       void undo_stack::deaden_top()
       {
-         top->deaden(top->data);
+         if (top->deaden)
+            top->deaden(top->data);
       }
 
       // Awaken the current top transaction data.
       void undo_stack::awaken_top() const
       {
-         top->awaken(top->data);
+         if (top->awaken)
+            top->awaken(top->data);
       }
 
       // Commit the given modified data to the undo stack.
@@ -27,7 +36,7 @@ namespace dak
       void undo_stack::commit(const transaction& tr)
       {
          // If there were undone transactions, erase them now that we're commiting a new timeline.
-         if (top != undos.end())
+         if (has_redo())
             undos.erase(top + 1, undos.end());
 
          undos.emplace_back(tr);
@@ -39,7 +48,7 @@ namespace dak
       // Does nothing if at the start of the undo stack.
       void undo_stack::undo()
       {
-         if (top == undos.begin())
+         if (!has_undo())
             return;
          --top;
          awaken_top();
@@ -49,9 +58,7 @@ namespace dak
       // Does nothing if at the end of the undo stack.
       void undo_stack::redo()
       {
-         if (top == undos.end())
-            return;
-         if (top == undos.end() - 1)
+         if (!has_redo())
             return;
          ++top;
          awaken_top();

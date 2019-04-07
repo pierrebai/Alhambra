@@ -16,23 +16,29 @@ namespace dak
       class int_editor : public QWidget
       {
       public:
-         std::function<void(int)> value_changed_callback;
+         typedef std::function<void(int value, bool interacting)> value_changed_callback;
+         value_changed_callback value_changed = nullptr;
 
          int_editor(QWidget* parent, const wchar_t* label_text);
          int_editor(QWidget* parent, const wchar_t* label_text, int value);
-         int_editor(QWidget* parent, const wchar_t* label_text, int value, std::function<void(int)> changed_callback);
+         int_editor(QWidget* parent, const wchar_t* label_text, int value, value_changed_callback changed_callback);
 
          void set_limits(int min, int max);
 
          void set_value(int new_value, bool call_callback = false);
 
       private:
+         void set_value_from_slider(int new_value, bool force_update);
          void set_value_from_slider(int new_value);
+         void slider_pressed();
+         void slider_released();
+
          void set_value_from_spin_box(int new_value);
 
          void build_ui(const wchar_t* label_text);
 
          int current_value = INT_MIN;
+         int start_value = INT_MIN;
          QHBoxLayout* layout = nullptr;
          QLabel* label = nullptr;
          QSlider* slider = nullptr;

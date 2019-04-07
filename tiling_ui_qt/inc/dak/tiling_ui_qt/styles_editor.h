@@ -31,7 +31,7 @@ namespace dak
          typedef std::vector<std::shared_ptr<style>> styles;
 
          // Callback when the editer styles are changed.
-         typedef std::function<void(const styles&)> styles_changed_callback;
+         typedef std::function<void(const styles&, bool interacting)> styles_changed_callback;
          styles_changed_callback styles_changed;
 
          // Create a style editor with the given parent widget and style.

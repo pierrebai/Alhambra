@@ -15,6 +15,9 @@ namespace utility_tests
 		{
          undo_stack undo;
 
+         Assert::IsFalse(undo.has_undo());
+         Assert::IsFalse(undo.has_redo());
+
          Assert::AreEqual<size_t>(0, undo.contents().size());
 
          struct data
@@ -44,6 +47,9 @@ namespace utility_tests
             }
          });
 
+         Assert::IsFalse(undo.has_undo());
+         Assert::IsFalse(undo.has_redo());
+
          Assert::AreEqual(7., my_data.a);
          Assert::AreEqual(49., my_data.a_squared);
 
@@ -67,6 +73,9 @@ namespace utility_tests
             }
          });
 
+         Assert::IsTrue(undo.has_undo());
+         Assert::IsFalse(undo.has_redo());
+
          Assert::AreEqual(9., my_data.a);
          Assert::AreEqual(81., my_data.a_squared);
 
@@ -76,14 +85,97 @@ namespace utility_tests
 
          undo.undo();
 
+         Assert::IsFalse(undo.has_undo());
+         Assert::IsTrue(undo.has_redo());
+
          Assert::AreEqual(7., my_data.a);
          Assert::AreEqual(49., my_data.a_squared);
 
          undo.redo();
 
+         Assert::IsTrue(undo.has_undo());
+         Assert::IsFalse(undo.has_redo());
+
          Assert::AreEqual(9., my_data.a);
          Assert::AreEqual(81., my_data.a_squared);
       }
 
+		TEST_METHOD(undo_stack_without_deaded_awaken)
+		{
+         undo_stack undo;
+
+         undo.commit({ 1.5 });
+         undo.commit({ 3.5 });
+
+         Assert::IsTrue(undo.has_undo());
+         Assert::IsFalse(undo.has_redo());
+
+         undo.undo();
+
+         Assert::IsFalse(undo.has_undo());
+         Assert::IsTrue(undo.has_redo());
+
+         undo.undo();
+
+         Assert::IsFalse(undo.has_undo());
+         Assert::IsTrue(undo.has_redo());
+
+         undo.redo();
+
+         Assert::IsTrue(undo.has_undo());
+         Assert::IsFalse(undo.has_redo());
+
+         undo.redo();
+
+         Assert::IsTrue(undo.has_undo());
+         Assert::IsFalse(undo.has_redo());
+      }
+
+		TEST_METHOD(undo_stack_empty_noop)
+		{
+         undo_stack undo;
+
+         undo.undo();
+         undo.undo();
+         undo.undo();
+
+         undo.redo();
+         undo.redo();
+         undo.redo();
+         undo.redo();
+         undo.redo();
+         undo.redo();
+         undo.redo();
+
+         undo.undo();
+         undo.undo();
+
+         undo.redo();
+         undo.redo();
+
+         undo.commit({ 1.5 });
+         undo.commit({ 3.5 });
+
+         undo.redo();
+         undo.redo();
+
+         undo.undo();
+         undo.undo();
+         undo.undo();
+
+         undo.redo();
+         undo.redo();
+         undo.redo();
+         undo.redo();
+         undo.redo();
+         undo.redo();
+         undo.redo();
+
+         undo.undo();
+         undo.undo();
+
+         undo.redo();
+         undo.redo();
+      }
 	};
 }

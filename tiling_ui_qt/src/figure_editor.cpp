@@ -106,9 +106,9 @@ namespace dak
             QVBoxLayout* layout = new QVBoxLayout(&parent);
             layout->setContentsMargins(0, 0, 0, 0);
 
-            d_editor = std::make_unique<ui_qt::double_editor>(&parent, L::t(L"Branch Sharpness"), 0, std::bind(&figure_editor_ui::update_d, this, std::placeholders::_1));
-            q_editor = std::make_unique<ui_qt::double_editor>(&parent, L::t(L"Flatness"), 0, std::bind(&figure_editor_ui::update_q, this, std::placeholders::_1));
-            s_editor = std::make_unique<ui_qt::int_editor>(&parent, L::t(L"Intersections"), 0, std::bind(&figure_editor_ui::update_s, this, std::placeholders::_1));
+            d_editor = std::make_unique<ui_qt::double_editor>(&parent, L::t(L"Branch Sharpness"), 0, [self=this](double new_value, bool interacting){ self->update_d(new_value, interacting); });
+            q_editor = std::make_unique<ui_qt::double_editor>(&parent, L::t(L"Flatness"), 0, [self=this](double new_value, bool interacting){ self->update_q(new_value, interacting); });
+            s_editor = std::make_unique<ui_qt::int_editor>(&parent, L::t(L"Intersections"), 0, [self=this](int new_value, bool interacting){ self->update_s(new_value, interacting); });
 
             d_editor->set_limits(-5., 5., 0.05);
             q_editor->set_limits(-1., 1., 0.01);
@@ -213,84 +213,84 @@ namespace dak
             }
          }
 
-         void update_d(double new_value)
+         void update_d(double new_value, bool interacting)
          {
             if (disable_feedback)
                return;
 
             if (star* edited_star = dynamic_cast<star *>(edited.get()))
             {
-               if (utility::near(new_value, edited_star->d))
+               if (interacting && utility::near(new_value, edited_star->d))
                   return;
 
                edited_star->d = new_value;
-               update();
+               update(interacting);
             }
            else if (irregular_figure* edited_irregular_figure = dynamic_cast<irregular_figure *>(edited.get()))
             {
-               if (utility::near(new_value, edited_irregular_figure->d))
+               if (interacting && utility::near(new_value, edited_irregular_figure->d))
                   return;
 
                edited_irregular_figure->d = new_value;
-               update();
+               update(interacting);
             }
          }
 
-         void update_q(double new_value)
+         void update_q(double new_value, bool interacting)
          {
             if (disable_feedback)
                return;
 
             if (rosette* edited_rosette = get_rosette(edited))
             {
-               if (utility::near(new_value, edited_rosette->q))
+               if (interacting && utility::near(new_value, edited_rosette->q))
                   return;
 
                edited_rosette->q = new_value;
-               update();
+               update(interacting);
             }
             else if (irregular_figure* edited_irregular_figure = dynamic_cast<irregular_figure *>(edited.get()))
             {
-               if (utility::near(new_value, edited_irregular_figure->q))
+               if (interacting && utility::near(new_value, edited_irregular_figure->q))
                   return;
 
                edited_irregular_figure->q = new_value;
-               update();
+               update(interacting);
             }
          }
 
-         void update_s(int new_value)
+         void update_s(int new_value, bool interacting)
          {
             if (disable_feedback)
                return;
 
             if (star* edited_star = get_star(edited))
             {
-               if (new_value == edited_star->s)
+               if (interacting && new_value == edited_star->s)
                   return;
 
                edited_star->s = new_value;
-               update();
+               update(interacting);
             }
             else if (rosette* edited_rosette = get_rosette(edited))
             {
-               if (new_value == edited_rosette->s)
+               if (interacting && new_value == edited_rosette->s)
                   return;
 
                edited_rosette->s = new_value;
-               update();
+               update(interacting);
             }
             else if (irregular_figure* edited_irregular_figure = get_irregular_figure(edited))
             {
-               if (new_value == edited_irregular_figure->s)
+               if (interacting && new_value == edited_irregular_figure->s)
                   return;
 
                edited_irregular_figure->s = new_value;
-               update();
+               update(interacting);
             }
          }
 
-         void update()
+         void update(bool interacting)
          {
             if (!edited)
                return;
@@ -300,7 +300,7 @@ namespace dak
                return;
 
             if (editor.figure_changed)
-               editor.figure_changed(edited);
+               editor.figure_changed(edited, interacting);
          }
 
          figure_editor& editor;

@@ -25,7 +25,7 @@ namespace dak
       class figure_editor : public QWidget
       {
       public:
-         typedef std::function<void(std::shared_ptr<figure>)> figure_changed_callback;
+         typedef std::function<void(std::shared_ptr<figure>, bool interacting)> figure_changed_callback;
          figure_changed_callback figure_changed;
 
          // Create a figure editor with the given parent widget and figure.
