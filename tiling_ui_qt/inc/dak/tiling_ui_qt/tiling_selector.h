@@ -33,7 +33,7 @@ namespace dak
          tiling_selector(QWidget* parent);
          tiling_selector(QWidget* parent, tiling_chosen_callback tc);
 
-         const std::shared_ptr<mosaic>& get_selected() const;
+         std::shared_ptr<mosaic> get_selected() const;
 
       protected:
          std::unique_ptr<tiling_selector_ui> ui;

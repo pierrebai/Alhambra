@@ -91,6 +91,7 @@
     <ClInclude Include="inc\dak\tiling_ui_qt\figure_editor.h" />
     <ClInclude Include="inc\dak\tiling_ui_qt\figure_selector.h" />
     <ClInclude Include="inc\dak\tiling_ui_qt\layers_selector.h" />
+    <ClInclude Include="inc\dak\tiling_ui_qt\main_window.h" />
     <ClInclude Include="inc\dak\tiling_ui_qt\table_widget_with_combo.h" />
     <ClInclude Include="inc\dak\tiling_ui_qt\utility.h" />
     <ClInclude Include="inc\dak\tiling_ui_qt\styles_editor.h" />
@@ -100,6 +101,7 @@
     <ClCompile Include="src\figure_editor.cpp" />
     <ClCompile Include="src\figure_selector.cpp" />
     <ClCompile Include="src\layers_selector.cpp" />
+    <ClCompile Include="src\main_window.cpp" />
     <ClCompile Include="src\table_widget_with_combo.cpp" />
     <ClCompile Include="src\utility.cpp" />
     <ClCompile Include="src\styles_editor.cpp" />

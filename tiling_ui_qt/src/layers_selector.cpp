@@ -337,6 +337,10 @@ namespace dak
          void update_selection()
          {
             update_enabled();
+
+            if (disable_feedback)
+               return;
+
             if (editor.selection_changed)
                editor.selection_changed(edited);
          }
@@ -392,17 +396,14 @@ namespace dak
 
          void update_layers()
          {
-            if (edited.size() <= 0)
-               return;
+            update_enabled();
 
             // Note: used to avoid re-calculating the layer when just setting its value in the UI.
             if (disable_feedback)
                return;
 
-            update_enabled();
-
             if (editor.layers_changed)
-               editor.layers_changed(get_selected_layers());
+               editor.layers_changed(edited);
          }
 
          void set_selected_indexes(const std::vector<int>& indexes)

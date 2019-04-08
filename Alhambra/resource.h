@@ -3,6 +3,7 @@
 // Used by Resource.rc
 //
 #define IDI_ICON1                       101
+#define IDI_APP_ICON                    101
 #define IDB_CANVAS_ROTATE               116
 #define IDB_CANVAS_TRANSLATE            117
 #define IDB_CANVAS_ZOOM                 118

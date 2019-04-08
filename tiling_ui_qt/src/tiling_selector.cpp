@@ -229,7 +229,7 @@ namespace dak
       {
       }
 
-      const std::shared_ptr<mosaic>& tiling_selector::get_selected() const
+      std::shared_ptr<mosaic> tiling_selector::get_selected() const
       {
          if (!ui)
             return nullptr;
