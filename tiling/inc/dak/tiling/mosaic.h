@@ -51,6 +51,9 @@ namespace dak
 
          // Construct a map in the given polygonal region using the tiling and figures.
          map construct(const rect& region) const;
+
+         // Verify if the mosaic is invalid.
+         bool is_invalid() const { return tiling.is_invalid() || tile_figures.empty(); }
       };
    }
 }

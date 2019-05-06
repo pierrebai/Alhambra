@@ -87,7 +87,7 @@ namespace dak
          file.precision(17);
          file.imbue(std::locale("C"));
 
-         file << L"tiling" << std::quoted(t.name) << t.tiles.size() << std::endl;
+         file << L"tiling " << std::quoted(t.name) << L" " << t.tiles.size() << std::endl;
          file << L"    " << t.t1.x << L" " << t.t1.y << std::endl;
          file << L"    " << t.t2.x << L" " << t.t2.y << std::endl;
          file << std::endl;

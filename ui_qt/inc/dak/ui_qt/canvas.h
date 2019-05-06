@@ -3,7 +3,6 @@
 #ifndef DAK_UI_QT_TRANSFORMABLE_CANVAS_H
 #define DAK_UI_QT_TRANSFORMABLE_CANVAS_H
 
-#include <dak/ui_qt/painter_transformable.h>
 #include <dak/ui_qt/widget_mouse_emitter.h>
 
 #include <dak/ui/transformer.h>
@@ -37,7 +36,6 @@ namespace dak
          // Sub-class should override this and call this implementation last.
          virtual void paint(QPainter& painter);
 
-      private:
          // This will allow receiving mouse event from the canvas.
          dak::ui_qt::mouse::widget_emitter emi;
       };

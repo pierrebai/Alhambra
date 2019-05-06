@@ -93,7 +93,8 @@
     <ClInclude Include="inc\dak\tiling_ui_qt\layers_selector.h" />
     <ClInclude Include="inc\dak\tiling_ui_qt\main_window.h" />
     <ClInclude Include="inc\dak\tiling_ui_qt\table_widget_with_combo.h" />
-    <ClInclude Include="inc\dak\tiling_ui_qt\utility.h" />
+    <ClInclude Include="inc\dak\tiling_ui_qt\tiling_editor.h" />
+    <ClInclude Include="inc\dak\tiling_ui_qt\tiling_window.h" />
     <ClInclude Include="inc\dak\tiling_ui_qt\styles_editor.h" />
     <ClInclude Include="inc\dak\tiling_ui_qt\tiling_selector.h" />
   </ItemGroup>
@@ -103,7 +104,8 @@
     <ClCompile Include="src\layers_selector.cpp" />
     <ClCompile Include="src\main_window.cpp" />
     <ClCompile Include="src\table_widget_with_combo.cpp" />
-    <ClCompile Include="src\utility.cpp" />
+    <ClCompile Include="src\tiling_editor.cpp" />
+    <ClCompile Include="src\tiling_window.cpp" />
     <ClCompile Include="src\styles_editor.cpp" />
     <ClCompile Include="src\tiling_selector.cpp" />
   </ItemGroup>

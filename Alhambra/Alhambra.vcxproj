@@ -57,28 +57,28 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(QT5_DIR)msvc2017_64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Qt5Svg.lib;Qt5Widgets.lib;Qt5Gui.lib;Qt5Core.lib;Qt5WinExtras.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Qt5Svgd.lib;Qt5Widgetsd.lib;Qt5Guid.lib;Qt5Cored.lib;Qt5WinExtrasd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /D /Y $(QT5_DIR)msvc2017_64\bin\Qt5Core.dll $(OutputPath)
-xcopy /D /Y $(QT5_DIR)msvc2017_64\bin\Qt5Gui.dll $(OutputPath)
-xcopy /D /Y $(QT5_DIR)msvc2017_64\bin\Qt5Widgets.dll $(OutputPath)
-xcopy /D /Y $(QT5_DIR)msvc2017_64\bin\Qt5WinExtras.dll $(OutputPath)
-xcopy /D /Y $(QT5_DIR)msvc2017_64\bin\Qt5Svg.dll $(OutputPath)
+      <Command>xcopy /D /Y $(QT5_DIR)msvc2017_64\bin\Qt5Cored.dll $(OutputPath)
+xcopy /D /Y $(QT5_DIR)msvc2017_64\bin\Qt5Guid.dll $(OutputPath)
+xcopy /D /Y $(QT5_DIR)msvc2017_64\bin\Qt5Widgetsd.dll $(OutputPath)
+xcopy /D /Y $(QT5_DIR)msvc2017_64\bin\Qt5WinExtrasd.dll $(OutputPath)
+xcopy /D /Y $(QT5_DIR)msvc2017_64\bin\Qt5Svgd.dll $(OutputPath)
 mkdir $(OutputPath)platforms
 mkdir $(OutputPath)styles
 mkdir $(OutputPath)imageformats
-xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\styles\qwindowsvistastyle.dll $(OutputPath)styles
-xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\platforms\qwindows.dll $(OutputPath)platforms
-xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qicns.dll $(OutputPath)imageformats
-xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qico.dll $(OutputPath)imageformats
-xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qjpeg.dll $(OutputPath)imageformats
-xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qsvg.dll $(OutputPath)imageformats
-xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qwebp.dll $(OutputPath)imageformats
-xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qwbmp.dll $(OutputPath)imageformats
-xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qtiff.dll $(OutputPath)imageformats
-xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qgif.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\styles\qwindowsvistastyled.dll $(OutputPath)styles
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\platforms\qwindowsd.dll $(OutputPath)platforms
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qicnsd.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qicod.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qjpegd.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qsvgd.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qwebpd.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qwbmpd.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qtiffd.dll $(OutputPath)imageformats
+xcopy /D /Y $(QT5_DIR)msvc2017_64\plugins\imageformats\qgifd.dll $(OutputPath)imageformats
 mkdir $(OutputPath)tilings
 mkdir $(OutputPath)mosaics
 xcopy /D /Y $(SolutionDir)tiling\tilings\*.tiling $(OutputPath)tilings\
@@ -173,9 +173,22 @@ xcopy /D /Y $(SolutionDir)tiling\mosaics\*.tap.txt $(OutputPath)mosaics\</Comman
     <Image Include="icons\mosaic-open.bmp" />
     <Image Include="icons\mosaic-previous.bmp" />
     <Image Include="icons\mosaic-save.bmp" />
+    <Image Include="icons\polygon-add.bmp" />
+    <Image Include="icons\polygon-clear-fill.bmp" />
+    <Image Include="icons\polygon-copy.bmp" />
+    <Image Include="icons\polygon-delete.bmp" />
+    <Image Include="icons\polygon-draw.bmp" />
+    <Image Include="icons\polygon-exclude-all.bmp" />
+    <Image Include="icons\polygon-fill.bmp" />
+    <Image Include="icons\polygon-include.bmp" />
+    <Image Include="icons\polygon-move.bmp" />
+    <Image Include="icons\polygon-translation-clear.bmp" />
+    <Image Include="icons\polygon-translation.bmp" />
     <Image Include="icons\redo.bmp" />
     <Image Include="icons\save-img.bmp" />
     <Image Include="icons\save-svg.bmp" />
+    <Image Include="icons\tiling-editor.bmp" />
+    <Image Include="icons\tiling-new.bmp" />
     <Image Include="icons\undo.bmp" />
   </ItemGroup>
   <ItemGroup>

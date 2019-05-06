@@ -13,14 +13,18 @@
   <ItemGroup>
     <ClInclude Include="inc\dak\ui_qt\convert.h" />
     <ClInclude Include="inc\dak\ui_qt\double_editor.h" />
-    <ClInclude Include="inc\dak\ui_qt\drawing.h" />
+    <ClInclude Include="inc\dak\ui_qt\qt_drawing.h" />
+    <ClInclude Include="inc\dak\ui_qt\drawing_canvas.h" />
     <ClInclude Include="inc\dak\ui_qt\int_editor.h" />
+    <ClInclude Include="inc\dak\ui_qt\ask.h" />
     <ClInclude Include="inc\dak\ui_qt\layered_canvas.h" />
     <ClInclude Include="inc\dak\ui_qt\map_canvas.h" />
+    <ClInclude Include="inc\dak\ui_qt\message_reporter.h" />
     <ClInclude Include="inc\dak\ui_qt\mosaic_canvas.h" />
     <ClInclude Include="inc\dak\ui_qt\paint_device_transformable.h" />
     <ClInclude Include="inc\dak\ui_qt\canvas.h" />
     <ClInclude Include="inc\dak\ui_qt\tiling_canvas.h" />
+    <ClInclude Include="inc\dak\ui_qt\utility.h" />
     <ClInclude Include="inc\dak\ui_qt\widget_mouse_emitter.h" />
     <ClInclude Include="inc\dak\ui_qt\painter_drawing.h" />
     <ClInclude Include="inc\dak\ui_qt\paint_device_drawing.h" />
@@ -29,14 +33,18 @@
   <ItemGroup>
     <ClCompile Include="src\convert.cpp" />
     <ClCompile Include="src\double_editor.cpp" />
-    <ClCompile Include="src\drawing.cpp" />
+    <ClCompile Include="src\message_reporter.cpp" />
+    <ClCompile Include="src\qt_drawing.cpp" />
+    <ClCompile Include="src\drawing_canvas.cpp" />
     <ClCompile Include="src\int_editor.cpp" />
+    <ClCompile Include="src\ask.cpp" />
     <ClCompile Include="src\layered_canvas.cpp" />
     <ClCompile Include="src\map_canvas.cpp" />
     <ClCompile Include="src\mosaic_canvas.cpp" />
     <ClCompile Include="src\paint_device_transformable.cpp" />
     <ClCompile Include="src\canvas.cpp" />
     <ClCompile Include="src\tiling_canvas.cpp" />
+    <ClCompile Include="src\utility.cpp" />
     <ClCompile Include="src\widget_mouse_emitter.cpp" />
     <ClCompile Include="src\painter_drawing.cpp" />
     <ClCompile Include="src\paint_device_drawing.cpp" />
@@ -92,7 +100,7 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile />
-      <AdditionalIncludeDirectories>$(ProjectDir)inc;$(SolutionDir)utility\inc;$(SolutionDir)geometry\inc;$(SolutionDir)tiling\inc;$(SolutionDir)ui\inc;$(QT5_DIR)msvc2017_64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)inc;$(SolutionDir)utility\inc;$(SolutionDir)geometry\inc;$(SolutionDir)tiling\inc;$(SolutionDir)tiling_style\inc;$(SolutionDir)ui\inc;$(QT5_DIR)msvc2017_64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -111,7 +119,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile />
-      <AdditionalIncludeDirectories>$(ProjectDir)inc;$(SolutionDir)utility\inc;$(SolutionDir)geometry\inc;$(SolutionDir)tiling\inc;$(SolutionDir)ui\inc;$(QT5_DIR)msvc2017_64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)inc;$(SolutionDir)utility\inc;$(SolutionDir)geometry\inc;$(SolutionDir)tiling\inc;$(SolutionDir)tiling_style\inc;$(SolutionDir)ui\inc;$(QT5_DIR)msvc2017_64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>

@@ -11,23 +11,19 @@ namespace dak
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // A widget canvas working with a mosaic.
+      // A widget drawing_canvas working with a mosaic.
 
       mosaic_canvas::mosaic_canvas(QWidget* parent)
-      : canvas(parent, mosaic_drawing)
+      : drawing_canvas(parent)
       , mosaic(nullptr)
       {
-         transformer.manipulated = &mosaic_drawing;
       }
 
-      void mosaic_canvas::paint(QPainter& painter)
+      void mosaic_canvas::draw(drawing& drw)
       {
-         mosaic_drawing.painter = &painter;
          // Make it so we can see 9 instances (3x3) of the tiling.
-         draw_tiling(mosaic_drawing, mosaic, color::black(), 3);
-         mosaic_drawing.painter = nullptr;
-
-         canvas::paint(painter);
+         draw_tiling(drw, mosaic, color::black(), 3);
+         drawing_canvas::draw(drw);
       }
    }
 }

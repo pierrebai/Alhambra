@@ -58,6 +58,23 @@ namespace dak
          saved_trfs.pop_back();
          return *this;
       }
+
+      static polygon make_arrow(const point& from, const point& to, double length, double half_width)
+      {
+         const point dir = (to - from).normalize().scale(length);
+         const point perp = dir.perp().normalize().scale(half_width);
+         return polygon({ to, to - dir + perp, to - dir - perp, to });
+      }
+
+      void drawing::draw_arrow(const point& from, const point& to, double length, double half_width)
+      {
+         draw_polygon(make_arrow(from, to, length, half_width));
+      }
+
+      void drawing::fill_arrow(const point& from, const point& to, double length, double half_width)
+      {
+         fill_polygon(make_arrow(from, to, length, half_width));
+      }
    }
 }
 

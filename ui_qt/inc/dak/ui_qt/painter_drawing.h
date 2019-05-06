@@ -3,7 +3,7 @@
 #ifndef DAK_UI_QT_PAINTER_DRAWING_H
 #define DAK_UI_QT_PAINTER_DRAWING_H
 
-#include <dak/ui_qt/drawing.h>
+#include <dak/ui_qt/qt_drawing.h>
 
 class QPainter;
 
@@ -19,7 +19,7 @@ namespace dak
       //
       // Draw on a QPainter.
 
-      class painter_drawing : public drawing
+      class painter_drawing : public qt_drawing
       {
       public:
          // Current QPainter. Nothing drawn if null.

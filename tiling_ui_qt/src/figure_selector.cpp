@@ -1,6 +1,5 @@
 #include <dak/tiling_ui_qt/figure_selector.h>
 #include <dak/tiling_ui_qt/table_widget_with_combo.h>
-#include <dak/tiling_ui_qt/utility.h>
 
 #include <dak/ui_qt/convert.h>
 

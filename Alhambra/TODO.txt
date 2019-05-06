@@ -1,4 +1,5 @@
 - Tiling designer.
+- Tiling selection: dont'select point when zoomed out.
 - Selection framework.
 - Manipulate canvas for a single layer.
 - Degenerate cases of inferring.

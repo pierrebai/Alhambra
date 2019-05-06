@@ -11,21 +11,18 @@ namespace dak
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // A widget canvas working with a layered.
+      // A widget drawing_canvas working with a layered.
 
       layered_canvas::layered_canvas(QWidget* parent)
-      : canvas(parent)
+      : drawing_canvas(parent)
       , layered(nullptr)
       {
       }
 
-      void layered_canvas::paint(QPainter& painter)
+      void layered_canvas::draw(drawing& drw)
       {
-         layered_drawing.painter = &painter;
-         draw_layered(layered_drawing, layered);
-         layered_drawing.painter = nullptr;
-
-         canvas::paint(painter);
+         draw_layered(drw, layered);
+         drawing_canvas::draw(drw);
       }
    }
 }

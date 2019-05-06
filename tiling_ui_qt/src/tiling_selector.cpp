@@ -109,6 +109,7 @@ namespace dak
             dialog_buttons->button(QDialogButtonBox::Cancel)->setEnabled(false);
 
             tiling_list->connect(tiling_list.get(), &QListWidget::itemSelectionChanged, [&]() { update_selection(); });
+            tiling_list->connect(tiling_list.get(), &QListWidget::itemDoubleClicked, &parent, &QDialog::accept);
             dialog_buttons->connect(dialog_buttons.get(), &QDialogButtonBox::accepted, &parent, &QDialog::accept);
             dialog_buttons->connect(dialog_buttons.get(), &QDialogButtonBox::rejected, &parent, &QDialog::reject);
             canvas_tab->connect(canvas_tab.get(), &QTabBar::currentChanged, stacked_canvas.get(), &QStackedWidget::setCurrentIndex);

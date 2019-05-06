@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="inc\dak\ui_qt\drawing.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="inc\dak\ui_qt\paint_device_drawing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -57,11 +54,23 @@
     <ClInclude Include="inc\dak\ui_qt\tiling_canvas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="inc\dak\ui_qt\utility.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\ui_qt\ask.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\ui_qt\message_reporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\ui_qt\drawing_canvas.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\ui_qt\qt_drawing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\drawing.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\convert.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -99,6 +108,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\tiling_canvas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ask.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\drawing_canvas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qt_drawing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\message_reporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

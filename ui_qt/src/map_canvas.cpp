@@ -11,20 +11,17 @@ namespace dak
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // A widget canvas working with a map.
+      // A widget drawing_canvas working with a map.
 
       map_canvas::map_canvas(QWidget* parent)
-      : canvas(parent)
+      : drawing_canvas(parent)
       {
       }
 
-      void map_canvas::paint(QPainter& painter)
+      void map_canvas::draw(drawing& drw)
       {
-         map_drawing.painter = &painter;
-         draw_map(map_drawing);
-         map_drawing.painter = nullptr;
-
-         canvas::paint(painter);
+         draw_map(drw);
+         drawing_canvas::draw(drw);
       }
 
       void map_canvas::draw_map(dak::ui::drawing& drw) const

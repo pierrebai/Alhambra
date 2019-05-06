@@ -3,9 +3,7 @@
 #ifndef DAK_UI_QT_MOSAIC_CANVAS_H
 #define DAK_UI_QT_MOSAIC_CANVAS_H
 
-#include <dak/ui_qt/canvas.h>
-
-#include <dak/ui_qt/painter_transformable.h>
+#include <dak/ui_qt/drawing_canvas.h>
 
 #include <dak/tiling/mosaic.h>
 
@@ -17,23 +15,20 @@ namespace dak
    {
       ////////////////////////////////////////////////////////////////////////////
       //
-      // A widget canvas working with a mosaic.
+      // A widget drawing_canvas working with a mosaic.
 
-      class mosaic_canvas : public canvas
+      class mosaic_canvas : public drawing_canvas
       {
       public:
-         // This is the mosaic to draw on the canvas.
+         // This is the mosaic to draw on the drawing_canvas.
          std::shared_ptr<tiling::mosaic> mosaic;
 
-         // Create a canvas with the given parent widget.
+         // Create a drawing_canvas with the given parent widget.
          mosaic_canvas(QWidget* parent);
 
       protected:
-         // This will draw the mosaic, if any, then the transformer drawings, if any.
-         void paint(QPainter& painter) override;
-
-         // This will allow painting the mosaic.
-         dak::ui_qt::painter_transformable mosaic_drawing;
+         // Paint the mosaic using the prepared drawing.
+         void draw(drawing& drw) override;
       };
    }
 }

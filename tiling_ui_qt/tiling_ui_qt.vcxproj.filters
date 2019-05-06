@@ -27,9 +27,6 @@
     <ClInclude Include="inc\dak\tiling_ui_qt\tiling_selector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\dak\tiling_ui_qt\utility.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="inc\dak\tiling_ui_qt\table_widget_with_combo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -37,6 +34,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inc\dak\tiling_ui_qt\main_window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\tiling_ui_qt\tiling_window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\tiling_ui_qt\tiling_editor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -53,9 +56,6 @@
     <ClCompile Include="src\tiling_selector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\utility.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\table_widget_with_combo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -63,6 +63,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\main_window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tiling_editor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tiling_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

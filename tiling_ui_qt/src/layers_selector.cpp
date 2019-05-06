@@ -1,6 +1,6 @@
 #include <dak/tiling_ui_qt/layers_selector.h>
 #include <dak/tiling_ui_qt/table_widget_with_combo.h>
-#include <dak/tiling_ui_qt/utility.h>
+#include <dak/ui_qt/utility.h>
 
 #include <dak/ui_qt/convert.h>
 
@@ -185,7 +185,7 @@ namespace dak
 
                   // Note: make icon larger than what was set in the table view
                   //       so that it gets scaled down with some smoothing.
-                  const QIcon qicon = get_icon(mo_layer, 128, 64);
+                  const QIcon qicon = ui_qt::get_icon(mo_layer, 128, 64);
                   const QString tiling_name = QString::fromWCharArray(mo_layer->mosaic->tiling.name.c_str());
                   auto tiling_item = layer_list->item(row, tiling_column);
                   tiling_item->setIcon(qicon);
@@ -219,7 +219,7 @@ namespace dak
          static std::unique_ptr<QPushButton> make_button(int icon, const wchar_t* tooltip)
          {
             std::unique_ptr<QPushButton> button = std::make_unique<QPushButton>();
-            button->setIcon(QIcon(create_pixmap_from_resource(icon)));
+            button->setIcon(QIcon(ui_qt::create_pixmap_from_resource(icon)));
             button->setToolTip(QString::fromWCharArray(tooltip));
             return std::move(button);
          }
@@ -299,7 +299,7 @@ namespace dak
 
                   // Note: make the icon larger than what was set in the table view
                   //       so that it gets scaled down with some smoothing.
-                  const QIcon qicon = get_icon(mo_layer, 128, 64);
+                  const QIcon qicon = ui_qt::get_icon(mo_layer, 128, 64);
                   const QString tiling_name = QString::fromWCharArray(mo_layer->mosaic->tiling.name.c_str());
                   auto tiling_item = new QTableWidgetItem(qicon, tiling_name);
                   tiling_item->setFlags(Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsSelectable);

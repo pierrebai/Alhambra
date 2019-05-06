@@ -26,64 +26,46 @@ namespace dak
          std::vector<std::wstring> internal_verify(const map& map, const face::faces& white, const face::faces& black, const face::faces& red, const face::faces& exteriors)
          {
             std::vector<std::wstring> errors;
-            //wchar_t error[200];
 
-            //// Note: exterior faces sometimes contain duplicate points...
-            //face::faces clean_exteriors(exteriors);
-            //for (auto& face : clean_exteriors)
-            //{
-            //   auto& sorted_points = face.points;
-            //   std::sort(sorted_points.begin(), sorted_points.end());
-            //   sorted_points.erase(std::unique(sorted_points.begin(), sorted_points.end()), sorted_points.end());
-            //}
+            // Unfortunately, some tilings are degenrate with faces that are simple lines and cause checks to fail.
+            // Don't verify those tilings.
+            const std::vector<polygon>* all_faces[4] = { &white, &black, &red, &exteriors };
+            for (const auto& faces : all_faces)
+            {
+               for (const polygon& face : *faces)
+               {
+                  if (face.points.size() < 3)
+                  {
+                     return errors;
+                  }
+               }
+            }
+            
+            wchar_t error[200];
 
-            //face::faces faces(white);
-            //faces.insert(faces.end(), black.begin(), black.end());
-            //faces.insert(faces.end(), red.begin(), red.end());
-            //faces.insert(faces.end(), clean_exteriors.begin(), clean_exteriors.end());
-
-            //if (white.size() > black.size() * 2)
-            //{
-            //   _snwprintf_s(error, sizeof(error) / sizeof(error[0]), L::t(L"White faces contains more than twice black faces (%ld vs %ld)."), (long) white.size(), (long) black.size());
-            //   errors.emplace_back(error);
-            //}
-            //if (black.size() > white.size() * 2)
-            //{
-            //   _snwprintf_s(error, sizeof(error) / sizeof(error[0]), L::t(L"Black faces contains more than twice white faces (%ld vs %ld)."), (long) black.size(), (long) white.size());
-            //   errors.emplace_back(error);
-            //}
-
-            // Make sure there are no duplicate points in each face.
-            //for (const auto& face : faces)
-            //{
-            //   auto sorted_points = face.points;
-
-            //   std::sort(sorted_points.begin(), sorted_points.end());
-            //   if (std::unique(sorted_points.begin(), sorted_points.end()) != sorted_points.end())
-            //   {
-            //      const point& pt = sorted_points.back();
-            //      _snwprintf_s(error, sizeof(error) / sizeof(error[0]), L::t(L"Face contains duplicate point %f/%f."), pt.x, pt.y);
-            //      errors.emplace_back(error);
-            //   }
-            //}
+            // The number of white and black face times their number of edges should be equal.
+            const size_t white_edges = std::accumulate(white.begin(), white.end(), size_t(0), [](size_t val, const polygon& f) { return f.points.size() + val; });
+            const size_t black_edges = std::accumulate(black.begin(), black.end(), size_t(0), [](size_t val, const polygon& f) { return f.points.size() + val; });
+            const size_t red_edges = std::accumulate(red.begin(), red.end(), size_t(0), [](size_t val, const polygon& f) { return f.points.size() + val; });
+            const size_t exterior_edges = std::accumulate(exteriors.begin(), exteriors.end(), size_t(0), [](size_t val, const polygon& f) { return f.points.size() + val; });
+            if (std::abs(long(white_edges - black_edges)) > red_edges + exterior_edges)
+            {
+               _snwprintf_s(error, sizeof(error) / sizeof(error[0]), L::t(L"White faces contains more edges than black faces (%ld vs %ld vs %ld vs %ld)."),
+                              long(white_edges), long(black_edges), long(red_edges), long(exterior_edges));
+               errors.emplace_back(error);
+            }
 
             // Make sure there are exactly as many points in the faces as in the map.
-            //{
-            //   const size_t map_edge_count = map.canonicals().size() + map.non_canonicals().size();
-            //   const size_t faces_edge_count = std::accumulate(faces.begin(), faces.end(), size_t(0), [](const size_t& a, const polygon&b) { return a + b.points.size(); });
-            //   const size_t exteriors_edge_count = std::accumulate(exteriors.begin(), exteriors.end(), size_t(0), [](const size_t& a, const polygon&b) { return a + b.points.size(); });
-            //   const size_t clean_exteriors_edge_count = std::accumulate(clean_exteriors.begin(), clean_exteriors.end(), size_t(0), [](const size_t& a, const polygon&b) { return a + b.points.size(); });
-            //   const size_t adjusted_faces_edge_count = faces_edge_count + exteriors_edge_count - clean_exteriors_edge_count;
-            //   //const size_t exteriors_edge_count = std::accumulate(exteriors.begin(), exteriors.end(), size_t(0), [](const size_t& a, const polygon&b) { return a + b.points.size(); });
-            //   if (map_edge_count != faces_edge_count && map_edge_count != adjusted_faces_edge_count)
-            //   {
-            //      _snwprintf_s(error, sizeof(error) / sizeof(error[0]), L::t(L"Face and map do not contain the same number of points: %ld vs. %ld."),
-            //                   static_cast<long>(faces_edge_count), static_cast<long>(map_edge_count));
-            //      errors.emplace_back(error);
-            //   }
-            //}
-            
-            // TODO: Make sure all points in all faces are consecutive.
+            const size_t map_edge_count = map.all().size();
+            const size_t faces_edge_count = white_edges + black_edges + red_edges + exterior_edges;
+            if (map_edge_count != faces_edge_count)
+            {
+               _snwprintf_s(error, sizeof(error) / sizeof(error[0]), L::t(L"Face and map do not contain the same number of points: %ld vs. %ld."),
+                              long(faces_edge_count), long(map_edge_count));
+               errors.emplace_back(error);
+            }
+
+            // Note: there used to be a check for non-duplicate points, but polygons sometimes have bow-tie forms.
 
             return errors;
          }

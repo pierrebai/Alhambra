@@ -8,23 +8,19 @@ namespace dak
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // A widget canvas working with a tiling.
+      // A widget drawing_canvas working with a tiling.
 
       tiling_canvas::tiling_canvas(QWidget* parent)
-      : canvas(parent, tiling_drawing)
+      : drawing_canvas(parent)
       , tiling()
       {
-         transformer.manipulated = &tiling_drawing;
       }
 
-      void tiling_canvas::paint(QPainter& painter)
+      void tiling_canvas::draw(drawing& drw)
       {
-         tiling_drawing.painter = &painter;
          // Make it so we can see 9 instances (3x3) of the tiling.
-         draw_tiling(tiling_drawing, tiling, color::black(), 3);
-         tiling_drawing.painter = nullptr;
-
-         canvas::paint(painter);
+         draw_tiling(drw, tiling, color::black(), 3);
+         drawing_canvas::draw(drw);
       }
    }
 }

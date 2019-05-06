@@ -27,6 +27,7 @@
     <ClInclude Include="inc\dak\tiling\star.h" />
     <ClInclude Include="inc\dak\tiling\tiling.h" />
     <ClInclude Include="inc\dak\tiling\tiling_io.h" />
+    <ClInclude Include="inc\dak\tiling\tiling_selection.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\explicit_figure.cpp" />
@@ -43,6 +44,7 @@
     <ClCompile Include="src\star.cpp" />
     <ClCompile Include="src\tiling.cpp" />
     <ClCompile Include="src\tiling_io.cpp" />
+    <ClCompile Include="src\tiling_selection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="tilings\10.tiling" />

@@ -7,6 +7,7 @@
 #include <dak/tiling_ui_qt/figure_editor.h>
 #include <dak/tiling_ui_qt/figure_selector.h>
 #include <dak/tiling_ui_qt/layers_selector.h>
+#include <dak/tiling_ui_qt/tiling_editor.h>
 
 #include <dak/ui_qt/layered_canvas.h>
 
@@ -19,15 +20,9 @@
 
 #include <dak/utility/undo_stack.h>
 
-#include <QtWidgets/qboxlayout.h>
-#include <QtWidgets/qlistwidget.h>
 #include <QtWidgets/qmainwindow.h>
 #include <QtWidgets/qdockwidget.h>
-#include <QtWidgets/qpushbutton.h>
 #include <QtWidgets/qwidget.h>
-#include <QtWidgets/qlabel.h>
-#include <QtWidgets/qfiledialog.h>
-#include <QtWidgets/qtoolbar.h>
 #include <QtWidgets/qtoolbutton.h>
 
 #include <vector>
@@ -44,26 +39,26 @@ namespace dak
       //
       // Main window icon IDs.
 
-      struct main_window_icons
+      struct main_window_icons : tiling_editor_icons
       {
-         int app_icon;
-         int mosaic_previous;
-         int mosaic_next;
-         int undo;
-         int redo;
-         int mosaic_open;
-         int mosaic_save;
-         int export_img;
-         int export_svg;
-         int canvas_translate;
-         int canvas_rotate;
-         int canvas_zoom;
-         int canvas_redraw;
-         int layer_copy;
-         int layer_add;
-         int layer_delete;
-         int layer_move_up;
-         int layer_move_down;
+         int mosaic_previous = 0;
+         int mosaic_next = 0;
+
+         int mosaic_open = 0;
+         int mosaic_save = 0;
+
+         int export_img = 0;
+         int export_svg = 0;
+
+         int canvas_redraw = 0;
+
+         int layer_copy = 0;
+         int layer_add = 0;
+         int layer_delete = 0;
+         int layer_move_up = 0;
+         int layer_move_down = 0;
+
+         int tiling_editor = 0;
       };
 
       ////////////////////////////////////////////////////////////////////////////
@@ -83,7 +78,7 @@ namespace dak
          void build_ui(const main_window_icons& icons);
 
          // Connect the signals of the UI elements.
-         void connect_ui();
+         void connect_ui(const tiling_editor_icons& icons);
 
          // Fill the UI with the intial data.
          void fill_ui();
@@ -153,6 +148,9 @@ namespace dak
 
          QAction* save_mosaic_action = nullptr;
          QToolButton* save_mosaic_button = nullptr;
+
+         QAction* tiling_editor_action = nullptr;
+         QToolButton* tiling_editor_button = nullptr;
 
          QAction* export_image_action = nullptr;
          QToolButton* export_image_button = nullptr;

@@ -35,5 +35,11 @@
     <ClInclude Include="inc\dak\utility\undo_stack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="inc\dak\utility\selection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dak\utility\containers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

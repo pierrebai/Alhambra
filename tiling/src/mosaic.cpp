@@ -60,14 +60,14 @@ namespace dak
          geometry::fill(region, tiling.t1, tiling.t2, [&tiling=tiling, &tile_figures=tile_figures,&final_map=final_map](int t1, int t2)
          {
             const auto receive_trf = transform::translate(tiling.t1.scale(t1) + tiling.t2.scale(t2));
-            for (const auto& placed_tile : tiling.tiles)
+            for (const auto& tile_placements : tiling.tiles)
             {
-               const auto iter = tile_figures.find(placed_tile.first);
+               const auto iter = tile_figures.find(tile_placements.first);
                if (iter == tile_figures.end())
                   continue;
 
                const geometry::map& map = iter->second->get_map();
-               for (const auto& trf : placed_tile.second)
+               for (const auto& trf : tile_placements.second)
                {
                   const transform total_trf = receive_trf.compose(trf);
                   const geometry::map placed = map.apply(total_trf);

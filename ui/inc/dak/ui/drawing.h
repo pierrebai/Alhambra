@@ -48,6 +48,9 @@ namespace dak
          virtual drawing& fill_rect(const rect& r) = 0;
          virtual drawing& draw_rect(const rect& r) = 0;
 
+         void draw_arrow(const point& from, const point& to, double length, double half_width);
+         void fill_arrow(const point& from, const point& to, double length, double half_width);
+
          // Note: the bounds are *without* the transform.
          //       They are the true bounds of the drawing surface.
          virtual rect get_bounds() const = 0;

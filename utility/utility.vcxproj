@@ -160,7 +160,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="inc\dak\utility\constants.h" />
+    <ClInclude Include="inc\dak\utility\containers.h" />
     <ClInclude Include="inc\dak\utility\number.h" />
+    <ClInclude Include="inc\dak\utility\selection.h" />
     <ClInclude Include="inc\dak\utility\text.h" />
     <ClInclude Include="inc\dak\utility\undo_stack.h" />
   </ItemGroup>

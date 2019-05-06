@@ -3,9 +3,7 @@
 #ifndef DAK_UI_QT_MOSAIC_CANVAS_H
 #define DAK_UI_QT_MOSAIC_CANVAS_H
 
-#include <dak/ui_qt/canvas.h>
-
-#include <dak/ui_qt/painter_transformable.h>
+#include <dak/ui_qt/drawing_canvas.h>
 
 #include <dak/ui/layered.h>
 
@@ -17,7 +15,7 @@ namespace dak
       //
       // A widget canvas working with a layers container.
 
-      class layered_canvas : public canvas
+      class layered_canvas : public drawing_canvas
       {
       public:
          // This is the layered container to draw on the canvas.
@@ -28,10 +26,7 @@ namespace dak
 
       protected:
          // This will draw the layered container, if any, then the transformer drawings, if any.
-         void paint(QPainter& painter) override;
-
-         // This will allow painting the layered container.
-         dak::ui_qt::painter_transformable layered_drawing;
+         void draw(drawing& drw) override;
       };
    }
 }

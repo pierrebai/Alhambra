@@ -1,5 +1,7 @@
 #include <dak/ui_qt/canvas.h>
 
+#include <dak/ui_qt/painter_drawing.h>
+
 #include <QtGui/qpainter.h>
 
 namespace dak
@@ -24,7 +26,6 @@ namespace dak
       : canvas(parent)
       {
          transformer.manipulated = &trfable;
-         emi.event_receivers.push_back(&transformer);
       }
 
       void canvas::paintEvent(QPaintEvent * pe)

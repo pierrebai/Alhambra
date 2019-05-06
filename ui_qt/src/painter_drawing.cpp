@@ -66,16 +66,31 @@ namespace dak
          return *this;
       }
 
+      static void adjust_radii(const dak::geometry::transform& trf, const point& center, double& rx, double& ry)
+      {
+         // If asked for a circle (both radius equal), then keep as circle.
+         if (rx == ry)
+         {
+            rx = ry = trf.dist_from_zero(rx);
+         }
+         else
+         {
+            const point radius = point(rx, ry).apply(trf) - point::origin().apply(trf);
+            rx = radius.x;
+            ry = radius.y;
+         }
+      }
+
       painter_drawing& painter_drawing::fill_oval(const point& c, double rx, double ry)
       {
          if (!painter)
             return *this;
 
          const point center = c.apply(get_transform());
-         const point radius = (c + point(rx, ry)).apply(get_transform()) - c.apply(get_transform());
+         adjust_radii(get_transform(), center, rx, ry);
 
          QPainterPath path;
-         path.addEllipse(convert(center), radius.x, radius.y);
+         path.addEllipse(convert(center), rx, ry);
          painter->fillPath(path, get_brush());
          return *this;
       }
@@ -86,10 +101,10 @@ namespace dak
             return *this;
 
          const point center = c.apply(get_transform());
-         const point radius = (c + point(rx, ry)).apply(get_transform()) - c.apply(get_transform());
+         adjust_radii(get_transform(), center, rx, ry);
 
          painter->setPen(get_pen());
-         painter->drawEllipse(convert(center), radius.x, radius.y);
+         painter->drawEllipse(convert(center), rx, ry);
          return *this;
       }
 

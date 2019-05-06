@@ -23,12 +23,26 @@
 #define IDB_REDO                        135
 #define IDB_BITMAP3                     136
 #define IDB_UNDO                        136
+#define IDB_TILING_EDITOR               137
+#define IDB_POLYGON_ADD                 138
+#define IDB_POLYGON_COPY                139
+#define IDB_POLYGON_DELETE              140
+#define IDB_POLYGON_DRAW                141
+#define IDB_POLYGON_INCLUDE             142
+#define IDB_POLYGON_MOVE                143
+#define IDB_POLYGON_CLEAR_FILL          144
+#define IDB_POLYGON_EXCLUDE_ALL         145
+#define IDB_POLYGON_FILL                146
+#define IDB_POLYGON_TRANSLATION         147
+#define IDB_BITMAP4                     148
+#define IDB_POLYGON_TRANS_CLEAR         148
+#define IDB_TILING_NEW                  149
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        137
+#define _APS_NEXT_RESOURCE_VALUE        150
 #define _APS_NEXT_COMMAND_VALUE         40001
 #define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           101

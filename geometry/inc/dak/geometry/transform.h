@@ -4,6 +4,7 @@
 #define DAK_GEOMETRY_TRANSFORM_H
 
 #include <dak/geometry/point.h>
+#include <dak/utility/number.h>
 
 namespace dak
 {
@@ -175,19 +176,54 @@ namespace dak
          }
 
          // Comparison.
-         constexpr bool operator ==(const transform& t) const
+         bool operator ==(const transform& t) const
          {
-            return (scale_x == t.scale_x) && (rot_1 == t.rot_1) && (trans_x == t.trans_x) &&
-               (rot_2 == t.rot_2) && (scale_y == t.scale_y) && (trans_y == t.trans_y);
+            return utility::near(scale_x, t.scale_x) && utility::near(rot_1, t.rot_1)     && utility::near(trans_x, t.trans_x) &&
+                   utility::near(rot_2, t.rot_2)     && utility::near(scale_y, t.scale_y) && utility::near(trans_y, t.trans_y);
          }
 
-         constexpr bool operator !=(const transform& t) const
+         bool operator !=(const transform& t) const
          {
             return !(*this == t);
          }
 
+         bool operator <(const transform& t) const
+         {
+            if (utility::near_less(scale_x, t.scale_x))
+               return true;
+            if (utility::near_greater(scale_x, t.scale_x))
+               return false;
+
+            if (utility::near_less(rot_1, t.rot_1))
+               return true;
+            if (utility::near_greater(rot_1, t.rot_1))
+               return false;
+
+            if (utility::near_less(trans_x, t.trans_x))
+               return true;
+            if (utility::near_greater(trans_x, t.trans_x))
+               return false;
+
+            if (utility::near_less(rot_2, t.rot_2))
+               return true;
+            if (utility::near_greater(rot_2, t.rot_2))
+               return false;
+
+            if (utility::near_less(scale_y, t.scale_y))
+               return true;
+            if (utility::near_greater(scale_y, t.scale_y))
+               return false;
+
+            if (utility::near_less(trans_y, t.trans_y))
+               return true;
+            if (utility::near_greater(trans_y, t.trans_y))
+               return false;
+
+            return false;
+         }
+
          // Verify if it is invalid.
-         constexpr bool is_invalid() const
+         bool is_invalid() const
          {
             return *this == transform();
          }

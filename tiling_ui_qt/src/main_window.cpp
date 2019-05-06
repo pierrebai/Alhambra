@@ -1,23 +1,25 @@
 #include <dak/tiling_ui_qt/main_window.h>
+#include <dak/tiling_ui_qt/tiling_window.h>
+#include <dak/tiling_ui_qt/tiling_selector.h>
 
 #include <dak/tiling_style/thick.h>
 #include <dak/tiling_style/styled_mosaic.h>
 #include <dak/tiling_style/style_io.h>
 
-#include <dak/ui_qt/convert.h>
-#include <dak/ui_qt/drawing.h>
+#include <dak/ui/drawing.h>
 
-#include <dak/tiling_ui_qt/tiling_selector.h>
-#include <dak/tiling_ui_qt/utility.h>
+#include <dak/ui_qt/convert.h>
+#include <dak/ui_qt/utility.h>
+#include <dak/ui_qt/ask.h>
 
 #include <dak/utility/text.h>
 
 #include <QtGui/qpainter.h>
+#include <QtWidgets/qboxlayout.h>
 #include <QtWidgets/qerrormessage.h>
+#include <QtWidgets/qtoolbar.h>
 #include <QtWinExtras/qwinfunctions.h>
 #include <QtSvg/qsvggenerator.h>
-
-#include <fstream>
 
 namespace dak
 {
@@ -36,7 +38,7 @@ namespace dak
       {
          build_ui(icons);
          fill_ui();
-         connect_ui();
+         connect_ui(icons);
       }
 
       // Create the UI elements.
@@ -74,6 +76,10 @@ namespace dak
             save_mosaic_action = create_action(L::t(L"Save Mosaic"), icons.mosaic_save, QKeySequence(QKeySequence::StandardKey::Save));
             save_mosaic_button = create_tool_button(save_mosaic_action);
             toolbar->addWidget(save_mosaic_button);
+
+            tiling_editor_action = create_action(L::t(L"Tiling Editor"), icons.tiling_editor);
+            tiling_editor_button = create_tool_button(tiling_editor_action);
+            toolbar->addWidget(tiling_editor_button);
 
             export_image_action = create_action(L::t(L"Export Image"), icons.export_img);
             export_image_button = create_tool_button(export_image_action);
@@ -140,7 +146,7 @@ namespace dak
       }
 
       // Connect the signals of the UI elements.
-      void main_window::connect_ui()
+      void main_window::connect_ui(const tiling_editor_icons& icons)
       {
          /////////////////////////////////////////////////////////////////////////
          //
@@ -178,43 +184,25 @@ namespace dak
 
          load_mosaic_action->connect(load_mosaic_action, &QAction::triggered, [self=this]()
          {
-            std::wstring fileName = QFileDialog::getOpenFileName(
-               self, QString::fromWCharArray(L::t(L"Load Mosaic")), QString(),
-               QString::fromWCharArray(L::t(L"Mosaic Files (*.tap.txt)"))).toStdWString();
-            if (fileName.empty())
+            std::experimental::filesystem::path path;
+            auto layers = ask_open_layered_mosaic(self->known_tilings, path, self);
+            if (layers.size() == 0)
                return;
-            try
-            {
-               std::wifstream file(fileName);
-               auto layers = read_layered_mosaic(file, self->mosaic_gen.known_tilings);
-               std::experimental::filesystem::path path(fileName);
-               self->clear_undo_stack();
-               self->update_mosaic_map(layers, path.filename());
-            }
-            catch (std::exception& ex)
-            {
-               QErrorMessage error(self);
-               error.showMessage(ex.what());
-            }
+            self->clear_undo_stack();
+            self->update_mosaic_map(layers, path.filename());
          });
 
          save_mosaic_action->connect(save_mosaic_action, &QAction::triggered, [self=this]()
          {
-            std::wstring fileName = QFileDialog::getSaveFileName(
-               self, QString::fromWCharArray(L::t(L"Save Mosaic")), QString(),
-               QString::fromWCharArray(L::t(L"Mosaic Files (*.tap.txt)"))).toStdWString();
-            if (fileName.empty())
-               return;
-            try
-            {
-               std::wofstream file(fileName, std::ios::out | std::ios::trunc);
-               write_layered_mosaic(file, self->get_avail_layers());
-            }
-            catch (std::exception& ex)
-            {
-               QErrorMessage error(self);
-               error.showMessage(ex.what());
-            }
+            std::experimental::filesystem::path path;
+            ask_save_layered_mosaic(self->get_avail_layers(), path, self);
+         });
+
+         tiling_editor_action->connect(tiling_editor_action, &QAction::triggered, [self=this,icons=icons]()
+         {
+            auto window = new tiling_window(icons, self);
+            window->resize(1200, 900);
+            window->show();
          });
 
          /////////////////////////////////////////////////////////////////////////
@@ -223,24 +211,21 @@ namespace dak
 
          export_image_action->connect(export_image_action, &QAction::triggered, [self=this]()
          {
-            auto fileName = QFileDialog::getSaveFileName(
-               self, QString::fromWCharArray(L::t(L"Export Mosaic to an Image")), QString(),
-               QString::fromWCharArray(L::t(L"Image Files (*.png *.jpg *.bmp)")));
-            if (fileName.isEmpty())
+            auto fileName = ask_save(L::t(L"Export Mosaic to an Image"), L::t(L"Image Files (*.png *.jpg *.bmp)"), self);
+            if (fileName.empty())
                return;
-            self->canvas->grab().save(fileName);
+
+            self->canvas->grab().save(QString::fromWCharArray(fileName.c_str()));
          });
 
          export_svg_action->connect(export_svg_action, &QAction::triggered, [self=this]()
          {
-            auto fileName = QFileDialog::getSaveFileName(
-               self, QString::fromWCharArray(L::t(L"Export Mosaic to a Scalable Vector Graphics File")), QString(),
-               QString::fromWCharArray(L::t(L"SVG Files (*.svg)")));
-            if (fileName.isEmpty())
+            auto fileName = ask_save(L::t(L"Export Mosaic to a Scalable Vector Graphics File"), L::t(L"SVG Files (*.svg)"), self);
+            if (fileName.empty())
                return;
 
             QSvgGenerator svg_gen;
-            svg_gen.setFileName(fileName);
+            svg_gen.setFileName(QString::fromWCharArray(fileName.c_str()));
             svg_gen.setSize(self->canvas->size());
             svg_gen.setViewBox(QRect(QPoint(0,0), self->canvas->size()));
             QPainter painter(&svg_gen);

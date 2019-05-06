@@ -22,7 +22,8 @@ namespace dak
          channel b = 0;
          channel a = 0;
 
-         constexpr color(channel r, channel g, channel b, channel a) : r(r), g(g), b(b), a(a) { }
+         constexpr color(channel r, channel g, channel b, channel a = 255) : r(r), g(g), b(b), a(a) { }
+         static constexpr color from_fractions(double r, double g, double b, double a = 1.) { return color(channel(255 * r), channel(255 * g), channel(255 * b), channel(255 * a)); }
 
          static constexpr color black()    { return color(  0,   0,   0, 255); }
          static constexpr color white()    { return color(255, 255, 255, 255); }
@@ -34,27 +35,27 @@ namespace dak
          static constexpr color magenta()  { return color(255,   0, 255, 255); }
          static constexpr color grey()     { return color(160, 160, 160, 255); }
 
-         color percent(double pc) const { return color(channel(r * pc / 100), channel(g * pc / 100), channel(b * pc / 100), a); }
-         color operator+(const color& other) const { return color(r + other.r, g + other.g, b + other.b, a); }
-         color operator-(const color& other) const { return color(r - other.r, g - other.g, b - other.b, a); }
+         constexpr color percent(double pc) const { return color(channel(r * pc / 100), channel(g * pc / 100), channel(b * pc / 100), a); }
+         constexpr color operator+(const color& other) const { return color(r + other.r, g + other.g, b + other.b, a); }
+         constexpr color operator-(const color& other) const { return color(r - other.r, g - other.g, b - other.b, a); }
 
          // Comparison.
-         bool operator == (const color& other) const
+         constexpr bool operator == (const color& other) const
          {
             return r == other.r && g == other.g && b == other.b && a == other.a;
          }
 
-         bool operator != (const color& other) const
+         constexpr bool operator != (const color& other) const
          {
             return !(*this == other);
          }
 
-         bool is_pale() const
+         constexpr bool is_pale() const
          {
             return r >= 240 && g >= 240 && b >= 240;
          }
 
-         bool is_dark() const
+         constexpr bool is_dark() const
          {
             return r <= 20 && g <= 20 && b <= 20;
          }

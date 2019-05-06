@@ -83,11 +83,50 @@
     <Image Include="icons\canvas-redraw.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="icons\redo.bmp">
-      <Filter>Resource Files</Filter>
+    <Image Include="icons\tiling-editor.bmp">
+      <Filter>Resource Files\Images</Filter>
     </Image>
     <Image Include="icons\undo.bmp">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\redo.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\polygon-add.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\polygon-copy.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\polygon-delete.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\polygon-draw.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\polygon-include.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\polygon-move.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\polygon-clear-fill.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\polygon-exclude-all.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\polygon-fill.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\polygon-translation.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\polygon-translation-clear.bmp">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="icons\tiling-new.bmp">
+      <Filter>Resource Files\Images</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

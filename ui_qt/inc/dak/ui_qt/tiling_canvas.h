@@ -3,13 +3,9 @@
 #ifndef DAK_UI_QT_TILING_CANVAS_H
 #define DAK_UI_QT_TILING_CANVAS_H
 
-#include <dak/ui_qt/canvas.h>
-
-#include <dak/ui_qt/painter_transformable.h>
+#include <dak/ui_qt/drawing_canvas.h>
 
 #include <dak/tiling/tiling.h>
-
-#include <memory>
 
 namespace dak
 {
@@ -17,23 +13,20 @@ namespace dak
    {
       ////////////////////////////////////////////////////////////////////////////
       //
-      // A widget canvas working with a tiling.
+      // A widget drawing_canvas working with a tiling.
 
-      class tiling_canvas : public canvas
+      class tiling_canvas : public drawing_canvas
       {
       public:
-         // This is the tiling to draw on the canvas.
+         // This is the tiling to draw on the drawing_canvas.
          tiling::tiling tiling;
 
-         // Create a canvas with the given parent widget.
+         // Create a drawing_canvas with the given parent widget.
          tiling_canvas(QWidget* parent);
 
       protected:
-         // This will draw the tiling, if any, then the transformer drawings, if any.
-         void paint(QPainter& painter) override;
-
-         // This will allow painting the tiling.
-         dak::ui_qt::painter_transformable tiling_drawing;
+         // Paint using the prepared drawing.
+         void draw(drawing& drw) override;
       };
    }
 }

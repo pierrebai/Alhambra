@@ -62,6 +62,9 @@ namespace dak
 
          // Calculate the bounds of the tiles of the tiling.
          rect bounds() const;
+
+         // Verify if the tiling is invalid.
+         bool is_invalid() const { return tiles.empty() || t1.is_invalid() || t1 == point(0., 0.) || t2.is_invalid() || t2 == point(0., 0.); }
       };
    }
 }

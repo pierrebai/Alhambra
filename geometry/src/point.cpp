@@ -67,15 +67,18 @@ namespace dak
       {
          const point qmp = q - p;
          const double t = (*this - p).dot(qmp) / qmp.dot(qmp);
-         if (t >= 0.0 && t <= 1.0) {
+         if (t >= 0.0 && t <= 1.0)
+         {
             double ox = p.x + t * (q.x - p.x);
             double oy = p.y + t * (q.y - p.y);
             return (x - ox)*(x - ox) + (y - oy)*(y - oy);
          }
-         else if (t < 0.0) {
+         else if (t < 0.0)
+         {
             return distance_2(p);
          }
-         else {
+         else
+         {
             return distance_2(q);
          }
       }

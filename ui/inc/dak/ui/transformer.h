@@ -61,6 +61,8 @@ namespace dak
          void mouse_dragged(const mouse::event& me) override;
          void mouse_wheel(const mouse::event& me) override;
 
+         const point& get_tracked_point() const { return tracked_point; }
+
       private:
          // Interaction modes.
          interaction_mode get_wheel_interaction_mode(const mouse::event& me);
