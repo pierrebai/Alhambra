@@ -52,14 +52,22 @@
     <None Include="tilings\12.18.tiling" />
     <None Include="tilings\12.4.3.tiling" />
     <None Include="tilings\14.tiling" />
+    <None Include="tilings\15 star.tiling" />
+    <None Include="tilings\15.6.tiling" />
     <None Include="tilings\16.8.tiling" />
+    <None Include="tilings\18.6.tiling" />
     <None Include="tilings\18.9.tiling" />
     <None Include="tilings\18.tiling" />
+    <None Include="tilings\20t.tiling">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+    </None>
     <None Include="tilings\24.12.tiling" />
+    <None Include="tilings\24.6.tiling" />
     <None Include="tilings\3-8-12 pieces.tiling" />
     <None Include="tilings\3-8-4-6.tiling" />
     <None Include="tilings\3.12^2.tiling" />
     <None Include="tilings\3.4.6.tiling" />
+    <None Include="tilings\4.5 square.tiling" />
     <None Include="tilings\4.5.tiling" />
     <None Include="tilings\4.6.12.tiling" />
     <None Include="tilings\4.7 Star.tiling" />
@@ -84,6 +92,7 @@
     <None Include="tilings\8.12.tiling" />
     <None Include="tilings\8.5 and some.tiling" />
     <None Include="tilings\8.5.tiling" />
+    <None Include="tilings\8.6.4.tiling" />
     <None Include="tilings\8_var.tiling" />
     <None Include="tilings\9-6 hat and kites 2.tiling" />
     <None Include="tilings\9-6 hat and kites.tiling" />
@@ -182,6 +191,7 @@
     <Text Include="mosaics\Mamluk Quran.tap.txt" />
     <Text Include="mosaics\Mexican Suns.tap.txt" />
     <Text Include="mosaics\More alien.tap.txt" />
+    <Text Include="mosaics\moyen orient.tap.txt" />
     <Text Include="mosaics\Ochre Silicate.tap.txt" />
     <Text Include="mosaics\pbn_7.tap.txt" />
     <Text Include="mosaics\Penrose Dots.tap.txt" />
@@ -202,6 +212,7 @@
     <Text Include="mosaics\wawa.tap.txt" />
     <Text Include="mosaics\white stars.tap.txt" />
     <Text Include="mosaics\wonka.tap.txt" />
+    <Text Include="tilings\Road to nowhere.tap.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

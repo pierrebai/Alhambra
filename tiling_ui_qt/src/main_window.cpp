@@ -91,7 +91,7 @@ namespace dak
 
             toolbar->addSeparator();
 
-            translate_action = create_action(L::t(L"Translate"), icons.canvas_translate);
+            translate_action = create_action(L::t(L"Pan"), icons.canvas_translate);
             translate_button = create_tool_button(translate_action);
             translate_action->setCheckable(true);
             toolbar->addWidget(translate_button);

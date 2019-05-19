@@ -518,7 +518,7 @@ namespace dak
                         editor.mouse_interaction.reset(new copy_move_polygon(editor, sel, wpt));
                      break;
                   case mouse_mode::move_polygon:
-                     if ((sel = editor.find_selection(wpt, selection_type::tile)).has_selection())
+                     if ((sel = editor.find_selection(wpt, selection_type::edge)).has_selection())
                         editor.mouse_interaction.reset(new join_edge(editor, sel, wpt));
                      else if ((sel = editor.find_selection(wpt, selection_type::tile)).has_selection())
                         editor.mouse_interaction.reset(new move_polygon(editor, sel, wpt));
@@ -528,8 +528,6 @@ namespace dak
                      break;
                   case mouse_mode::draw_fill_vectors:
                      if ((sel = editor.find_selection(wpt, selection_type::point)).has_selection())
-                        editor.mouse_interaction.reset(new draw_translation(editor, sel, wpt));
-                     else if ((sel = editor.find_selection(wpt, selection_type::point)).has_selection())
                         editor.mouse_interaction.reset(new draw_translation(editor, sel, wpt));
                      break;
                   case mouse_mode::draw_polygon:
@@ -1448,7 +1446,7 @@ namespace dak
             ui->toggle_inclusion(sel);
          });
 
-         pan_action = create_action(L::t(L"Move"), icons.canvas_translate, {}, L::t(L"Pan the view by drag-and-drop with the mouse. (<Shift> + left mouse button.)"), [self=this, ui=ui]()
+         pan_action = create_action(L::t(L"Pan"), icons.canvas_translate, {}, L::t(L"Pan the view by drag-and-drop with the mouse. (<Shift> + left mouse button.)"), [self=this, ui=ui]()
          {
             ui->update_mouse_mode(self->pan_action, mouse_mode::pan_view, false);
          });

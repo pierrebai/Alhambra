@@ -116,14 +116,14 @@ namespace dak
             { L"Choose Layer Color", L"Choisir une couleur" },
             { L"Choose Layer Outline Color", L"Choisir une couleur de contour" },
 
-            { L"Tiling", L"Tuilage" },
-            { L"Tiling: ", L"Tuilage: " },
+            { L"Tiling", L"Pavage" },
+            { L"Tiling: ", L"Pavage: " },
             { L"Layers", L"Couches" },
             { L"Layers for Mosaic: ", L"Couche pour la mosaïque: " },
             { L"Figures", L"Figures" },
             { L"Figure", L"Figure" },
             { L"Description", L"Description" },
-            { L"No tiling selected.", L"Aucune sélection." }, 
+            { L"No tiling selected.", L"Aucune sélection." },
             { L"Mosaic Example", L"Exemple de mosaïque"},
             { L"Tile Polygons", L"Polygones de tuiles" },
 
@@ -136,27 +136,67 @@ namespace dak
             { L"Next Mosaic", L"Mosaïque Suivante" },
             { L"Load Mosaic", L"Charger une mosaïque " },
             { L"Save Mosaic", L"Sauvegarder la mosaïque" },
+            { L"Tiling Editor", L"Éditeur de pavage" },
 
             { L"Export EPS", L"Exporter en EPS" },
             { L"Export SVG", L"Exporter en SVG"},
             { L"Export Image", L"Exporter en image" },
 
-            { L"Translate", L"Déplacer" },
+            { L"Pan", L"Déplacer" },
             { L"Rotate", L"Tourner" },
             { L"Scale", L"Zoomer" },
             { L"Redraw", L"Redessiner" },
+
+            { L"Pan the view by drag-and-drop with the mouse. (<Shift> + left mouse button.)", L"Déplacer la vue avec la souris. (<Shift> + bouton gauche de la souris.)" },
+            { L"Rotate the view by drag-and-drop with the mouse. (<Shift> + middle mouse button.)", L"Tourner la vue avec la souris. (<Shift> + bouton central de la souris.)" },
+            { L"Zoom the view by drag-and-drop with the mouse. (<Shift> + right mouse button.)", L"Zoomer la vue avec la souris. (<Shift> + bouton droit de la souris.)" },
 
             { L"Undo", L"Undo" },
             { L"Redo", L"Redo" },
 
             { L"Save Mosaic", L"Sauvegarder la mosaïque" },
             { L"Load Mosaic", L"Charger une mosaïque" },
-            { L"Mosaic Files (*.tap.txt)", L"Fichiers Mosaïques (*.tap.txt)" },
-            { L"Choose a Tiling", L"Choisir un Tuilage" },
+            { L"Mosaic Files (*.tap.txt)", L"Fichiers mosaïques (*.tap.txt)" },
+            { L"Choose a Tiling", L"Choisir un pavage" },
             { L"Export Mosaic to an Image", L"Exporter la mosaïque dans une image" },
             { L"Image Files (*.png *.jpg *.bmp)", L"Fichiers image (*.png *.jpg *.bmp)" },
             { L"Export Mosaic to a Scalable Vector Graphics File", L"Exporter la mosaïque dans un fichier vectoriel" },
             { L"SVG Files (*.svg)", L"Fichiers SVG (*.svg)" },
+
+            { L"New Tiling", L"Nouveau pavage"},
+            { L"Open...", L"Ouvrir..." },
+            { L"Select...", L"Sélectionner..."},
+            { L"Save As...", L"Sauvegarder..." },
+
+            { L"Start a new tiling design. (Shortcut: n)", L"Commencer un nouveau pavage. (Raccourci: n)"},
+            { L"Open a tiling design. (Shortcut: o)", L"Ouvrir un pavage. (Raccourci: o)" },
+            { L"Select a tiling design among built-in ones. (Shortcut: <shift> + o)", L"Sélectionner un pavage parmi ceux existant. (Raccourci: <shift> + o)" },
+            { L"Save the tiling design. (Shortcut: s)", L"Sauvegarder le pavage. (Raccourci: s)" },
+
+            { L"Clear Vectors", L"Supprimer les vecteurs" },
+            { L"Draw Vectors", L"Dessiner les vecteurs" },
+            { L"Fill Tiling", L"Remplir le pavage" },
+            { L"Clean Tiling", L"Nettoyer le pavage" },
+            { L"Exclude All", L"Tout exclure" },
+            { L"Add polygon", L"Ajouter un polygone" },
+            { L"Draw Polygon", L"Dessiner un polygone" },
+            { L"Copy Polygon", L"Copier un polygone" },
+            { L"Move Polygon", L"Déplacer un polygone" },
+            { L"Delete Polygon", L"Effacer un polygone" },
+            { L"Include Polygon", L"Inclure un polygone" },
+
+            { L"Clear the translation vectors used to tile the plane. (Shortcut: U.)", L"Supprimer le vecteurs de translation utilisé pour paver le plan.. (Raccourci: U.)"},
+            { L"Surround the design with copies using the translation vectors. (Shortcut: F.)", L"Entourer le design avec des copies en utilisant les vecteurs de translation. (Raccourci: F.)" },
+            { L"Remove all polygons that are not included in the tiling. (Shortcut: R)", L"Enlever tous les polygones ne faisant pas parti du pavage. (Raccourci: R)"},
+            { L"Exclude all polygons from the tiling. (Shortcut: E)", L"Exclure tous les polygones du pavage. (Raccourci: E)" },
+            { L"Add a regular polygon with X side, where X is a number you entered with the keyboard. (Shortcut: <Return>)", L"Ajouter un polygone à X côtés, X étant un nombre entré au clavier précédemment. (Raccourci: <Return>)" },
+            { L"Select the two translation vectors used to tile the plane, using the mouse. (Drag with the mouse.)", L"Dessiner les deux vecteurs de translations, utilisés pour paver le plan. (Dessiner avec la souris.)" },
+            { L"Select a series of vertices counter-clockwise to draw a free-form polygon. (Click on vertices.)", L"Choisir une série de point pour dessiner un polygone. (Cliquer sur les points.)" },
+            { L"Copy a polygon by drag-and-drop with the mouse. (Press C or drag with the mouse.)", L"Copier un polygone en le déplaçant avec la souris. (Raccourci C ou déplacer avec la souris.)" },
+            { L"Move a polygon by drag-and-drop with the mouse. (Drag with the mouse.)", L"Déplacer un polygone avec la souris." },
+            { L"Delete polygons by clicking on them with the mouse. (Shortcut: D)", L"Effacer un polygone en cliquant dessus. (Raccourci: D)" },
+            { L"Toggle the inclusion of polygons in the tiling by clicking on them with the mouse. (Shortcut: T)", L"Changer l'inclusion d'un polygone en cliquant dessus. (Raccourci: T)"},
+
          };
 
          const char_translator fr =
