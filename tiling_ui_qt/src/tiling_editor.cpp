@@ -506,8 +506,6 @@ namespace dak
                const point wpt = editor.screen_to_world(e.position);
                selection sel;
 
-               // TODO: rewrite this to ensure each selection has the right type.
-
                switch (editor.current_mouse_mode)
                {
                   case mouse_mode::normal:

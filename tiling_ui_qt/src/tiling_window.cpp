@@ -182,7 +182,7 @@ namespace dak
          // Note: if the current tiling has no tile, we pretend it didn't change
          //       because there is nothing to be lost if closed.
          tiling current_tiling = create_tiling_from_data(original_file);
-         return (!current_tiling.is_invalid() && current_tiling != original_tiling);
+         return (!current_tiling.tiles.empty() && current_tiling != original_tiling);
       }
 
       tiling tiling_window::create_tiling_from_data(const file_path& file)
@@ -239,7 +239,10 @@ namespace dak
          {
             file_path path;
             tiling tiling = create_tiling_from_data(path);
-            return ask_save_tiling(tiling, path, this);
+            if (!ask_save_tiling(tiling, path, this))
+               return false;
+            original_file = path;
+            return true;
          }
          catch (const std::exception& e)
          {

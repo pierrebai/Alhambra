@@ -15,6 +15,7 @@
 #include <dak/utility/text.h>
 
 #include <QtGui/qpainter.h>
+#include <QtGui/qevent.h>
 #include <QtWidgets/qboxlayout.h>
 #include <QtWidgets/qerrormessage.h>
 #include <QtWidgets/qtoolbar.h>
@@ -170,6 +171,9 @@ namespace dak
 
          previous_mosaic_action->connect(previous_mosaic_action, &QAction::triggered, [self=this]()
          {
+            if (!self->save_if_required(L::t(L"load a mosaic"), L::t(L"loading a mosaic")))
+               return;
+
             self->mosaic_gen.previous();
             self->clear_undo_stack();
             self->update_mosaic_map(self->mosaic_gen.generate_current(self->errors), self->mosaic_gen.current_name());
@@ -177,6 +181,9 @@ namespace dak
 
          next_mosaic_action->connect(next_mosaic_action, &QAction::triggered, [self=this]()
          {
+            if (!self->save_if_required(L::t(L"load a mosaic"), L::t(L"loading a mosaic")))
+               return;
+
             self->mosaic_gen.next();
             self->clear_undo_stack();
             self->update_mosaic_map(self->mosaic_gen.generate_current(self->errors), self->mosaic_gen.current_name());
@@ -184,6 +191,9 @@ namespace dak
 
          load_mosaic_action->connect(load_mosaic_action, &QAction::triggered, [self=this]()
          {
+            if (!self->save_if_required(L::t(L"load a mosaic"), L::t(L"loading a mosaic")))
+               return;
+
             std::experimental::filesystem::path path;
             auto layers = ask_open_layered_mosaic(self->known_tilings, path, self);
             if (layers.size() == 0)
@@ -194,8 +204,7 @@ namespace dak
 
          save_mosaic_action->connect(save_mosaic_action, &QAction::triggered, [self=this]()
          {
-            std::experimental::filesystem::path path;
-            ask_save_layered_mosaic(self->get_avail_layers(), path, self);
+            self->save_mosaic();
          });
 
          tiling_editor_action->connect(tiling_editor_action, &QAction::triggered, [self=this,icons=icons]()
@@ -391,6 +400,38 @@ namespace dak
          canvas->layered = &layered;
          canvas->transformer.manipulated = &layered;
          layered.set_transform(transform::scale(30));
+      }
+
+      void main_window::closeEvent(QCloseEvent* ev)
+      {
+         if (save_if_required(L::t(L"close the window"), L::t(L"closing the window")))
+            QWidget::closeEvent(ev);
+         else
+            ev->ignore();
+      }
+
+      bool main_window::save_if_required(const std::wstring& action, const std::wstring& actioning)
+      {
+         if (undo_stack.has_undo())
+         {
+            yes_no_cancel answer = ask_yes_no_cancel(
+               L::t(L"Unsaved Mosaic Warning"),
+               std::wstring(L::t(L"The current mosaic has not been saved.\nDo you want to save it before ")) + actioning + L::t(L"?"),
+               this);
+            if (answer == yes_no_cancel::cancel)
+               return false;
+            else if (answer == yes_no_cancel::yes)
+               if (!save_mosaic())
+                  return false;
+         }
+
+         return true;
+      }
+
+      bool main_window::save_mosaic()
+      {
+         std::experimental::filesystem::path path;
+         return ask_save_layered_mosaic(get_avail_layers(), path, this);
       }
 
       /////////////////////////////////////////////////////////////////////////

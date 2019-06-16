@@ -137,6 +137,11 @@ namespace dak
             { L"Load Mosaic", L"Charger une mosaïque " },
             { L"Save Mosaic", L"Sauvegarder la mosaïque" },
             { L"Tiling Editor", L"Éditeur de pavage" },
+            { L"Unsaved Mosaic Warning", L"Mosaïques non sauvegardée" },
+            { L"The current mosaic has not been saved.\nDo you want to save it before ", L"La mosaïque n'est pas sauvegardée.\nVoulez-vous la sauvegarder avant de " },
+
+            { L"load a mosaic", L"charger une mosaïque" },
+            { L"loading a mosaic", L"charger une mosaïque" },
 
             { L"Export EPS", L"Exporter en EPS" },
             { L"Export SVG", L"Exporter en SVG"},
@@ -167,6 +172,14 @@ namespace dak
             { L"Open...", L"Ouvrir..." },
             { L"Select...", L"Sélectionner..."},
             { L"Save As...", L"Sauvegarder..." },
+            { L"Unsaved Tiling Warning", L"Pavage non sauvegardé" },
+            { L"The current tiling has not been saved.\nDo you want to save it before ", L"Le pavage n'est pas sauvegardé.\nVoulez-vous le sauvegarder avant de " },
+            { L"close the window", L"fermer la fenêtre" },
+            { L"closing the window", L"fermer la fenêtre" },
+            { L"start a new tiling", L"commencer un nouveau pavage" },
+            { L"starting a new tiling", L"commencer un nouveau pavage" },
+            { L"edit another tiling", L"éditer un autre pavage" },
+            { L"editing another tiling", L"éditer un autre pavage" },
 
             { L"Start a new tiling design. (Shortcut: n)", L"Commencer un nouveau pavage. (Raccourci: n)"},
             { L"Open a tiling design. (Shortcut: o)", L"Ouvrir un pavage. (Raccourci: o)" },

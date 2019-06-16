@@ -123,6 +123,11 @@ namespace dak
          // The canvas manipulation tool-bar buttons.
          void update_canvas_mode();
 
+         // Closing and saving.
+         void closeEvent(QCloseEvent* ev);
+         bool save_if_required(const std::wstring& action, const std::wstring& actioning);
+         bool save_mosaic();
+
          // Data.
          std::vector<std::wstring> errors;
          dak::tiling::known_tilings known_tilings;
