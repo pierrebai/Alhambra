@@ -14,6 +14,9 @@ namespace dak
       {
          const map unit = build_unit();
 
+         cached_map.reserve(unit.all().size() * n);
+
+         cached_map.begin_merge_non_overlapping();
          for (int i = 0; i < n; ++i)
          {
             // Note: we could speed-up by only applying a base rotation
@@ -22,6 +25,7 @@ namespace dak
             cached_map.merge_non_overlapping(unit.apply(transform::rotate(2 * PI * i / n)));
             //cached_map.merge(unit.apply(transform::rotate(2 * PI * i / n)));
          }
+         cached_map.end_merge_non_overlapping();
       }
 
       bool radial_figure::is_cache_valid() const

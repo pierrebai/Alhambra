@@ -54,9 +54,28 @@ namespace dak
          return true;
       }
 
+      size_t mosaic::count_tiling_edges() const
+      {
+         size_t count = 0;
+
+         for (const auto& tile_placements : tiling.tiles)
+         {
+            const auto iter = tile_figures.find(tile_placements.first);
+            if (iter == tile_figures.end())
+               continue;
+
+            const geometry::map& map = iter->second->get_map();
+            count += map.all().size() * tile_placements.second.size();
+         }
+
+         return count;
+      }
+
       map mosaic::construct(const rect& region) const
       {
          map final_map;
+         final_map.reserve(count_fill_replications(region, tiling.t1, tiling.t2) * count_tiling_edges());
+         final_map.begin_merge_non_overlapping();
          geometry::fill(region, tiling.t1, tiling.t2, [&tiling=tiling, &tile_figures=tile_figures,&final_map=final_map](int t1, int t2)
          {
             const auto receive_trf = transform::translate(tiling.t1.scale(t1) + tiling.t2.scale(t2));
@@ -76,6 +95,7 @@ namespace dak
                }
             }
          });
+         final_map.end_merge_non_overlapping();
          return final_map;
       }
    }

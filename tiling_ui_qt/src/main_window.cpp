@@ -34,8 +34,8 @@ namespace dak
       using dak::utility::L;
 
       main_window::main_window(const main_window_icons& icons)
-      : known_tilings(LR"(./tilings)", errors)
-      , mosaic_gen(LR"(./mosaics)", known_tilings)
+      : known_tilings(read_tilings(LR"(./tilings)", errors))
+      , mosaic_gen(LR"(./mosaics)")
       {
          build_ui(icons);
          fill_ui();
@@ -176,7 +176,7 @@ namespace dak
 
             self->mosaic_gen.previous();
             self->clear_undo_stack();
-            self->update_mosaic_map(self->mosaic_gen.generate_current(self->errors), self->mosaic_gen.current_name());
+            self->update_mosaic_map(self->mosaic_gen.generate_current(self->known_tilings, self->errors), self->mosaic_gen.current_name());
          });
 
          next_mosaic_action->connect(next_mosaic_action, &QAction::triggered, [self=this]()
@@ -186,7 +186,7 @@ namespace dak
 
             self->mosaic_gen.next();
             self->clear_undo_stack();
-            self->update_mosaic_map(self->mosaic_gen.generate_current(self->errors), self->mosaic_gen.current_name());
+            self->update_mosaic_map(self->mosaic_gen.generate_current(self->known_tilings, self->errors), self->mosaic_gen.current_name());
          });
 
          load_mosaic_action->connect(load_mosaic_action, &QAction::triggered, [self=this]()
@@ -207,9 +207,9 @@ namespace dak
             self->save_mosaic();
          });
 
-         tiling_editor_action->connect(tiling_editor_action, &QAction::triggered, [self=this,icons=icons]()
+         tiling_editor_action->connect(tiling_editor_action, &QAction::triggered, [self=this,&icons=icons, &known_tilings=known_tilings]()
          {
-            auto window = new tiling_window(icons, self);
+            auto window = new tiling_window(known_tilings, icons, self);
             window->resize(1200, 900);
             window->show();
          });
@@ -277,9 +277,9 @@ namespace dak
             self->canvas->update();
          };
 
-         layer_list->new_layer_requested = [self=this]()
+         layer_list->new_layer_requested = [&known_tilings=this->known_tilings, &icons, self=this]()
          {
-            auto selector = new tiling_selector(nullptr, [self=self](const std::shared_ptr<mosaic>& new_mosaic) { self->add_layer(new_mosaic); });
+            auto selector = new tiling_selector(known_tilings, icons, nullptr, [self=self](const std::shared_ptr<mosaic>& new_mosaic) { self->add_layer(new_mosaic); });
             selector->show();
          };
 

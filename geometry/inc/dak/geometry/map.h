@@ -81,11 +81,16 @@ namespace dak
          // Remove an edge.
          void remove(const edge& e);
 
+         // Reserve space in the internal containers to support that many edges.
+         void reserve(size_t edge_count);
+
          // Merge two maps, adding necessary intersection points as needed.
          void merge(const map& other);
 
          // Merge two maps, assuming no too edges are the same nor intersect.
+         void begin_merge_non_overlapping();
          void merge_non_overlapping(const map& other);
+         void end_merge_non_overlapping();
 
          // Insert a group of edges, adding necessary intersection points as needed.
          void insert(const edges& from_edges);

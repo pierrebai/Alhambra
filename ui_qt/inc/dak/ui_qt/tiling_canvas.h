@@ -19,7 +19,7 @@ namespace dak
       {
       public:
          // This is the tiling to draw on the drawing_canvas.
-         tiling::tiling tiling;
+         dak::tiling::tiling tiling;
 
          // Create a drawing_canvas with the given parent widget.
          tiling_canvas(QWidget* parent);

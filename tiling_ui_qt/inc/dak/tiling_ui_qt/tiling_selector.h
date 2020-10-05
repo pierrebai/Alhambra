@@ -12,11 +12,19 @@
 
 namespace dak
 {
+   namespace tiling
+   {
+      class tiling;
+      using known_tilings = std::vector<tiling>;
+   }
+
    namespace tiling_ui_qt
    {
       using dak::tiling::mosaic;
+      using dak::tiling::known_tilings;
 
       class tiling_selector_ui;
+      struct tiling_editor_icons;
 
       ////////////////////////////////////////////////////////////////////////////
       //
@@ -30,8 +38,8 @@ namespace dak
          tiling_chosen_callback tiling_chosen;
 
          // Create a tiling selector with the given parent widget.
-         tiling_selector(QWidget* parent);
-         tiling_selector(QWidget* parent, tiling_chosen_callback tc);
+         tiling_selector(known_tilings& known_tilings, const tiling_editor_icons& icons, QWidget* parent);
+         tiling_selector(known_tilings& known_tilings, const tiling_editor_icons& icons, QWidget* parent, tiling_chosen_callback tc);
 
          std::shared_ptr<mosaic> get_selected() const;
 

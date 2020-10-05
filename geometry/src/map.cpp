@@ -138,10 +138,22 @@ namespace dak
          internal_verify();
       }
 
+      void map::reserve(size_t edge_count)
+      {
+         _sorted_edges.reserve(edge_count);
+      }
+
+      void map::begin_merge_non_overlapping()
+      {
+      }
+
       void map::merge_non_overlapping(const map& other)
       {
-         _sorted_edges.reserve(_sorted_edges.size() + other._sorted_edges.size());
          _sorted_edges.insert(_sorted_edges.end(), other._sorted_edges.begin(), other._sorted_edges.end());
+      }
+
+      void map::end_merge_non_overlapping()
+      {
          internal_sort_edges();
          internal_verify();
       }

@@ -26,8 +26,8 @@ namespace tiling_tests
 		TEST_METHOD(tiling_io_read_all_tilings)
 		{
          std::vector<std::wstring> errors;
-         known_tilings tilings(KNOWN_TILINGS_DIR, errors);
-         for (const auto& tiling : tilings.tilings)
+         known_tilings tilings = read_tilings(KNOWN_TILINGS_DIR, errors);
+         for (const auto& tiling : tilings)
          {
             Assert::IsFalse(tiling.name.empty());
             Assert::IsFalse(tiling.description.empty());
@@ -46,8 +46,8 @@ namespace tiling_tests
          create_directory(drawings_dir);
 
          std::vector<std::wstring> errors;
-         known_tilings tilings(KNOWN_TILINGS_DIR, errors);
-         for (const auto& tiling : tilings.tilings)
+         known_tilings tilings = read_tilings(KNOWN_TILINGS_DIR, errors);
+         for (const auto& tiling : tilings)
          {
             // Create a mosaic with the tiling.
             auto mo = std::make_shared<mosaic>(tiling);
@@ -115,8 +115,8 @@ namespace tiling_tests
          int counter = 0;
 
          std::vector<std::wstring> errors;
-         known_tilings tilings(KNOWN_TILINGS_DIR, errors);
-         for (const auto& tiling : tilings.tilings)
+         known_tilings tilings = read_tilings(KNOWN_TILINGS_DIR, errors);
+         for (const auto& tiling : tilings)
          {
             if (counter++ % 10 != 0)
                continue;
@@ -187,8 +187,8 @@ namespace tiling_tests
          create_directory(drawings_dir);
 
          std::vector<std::wstring> errors;
-         known_tilings tilings(KNOWN_TILINGS_DIR, errors);
-         for (const auto& tiling : tilings.tilings)
+         known_tilings tilings = read_tilings(KNOWN_TILINGS_DIR, errors);
+         for (const auto& tiling : tilings)
          {
             // Create a mosaic with the tiling.
             auto mo = std::make_shared<mosaic>(tiling);
@@ -202,6 +202,8 @@ namespace tiling_tests
 
             map final_map;
             rect region(point(0, 0), point(30, 30));
+            final_map.reserve(count_fill_replications(region, mo->tiling.t1, mo->tiling.t2) * mo->count_tiling_edges());
+            final_map.begin_merge_non_overlapping();
             fill(region, mo->tiling.t1, mo->tiling.t2, [&mo, &final_map](int t1, int t2) {
                const transform receive_trf = transform::translate(mo->tiling.t1.scale(t1) + mo->tiling.t2.scale(t2));
                for (const auto tile_placements : mo->tiling.tiles)
@@ -219,6 +221,7 @@ namespace tiling_tests
                   }
                }
             });
+            final_map.end_merge_non_overlapping();
 
             const auto errors = final_map.verify();
             Assert::AreEqual<size_t>(0, errors.size(), errors.size() > 0 ? errors[0].c_str() : L"no error");
@@ -257,8 +260,8 @@ namespace tiling_tests
          int counter = 0;
 
          std::vector<std::wstring> errors;
-         known_tilings tilings(KNOWN_TILINGS_DIR, errors);
-         for (const auto& tiling : tilings.tilings)
+         known_tilings tilings = read_tilings(KNOWN_TILINGS_DIR, errors);
+         for (const auto& tiling : tilings)
          {
             if (counter++ % 10 != 0)
                continue;
@@ -275,6 +278,8 @@ namespace tiling_tests
 
             map final_map;
             rect region(point(0, 0), point(30, 30));
+            final_map.reserve(count_fill_replications(region, mo->tiling.t1, mo->tiling.t2) * mo->count_tiling_edges());
+            final_map.begin_merge_non_overlapping();
             fill(region, mo->tiling.t1, mo->tiling.t2, [&mo, &final_map](int t1, int t2) {
                const transform receive_trf = transform::translate(mo->tiling.t1.scale(t1) + mo->tiling.t2.scale(t2));
                for (const auto tile_placements : mo->tiling.tiles)
@@ -292,6 +297,7 @@ namespace tiling_tests
                   }
                }
             });
+            final_map.end_merge_non_overlapping();
 
             const auto errors = final_map.verify();
             Assert::AreEqual<size_t>(0, errors.size(), errors.size() > 0 ? (tiling.name + std::wstring(L": ") + errors[0]).c_str() : L"no error");

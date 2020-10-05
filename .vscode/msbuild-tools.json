@@ -1,0 +1,22 @@
+{
+    "solution": "${workspaceRoot}/Alhambra.sln",
+    "variables": {
+        "MSBUILD": "C:/Program Files (x86)/Microsoft Visual Studio/2017/Professional/MSBuild/15.0/Bin/MSBuild.exe",
+        "DEVENV": "C:/Program Files (x86)/Microsoft Visual Studio/2017/Professional/Common7/IDE/devenv.com"
+    },
+    "buildConfigurations": [
+        "Debug",
+        "Release"
+    ],
+    "platformConfigurations": [
+        "x64"
+    ],
+   "debugConfigurations": [
+        {
+            "name": "test",
+            "cwd": "${workspaceRoot}",
+            "program": "${workspaceRoot}/x64/${buildConfig}/Alhambra.exe",
+            "args": []
+        }
+    ]
+}

@@ -15,7 +15,7 @@
     <ProjectGuid>{1E8FDDCB-24D6-4225-B543-545EE3608905}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>tilinguiqt</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">

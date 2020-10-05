@@ -39,6 +39,10 @@ namespace dak
       // Note: icon is a bitmap resource ID.
       QAction* create_action(const wchar_t* text, int icon = 0, QKeySequence key = QKeySequence(), const wchar_t* tooltip = nullptr, std::function<void()> = nullptr);
 
+      // Create toggle action, with checkmark.
+      // Note: icon is a bitmap resource ID.
+      QAction* create_toggle(const wchar_t* text, int icon, QKeySequence key, const wchar_t* tooltip, std::function<void()> callback);
+
       // Create pixmap from a bitmap resource. A mask will automatically be created.
       QPixmap create_pixmap_from_resource(int res);
    }

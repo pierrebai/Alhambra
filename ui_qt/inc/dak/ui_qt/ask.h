@@ -20,7 +20,7 @@ namespace dak
    namespace tiling
    {
       class tiling;
-      class known_tilings;
+      using known_tilings = std::vector<tiling>;
    }
 
    namespace ui_qt
@@ -36,7 +36,7 @@ namespace dak
       // Show a dialog to open or save a tiling.
       // The given path is updated with the selected one, if any.
       tiling ask_open_tiling(std::experimental::filesystem::path& path, QWidget* parent);
-      bool ask_save_tiling(const tiling& tiling, std::experimental::filesystem::path& path, QWidget* parent);
+      bool ask_save_tiling(tiling& tiling, std::experimental::filesystem::path& path, QWidget* parent);
 
       // Show a dialog to open or save a layered mosaic.
       // The given path is updated with the selected one, if any.

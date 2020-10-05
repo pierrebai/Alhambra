@@ -14,7 +14,8 @@ namespace dak
 {
    namespace tiling
    {
-      class known_tilings;
+      class tiling;
+      using known_tilings = std::vector<tiling>;
    }
 
    namespace tiling_style

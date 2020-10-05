@@ -55,7 +55,7 @@
     <ProjectGuid>{F81CCAC2-EF9A-495F-8F73-D0D41002BEF2}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>uiqt</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">

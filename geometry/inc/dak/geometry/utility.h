@@ -81,6 +81,7 @@ namespace dak
       // callback that gets a sequence of calls, one for each translate.
       //
       // Calls the function repatedly with integer linear combinations to be applied to T1 and T2.
+      size_t count_fill_replications(const rect& region, const point& T1, const point& T2);
       void fill(const rect& region, const point& T1, const point& T2, std::function<void(int, int)> c);
    }
 }

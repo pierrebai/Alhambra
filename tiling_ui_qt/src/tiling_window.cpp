@@ -24,8 +24,8 @@ namespace dak
       using namespace ui_qt;
 
       // Creation.
-      tiling_window::tiling_window(const tiling_editor_icons& icons, QWidget *parent)
-         : QMainWindow(parent)
+      tiling_window::tiling_window(dak::tiling::known_tilings& known_tilings, const tiling_editor_icons& icons, QWidget *parent)
+         : QMainWindow(parent), known_tilings(known_tilings)
       {
          /////////////////////////////////////////////////////////////
          // Program window.
@@ -47,9 +47,9 @@ namespace dak
             self->open_tiling();
          });
 
-         select_action = create_tool_button(L::t(L"Select..."), icons.tiling_open, QKeySequence("Shift+O"), L::t(L"Select a tiling design among built-in ones. (Shortcut: <shift> + o)"), [self = this]()
+         select_action = create_tool_button(L::t(L"Select..."), icons.tiling_open, QKeySequence("Shift+O"), L::t(L"Select a tiling design among built-in ones. (Shortcut: <shift> + o)"), [icons, self = this]()
          {
-            self->select_tiling();
+            self->select_tiling(icons);
          });
 
          save_action = create_tool_button(L::t(L"Save As..."), icons.tiling_save, 'S', L::t(L"Save the tiling design. (Shortcut: s)"), [self = this]()
@@ -77,30 +77,34 @@ namespace dak
          toolbar->addSeparator();
 
          toolbar->addWidget(create_tool_button(editor->add_poly_action));
-         toolbar->addWidget(create_tool_button(editor->draw_poly_action));
-         toolbar->addWidget(create_tool_button(editor->copy_poly_action));
-         toolbar->addWidget(create_tool_button(editor->delete_poly_action));
-         toolbar->addWidget(create_tool_button(editor->move_poly_action));
+         toolbar->addWidget(create_tool_button(editor->draw_poly_toggle));
+         toolbar->addWidget(create_tool_button(editor->copy_poly_toggle));
+         toolbar->addWidget(create_tool_button(editor->delete_poly_toggle));
+         toolbar->addWidget(create_tool_button(editor->move_poly_toggle));
 
          toolbar->addSeparator();
 
-         toolbar->addWidget(create_tool_button(editor->toggle_inclusion_action));
+         toolbar->addWidget(create_tool_button(editor->toggle_inclusion_toggle));
          toolbar->addWidget(create_tool_button(editor->exclude_all_action));
          toolbar->addWidget(create_tool_button(editor->fill_trans_action));
          toolbar->addWidget(create_tool_button(editor->remove_excluded_action));
 
          toolbar->addSeparator();
 
-         toolbar->addWidget(create_tool_button(editor->trans_action));
+         toolbar->addWidget(create_tool_button(editor->draw_trans_toggle));
          toolbar->addWidget(create_tool_button(editor->clear_trans_action));
 
          toolbar->addSeparator();
 
-         toolbar->addWidget(create_tool_button(editor->pan_action));
-         toolbar->addWidget(create_tool_button(editor->rotate_action));
-         toolbar->addWidget(create_tool_button(editor->zoom_action));
+         toolbar->addWidget(create_tool_button(editor->pan_toggle));
+         toolbar->addWidget(create_tool_button(editor->rotate_toggle));
+         toolbar->addWidget(create_tool_button(editor->zoom_toggle));
 
          addToolBar(Qt::ToolBarArea::TopToolBarArea, toolbar);
+
+         addAction(editor->copy_poly_action);
+         addAction(editor->delete_poly_action);
+         addAction(editor->toggle_inclusion_action);
 
          // Add panel to edit the name, description and author. TODO
          //tiling_desc = new tiling_description_editor();
@@ -138,12 +142,12 @@ namespace dak
          return;
       }
 
-      void tiling_window::select_tiling()
+      void tiling_window::select_tiling(const tiling_editor_icons& icons)
       {
          if (!save_if_required(L::t(L"edit another tiling"), L::t(L"editing another tiling")))
             return;
 
-         auto selector = new tiling_selector(this, [self = this](const std::shared_ptr<mosaic>& mo)
+         auto selector = new tiling_selector(known_tilings, icons, this, [self = this](const std::shared_ptr<mosaic>& mo)
          {
             self->set_tiling(mo->tiling, file_path());
          });
@@ -242,6 +246,9 @@ namespace dak
             if (!ask_save_tiling(tiling, path, this))
                return false;
             original_file = path;
+            original_tiling = tiling;
+            if (known_tilings.end() == std::find(known_tilings.begin(), known_tilings.end(), tiling))
+               known_tilings.push_back(tiling);
             return true;
          }
          catch (const std::exception& e)

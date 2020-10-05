@@ -14,8 +14,8 @@ namespace dak
 {
    namespace tiling_style
    {
-      known_mosaics_generator::known_mosaics_generator(const std::wstring& folder, const tiling::known_tilings& knowns)
-      : iter(filenames.end()), known_tilings(knowns)
+      known_mosaics_generator::known_mosaics_generator(const std::wstring& folder)
+      : iter(filenames.end())
       {
          for (const auto entry : std::experimental::filesystem::directory_iterator(folder))
             filenames.emplace_back(entry.path());
@@ -48,7 +48,7 @@ namespace dak
             return iter->filename();
       }
 
-      known_mosaics_generator::layered_mosaic known_mosaics_generator::generate_current(std::vector<std::wstring>& errors) const
+      known_mosaics_generator::layered_mosaic known_mosaics_generator::generate_current(const tiling::known_tilings& known_tilings, std::vector<std::wstring>& errors) const
       {
          static layered_mosaic empty;
          if (iter == filenames.end())

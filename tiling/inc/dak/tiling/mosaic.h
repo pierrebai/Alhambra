@@ -52,6 +52,9 @@ namespace dak
          // Construct a map in the given polygonal region using the tiling and figures.
          map construct(const rect& region) const;
 
+         // Count how many edge an instance of the tiling requires.
+         size_t count_tiling_edges() const;
+
          // Verify if the mosaic is invalid.
          bool is_invalid() const { return tiling.is_invalid() || tile_figures.empty(); }
       };

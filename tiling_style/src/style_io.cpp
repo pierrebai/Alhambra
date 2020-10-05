@@ -257,7 +257,7 @@ namespace dak
             int figure_count = 0;
             file >> dummy >> std::quoted(tiling_name) >> figure_count;
 
-            for (const auto& tiling : knowns.tilings)
+            for (const auto& tiling : knowns)
                if (tiling.name == tiling_name)
                   new_mosaic->tiling = tiling;
 

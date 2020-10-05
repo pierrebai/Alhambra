@@ -147,6 +147,7 @@ namespace dak
          point    = 1,
          edge     = 2,
          tile     = 4,
+         edge_or_tile = edge | tile,
          all      = point | edge | tile,
       };
 

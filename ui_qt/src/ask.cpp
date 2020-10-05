@@ -52,22 +52,20 @@ namespace dak
          return dak::tiling::read_tiling(file);
       }
 
-      bool ask_save_tiling(const tiling& tiling, std::experimental::filesystem::path& path, QWidget* parent)
+      bool ask_save_tiling(tiling& tiling, std::experimental::filesystem::path& path, QWidget* parent)
       {
          path = ask_save(L::t(L"Save Tiling"), L::t(tiling_file_types), parent);
          if (path.empty())
             return false;
-         std::wofstream file(path, std::ios::out | std::ios::trunc);
-         if (tiling.name.empty())
+
+         if( tiling.name.empty() )
+            tiling.name = path.stem();
+
          {
-            dak::tiling::tiling named_tiling(tiling);
-            named_tiling.name = path.stem();
-            dak::tiling::write_tiling(named_tiling, file);
-         }
-         else
-         {
+            std::wofstream file(path, std::ios::out | std::ios::trunc);
             dak::tiling::write_tiling(tiling, file);
          }
+
          return true;
       }
 

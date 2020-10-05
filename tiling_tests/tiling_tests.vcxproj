@@ -15,7 +15,7 @@
     <ProjectGuid>{F1A6A9FE-CB92-41C9-AACE-C633E811136C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>tiling_tests</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
     <ProjectSubType>NativeUnitTestProject</ProjectSubType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

@@ -70,25 +70,29 @@ namespace dak
       {
       public:
          // End-user actions.
-         QAction*  trans_action = nullptr;
+         QAction*  draw_trans_toggle = nullptr;
          QAction*  clear_trans_action = nullptr;
          QAction*  fill_trans_action = nullptr;
 
          QAction*  add_poly_action = nullptr;
-         QAction*  draw_poly_action = nullptr;
-         QAction*  copy_poly_action = nullptr;
-         QAction*  move_poly_action = nullptr;
-         QAction*  delete_poly_action = nullptr;
+         QAction*  draw_poly_toggle = nullptr;
+         QAction*  copy_poly_toggle = nullptr;
+         QAction*  move_poly_toggle = nullptr;
+         QAction*  delete_poly_toggle = nullptr;
 
-         QAction*  toggle_inclusion_action = nullptr;
+         QAction*  toggle_inclusion_toggle = nullptr;
          QAction*  remove_excluded_action = nullptr;
          QAction*  exclude_all_action = nullptr;
 
-         QAction*  pan_action = nullptr;
-         QAction*  rotate_action = nullptr;
-         QAction*  zoom_action = nullptr;
+         QAction*  pan_toggle = nullptr;
+         QAction*  rotate_toggle = nullptr;
+         QAction*  zoom_toggle = nullptr;
 
          QAction*  number_actions[10] = { };
+
+         QAction*  copy_poly_action = nullptr;
+         QAction*  delete_poly_action = nullptr;
+         QAction*  toggle_inclusion_action = nullptr;
 
          // Creation.
          tiling_editor(const tiling_editor_icons& icons, QWidget* parent);

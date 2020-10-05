@@ -21,9 +21,16 @@
 
 namespace dak
 {
+   namespace tiling
+   {
+      class tiling;
+      using known_tilings = std::vector<tiling>;
+   }
+
    namespace tiling_ui_qt
    {
       using dak::tiling::tiling;
+      using dak::tiling::known_tilings;
       typedef std::experimental::filesystem::path file_path;
 
       ////////////////////////////////////////////////////////////////////////////
@@ -35,7 +42,7 @@ namespace dak
       {
       public:
          // Creation.
-         tiling_window(const tiling_editor_icons& icons, QWidget *parent);
+         tiling_window(known_tilings& known_tilings, const tiling_editor_icons& icons, QWidget *parent);
 
       private:
          void build_actions(const tiling_editor_icons& icons);
@@ -46,7 +53,7 @@ namespace dak
          // Action callbacks.
          void new_tiling();
          void open_tiling();
-         void select_tiling();
+         void select_tiling(const tiling_editor_icons& icons);
          bool save_tiling();
 
          void set_tiling(const tiling& tiling, const file_path& file);
@@ -59,6 +66,8 @@ namespace dak
          tiling         original_tiling;
 
          tiling_editor* editor = nullptr;
+
+         known_tilings& known_tilings;
 
          QToolButton* new_action = nullptr;
          QToolButton* open_action = nullptr;

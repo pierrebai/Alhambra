@@ -57,9 +57,6 @@
     <ClInclude Include="inc\dak\tiling\known_tilings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\dak\tiling\known_tilings_generator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="inc\dak\tiling\extended_figure.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -99,9 +96,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\known_tilings.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\known_tilings_generator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\extended_figure.cpp">

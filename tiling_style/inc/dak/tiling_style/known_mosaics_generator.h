@@ -18,7 +18,8 @@ namespace dak
 
    namespace tiling
    {
-      class known_tilings;
+      class tiling;
+      using known_tilings = std::vector<tiling>;
    }
 
    namespace tiling_style
@@ -34,9 +35,7 @@ namespace dak
       public:
          typedef std::vector<std::shared_ptr<layer>> layered_mosaic;
 
-         const tiling::known_tilings& known_tilings;
-
-         known_mosaics_generator(const std::wstring& folder, const tiling::known_tilings& knowns);
+         known_mosaics_generator(const std::wstring& folder);
 
          known_mosaics_generator& next();
 
@@ -44,7 +43,7 @@ namespace dak
 
          const std::wstring current_name() const;
 
-         layered_mosaic generate_current(std::vector<std::wstring>& errors) const;
+         layered_mosaic generate_current(const tiling::known_tilings& known_tilings, std::vector<std::wstring>& errors) const;
 
       private:
          typedef std::vector< std::experimental::filesystem::path> filename_container;

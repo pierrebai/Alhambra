@@ -88,6 +88,12 @@ namespace dak
          return action;
       }
 
+      QAction* create_toggle(const wchar_t* text, int icon, QKeySequence key, const wchar_t* tooltip, std::function<void()> callback)
+      {
+         QAction* action = create_action(text, icon, key, tooltip, callback);
+         action->setCheckable(true);
+         return action;
+      }
    }
 }
 

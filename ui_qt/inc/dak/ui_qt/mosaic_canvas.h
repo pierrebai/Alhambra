@@ -21,7 +21,7 @@ namespace dak
       {
       public:
          // This is the mosaic to draw on the drawing_canvas.
-         std::shared_ptr<tiling::mosaic> mosaic;
+         std::shared_ptr<dak::tiling::mosaic> mosaic;
 
          // Create a drawing_canvas with the given parent widget.
          mosaic_canvas(QWidget* parent);

@@ -19,7 +19,6 @@
     <ClInclude Include="inc\dak\tiling\infer_mode.h" />
     <ClInclude Include="inc\dak\tiling\irregular_figure.h" />
     <ClInclude Include="inc\dak\tiling\known_tilings.h" />
-    <ClInclude Include="inc\dak\tiling\known_tilings_generator.h" />
     <ClInclude Include="inc\dak\tiling\mosaic.h" />
     <ClInclude Include="inc\dak\tiling\radial_figure.h" />
     <ClInclude Include="inc\dak\tiling\rosette.h" />
@@ -36,7 +35,6 @@
     <ClCompile Include="src\infer.cpp" />
     <ClCompile Include="src\irregular_figure.cpp" />
     <ClCompile Include="src\known_tilings.cpp" />
-    <ClCompile Include="src\known_tilings_generator.cpp" />
     <ClCompile Include="src\mosaic.cpp" />
     <ClCompile Include="src\radial_figure.cpp" />
     <ClCompile Include="src\rosette.cpp" />
@@ -219,7 +217,7 @@
     <ProjectGuid>{7E0B3E84-185E-4261-B7C5-9006BC33696F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>tiling</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
