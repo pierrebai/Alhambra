@@ -11,45 +11,45 @@ namespace dak
 {
    namespace ui
    {
-      class drawing;
+      class drawing_t;
    }
 
    namespace tiling_style
    {
-      using ui::stroke;
+      using ui::stroke_t;
 
       ////////////////////////////////////////////////////////////////////////////
       //
       // A style that has a thickness and can have its outline drawn.
 
-      class thick : public colored
+      class thick_t : public colored_t
       {
       public:
          // Parameters of the rendering.
          double  width = 0.05;
          double  outline_width = 0.01;
-         ui::color outline_color = ui::color::black();
-         stroke::join_style join = stroke::join_style::round;
+         ui::color_t outline_color = ui::color_t::black();
+         stroke_t::join_style_t join = stroke_t::join_style_t::round;
 
          // Creation.
-         thick() { }
-         thick(const ui::color& c) : colored(c) { }
-         thick(const geometry::map& m, const ui::color& c) : colored(m, c) { }
-         thick(const ui::color& c, double w) : colored(c), width(w) { }
-         thick(const ui::color& c, double w, double ow) : colored(c), width(w), outline_width(ow) { }
+         thick_t() { }
+         thick_t(const ui::color_t& c) : colored_t(c) { }
+         thick_t(const geometry::edges_map_t& m, const ui::color_t& c) : colored_t(m, c) { }
+         thick_t(const ui::color_t& c, double w) : colored_t(c), width(w) { }
+         thick_t(const ui::color_t& c, double w, double ow) : colored_t(c), width(w), outline_width(ow) { }
 
          // Copy a layer.
-         std::shared_ptr<layer> clone() const override;
-         void make_similar(const layer& other) override;
+         std::shared_ptr<layer_t> clone() const override;
+         void make_similar(const layer_t& other) override;
 
          // Retrieve a description of this style.
          std::wstring describe() const override;
 
       protected:
          // The internal draw is called with the layer transform already applied.
-         void internal_draw(ui::drawing& drw) override;
+         void internal_draw(ui::drawing_t& drw) override;
 
-         ui::stroke get_stroke(ui::drawing& drw, double width) const;
+         ui::stroke_t get_stroke(ui::drawing_t& drw, double width) const;
       };
    }
 }

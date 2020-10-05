@@ -16,9 +16,9 @@ namespace dak
       using geometry::map;
       using geometry::PI;
 
-      map scale_figure::build_unit() const
+      map scale_figure_t::build_unit() const
       {
-         const radial_figure* child = get_child();
+         const radial_figure_t* child = get_child();
          if (!child)
             return map();
 

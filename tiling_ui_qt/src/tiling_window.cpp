@@ -24,7 +24,7 @@ namespace dak
       using namespace ui_qt;
 
       // Creation.
-      tiling_window::tiling_window(dak::tiling::known_tilings& known_tilings, const tiling_editor_icons& icons, QWidget *parent)
+      tiling_window_t::tiling_window_t(dak::tiling::known_tilings_t& known_tilings, const tiling_editor_icons_t& icons, QWidget *parent)
          : QMainWindow(parent), known_tilings(known_tilings)
       {
          /////////////////////////////////////////////////////////////
@@ -35,7 +35,7 @@ namespace dak
          build_ui(icons);
       }
 
-      void tiling_window::build_actions(const tiling_editor_icons& icons)
+      void tiling_window_t::build_actions(const tiling_editor_icons_t& icons)
       {
          new_action = create_tool_button(L::t(L"New Tiling"), icons.tiling_new, 'N', L::t(L"Start a new tiling design. (Shortcut: n)"), [self = this]()
          {
@@ -58,10 +58,10 @@ namespace dak
          });
       }
 
-      void tiling_window::build_ui(const tiling_editor_icons& icons)
+      void tiling_window_t::build_ui(const tiling_editor_icons_t& icons)
       {
          // Prepare the designer panel itself.
-         editor = new tiling_editor(icons, this);
+         editor = new tiling_editor_t(icons, this);
 
          setCentralWidget(editor);
 
@@ -113,7 +113,7 @@ namespace dak
          setAttribute(Qt::WA_DeleteOnClose);
       }
 
-      void tiling_window::closeEvent(QCloseEvent* ev)
+      void tiling_window_t::closeEvent(QCloseEvent* ev)
       {
          if (save_if_required(L::t(L"close the window"), L::t(L"closing the window")))
             QWidget::closeEvent(ev);
@@ -125,7 +125,7 @@ namespace dak
       //
       // Open a design.
 
-      void tiling_window::set_tiling(const tiling& tiling, const file_path& file)
+      void tiling_window_t::set_tiling(const tiling_t& tiling, const file_path_t& file)
       {
          original_tiling = tiling;
          original_file = file;
@@ -133,28 +133,28 @@ namespace dak
          editor->set_tiling(tiling);
       }
 
-      void tiling_window::new_tiling()
+      void tiling_window_t::new_tiling()
       {
          if (!save_if_required(L::t(L"start a new tiling"), L::t(L"starting a new tiling")))
             return;
 
-         set_tiling(tiling(), file_path());
+         set_tiling(tiling_t(), file_path_t());
          return;
       }
 
-      void tiling_window::select_tiling(const tiling_editor_icons& icons)
+      void tiling_window_t::select_tiling(const tiling_editor_icons_t& icons)
       {
          if (!save_if_required(L::t(L"edit another tiling"), L::t(L"editing another tiling")))
             return;
 
-         auto selector = new tiling_selector(known_tilings, icons, this, [self = this](const std::shared_ptr<mosaic>& mo)
+         auto selector = new tiling_selector_t(known_tilings, icons, this, [self = this](const std::shared_ptr<mosaic_t>& mo)
          {
-            self->set_tiling(mo->tiling, file_path());
+            self->set_tiling(mo->tiling, file_path_t());
          });
          selector->show();
       }
 
-      void tiling_window::open_tiling()
+      void tiling_window_t::open_tiling()
       {
          if (!save_if_required(L::t(L"edit another tiling"), L::t(L"editing another tiling")))
             return;
@@ -162,7 +162,7 @@ namespace dak
          try
          {
             std::experimental::filesystem::path path;
-            tiling tiling = ask_open_tiling(path, this);
+            tiling_t tiling = ask_open_tiling(path, this);
             if (tiling.is_invalid())
                return;
             set_tiling(tiling, path);
@@ -181,15 +181,15 @@ namespace dak
       //
       // Save the design.
 
-      bool tiling_window::has_original_data_changed()
+      bool tiling_window_t::has_original_data_changed()
       {
          // Note: if the current tiling has no tile, we pretend it didn't change
          //       because there is nothing to be lost if closed.
-         tiling current_tiling = create_tiling_from_data(original_file);
+         tiling_t current_tiling = create_tiling_from_data(original_file);
          return (!current_tiling.tiles.empty() && current_tiling != original_tiling);
       }
 
-      tiling tiling_window::create_tiling_from_data(const file_path& file)
+      tiling_t tiling_window_t::create_tiling_from_data(const file_path_t& file)
       {
          auto tiling = editor->create_tiling();
          if (tiling.is_invalid())
@@ -204,7 +204,7 @@ namespace dak
          return tiling;
       }
 
-      bool tiling_window::save_if_required(const std::wstring& action, const std::wstring& actioning)
+      bool tiling_window_t::save_if_required(const std::wstring& action, const std::wstring& actioning)
       {
          if (has_original_data_changed())
          {
@@ -234,15 +234,15 @@ namespace dak
          return true;
       }
 
-      bool tiling_window::save_tiling()
+      bool tiling_window_t::save_tiling()
       {
          if (!editor->verify_tiling(L::t(L"save")))
             return false;
 
          try
          {
-            file_path path;
-            tiling tiling = create_tiling_from_data(path);
+            file_path_t path;
+            tiling_t tiling = create_tiling_from_data(path);
             if (!ask_save_tiling(tiling, path, this))
                return false;
             original_file = path;

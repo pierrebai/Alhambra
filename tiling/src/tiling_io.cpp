@@ -19,7 +19,7 @@ namespace dak
       // is done, because I don't expect you to write these files by hand --
       // they should be auto-generated from DesignerPanel.
 
-      tiling read_tiling(std::wistream& file)
+      tiling_t read_tiling(std::wistream& file)
       {
          file.imbue(std::locale("C"));
 
@@ -40,7 +40,7 @@ namespace dak
          point t2;
          file >> t1.x >> t1.y >> t2.x >> t2.y;
 
-         tiling new_tiling(name, t1, t2);
+         tiling_t new_tiling(name, t1, t2);
 
          for (int i = 0; i < tile_count; ++i)
          {
@@ -82,7 +82,7 @@ namespace dak
          return new_tiling;
       }
 
-      void write_tiling(const tiling& t, std::wostream& file)
+      void write_tiling(const tiling_t& t, std::wostream& file)
       {
          file.precision(17);
          file.imbue(std::locale("C"));

@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "map": "cpp",
+        "atomic": "cpp",
+        "functional": "cpp",
+        "vector": "cpp",
+        "xmemory": "cpp",
+        "xstddef": "cpp",
+        "xutility": "cpp",
+        "streambuf": "cpp",
+        "xiosbase": "cpp"
+    }
+}

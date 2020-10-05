@@ -22,32 +22,32 @@ namespace dak
       // a mapping from tiles to figures.  The mosaic knows how to turn
       // this information into a finished design, returned as a map.
 
-      class mosaic
+      class mosaic_t
       {
       public:
          // The tiling used to built the mosaic from tiles.
-         tiling tiling;
+         tiling_t tiling;
 
          // Figures giving how to draw each tile.
-         std::map<polygon, std::shared_ptr<figure>> tile_figures;
+         std::map<polygon, std::shared_ptr<figure_t>> tile_figures;
 
          // Empty mosaic.
-         mosaic() { }
+         mosaic_t() { }
 
          // Mosaic of the given tiling, with empty figures.
-         mosaic(const dak::tiling::tiling& t) : tiling(t) { }
+         mosaic_t(const dak::tiling::tiling_t& t) : tiling(t) { }
 
          // Copy.
-         mosaic(const mosaic& other);
-         mosaic& operator=(const mosaic& other);
-         void swap(mosaic& other) noexcept;
+         mosaic_t(const mosaic_t& other);
+         mosaic_t& operator=(const mosaic_t& other);
+         void swap(mosaic_t& other) noexcept;
 
          // Mosaic comparison.
-         bool operator==(const mosaic& other) const;
-         bool operator!=(const mosaic& other) const { return !(*this == other); }
+         bool operator==(const mosaic_t& other) const;
+         bool operator!=(const mosaic_t& other) const { return !(*this == other); }
 
          // Verify if both mosaics have the same figures.
-         bool same_figures(const mosaic& other) const;
+         bool same_figures(const mosaic_t& other) const;
 
          // Construct a map in the given polygonal region using the tiling and figures.
          map construct(const rect& region) const;

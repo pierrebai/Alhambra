@@ -14,7 +14,7 @@ int main(int argc, char **argv)
 
    dak::utility::L::initialize();
 
-   dak::tiling_ui_qt::main_window_icons icons;
+   dak::tiling_ui_qt::main_window_icons_t icons;
 
    icons.app_icon          = IDI_APP_ICON;
 
@@ -61,7 +61,7 @@ int main(int argc, char **argv)
    icons.clear_translation = IDB_POLYGON_TRANS_CLEAR;
    icons.draw_translation  = IDB_POLYGON_TRANSLATION;
 
-   auto mainWindow = new dak::tiling_ui_qt::main_window(icons);
+   auto mainWindow = new dak::tiling_ui_qt::main_window_t(icons);
 
    mainWindow->resize(1000, 800);
    mainWindow->show();

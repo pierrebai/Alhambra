@@ -19,7 +19,7 @@ namespace dak
 {
    namespace tiling_ui_qt
    {
-      using dak::tiling::tiling;
+      using dak::tiling::tiling_t;
       using dak::ui::drawing;
       using dak::ui_qt::message_reporter;
 
@@ -29,7 +29,7 @@ namespace dak
       //
       // Tiling editor icon IDs.
 
-      struct tiling_editor_icons
+      struct tiling_editor_icons_t
       {
          int app_icon = 0;
 
@@ -66,7 +66,7 @@ namespace dak
       // than expressing the tilings directly as code, which is what I did in a
       // previous version.
 
-      class tiling_editor : public QWidget
+      class tiling_editor_t : public QWidget
       {
       public:
          // End-user actions.
@@ -95,11 +95,11 @@ namespace dak
          QAction*  toggle_inclusion_action = nullptr;
 
          // Creation.
-         tiling_editor(const tiling_editor_icons& icons, QWidget* parent);
+         tiling_editor_t(const tiling_editor_icons& icons, QWidget* parent);
 
          // Tiling management.
-         void set_tiling(const tiling& tiling);
-         tiling create_tiling();
+         void set_tiling(const tiling_t& tiling);
+         tiling_t create_tiling();
          bool verify_tiling(const std::wstring& operation);
 
          // Error reporting.
@@ -107,7 +107,7 @@ namespace dak
 
       private:
          // End-user actions.
-         void build_actions(const tiling_editor_icons& icons);
+         void build_actions(const tiling_editor_icons_t& icons);
          void build_ui();
 
          std::shared_ptr<tiling_editor_ui> ui;

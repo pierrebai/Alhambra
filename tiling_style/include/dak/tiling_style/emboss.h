@@ -27,33 +27,33 @@ namespace dak
       // same pre-computed fat line array, and just add one parameter and
       // overloads the draw fat-lines function.
 
-      class emboss : public outline
+      class emboss_t : public outline_t
       {
       public:
          // Angle of the light.
          double angle = 0.;
 
          // Creation.
-         emboss() { }
-         emboss(const ui::color& c) : outline(c) { }
-         emboss(const geometry::map& m, const ui::color& c) : outline(m, c) { }
-         emboss(const ui::color& c, double w) : outline(c, w) { }
-         emboss(const ui::color& c, double w, double ow) : outline(c, w, ow) { }
+         emboss_t() { }
+         emboss_t(const ui::color_t& c) : outline_t(c) { }
+         emboss_t(const geometry::edges_map_t& m, const ui::color_t& c) : outline_t(m, c) { }
+         emboss_t(const ui::color_t& c, double w) : outline_t(c, w) { }
+         emboss_t(const ui::color_t& c, double w, double ow) : outline_t(c, w, ow) { }
 
-         // Copy a layer.
-         std::shared_ptr<layer> clone() const override;
-         void make_similar(const layer& other) override;
+         // Copy a layer_t.
+         std::shared_ptr<layer_t> clone() const override;
+         void make_similar(const layer_t& other) override;
 
          // Retrieve a description of this style.
          std::wstring describe() const override;
 
       protected:
-         // The internal draw is called with the layer transform already applied.
-         void internal_draw_fat_lines(ui::drawing& drw, const fat_lines& fat_lines) override;
+         // The internal draw is called with the layer_t transform already applied.
+         void internal_draw_fat_lines(ui::drawing_t& drw, const fat_lines& fat_lines) override;
 
-         void draw_trap(ui::drawing& drw, const point& a, const point& b, const point& c, const point& d, const point& light, const ui::color* greys);
+         void draw_trap(ui::drawing_t& drw, const point_t& a, const point_t& b, const point_t& c, const point_t& d, const point_t& light, const ui::color_t* greys);
 
-         std::pair<point, point> get_points_many_connections(const edge& an_edge, size_t index, double width, const geometry::map::range& connections) override;
+         std::pair<point_t, point_t> get_points_many_connections(const edge_t& an_edge, size_t index, double width, const geometry::edges_map_t::range& connections) override;
       };
    }
 }

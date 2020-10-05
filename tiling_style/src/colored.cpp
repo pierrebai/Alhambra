@@ -6,11 +6,11 @@ namespace dak
 {
    namespace tiling_style
    {
-      void colored::make_similar(const layer& other)
+      void colored_t::make_similar(const layer& other)
       {
-         style::make_similar(other);
+         style_t::make_similar(other);
 
-         if (const colored* other_colored = dynamic_cast<const colored*>(&other))
+         if (const colored_t* other_colored = dynamic_cast<const colored_t*>(&other))
          {
             color = other_colored->color;
          }

@@ -4,7 +4,7 @@ namespace dak
 {
    namespace tiling
    {
-      const map& figure::get_map() const
+      const map& figure_t::get_map() const
       {
          if (is_cache_valid())
             return cached_map;
@@ -18,7 +18,7 @@ namespace dak
          return cached_map;
       }
 
-      bool figure::is_cache_valid() const
+      bool figure_t::is_cache_valid() const
       {
          return cached_map.all().size() > 0;
       }

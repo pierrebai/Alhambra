@@ -10,17 +10,17 @@ namespace dak
 {
    namespace tiling
    {
-      class mosaic;
-      class tiling;
+      class mosaic_t;
+      class tiling_t;
 
       ////////////////////////////////////////////////////////////////////////////
       // 
       // Reads all tiling files in a given folder.
 
-      using known_tilings = std::vector<tiling>;
+      using known_tilings_t = std::vector<tiling_t>;
 
-      known_tilings read_tilings(const std::wstring& folder, std::vector<std::wstring>& errors);
-      std::shared_ptr<mosaic> generate_mosaic(const tiling& tiling);
+      known_tilings_t read_tilings(const std::wstring& folder, std::vector<std::wstring>& errors);
+      std::shared_ptr<mosaic_t> generate_mosaic(const tiling_t& tiling);
    }
 }
 

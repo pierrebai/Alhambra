@@ -5,34 +5,34 @@ namespace dak
 {
    namespace tiling_style
    {
-      styled_mosaic::styled_mosaic(const styled_mosaic& other)
+      styled_mosaic_t::styled_mosaic_t(const styled_mosaic_t& other)
       : layer(other)
       , mosaic(std::make_shared<tiling::mosaic>(other.mosaic ? *other.mosaic : tiling::mosaic()))
-      , style(other.style ? std::dynamic_pointer_cast<tiling_style::style>(other.style->clone()) : std::shared_ptr<tiling_style::style>(new plain))
+      , style_t(other.style ? std::dynamic_pointer_cast<tiling_style::style>(other.style->clone()) : std::shared_ptr<tiling_style::style>(new plain))
       {
       }
 
-      void styled_mosaic::make_similar(const layer& other)
+      void styled_mosaic_t::make_similar(const layer& other)
       {
-         if (style)
+         if (style_t)
          {
-            if (const styled_mosaic* other_mosaic_layer = dynamic_cast<const styled_mosaic*>(&other))
+            if (const styled_mosaic_t* other_mosaic_layer = dynamic_cast<const styled_mosaic_t*>(&other))
             {
                if (other_mosaic_layer->style)
-                  style->make_similar(*other_mosaic_layer->style);
+                  style_t->make_similar(*other_mosaic_layer->style);
             }
-            else if (const tiling_style::style* other_style = dynamic_cast<const tiling_style::style*>(&other))
+            else if (const tiling_style::style_t* other_style = dynamic_cast<const tiling_style::style_t*>(&other))
             {
-               style->make_similar(*other_style);
+               style_t->make_similar(*other_style);
             }
          }
       }
 
-      styled_mosaic& styled_mosaic::operator=(const styled_mosaic& other)
+      styled_mosaic_t& styled_mosaic_t::operator=(const styled_mosaic_t& other)
       {
          layer::operator=(other);
-         mosaic = std::make_shared<tiling::mosaic>(other.mosaic ? *other.mosaic : tiling::mosaic());
-         style = other.style ? std::dynamic_pointer_cast<tiling_style::style>(other.style->clone()) : std::shared_ptr<tiling_style::style>(new plain);
+         mosaic = std::make_shared<tiling::mosaic_t>(other.mosaic ? *other.mosaic : tiling::mosaic_t());
+         style_t = other.style ? std::dynamic_pointer_cast<tiling_style::style_t>(other.style->clone()) : std::shared_ptr<tiling_style::style_t>(new plain_t);
          return *this;
       }
 

@@ -15,21 +15,21 @@ namespace dak
       //
       // A style that encapsulates drawing a map with a color.
 
-      class colored : public style
+      class colored_t : public style_t
       {
       public:
          // The main color used to draw a style. Some styles derives other colors
          // from this.
-         ui::color color = ui::color::black();
+         ui::color_t color = ui::color_t::black();
 
          // Creation.
-         colored() {}
-         colored(const ui::color& c) : color(c) {}
-         colored(const geometry::map& m) : style(m) { }
-         colored(const geometry::map& m, const ui::color& c) : style(m), color(c) { }
+         colored_t() {}
+         colored_t(const ui::color_t& c) : color(c) {}
+         colored_t(const geometry::edges_map_t& m) : style_t(m) { }
+         colored_t(const geometry::edges_map_t& m, const ui::color_t& c) : style_t(m), color(c) { }
 
          // Copy a layer.
-         void make_similar(const layer& other) override;
+         void make_similar(const layer_t& other) override;
       };
    }
 }

@@ -32,14 +32,14 @@ namespace dak
 {
    namespace tiling_ui_qt
    {
-      typedef dak::tiling::mosaic mosaic;
-      typedef dak::ui::layer layer;
+      typedef dak::tiling::mosaic_t mosaic_t;
+      typedef dak::ui::layer_t layer_t;
 
       ////////////////////////////////////////////////////////////////////////////
       //
       // Main window icon IDs.
 
-      struct main_window_icons : tiling_editor_icons
+      struct main_window_icons_t : tiling_editor_icons_t
       {
          int mosaic_previous = 0;
          int mosaic_next = 0;
@@ -65,20 +65,20 @@ namespace dak
       //
       // The main window of Alhambra.
 
-      class main_window : public QMainWindow
+      class main_window_t : public QMainWindow
       {
       public:
          // Create the main window.
-         main_window(const main_window_icons& icons);
+         main_window_t(const main_window_icons_t& icons);
 
       protected:
          typedef std::map<std::shared_ptr<mosaic>, dak::geometry::map> calculated_mosaics;
 
          // Create the UI elements.
-         void build_ui(const main_window_icons& icons);
+         void build_ui(const main_window_icons_t& icons);
 
          // Connect the signals of the UI elements.
-         void connect_ui(const tiling_editor_icons& icons);
+         void connect_ui(const tiling_editor_icons_t& icons);
 
          // Fill the UI with the intial data.
          void fill_ui();
@@ -92,17 +92,17 @@ namespace dak
 
          // The layers UI call-backs.
          std::vector<std::shared_ptr<layer>> get_selected_layers();
-         std::vector<std::shared_ptr<tiling_style::style>> get_selected_styles();
+         std::vector<std::shared_ptr<tiling_style::style_t>> get_selected_styles();
          std::vector<std::shared_ptr<mosaic>> get_selected_mosaics();
-         std::vector<std::shared_ptr<layer>> find_styles_layers(const std::vector<std::shared_ptr<tiling_style::style>>& styles);
+         std::vector<std::shared_ptr<layer>> find_styles_layers(const std::vector<std::shared_ptr<tiling_style::style_t>>& styles);
          void update_layer_list();
          void fill_layer_list();
 
          // The figures list filling.
-         std::vector<std::shared_ptr<figure>> get_all_avail_figures();
-         std::vector<std::shared_ptr<figure>> get_merged_avail_figures();
+         std::vector<std::shared_ptr<figure_t>> get_all_avail_figures();
+         std::vector<std::shared_ptr<figure_t>> get_merged_avail_figures();
          void fill_figure_list();
-         std::shared_ptr<figure> get_selected_figure();
+         std::shared_ptr<figure_t> get_selected_figure();
          void fill_figure_editor(bool force_update = false);
 
          // Undo / redo tool-bar buttons.
@@ -130,8 +130,8 @@ namespace dak
 
          // Data.
          std::vector<std::wstring> errors;
-         dak::tiling::known_tilings known_tilings;
-         dak::tiling_style::known_mosaics_generator mosaic_gen;
+         dak::tiling::known_tilings_t known_tilings;
+         dak::tiling_style::known_mosaics_generator_t mosaic_gen;
          dak::utility::undo_stack undo_stack;
          dak::ui::layered layered;
 
@@ -176,12 +176,12 @@ namespace dak
          QToolButton* redraw_button = nullptr;
 
          QDockWidget* layers_dock = nullptr;
-         layers_selector* layer_list = nullptr;
+         layers_selector_t* layer_list = nullptr;
 
-         styles_editor* styles_editor = nullptr;
+         styles_editor_t* styles_editor = nullptr;
 
-         dak::tiling_ui_qt::figure_selector* figure_list = nullptr;
-         figure_editor* figure_editor = nullptr;
+         dak::tiling_ui_qt::figure_selector_t* figure_list = nullptr;
+         figure_editor_t* figure_editor = nullptr;
 
          dak::ui_qt::layered_canvas* canvas = nullptr;
       };

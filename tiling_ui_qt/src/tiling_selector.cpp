@@ -31,7 +31,7 @@ namespace dak
       using ui_qt::mosaic_canvas;
       using ui_qt::tiling_canvas;
       using ui_qt::create_tool_button;
-      using dak::tiling::known_tilings;
+      using dak::tiling::known_tilings_t;
 
       ////////////////////////////////////////////////////////////////////////////
       //
@@ -40,20 +40,20 @@ namespace dak
       class tiling_selector_ui
       {
       public:
-         tiling_selector_ui(known_tilings& known_tilings, const tiling_editor_icons& icons, tiling_selector& parent)
+         tiling_selector_ui(known_tilings_t& known_tilings, const tiling_editor_icons_t& icons, tiling_selector_t& parent)
          : editor(parent), tilings(known_tilings), reporter(&parent)
          {
             build_ui(icons, parent);
             fill_ui(get_selected_index());
          }
 
-         const std::shared_ptr<mosaic>& get_selected() const
+         const std::shared_ptr<mosaic_t>& get_selected() const
          {
             return example_canvas->mosaic;
          }
 
       private:
-         void build_ui(const tiling_editor_icons& icons, tiling_selector& parent)
+         void build_ui(const tiling_editor_icons_t& icons, tiling_selector_t& parent)
          {
             parent.setWindowTitle(QString::fromWCharArray(L::t(L"Choose a Tiling")));
             QVBoxLayout* layout = new QVBoxLayout(&parent);
@@ -160,7 +160,7 @@ namespace dak
             tiling_list->blockSignals(disable_feedback > 0);
          }
 
-         void set_tiling(tiling& tiling, const std::experimental::filesystem::path& path)
+         void set_tiling(tiling_t& tiling, const std::experimental::filesystem::path& path)
          {
             disable_feedback++;
             tiling_list->blockSignals(disable_feedback > 0);
@@ -245,7 +245,7 @@ namespace dak
             try
             {
                std::experimental::filesystem::path path;
-               tiling tiling = ui_qt::ask_open_tiling(path, &editor);
+               tiling_t tiling = ui_qt::ask_open_tiling(path, &editor);
                if (tiling.is_invalid())
                   return;
                set_tiling(tiling, path);
@@ -260,9 +260,9 @@ namespace dak
             }
          }
 
-         tiling_selector& editor;
+         tiling_selector_t& editor;
          std::vector<std::wstring> errors;
-         known_tilings tilings;
+         known_tilings_t tilings;
 
          std::unique_ptr<QLabel> tiling_description;
          std::unique_ptr<QTabBar> canvas_tab;
@@ -285,17 +285,17 @@ namespace dak
       //
       // A QWidget to select and order layers.
 
-      tiling_selector::tiling_selector(known_tilings& known_tilings, const tiling_editor_icons& icons, QWidget* parent)
-      : tiling_selector(known_tilings, icons, parent, nullptr)
+      tiling_selector_t::tiling_selector_t(known_tilings_t& known_tilings, const tiling_editor_icons_t& icons, QWidget* parent)
+      : tiling_selector_t(known_tilings, icons, parent, nullptr)
       {
       }
 
-      tiling_selector::tiling_selector(known_tilings& known_tilings, const tiling_editor_icons& icons, QWidget* parent, tiling_chosen_callback tc)
+      tiling_selector_t::tiling_selector_t(known_tilings_t& known_tilings, const tiling_editor_icons_t& icons, QWidget* parent, tiling_chosen_callback tc)
       : QDialog(parent), ui(std::make_unique<tiling_selector_ui>(known_tilings, icons, *this)), tiling_chosen(tc)
       {
       }
 
-      std::shared_ptr<mosaic> tiling_selector::get_selected() const
+      std::shared_ptr<mosaic_t> tiling_selector_t::get_selected() const
       {
          if (!ui)
             return nullptr;

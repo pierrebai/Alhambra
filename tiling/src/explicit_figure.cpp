@@ -10,16 +10,16 @@ namespace dak
    {
       using utility::L;
 
-      std::wstring explicit_figure::describe() const
+      std::wstring explicit_figure_t::describe() const
       {
          std::wstringstream ss;
          ss << L::t(L"Explicit Figure") << L" " << get_map().all().size();
          return ss.str();
       }
 
-      std::shared_ptr<figure> explicit_figure::clone() const
+      std::shared_ptr<figure_t> explicit_figure_t::clone() const
       {
-         return std::make_shared<explicit_figure>(*this);
+         return std::make_shared<explicit_figure_t>(*this);
       }
    }
 }

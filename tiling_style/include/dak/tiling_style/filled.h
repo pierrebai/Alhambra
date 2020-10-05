@@ -21,7 +21,7 @@ namespace dak
       // a two-colouring of the map (which is always possible for the
       // kinds of Islamic designs we're building).
 
-      class filled : public colored
+      class filled_t : public colored_t
       {
       public:
          // Control what gets drawn.
@@ -29,10 +29,10 @@ namespace dak
          bool draw_outside = false;
 
          // Creation.
-         filled() { }
-         filled(const ui::color& c) : colored(c) {}
-         filled(const geometry::map& m) : colored(m) { }
-         filled(const geometry::map& m, const ui::color& c) : colored(m, c) { }
+         filled_t() { }
+         filled_t(const ui::color& c) : colored_t(c) {}
+         filled_t(const geometry::map& m) : colored_t(m) { }
+         filled_t(const geometry::map& m, const ui::color& c) : colored_t(m, c) { }
 
          // Copy a layer.
          std::shared_ptr<layer> clone() const override;

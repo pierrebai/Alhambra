@@ -23,30 +23,30 @@ namespace dak
       // 
       // Reads all tiling files in a given folder and generates them on-demand.
 
-      class known_tilings_generator
+      class known_tilings_generator_t
       {
       public:
-         known_tilings tilings;
+         known_tilings_t tilings;
 
-         known_tilings_generator(const std::wstring& folder, std::vector<std::wstring>& errors);
+         known_tilings_generator_t(const std::wstring& folder, std::vector<std::wstring>& errors);
 
-         known_tilings_generator& next();
+         known_tilings_generator_t& next();
 
-         known_tilings_generator& previous();
+         known_tilings_generator_t& previous();
 
-         known_tilings_generator& set_index(int index);
+         known_tilings_generator_t& set_index(int index);
 
          const std::wstring current_name() const;
 
-         const std::shared_ptr<mosaic>& current_mosaic() const { return mo; }
+         const std::shared_ptr<mosaic_t>& current_mosaic() const { return mo; }
 
          map generate_tiling_map(const rect& region) const;
 
       private:
          void generate_mosaic();
 
-         std::vector<tiling>::const_iterator iter;
-         std::shared_ptr<mosaic> mo;
+         std::vector<tiling_t>::const_iterator iter;
+         std::shared_ptr<mosaic_t> mo;
       };
    }
 }

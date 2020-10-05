@@ -28,14 +28,14 @@ namespace dak
       using geometry::TOLERANCE;
       using utility::L;
 
-      std::shared_ptr<figure> star::clone() const
+      std::shared_ptr<figure_t> star_t::clone() const
       {
-         return std::make_shared<star>(*this);
+         return std::make_shared<star_t>(*this);
       }
 
-      bool star::operator==(const figure& other) const
+      bool star_t::operator==(const figure_t& other) const
       {
-         const auto other_star = dynamic_cast<const star *>(&other);
+         const auto other_star = dynamic_cast<const star_t *>(&other);
          if (!other_star)
             return false;
 
@@ -44,62 +44,62 @@ namespace dak
              && d == other_star->d;
       }
 
-      bool star::is_similar(const figure& other) const
+      bool star_t::is_similar(const figure_t& other) const
       {
-         const auto other_star = dynamic_cast<const star *>(&other);
+         const auto other_star = dynamic_cast<const star_t *>(&other);
          if (!other_star)
             return false;
 
          return n == other_star->n;
       }
 
-      void star::make_similar(const figure& other)
+      void star_t::make_similar(const figure_t& other)
       {
-         if (const auto other_rosette = dynamic_cast<const rosette *>(&other))
+         if (const auto other_rosette = dynamic_cast<const rosette_t *>(&other))
          {
             s = other_rosette->s;
          }
-         else if (const auto other_star = dynamic_cast<const star *>(&other))
+         else if (const auto other_star = dynamic_cast<const star_t *>(&other))
          {
             d = other_star->d;
             s = other_star->s;
          }
-         else if (const auto other_extended = dynamic_cast<const extended_figure *>(&other))
+         else if (const auto other_extended = dynamic_cast<const extended_figure_t *>(&other))
          {
             if (other_extended->child)
             {
                make_similar(*other_extended->child);
             }
          }
-         else if (const auto other_irregular = dynamic_cast<const irregular_figure *>(&other))
+         else if (const auto other_irregular = dynamic_cast<const irregular_figure_t *>(&other))
          {
             d = other_irregular->d;
             s = other_irregular->s;
          }
       }
 
-      std::wstring star::describe() const
+      std::wstring star_t::describe() const
       {
          std::wstringstream ss;
          ss << L::t(L"Star") << L" " << n;
          return ss.str();
       }
 
-      bool star::is_cache_valid() const
+      bool star_t::is_cache_valid() const
       {
-         return radial_figure::is_cache_valid()
+         return radial_figure_t::is_cache_valid()
             && cached_d_last_build_unit == d
             && cached_s_last_build_unit == s;
       }
 
-      void star::update_cached_values() const
+      void star_t::update_cached_values() const
       {
-         radial_figure::update_cached_values();
+         radial_figure_t::update_cached_values();
          cached_d_last_build_unit = d;
          cached_s_last_build_unit = s;
       }
 
-      map star::build_unit() const
+      map star_t::build_unit() const
       {
          const double clamp_d = std::max(1.0, std::min(d, 0.5 * n - 0.01));
          const double did = std::floor(clamp_d);

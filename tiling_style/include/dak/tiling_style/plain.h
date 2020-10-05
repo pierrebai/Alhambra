@@ -13,16 +13,16 @@ namespace dak
       //
       // Render the map as a collection of colored line segments.
 
-      class plain : public colored
+      class plain_t : public colored_t
       {
       public:
          // Creation.
-         plain() { }
-         plain(const ui::color& c) : colored(c) { }
-         plain(const geometry::map& m, const ui::color& c) : colored(m, c) { }
+         plain_t() { }
+         plain_t(const ui::color& c) : colored_t(c) { }
+         plain_t(const geometry::map& m, const ui::color& c) : colored_t(m, c) { }
 
          // Copy a layer.
-         std::shared_ptr<layer> clone() const override;
+         std::shared_ptr<layer_t> clone() const override;
 
          // Retrieve a description of this style.
          std::wstring describe() const override;

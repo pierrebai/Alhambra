@@ -23,51 +23,51 @@ namespace dak
 {
    namespace tiling
    {
-      class tiling;
-      using known_tilings = std::vector<tiling>;
+      class tiling_t;
+      using known_tilings_t = std::vector<tiling_t>;
    }
 
    namespace tiling_ui_qt
    {
-      using dak::tiling::tiling;
-      using dak::tiling::known_tilings;
-      typedef std::experimental::filesystem::path file_path;
+      using dak::tiling::tiling_t;
+      using dak::tiling::known_tilings_t;
+      typedef std::experimental::filesystem::path file_path_t;
 
       ////////////////////////////////////////////////////////////////////////////
       //
       // Used to design the tilings that are used as skeletons for the Islamic
       // construction process.
 
-      class tiling_window : public QMainWindow
+      class tiling_window_t : public QMainWindow
       {
       public:
          // Creation.
-         tiling_window(known_tilings& known_tilings, const tiling_editor_icons& icons, QWidget *parent);
+         tiling_window_t(known_tilings_t& known_tilings, const tiling_editor_icons_t& icons, QWidget *parent);
 
       private:
-         void build_actions(const tiling_editor_icons& icons);
-         void build_ui(const tiling_editor_icons& icons);
+         void build_actions(const tiling_editor_icons_t& icons);
+         void build_ui(const tiling_editor_icons_t& icons);
 
          void closeEvent(QCloseEvent* ev);
 
          // Action callbacks.
          void new_tiling();
          void open_tiling();
-         void select_tiling(const tiling_editor_icons& icons);
+         void select_tiling(const tiling_editor_icons_t& icons);
          bool save_tiling();
 
-         void set_tiling(const tiling& tiling, const file_path& file);
-         tiling create_tiling_from_data(const file_path& file);
+         void set_tiling(const tiling_t& tiling, const file_path_t& file);
+         tiling_t create_tiling_from_data(const file_path_t& file);
          bool has_original_data_changed();
          bool save_if_required(const std::wstring& action, const std::wstring& actioning);
 
          // Tiling being designed: all features and those actually in the tiling.
-         file_path      original_file;
-         tiling         original_tiling;
+         file_path_t      original_file;
+         tiling_t         original_tiling;
 
-         tiling_editor* editor = nullptr;
+         tiling_editor_t* editor = nullptr;
 
-         known_tilings& known_tilings;
+         known_tilings_t& known_tilings;
 
          QToolButton* new_action = nullptr;
          QToolButton* open_action = nullptr;

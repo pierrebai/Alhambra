@@ -8,20 +8,20 @@ namespace dak
    {
       namespace tiling_selection
       {
-         selection find_selection(std::vector<std::shared_ptr<placed_tile>>& tiles, const point& wpt, double selection_distance)
+         selection find_selection(std::vector<std::shared_ptr<placed_tile_t>>& tiles, const point& wpt, double selection_distance)
          {
-            return find_selection(tiles, wpt, selection_distance, selection(), selection_type::all);
+            return find_selection(tiles, wpt, selection_distance, selection(), selection_type_t::all);
          }
 
-         selection find_selection(std::vector<std::shared_ptr<placed_tile>>& tiles, const point& wpt, double sel_dist, const selection& excluded_sel)
+         selection find_selection(std::vector<std::shared_ptr<placed_tile_t>>& tiles, const point& wpt, double sel_dist, const selection& excluded_sel)
          {
-            return find_selection(tiles, wpt, sel_dist, excluded_sel, selection_type::all);
+            return find_selection(tiles, wpt, sel_dist, excluded_sel, selection_type_t::all);
          }
 
-         selection find_selection(std::vector<std::shared_ptr<placed_tile>>& tiles, const point& wpt, double sel_dist, const selection& excluded_sel, selection_type sel_types)
+         selection find_selection(std::vector<std::shared_ptr<placed_tile_t>>& tiles, const point& wpt, double sel_dist, const selection& excluded_sel, selection_type_t sel_types)
          {
             const double sel_dist_2 = sel_dist * sel_dist;
-            const std::shared_ptr<placed_tile> other_than = get_placed_tile(excluded_sel);
+            const std::shared_ptr<placed_tile_t> other_than = get_placed_tile(excluded_sel);
             for (auto iter = tiles.rbegin(); iter != tiles.rend(); ++iter)
             {
                auto& placed = *iter;
@@ -35,19 +35,19 @@ namespace dak
                selection new_sel;
 
                const point lpt = wpt.apply(placed->trf.invert());
-               if ((sel_types & selection_type::tile) == selection_type::tile)
+               if ((sel_types & selection_type_t::tile) == selection_type_t::tile)
                   if (placed->tile.is_inside(lpt))
-                     new_sel.add(tile_selection{placed});
+                     new_sel.add(tile_selection_t{placed});
 
                // When selecting anything, don't select points or edges if the tile is too small.
                // Here we define too small as 4 times the area, which is 16 when squared.
                const bool small_tile = (placed->tile.area() < sel_dist_2 * 16);
-               if (small_tile && sel_types == selection_type::all)
+               if (small_tile && sel_types == selection_type_t::all)
                   goto check_sel;
 
-               if ((sel_types & selection_type::point) == selection_type::point)
+               if ((sel_types & selection_type_t::point) == selection_type_t::point)
                   if (geometry::near(lpt, placed->tile.center(), sel_dist_2))
-                  new_sel.add(point_selection(placed));
+                  new_sel.add(point_selection_t(placed));
 
                if (small_tile)
                   goto check_sel;
@@ -63,20 +63,20 @@ namespace dak
                      // Don't allow selecting end-points of the edge when the edge is too short.
                      // Here we define too short as 4 times the selection distance, which is 16 when squared.
                      if (pt.distance_2(prev_pt) > sel_dist_2 * 16)
-                        if ((sel_types & selection_type::point) == selection_type::point)
+                        if ((sel_types & selection_type_t::point) == selection_type_t::point)
                            if (geometry::near(lpt, pt, sel_dist_2))
-                              new_sel.add(point_selection(placed, i));
+                              new_sel.add(point_selection_t(placed, i));
 
                      // Don't allow selecting the middle of the edge when the edge is too short.
                      // Here we define too short as 6 times the selection distance, which is 36 when squared.
                      if (pt.distance_2(prev_pt) > sel_dist_2 * 36)
-                        if ((sel_types & selection_type::point) == selection_type::point)
+                        if ((sel_types & selection_type_t::point) == selection_type_t::point)
                            if (geometry::near(lpt, prev_pt.convex_sum(pt, 0.5), sel_dist_2))
-                              new_sel.add(point_selection(placed, prev_i, i));
+                              new_sel.add(point_selection_t(placed, prev_i, i));
 
-                     if ((sel_types & selection_type::edge) == selection_type::edge)
+                     if ((sel_types & selection_type_t::edge) == selection_type_t::edge)
                         if (utility::near_less(lpt.distance_2_to_line(prev_pt, pt), sel_dist_2))
-                           new_sel.add(edge_selection{ placed, prev_i, i });
+                           new_sel.add(edge_selection_t{ placed, prev_i, i });
 
                      prev_i = i;
                   }
@@ -90,48 +90,48 @@ namespace dak
             return selection();
          }
 
-         tile_selection get_placed_tile(const selection& sel)
+         tile_selection_t get_placed_tile(const selection& sel)
          {
             for (const std::any& data : sel.data)
             {
-               if (const tile_selection* placed = std::any_cast<tile_selection>(&data))
+               if (const tile_selection_t* placed = std::any_cast<tile_selection_t>(&data))
                {
                   return *placed;
                }
-               if (const edge_selection* edge = std::any_cast<edge_selection>(&data))
+               if (const edge_selection_t* edge = std::any_cast<edge_selection_t>(&data))
                {
                   return *edge;
                }
-               if (const point_selection* pt = std::any_cast<point_selection>(&data))
+               if (const point_selection_t* pt = std::any_cast<point_selection_t>(&data))
                {
                   return *pt;
                }
             }
-            return tile_selection();
+            return tile_selection_t();
          }
 
-         edge_selection get_edge(const selection& sel)
+         edge_selection_t get_edge(const selection& sel)
          {
             for (const std::any& data : sel.data)
             {
-               if (const edge_selection* edge = std::any_cast<edge_selection>(&data))
+               if (const edge_selection_t* edge = std::any_cast<edge_selection_t>(&data))
                {
                   return *edge;
                }
             }
-            return edge_selection();
+            return edge_selection_t();
          }
 
-         point_selection get_point(const selection& sel)
+         point_selection_t get_point(const selection& sel)
          {
             for (const std::any& data : sel.data)
             {
-               if (const point_selection* pt = std::any_cast<point_selection>(&data))
+               if (const point_selection_t* pt = std::any_cast<point_selection_t>(&data))
                {
                   return *pt;
                }
             }
-            return point_selection();
+            return point_selection_t();
          }
       }
    }

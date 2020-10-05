@@ -16,37 +16,37 @@ namespace dak
    namespace tiling
    {
       using geometry::polygon;
-      class infer;
+      class infer_t;
 
       ////////////////////////////////////////////////////////////////////////////
       //
       // Figure based on a non-regular polygon.
 
-      class irregular_figure : public figure
+      class irregular_figure_t : public figure_t
       {
       public:
-         std::shared_ptr<dak::tiling::mosaic> mosaic;
+         std::shared_ptr<dak::tiling::mosaic_t> mosaic;
          polygon poly;
 
-         infer_mode infer = infer_mode::girih;
+         infer_mode_t infer = infer_mode_t::girih;
          double q = 0.;
          double d = 1.;
          int    s = 1;
 
-         irregular_figure() { }
-         irregular_figure(const std::shared_ptr<dak::tiling::mosaic>& mo, const polygon& p) : irregular_figure(mo, p, infer_mode::girih) { }
-         irregular_figure(const std::shared_ptr<dak::tiling::mosaic>& mo, const polygon& p, infer_mode i) : irregular_figure(mo, p, i, std::max(0.333, p.points.size() / 1.7)) { }
-         irregular_figure(const std::shared_ptr<dak::tiling::mosaic>& mo, const polygon& p, infer_mode i, double d) : mosaic(mo), poly(p), infer(i), d(d) { }
+         irregular_figure_t() { }
+         irregular_figure_t(const std::shared_ptr<dak::tiling::mosaic_t>& mo, const polygon& p) : irregular_figure_t(mo, p, infer_mode_t::girih) { }
+         irregular_figure_t(const std::shared_ptr<dak::tiling::mosaic_t>& mo, const polygon& p, infer_mode_t i) : irregular_figure_t(mo, p, i, std::max(0.333, p.points.size() / 1.7)) { }
+         irregular_figure_t(const std::shared_ptr<dak::tiling::mosaic_t>& mo, const polygon& p, infer_mode_t i, double d) : mosaic(mo), poly(p), infer(i), d(d) { }
 
          // Copy a figure.
-         std::shared_ptr<figure> clone() const override;
-         void make_similar(const figure& other) override;
+         std::shared_ptr<figure_t> clone() const override;
+         void make_similar(const figure_t& other) override;
 
          // Figure implementation.
-         bool is_similar(const figure& other) const override;
+         bool is_similar(const figure_t& other) const override;
 
          // Comparison.
-         bool operator==(const figure& other) const override;
+         bool operator==(const figure_t& other) const override;
 
          // Retrieve a description of this style.
          std::wstring describe() const override;
@@ -59,13 +59,13 @@ namespace dak
 
       private:
          mutable polygon cached_poly;
-         mutable infer_mode cached_infer = infer_mode::girih;
+         mutable infer_mode_t cached_infer = infer_mode_t::girih;
 
          mutable double cached_q = NAN;
          mutable double cached_d = NAN;
          mutable int    cached_s = -1;
 
-         friend class infer;
+         friend class infer_t;
       };
    }
 }

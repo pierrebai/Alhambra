@@ -9,7 +9,7 @@ namespace dak
 {
    namespace tiling
    {
-      using geometry::map;
+      using geometry::edges_map_t;
 
       ////////////////////////////////////////////////////////////////////////////
       //
@@ -21,23 +21,23 @@ namespace dak
       // understand different ways of bulding maps, but have the advantage
       // of being parameterizable at a high level.
 
-      class figure
+      class figure_t
       {
       public:
          // Construct the map built by the figure.
-         const map& get_map() const;
+         const edges_map_t& get_map() const;
 
          // Copy a figure.
-         virtual std::shared_ptr<figure> clone() const = 0;
-         virtual void make_similar(const figure& other) = 0;
+         virtual std::shared_ptr<figure_t> clone() const = 0;
+         virtual void make_similar(const figure_t& other) = 0;
 
          // Verify if this figure is similar to the other:
          // if it's the same type and has the same number of sides.
-         virtual bool is_similar(const figure& other) const = 0;
+         virtual bool is_similar(const figure_t& other) const = 0;
 
          // Comparison.
-         virtual bool operator==(const figure& other) const = 0;
-         bool operator!=(const figure& other) const { return !(*this == other); }
+         virtual bool operator==(const figure_t& other) const = 0;
+         bool operator!=(const figure_t& other) const { return !(*this == other); }
 
          // Retrieve a description of this style.
          virtual std::wstring describe() const = 0;
@@ -52,7 +52,7 @@ namespace dak
          // Build the cached map.
          virtual void build_map() const = 0;
 
-         mutable map cached_map;
+         mutable edges_map_t cached_map;
       };
    }
 }

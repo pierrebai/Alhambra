@@ -14,18 +14,18 @@ namespace dak
       // The classic [n/d]s star construction.  See the paper for more
       // details.
 
-      class star : public radial_figure
+      class star_t : public radial_figure_t
       {
       public:
          double d = 3.;
          int    s = 2;
 
-         star() : radial_figure(8) { }
-         star(int n) : radial_figure(n) { }
-         star(int n, double d, int s) : radial_figure(n), d(d), s(s) { }
+         star_t() : radial_figure_t(8) { }
+         star_t(int n) : radial_figure_t(n) { }
+         star_t(int n, double d, int s) : radial_figure_t(n), d(d), s(s) { }
 
          // Copy a figure.
-         std::shared_ptr<figure> clone() const override;
+         std::shared_ptr<figure_t> clone() const override;
          void make_similar(const figure& other) override;
 
          // Figure implementation.

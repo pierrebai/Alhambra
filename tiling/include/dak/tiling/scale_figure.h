@@ -13,17 +13,17 @@ namespace dak
       //
       // Scale a child figure
 
-      class scale_figure : public radial_figure
+      class scale_figure_t : public radial_figure_t
       {
       public:
-         scale_figure(int n) : radial_figure(n) { }
+         scale_figure_t(int n) : radial_figure_t(n) { }
 
          // Radial figure implementation.
-         map build_unit() const override;
+         edges_map_t build_unit() const override;
 
       protected:
          // Return the child radial figure that is being scaled.
-         virtual const radial_figure* get_child() const = 0;
+         virtual const radial_figure_t* get_child() const = 0;
 
          // Compute the scale to be applied to the child's build unit.
          virtual double compute_scale() const = 0;

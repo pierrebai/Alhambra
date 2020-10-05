@@ -19,18 +19,18 @@ namespace dak
       //
       // [1] A.J. Lee, _Islamic Star Patterns_.  Muqarnas 4.
 
-      class rosette : public radial_figure
+      class rosette_t : public radial_figure_t
       {
       public:
          double  q = 0.;
          int     s = 2;
 
-         rosette() : radial_figure(6) { }
-         rosette(int n) : radial_figure(n) { }
-         rosette(int n, double q, int s);
+         rosette_t() : radial_figure_t(6) { }
+         rosette_t(int n) : radial_figure_t(n) { }
+         rosette_t(int n, double q, int s);
 
          // Copy a figure.
-         std::shared_ptr<figure> clone() const override;
+         std::shared_ptr<figure_t> clone() const override;
          void make_similar(const figure& other) override;
 
          // Figure implementation.
@@ -43,7 +43,7 @@ namespace dak
          std::wstring describe() const override;
 
          // Radial figure implementation.
-         map build_unit() const override;
+         edges_map_t build_unit() const override;
 
       protected:
          // Figure cache implementation.

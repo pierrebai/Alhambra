@@ -7,29 +7,29 @@
 
 #include <dak/geometry/edge.h>
 
-#include <dak/utility/selection.h>
+#include <dak/utility/selection_t.h>
 
 namespace dak
 {
    namespace tiling
    {
-      using dak::geometry::point;
-      using dak::geometry::edge;
-      using dak::geometry::polygon;
-      using dak::geometry::transform;
+      using dak::geometry::point_t;
+      using dak::geometry::edge_t;
+      using dak::geometry::polygon_t;
+      using dak::geometry::transform_t;
 
-      using dak::utility::selection;
+      using dak::utility::selection_t;
 
       ////////////////////////////////////////////////////////////////////////////
       //
       // Information kept about each tile in a tiling.
 
-      struct placed_tile
+      struct placed_tile_t
       {
-         polygon tile;
-         transform trf;
+         polygon_t tile;
+         transform_t trf;
 
-         bool operator==(const placed_tile& other) const
+         bool operator==(const placed_tile_t& other) const
          {
             return tile == other.tile && trf == other.trf;
          }
@@ -39,12 +39,12 @@ namespace dak
       //
       // Different types of possible selections in a tiling.
 
-      // Whole tile selection.
-      struct tile_selection
+      // Whole tile selection_t.
+      struct tile_selection_t
       {
-         std::shared_ptr<placed_tile> tile;
+         std::shared_ptr<placed_tile_t> tile;
 
-         operator const std::shared_ptr<placed_tile>& () const
+         operator const std::shared_ptr<placed_tile_t>& () const
          {
             return tile;
          }
@@ -60,8 +60,8 @@ namespace dak
          }
       };
 
-      // Tile edge selection.
-      struct edge_selection : tile_selection
+      // Tile edge selection_t.
+      struct edge_selection_t : tile_selection_t
       {
          size_t p1 = -1;
          size_t p2 = -1;
@@ -84,20 +84,20 @@ namespace dak
                         tile->tile.points[p2]);
          }
 
-         bool operator==(const edge_selection& other) const
+         bool operator==(const edge_selection_t& other) const
          {
             return tile == other.tile && p1 == other.p1 && p2 == other.p2;
          }
       };
 
-      // Point selection: single vertex, center of tile or center of an edge.
-      struct point_selection : tile_selection
+      // Point selection_t: single vertex, center of tile or center of an edge.
+      struct point_selection_t : tile_selection_t
       {
          std::vector<size_t> points;
 
-         point_selection() { }
+         point_selection_t() { }
 
-         point_selection(const std::shared_ptr<placed_tile>& placed)
+         point_selection_t(const std::shared_ptr<placed_tile_t>& placed)
          {
             tile = placed;
             if (!placed)
@@ -107,13 +107,13 @@ namespace dak
                points.emplace_back(i);
          }
 
-         point_selection(const std::shared_ptr<placed_tile>& placed, size_t p)
+         point_selection_t(const std::shared_ptr<placed_tile_t>& placed, size_t p)
          {
             tile = placed;
             points.emplace_back(p);
          }
 
-         point_selection(const std::shared_ptr<placed_tile>& placed, size_t p1, size_t p2)
+         point_selection_t(const std::shared_ptr<placed_tile_t>& placed, size_t p1, size_t p2)
          {
             tile = placed;
             points.emplace_back(p1);
@@ -131,7 +131,7 @@ namespace dak
             return pt.scale(1. / points.size()).apply(tile->trf);
          }
 
-         bool operator==(const point_selection& other) const
+         bool operator==(const point_selection_t& other) const
          {
             return tile == other.tile && points == other.points;
          }
@@ -139,9 +139,9 @@ namespace dak
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // Combinable selection types.
+      // Combinable selection_t types.
 
-      enum class selection_type
+      enum class selection_type_t
       {
          none     = 0,
          point    = 1,
@@ -151,14 +151,14 @@ namespace dak
          all      = point | edge | tile,
       };
 
-      inline selection_type operator|(selection_type s1, selection_type s2)
+      inline selection_type_t operator|(selection_type_t s1, selection_type_t s2)
       {
-         return selection_type((int)s1 | (int)s2);
+         return selection_type_t((int)s1 | (int)s2);
       }
 
-      inline selection_type operator&(selection_type s1, selection_type s2)
+      inline selection_type_t operator&(selection_type_t s1, selection_type_t s2)
       {
-         return selection_type((int)s1 & (int)s2);
+         return selection_type_t((int)s1 & (int)s2);
       }
 
       namespace tiling_selection
@@ -170,17 +170,17 @@ namespace dak
          // The point given must be in world-space, that is in the coordinate system
          // of the tiles.
 
-         selection find_selection(std::vector<std::shared_ptr<placed_tile>>& tiles, const point& wpt, double selection_distance);
-         selection find_selection(std::vector<std::shared_ptr<placed_tile>>& tiles, const point& wpt, double selection_distance, const selection& excluded_selection);
-         selection find_selection(std::vector<std::shared_ptr<placed_tile>>& tiles, const point& wpt, double selection_distance, const selection& excluded_selection, selection_type);
+         selection_t find_selection(std::vector<std::shared_ptr<placed_tile_t>>& tiles, const point& wpt, double selection_distance);
+         selection_t find_selection(std::vector<std::shared_ptr<placed_tile_t>>& tiles, const point& wpt, double selection_distance, const selection_t& excluded_selection);
+         selection_t find_selection(std::vector<std::shared_ptr<placed_tile_t>>& tiles, const point& wpt, double selection_distance, const selection_t& excluded_selection, selection_type_t);
 
          ////////////////////////////////////////////////////////////////////////////
          //
          // Selection extractors.
 
-         point_selection get_point(const selection & sel);
-         edge_selection  get_edge(const selection & sel);
-         tile_selection  get_placed_tile(const selection& sel);
+         point_selection_t get_point(const selection_t & sel);
+         edge_selection_t  get_edge(const selection_t & sel);
+         tile_selection_t  get_placed_tile(const selection_t& sel);
       }
 
    }

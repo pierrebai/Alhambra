@@ -33,7 +33,7 @@ namespace dak
       using namespace dak::tiling_ui_qt;
       using dak::utility::L;
 
-      main_window::main_window(const main_window_icons& icons)
+      main_window_t::main_window_t(const main_window_icons_t& icons)
       : known_tilings(read_tilings(LR"(./tilings)", errors))
       , mosaic_gen(LR"(./mosaics)")
       {
@@ -43,7 +43,7 @@ namespace dak
       }
 
       // Create the UI elements.
-      void main_window::build_ui(const main_window_icons& icons)
+      void main_window_t::build_ui(const main_window_icons_t& icons)
       {
          QToolBar* toolbar = new QToolBar();
             toolbar->setIconSize(QSize(32, 32));
@@ -116,10 +116,10 @@ namespace dak
             QWidget* layers_container = new QWidget();
             QVBoxLayout* layers_layout = new QVBoxLayout(layers_container);
 
-            layer_list = new layers_selector(layers_container, icons.layer_copy, icons.layer_add, icons.layer_delete, icons.layer_move_up, icons.layer_move_down);
+            layer_list = new layers_selector_t(layers_container, icons.layer_copy, icons.layer_add, icons.layer_delete, icons.layer_move_up, icons.layer_move_down);
             layers_layout->addWidget(layer_list);
 
-            styles_editor = new dak::tiling_ui_qt::styles_editor(layers_container);
+            styles_editor = new dak::tiling_ui_qt::styles_editor_t(layers_container);
             layers_layout->addWidget(styles_editor);
 
             layers_dock->setWidget(layers_container);
@@ -129,10 +129,10 @@ namespace dak
             QWidget* figures_container = new QWidget();
             QVBoxLayout* figures_layout = new QVBoxLayout(figures_container);
 
-            figure_list = new dak::tiling_ui_qt::figure_selector(figures_container);
+            figure_list = new dak::tiling_ui_qt::figure_selector_t(figures_container);
             figures_layout->addWidget(figure_list);
 
-            figure_editor = new dak::tiling_ui_qt::figure_editor(figures_container);
+            figure_editor = new dak::tiling_ui_qt::figure_editor_t(figures_container);
             figures_layout->addWidget(figure_editor);
 
             figures_dock->setWidget(figures_container);
@@ -147,7 +147,7 @@ namespace dak
       }
 
       // Connect the signals of the UI elements.
-      void main_window::connect_ui(const tiling_editor_icons& icons)
+      void main_window_t::connect_ui(const tiling_editor_icons_t& icons)
       {
          /////////////////////////////////////////////////////////////////////////
          //
@@ -209,7 +209,7 @@ namespace dak
 
          tiling_editor_action->connect(tiling_editor_action, &QAction::triggered, [self=this,&icons=icons, &known_tilings=known_tilings]()
          {
-            auto window = new tiling_window(known_tilings, icons, self);
+            auto window = new tiling_window_t(known_tilings, icons, self);
             window->resize(1200, 900);
             window->show();
          });
@@ -246,7 +246,7 @@ namespace dak
          //
          // The style editor UI call-backs.
 
-         styles_editor->styles_changed = [self=this](const styles_editor::styles& styles, bool interacting)
+         styles_editor->styles_changed = [self=this](const styles_editor_t::styles& styles, bool interacting)
          {
             self->update_layer_list();
 
@@ -260,7 +260,7 @@ namespace dak
          //
          // The layer list UI call-backs.
 
-         layer_list->layers_changed = [self=this](const layers_selector::layers& layers)
+         layer_list->layers_changed = [self=this](const layers_selector_t::layers& layers)
          {
             self->update_layer_list();
             self->styles_editor->set_edited(self->get_selected_styles());
@@ -269,7 +269,7 @@ namespace dak
             self->update_canvas_layers(layers);
          };
 
-         layer_list->selection_changed = [self=this](const layers_selector::layers& layers)
+         layer_list->selection_changed = [self=this](const layers_selector_t::layers& layers)
          {
             self->layered.set_layers(layers);
             self->styles_editor->set_edited(self->get_selected_styles());
@@ -279,7 +279,7 @@ namespace dak
 
          layer_list->new_layer_requested = [&known_tilings=this->known_tilings, &icons, self=this]()
          {
-            auto selector = new tiling_selector(known_tilings, icons, nullptr, [self=self](const std::shared_ptr<mosaic>& new_mosaic) { self->add_layer(new_mosaic); });
+            auto selector = new tiling_selector_t(known_tilings, icons, nullptr, [self=self](const std::shared_ptr<mosaic>& new_mosaic) { self->add_layer(new_mosaic); });
             selector->show();
          };
 
@@ -287,7 +287,7 @@ namespace dak
          //
          // The figures list UI call-backs.
 
-         figure_list->figure_changed = [self=this](std::shared_ptr<figure> modified)
+         figure_list->figure_changed = [self=this](std::shared_ptr<figure_t> modified)
          {
             for (auto fig : self->get_all_avail_figures())
             {
@@ -306,7 +306,7 @@ namespace dak
             self->update_canvas_layers(self->get_selected_layers());
          };
 
-         figure_list->figure_swapped = [self=this](std::shared_ptr<figure> before, std::shared_ptr<figure> after)
+         figure_list->figure_swapped = [self=this](std::shared_ptr<figure_t> before, std::shared_ptr<figure_t> after)
          {
             for (auto mosaic : self->get_selected_mosaics())
             {
@@ -327,7 +327,7 @@ namespace dak
             self->update_canvas_layers(self->get_selected_layers());
          };
 
-         figure_list->selection_changed = [self=this](const std::shared_ptr<figure>& figure)
+         figure_list->selection_changed = [self=this](const std::shared_ptr<figure_t>& figure)
          {
             self->fill_figure_editor();
          };
@@ -336,7 +336,7 @@ namespace dak
          //
          // The figure editor UI call-backs.
 
-         figure_editor->figure_changed = [self=this](std::shared_ptr<figure> modified, bool interacting)
+         figure_editor->figure_changed = [self=this](std::shared_ptr<figure_t> modified, bool interacting)
          {
             for (auto fig : self->get_all_avail_figures())
             {
@@ -395,14 +395,14 @@ namespace dak
       }
 
       // Fill the UI with the intial data.
-      void main_window::fill_ui()
+      void main_window_t::fill_ui()
       {
          canvas->layered = &layered;
          canvas->transformer.manipulated = &layered;
          layered.set_transform(transform::scale(30));
       }
 
-      void main_window::closeEvent(QCloseEvent* ev)
+      void main_window_t::closeEvent(QCloseEvent* ev)
       {
          if (save_if_required(L::t(L"close the window"), L::t(L"closing the window")))
             QWidget::closeEvent(ev);
@@ -410,7 +410,7 @@ namespace dak
             ev->ignore();
       }
 
-      bool main_window::save_if_required(const std::wstring& action, const std::wstring& actioning)
+      bool main_window_t::save_if_required(const std::wstring& action, const std::wstring& actioning)
       {
          if (undo_stack.has_undo())
          {
@@ -428,7 +428,7 @@ namespace dak
          return true;
       }
 
-      bool main_window::save_mosaic()
+      bool main_window_t::save_mosaic()
       {
          std::experimental::filesystem::path path;
          return ask_save_layered_mosaic(get_avail_layers(), path, this);
@@ -439,19 +439,19 @@ namespace dak
       // The redraw UI call-backs.
 
       // This will calculate the region based on the window size and current transform.
-      geometry::rect main_window::window_filling_region()
+      geometry::rect main_window_t::window_filling_region()
       {
          geometry::rect region = convert(canvas->geometry());
          region.x = region.y = 0;
          return region.apply(canvas->layered->get_transform().invert());
       }
 
-      std::vector<std::shared_ptr<layer>> main_window::get_avail_layers()
+      std::vector<std::shared_ptr<layer>> main_window_t::get_avail_layers()
       {
          return layered.get_layers();
       }
 
-      void main_window::update_layered_transform(const geometry::rect& bounds)
+      void main_window_t::update_layered_transform(const geometry::rect& bounds)
       {
          if (bounds.is_invalid())
             return;
@@ -462,7 +462,7 @@ namespace dak
          layered.set_transform(transform::scale(ratio / 3.));
       }
 
-      const geometry::map& main_window::find_calculated_mosaic(calculated_mosaics& calc_mos, const std::shared_ptr<mosaic>& mosaic)
+      const geometry::map& main_window_t::find_calculated_mosaic(calculated_mosaics& calc_mos, const std::shared_ptr<mosaic>& mosaic)
       {
          for (const auto& calculated : calc_mos)
          {
@@ -474,14 +474,14 @@ namespace dak
          return calc_mos[mosaic] = mosaic->construct(window_filling_region());
       }
 
-      void main_window::update_canvas_layers(const std::vector<std::shared_ptr<layer>>& layers)
+      void main_window_t::update_canvas_layers(const std::vector<std::shared_ptr<layer>>& layers)
       {
          // Optimize updating the layers by only calculating the map of a mosaic once
          // if multiple layers have identical mosaics.
          calculated_mosaics calc_mos;
          for (auto& layer : layers)
          {
-            if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
+            if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
             {
                const auto& calc_map = find_calculated_mosaic(calc_mos, mo_layer->mosaic);
                mo_layer->style->set_map(calc_map);
@@ -494,17 +494,17 @@ namespace dak
       //
       // The layers UI call-backs.
 
-      std::vector<std::shared_ptr<layer>> main_window::get_selected_layers()
+      std::vector<std::shared_ptr<layer>> main_window_t::get_selected_layers()
       {
          return layer_list->get_selected_layers();
       }
 
-      std::vector<std::shared_ptr<style>> main_window::get_selected_styles()
+      std::vector<std::shared_ptr<style_t>> main_window_t::get_selected_styles()
       {
-         std::vector<std::shared_ptr<tiling_style::style>> selected;
+         std::vector<std::shared_ptr<tiling_style::style_t>> selected;
          for (auto layer : layer_list->get_selected_layers())
          {
-            if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
+            if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
             {
                selected.emplace_back(mo_layer->style);
             }
@@ -512,12 +512,12 @@ namespace dak
          return selected;
       }
 
-      std::vector<std::shared_ptr<mosaic>> main_window::get_selected_mosaics()
+      std::vector<std::shared_ptr<mosaic>> main_window_t::get_selected_mosaics()
       {
          std::vector<std::shared_ptr<mosaic>> selected;
          for (auto layer : layer_list->get_selected_layers())
          {
-            if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
+            if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
             {
                selected.emplace_back(mo_layer->mosaic);
             }
@@ -525,13 +525,13 @@ namespace dak
          return selected;
       }
 
-      std::vector<std::shared_ptr<layer>> main_window::find_styles_layers(const std::vector<std::shared_ptr<tiling_style::style>>& styles)
+      std::vector<std::shared_ptr<layer>> main_window_t::find_styles_layers(const std::vector<std::shared_ptr<tiling_style::style_t>>& styles)
       {
          // Find the layers that corresonpond to the list of styles given.
          std::vector<std::shared_ptr<layer>> layers;
          for (auto& layer : get_avail_layers())
          {
-            if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
+            if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
             {
                if (std::find(styles.begin(), styles.end(), mo_layer->style) != styles.end())
                {
@@ -542,12 +542,12 @@ namespace dak
          return layers;
       }
 
-      void main_window::update_layer_list()
+      void main_window_t::update_layer_list()
       {
          layer_list->update_list_content();
       }
 
-      void main_window::fill_layer_list()
+      void main_window_t::fill_layer_list()
       {
          layer_list->set_edited(layered.get_layers());
          styles_editor->set_edited(get_selected_styles());
@@ -558,9 +558,9 @@ namespace dak
       //
       // The figures list filling.
 
-      std::vector<std::shared_ptr<figure>> main_window::get_all_avail_figures()
+      std::vector<std::shared_ptr<figure_t>> main_window_t::get_all_avail_figures()
       {
-         std::vector<std::shared_ptr<figure>> avail;
+         std::vector<std::shared_ptr<figure_t>> avail;
          for (auto mosaic : get_selected_mosaics())
          {
             for (auto& poly_fig : mosaic->tile_figures)
@@ -571,9 +571,9 @@ namespace dak
          return avail;
       }
 
-      std::vector<std::shared_ptr<figure>> main_window::get_merged_avail_figures()
+      std::vector<std::shared_ptr<figure_t>> main_window_t::get_merged_avail_figures()
       {
-         std::vector<std::shared_ptr<figure>> avail;
+         std::vector<std::shared_ptr<figure_t>> avail;
          for (auto figure : get_all_avail_figures())
          {
             bool is_similar = false;
@@ -594,17 +594,17 @@ namespace dak
          return avail;
       }
 
-      void main_window::fill_figure_list()
+      void main_window_t::fill_figure_list()
       {
          figure_list->set_edited(get_merged_avail_figures());
       }
 
-      std::shared_ptr<figure> main_window::get_selected_figure()
+      std::shared_ptr<figure_t> main_window_t::get_selected_figure()
       {
          return figure_list->get_selected_figure();
       }
 
-      void main_window::fill_figure_editor(bool force_update)
+      void main_window_t::fill_figure_editor(bool force_update)
       {
          if (const auto& figure = get_selected_figure())
          {
@@ -616,30 +616,30 @@ namespace dak
       //
       // Undo / redo tool-bar buttons.
 
-      void main_window::deaden_styled_mosaic(std::any& data)
+      void main_window_t::deaden_styled_mosaic(std::any& data)
       {
          auto& layers = std::any_cast<dak::ui::layered::layers&>(data);
          for (auto& layer : layers)
          {
-            if (auto style = std::dynamic_pointer_cast<styled_mosaic>(layer))
+            if (auto style = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
             {
                style->style->set_map(map());
             }
          }
       }
 
-      void main_window::update_undo_redo_actions()
+      void main_window_t::update_undo_redo_actions()
       {
          undo_action->setEnabled(undo_stack.has_undo());
          redo_action->setEnabled(undo_stack.has_redo());
       }
 
-      void main_window::awaken_styled_mosaic(const std::any& data)
+      void main_window_t::awaken_styled_mosaic(const std::any& data)
       {
          dak::ui::layered::layers layers = clone_layers(std::any_cast<const dak::ui::layered::layers&>(data));
          for (auto& layer : layers)
          {
-            if (auto style = std::dynamic_pointer_cast<styled_mosaic>(layer))
+            if (auto style = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
             {
                style->style->set_map(style->mosaic->construct(window_filling_region()));
             }
@@ -655,7 +655,7 @@ namespace dak
          update_canvas_layers(layered.get_layers());
       }
 
-      void main_window::awaken_to_empty_canvas()
+      void main_window_t::awaken_to_empty_canvas()
       {
          layered.set_layers({});
 
@@ -667,12 +667,12 @@ namespace dak
          update_canvas_layers(layered.get_layers());
       }
 
-      void main_window::clear_undo_stack()
+      void main_window_t::clear_undo_stack()
       {
          undo_stack.clear();
       }
 
-      void main_window::commit_to_undo()
+      void main_window_t::commit_to_undo()
       {
          const dak::ui::layered::layers& layers = layered.get_layers();
          undo_stack.commit(
@@ -688,7 +688,7 @@ namespace dak
       //
       // Layer manipulations.
 
-      dak::ui::layered::layers main_window::clone_layers(const dak::ui::layered::layers& layers)
+      dak::ui::layered::layers main_window_t::clone_layers(const dak::ui::layered::layers& layers)
       {
          dak::ui::layered::layers cloned_layers;
          for (const auto& layer : layers)
@@ -696,11 +696,11 @@ namespace dak
          return cloned_layers;
       }
 
-      void main_window::add_layer(const std::shared_ptr<mosaic>& new_mosaic)
+      void main_window_t::add_layer(const std::shared_ptr<mosaic>& new_mosaic)
       {
-         auto mo_layer = std::make_shared<styled_mosaic>();
+         auto mo_layer = std::make_shared<styled_mosaic_t>();
          mo_layer->mosaic = new_mosaic;
-         mo_layer->style = std::make_shared<thick>(color(20, 140, 220, 255));
+         mo_layer->style = std::make_shared<thick_t>(color(20, 140, 220, 255));
          mo_layer->update_style(window_filling_region());
          auto layers = layered.get_layers();
          const bool was_empty = (layers.size() <= 0);
@@ -725,13 +725,13 @@ namespace dak
       //
       // The mosaic tool-bar buttons.
 
-      void main_window::update_mosaic_map(const std::vector<std::shared_ptr<layer>>& layers, const std::wstring& name)
+      void main_window_t::update_mosaic_map(const std::vector<std::shared_ptr<layer>>& layers, const std::wstring& name)
       {
          layers_dock->setWindowTitle(QString::fromWCharArray(L::t(L"Layers for Mosaic: ")) + QString::fromWCharArray(name.c_str()));
 
          layered.set_layers(layers);
          if (layers.size() > 0)
-            if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layered.get_layers()[0]))
+            if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layered.get_layers()[0]))
                update_layered_transform(mo_layer->mosaic->tiling.bounds());
 
          fill_layer_list();
@@ -744,7 +744,7 @@ namespace dak
       //
       // The canvas manipulation tool-bar buttons.
 
-      void main_window::update_canvas_mode()
+      void main_window_t::update_canvas_mode()
       {
          auto forced_mode = dak::ui::transformer::interaction_mode::normal;
          if (translate_button->isChecked())

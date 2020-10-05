@@ -12,27 +12,27 @@ namespace dak
    {
       using utility::L;
 
-      std::shared_ptr<layer> emboss::clone() const
+      std::shared_ptr<layer> emboss_t::clone() const
       {
-         return std::make_shared<emboss>(*this);
+         return std::make_shared<emboss_t>(*this);
       }
 
-      void emboss::make_similar(const layer& other)
+      void emboss_t::make_similar(const layer& other)
       {
          outline::make_similar(other);
 
-         if (const emboss* other_emboss = dynamic_cast<const emboss*>(&other))
+         if (const emboss_t* other_emboss = dynamic_cast<const emboss_t*>(&other))
          {
             angle = other_emboss->angle;
          }
       }
 
-      std::wstring emboss::describe() const
+      std::wstring emboss_t::describe() const
       {
          return L::t(L"Embossed");
       }
 
-      void emboss::internal_draw_fat_lines(ui::drawing& drw, const fat_lines& fat_lines)
+      void emboss_t::internal_draw_fat_lines(ui::drawing& drw, const fat_lines& fat_lines)
       {
          ui::color greys[17] =
          {
@@ -70,7 +70,7 @@ namespace dak
          }
       }
 
-      void emboss::draw_trap(ui::drawing& drw, const point& a, const point& b, const point& c, const point& d, const point& light, const ui::color* greys)
+      void emboss_t::draw_trap(ui::drawing& drw, const point& a, const point& b, const point& c, const point& d, const point& light, const ui::color* greys)
       {
          const point N = (a - d).perp().normalize();
 
@@ -86,7 +86,7 @@ namespace dak
          drw.fill_polygon(poly);
       }
 
-      std::pair<point, point> emboss::get_points_many_connections(const edge& an_edge, size_t index, double width, const geometry::map::range& connections)
+      std::pair<point, point> emboss_t::get_points_many_connections(const edge& an_edge, size_t index, double width, const geometry::map::range& connections)
       {
          return get_points_intersection(an_edge, index, width, width, connections);
       }

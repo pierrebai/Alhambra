@@ -13,7 +13,7 @@ namespace dak
       //
       // Mode of inferring used to create figures.
 
-      enum class infer_mode
+      enum class infer_mode_t
       {
          star,
          girih,
@@ -26,9 +26,9 @@ namespace dak
       };
 
       // Convert infer mode to and from a non-localized name.
-      const wchar_t* infer_mode_name(infer_mode m);
-      infer_mode infer_mode_from_name(const wchar_t* name);
-      infer_mode infer_mode_from_name(const std::wstring& name);
+      const wchar_t* infer_mode_name(infer_mode_t m);
+      infer_mode_t infer_mode_from_name(const wchar_t* name);
+      infer_mode_t infer_mode_from_name(const std::wstring& name);
    }
 }
 

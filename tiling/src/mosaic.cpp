@@ -10,7 +10,7 @@ namespace dak
       using geometry::map;
       using geometry::transform;
 
-      mosaic::mosaic(const mosaic& other)
+      mosaic_t::mosaic_t(const mosaic_t& other)
       : tiling(other.tiling)
       {
          for (const auto& tile_fig : other.tile_figures)
@@ -19,25 +19,25 @@ namespace dak
          }
       }
 
-      mosaic& mosaic::operator=(const mosaic& other)
+      mosaic_t& mosaic_t::operator=(const mosaic_t& other)
       {
-         mosaic copy(other);
+         mosaic_t copy(other);
          swap(copy);
          return *this;
       }
 
-      void mosaic::swap(mosaic& other) noexcept
+      void mosaic_t::swap(mosaic_t& other) noexcept
       {
          tiling.swap(other.tiling);
          tile_figures.swap(other.tile_figures);
       }
 
-      bool mosaic::operator==(const mosaic& other) const
+      bool mosaic_t::operator==(const mosaic_t& other) const
       {
          return tiling == other.tiling && same_figures(other);
       }
 
-      bool mosaic::same_figures(const mosaic& other) const
+      bool mosaic_t::same_figures(const mosaic_t& other) const
       {
          if (tile_figures.size() != other.tile_figures.size())
             return false;
@@ -54,7 +54,7 @@ namespace dak
          return true;
       }
 
-      size_t mosaic::count_tiling_edges() const
+      size_t mosaic_t::count_tiling_edges() const
       {
          size_t count = 0;
 
@@ -71,7 +71,7 @@ namespace dak
          return count;
       }
 
-      map mosaic::construct(const rect& region) const
+      map mosaic_t::construct(const rect& region) const
       {
          map final_map;
          final_map.reserve(count_fill_replications(region, tiling.t1, tiling.t2) * count_tiling_edges());

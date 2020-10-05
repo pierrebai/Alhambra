@@ -16,9 +16,9 @@ namespace dak
 {
    namespace tiling
    {
-      known_tilings read_tilings(const std::wstring& folder, std::vector<std::wstring>& errors)
+      known_tilings_t read_tilings(const std::wstring& folder, std::vector<std::wstring>& errors)
       {
-         known_tilings tilings;
+         known_tilings_t tilings;
 
          try
          {
@@ -44,9 +44,9 @@ namespace dak
          return tilings;
       }
 
-      std::shared_ptr<mosaic> generate_mosaic(const tiling& tiling)
+      std::shared_ptr<mosaic_t> generate_mosaic(const tiling_t& tiling)
       {
-         auto mo = std::make_shared<mosaic>(tiling);
+         auto mo = std::make_shared<mosaic_t>(tiling);
 
          // Fill all regular tiles with stars.
          for (const auto& placed : mo->tiling.tiles)
@@ -54,7 +54,7 @@ namespace dak
             const auto& tile = placed.first;
             if (tile.is_regular())
             {
-               mo->tile_figures[tile] = std::make_shared<star>(int(tile.points.size()), tile.points.size() / 3., 3);
+               mo->tile_figures[tile] = std::make_shared<star_t>(int(tile.points.size()), tile.points.size() / 3., 3);
             }
          }
 
@@ -64,7 +64,7 @@ namespace dak
             const auto& tile = placed.first;
             if (!tile.is_regular())
             {
-               mo->tile_figures[tile] = std::make_shared<irregular_figure>(mo, tile, infer_mode::girih, std::max(1.3, tile.points.size() / 3.));
+               mo->tile_figures[tile] = std::make_shared<irregular_figure_t>(mo, tile, infer_mode_t::girih, std::max(1.3, tile.points.size() / 3.));
             }
          }
 

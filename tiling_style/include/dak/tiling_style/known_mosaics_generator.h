@@ -13,37 +13,37 @@ namespace dak
 {
    namespace geometry
    {
-      class rect;
+      class rectangle_t;
    }
 
    namespace tiling
    {
-      class tiling;
-      using known_tilings = std::vector<tiling>;
+      class tiling_t;
+      using known_tilings_t = std::vector<tiling_t>;
    }
 
    namespace tiling_style
    {
-      using geometry::rect;
+      using geometry::rectangle_t;
 
       ////////////////////////////////////////////////////////////////////////////
       // 
       // Reads all layered mosaic files in a given folder and return them on-demand.
 
-      class known_mosaics_generator
+      class known_mosaics_generator_t
       {
       public:
          typedef std::vector<std::shared_ptr<layer>> layered_mosaic;
 
-         known_mosaics_generator(const std::wstring& folder);
+         known_mosaics_generator_t(const std::wstring& folder);
 
-         known_mosaics_generator& next();
+         known_mosaics_generator_t& next();
 
-         known_mosaics_generator& previous();
+         known_mosaics_generator_t& previous();
 
          const std::wstring current_name() const;
 
-         layered_mosaic generate_current(const tiling::known_tilings& known_tilings, std::vector<std::wstring>& errors) const;
+         layered_mosaic generate_current(const tiling::known_tilings_t& known_tilings, std::vector<std::wstring>& errors) const;
 
       private:
          typedef std::vector< std::experimental::filesystem::path> filename_container;

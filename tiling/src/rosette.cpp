@@ -28,19 +28,19 @@ namespace dak
       using geometry::TOLERANCE;
       using utility::L;
 
-      rosette::rosette(int n, double q, int s)
-      : radial_figure(n), q(q), s(std::min(s, (n - 1) / 2))
+      rosette_t::rosette_t(int n, double q, int s)
+      : radial_figure_t(n), q(q), s(std::min(s, (n - 1) / 2))
       {
       }
 
-      std::shared_ptr<figure> rosette::clone() const
+      std::shared_ptr<figure_t> rosette_t::clone() const
       {
-         return std::make_shared<rosette>(*this);
+         return std::make_shared<rosette_t>(*this);
       }
 
-      bool rosette::operator==(const figure& other) const
+      bool rosette_t::operator==(const figure_t& other) const
       {
-         const auto other_rosette = dynamic_cast<const rosette *>(&other);
+         const auto other_rosette = dynamic_cast<const rosette_t *>(&other);
          if (!other_rosette)
             return false;
 
@@ -49,62 +49,62 @@ namespace dak
              && q == other_rosette->q;
       }
 
-      bool rosette::is_similar(const figure& other) const
+      bool rosette_t::is_similar(const figure_t& other) const
       {
-         const auto other_rosette = dynamic_cast<const rosette *>(&other);
+         const auto other_rosette = dynamic_cast<const rosette_t *>(&other);
          if (!other_rosette)
             return false;
 
          return n == other_rosette->n;
       }
 
-      void rosette::make_similar(const figure& other)
+      void rosette_t::make_similar(const figure_t& other)
       {
-         if (const auto other_rosette = dynamic_cast<const rosette *>(&other))
+         if (const auto other_rosette = dynamic_cast<const rosette_t *>(&other))
          {
             q = other_rosette->q;
             s = other_rosette->s;
          }
-         else if (const auto other_star = dynamic_cast<const star *>(&other))
+         else if (const auto other_star = dynamic_cast<const star_t *>(&other))
          {
             s = other_star->s;
          }
-         else if (const auto other_extended = dynamic_cast<const extended_figure *>(&other))
+         else if (const auto other_extended = dynamic_cast<const extended_figure_t *>(&other))
          {
             if (other_extended->child)
             {
                make_similar(*other_extended->child);
             }
          }
-         else if (const auto other_irregular = dynamic_cast<const irregular_figure *>(&other))
+         else if (const auto other_irregular = dynamic_cast<const irregular_figure_t *>(&other))
          {
             q = other_irregular->q;
             s = other_irregular->s;
          }
       }
 
-      std::wstring rosette::describe() const
+      std::wstring rosette_t::describe() const
       {
          std::wstringstream ss;
          ss << L::t(L"Rosette") << L" " << n;
          return ss.str();
       }
 
-      bool rosette::is_cache_valid() const
+      bool rosette_t::is_cache_valid() const
       {
-         return radial_figure::is_cache_valid()
+         return radial_figure_t::is_cache_valid()
              && cached_q_last_build_unit == q
              && cached_s_last_build_unit == s;
       }
 
-      void rosette::update_cached_values() const
+      void rosette_t::update_cached_values() const
       {
-         radial_figure::update_cached_values();
+         radial_figure_t::update_cached_values();
          cached_q_last_build_unit = q;
          cached_s_last_build_unit = s;
       }
 
-      map rosette::build_unit() const
+      map rosette_t::build_unit() const
       {
          const double don = 1. / n;
 

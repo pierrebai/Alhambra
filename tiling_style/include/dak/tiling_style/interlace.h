@@ -30,7 +30,7 @@ namespace dak
       // over/under relationship at one vertex and propagate it to all other
       // vertices using a depth-first search.
 
-      class interlace : public outline
+      class interlace_t : public outline_t
       {
       public:
          // Parameters of the rendering.
@@ -38,11 +38,11 @@ namespace dak
          double gap_width = 0.;
 
          // Creation.
-         interlace() { }
-         interlace(const ui::color& c) : outline(c) { }
-         interlace(const geometry::map& m, const ui::color& c) : outline(m, c) { }
-         interlace(const ui::color& c, double w) : outline(c, w) { }
-         interlace(const ui::color& c, double w, double ow) : outline(c, w, ow) { }
+         interlace_t() { }
+         interlace_t(const ui::color& c) : outline_t(c) { }
+         interlace_t(const geometry::map& m, const ui::color& c) : outline_t(m, c) { }
+         interlace_t(const ui::color& c, double w) : outline_t(c, w) { }
+         interlace_t(const ui::color& c, double w, double ow) : outline_t(c, w, ow) { }
 
          // Copy a layer.
          std::shared_ptr<layer> clone() const override;
@@ -56,10 +56,10 @@ namespace dak
          double total_width() const { return width + outline_width * 0.5 + gap_width; }
 
          // Generate the fat lines.
-         fat_lines generate_fat_lines(bool all_edges) override;
+         fat_lines_t generate_fat_lines(bool all_edges) override;
 
          // Combine fat lines with their twin to have the correct contour at both ends.
-         fat_lines combine_fat_lines(const fat_lines& fat_lines);
+         fat_lines_t combine_fat_lines(const fat_lines& fat_lines);
 
          // Get the two before/after points needed to draw the p2 junction
          // of the given edge given the number of connections.

@@ -13,17 +13,17 @@ namespace dak
       using geometry::point;
       using utility::L;
 
-      std::shared_ptr<layer> sketch::clone() const
+      std::shared_ptr<layer> sketch_t::clone() const
       {
-         return std::make_shared<sketch>(*this);
+         return std::make_shared<sketch_t>(*this);
       }
 
-      std::wstring sketch::describe() const
+      std::wstring sketch_t::describe() const
       {
          return L::t(L"Sketched");
       }
 
-      void sketch::internal_draw(ui::drawing& drw)
+      void sketch_t::internal_draw(ui::drawing& drw)
       {
          drw.set_color(color);
          drw.set_stroke(ui::stroke(1.));

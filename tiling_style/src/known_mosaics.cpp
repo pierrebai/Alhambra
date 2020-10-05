@@ -12,7 +12,7 @@ namespace dak
 {
    namespace tiling_style
    {
-      void known_mosaics::read_mosaics(const std::wstring& folder, const known_tilings& knowns, std::vector<std::wstring>& errors)
+      void known_mosaics_t::read_mosaics(const std::wstring& folder, const known_tilings_t& knowns, std::vector<std::wstring>& errors)
       {
          try
          {

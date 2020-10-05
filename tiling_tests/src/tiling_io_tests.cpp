@@ -55,7 +55,7 @@ namespace tiling_tests
             // Fill all regular tiles with rosette.
             for (const auto& placed : mo->tiling.tiles)
             {
-               const polygon& tile = placed.first;
+               const polygon_t& tile = placed.first;
                if (tile.is_regular())
                {
                   mo->tile_figures[tile] = std::make_shared<rosette>(int(tile.points.size()), 0.1, int(tile.points.size()) / 4);
@@ -65,7 +65,7 @@ namespace tiling_tests
             // Fill all irregular tiles with inferred girih.
             for (const auto& placed : mo->tiling.tiles)
             {
-               const polygon& tile = placed.first;
+               const polygon_t& tile = placed.first;
                if (!tile.is_regular())
                {
                   mo->tile_figures[tile] = std::make_shared<irregular_figure>(mo, tile);

@@ -17,28 +17,28 @@ namespace dak
       using namespace geometry::intersect;
       using utility::L;
 
-      std::shared_ptr<layer> interlace::clone() const
+      std::shared_ptr<layer> interlace_t::clone() const
       {
-         return std::make_shared<interlace>(*this);
+         return std::make_shared<interlace_t>(*this);
       }
 
-      void interlace::make_similar(const layer& other)
+      void interlace_t::make_similar(const layer& other)
       {
-         outline::make_similar(other);
+         outline_t::make_similar(other);
 
-         if (const interlace* other_interlace = dynamic_cast<const interlace*>(&other))
+         if (const interlace_t* other_interlace = dynamic_cast<const interlace_t*>(&other))
          {
             shadow_width = other_interlace->shadow_width;
             gap_width = other_interlace->gap_width;
          }
       }
 
-      std::wstring interlace::describe() const
+      std::wstring interlace_t::describe() const
       {
          return L::t(L"Interlaced");
       }
 
-      void interlace::propagate_over_under_at_edge_p1(const edge& cur_edge, size_t index, context& ctx)
+      void interlace_t::propagate_over_under_at_edge_p1(const edge& cur_edge, size_t index, context& ctx)
       {
          const geometry::map::range connections = map.outbounds(cur_edge.p1);
          const size_t connection_count = connections.size();
@@ -81,7 +81,7 @@ namespace dak
          }
       }
 
-      void interlace::propagate_over_under(context& ctx)
+      void interlace_t::propagate_over_under(context& ctx)
       {
          // Propagate over/under weaving at the intersection of the given edge p1.
 
@@ -114,7 +114,7 @@ namespace dak
          }
       }
 
-      interlace::fat_lines interlace::generate_fat_lines(bool all_edges)
+      interlace_t::fat_lines interlace_t::generate_fat_lines(bool all_edges)
       {
          cached_shadow_width = shadow_width;
          cached_gap_width = gap_width;
@@ -126,7 +126,7 @@ namespace dak
          propagate_over_under(ctx);
 
          all_edges = true;
-         fat_lines fat_lines = outline::generate_fat_lines(all_edges);
+         fat_lines fat_lines = outline_t::generate_fat_lines(all_edges);
 
          fat_lines = combine_fat_lines(fat_lines);
 
@@ -135,9 +135,9 @@ namespace dak
          return fat_lines;
       }
 
-      interlace::fat_lines interlace::combine_fat_lines(const interlace::fat_lines& fat_lines)
+      interlace_t::fat_lines interlace_t::combine_fat_lines(const interlace_t::fat_lines& fat_lines)
       {
-         interlace::fat_lines combined;
+         interlace_t::fat_lines combined;
 
          const auto& edges = map.all();
          for (size_t edge_index = 0; edge_index < edges.size(); ++edge_index)
@@ -188,7 +188,7 @@ namespace dak
          return combined;
       }
 
-      std::pair<point, point> interlace::get_points_many_connections(const edge& an_edge, size_t index, double width, const geometry::map::range& connections)
+      std::pair<point, point> interlace_t::get_points_many_connections(const edge& an_edge, size_t index, double width, const geometry::map::range& connections)
       {
          if (is_p1_over[index])
             return get_points_continuation(an_edge, index, width, connections);
@@ -197,15 +197,15 @@ namespace dak
             return get_points_intersection(an_edge, index, width, total_width(), connections);
       }
 
-      void interlace::clear_cache()
+      void interlace_t::clear_cache()
       {
-         outline::clear_cache();
+         outline_t::clear_cache();
          cached_shadow_width = NAN;
          cached_gap_width = NAN;
       }
-      bool interlace::is_cache_invalid() const
+      bool interlace_t::is_cache_invalid() const
       {
-         return outline::is_cache_invalid()
+         return outline_t::is_cache_invalid()
              || cached_shadow_width != shadow_width
              || cached_gap_width != gap_width;
       }

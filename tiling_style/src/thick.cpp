@@ -11,16 +11,16 @@ namespace dak
       using ui::stroke;
       using utility::L;
 
-      std::shared_ptr<layer> thick::clone() const
+      std::shared_ptr<layer> thick_t::clone() const
       {
-         return std::make_shared<thick>(*this);
+         return std::make_shared<thick_t>(*this);
       }
 
-      void thick::make_similar(const layer& other)
+      void thick_t::make_similar(const layer& other)
       {
-         colored::make_similar(other);
+         colored_t::make_similar(other);
 
-         if (const thick* other_thick = dynamic_cast<const thick*>(&other))
+         if (const thick_t* other_thick = dynamic_cast<const thick_t*>(&other))
          {
             width         = other_thick->width;
             outline_width = other_thick->outline_width;
@@ -28,12 +28,12 @@ namespace dak
          }
       }
 
-      std::wstring thick::describe() const
+      std::wstring thick_t::describe() const
       {
          return L::t(L"Thick");
       }
 
-      ui::stroke thick::get_stroke(ui::drawing& drw, double sw) const
+      ui::stroke thick_t::get_stroke(ui::drawing& drw, double sw) const
       {
          const double w = drw.get_transform().dist_from_zero(sw);
          return stroke(w,
@@ -59,7 +59,7 @@ namespace dak
          }
       }
 
-      void thick::internal_draw(ui::drawing& drw)
+      void thick_t::internal_draw(ui::drawing& drw)
       {
          // Note: we multiply the width by two because all other styles using
          //       the width actully widen the drawing in both perpendicular

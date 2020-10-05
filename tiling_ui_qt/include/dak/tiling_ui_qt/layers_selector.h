@@ -21,21 +21,21 @@ namespace dak
    {
       using ui::layer;
       using tiling::mosaic;
-      using tiling_style::style;
-      using tiling_style::styled_mosaic;
+      using tiling_style::style_t;
+      using tiling_style::styled_mosaic_t;
 
-      class layers_selector_ui;
+      class layers_selector_ui_t;
 
       ////////////////////////////////////////////////////////////////////////////
       //
       // A QWidget to select and order layers.
 
-      class layers_selector : public QWidget
+      class layers_selector_t : public QWidget
       {
       public:
          // What is being edited.
          typedef std::vector<std::shared_ptr<layer>> layers;
-         typedef std::vector<std::shared_ptr<tiling_style::style>> styles;
+         typedef std::vector<std::shared_ptr<tiling_style::style_t>> styles;
 
          // Callback when the selection changed.
          typedef std::function<void(const layers&)> selection_changed_callback;
@@ -50,7 +50,7 @@ namespace dak
          new_layer_requested_callback new_layer_requested;
 
          // Create a layer selector with the given parent widget and layers.
-         layers_selector(QWidget* parent, int copy_icon, int add_icon, int remove_icon, int move_up_icon, int move_down_icon);
+         layers_selector_t(QWidget* parent, int copy_icon, int add_icon, int remove_icon, int move_up_icon, int move_down_icon);
 
          // Set the layers being edited.
          void set_edited(const layers& edited);
@@ -64,7 +64,7 @@ namespace dak
          styles get_selected_styles() const;
 
       protected:
-         std::unique_ptr<layers_selector_ui> ui;
+         std::unique_ptr<layers_selector_ui_t> ui;
       };
    }
 }

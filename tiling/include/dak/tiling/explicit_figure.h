@@ -14,15 +14,15 @@ namespace dak
       // A variety of Figure which contains an explicit map, which is
       // simple returned when the figure is asked for its map.
 
-      class explicit_figure : public figure
+      class explicit_figure_t : public figure_t
       {
       public:
-         explicit_figure() { }
-         explicit_figure(const map& m) { cached_map = m; }
+         explicit_figure_t() { }
+         explicit_figure_t(const map& m) { cached_map = m; }
 
          // Copy a figure.
-         std::shared_ptr<figure> clone() const override;
-         void make_similar(const figure&) override { }
+         std::shared_ptr<figure_t> clone() const override;
+         void make_similar(const figure_t&) override { }
 
          void set_map(const map& m) { cached_map = m; }
 
@@ -30,10 +30,10 @@ namespace dak
          std::wstring describe() const override;
 
          // Figure implementation.
-         bool is_similar(const figure&) const override { return false; }
+         bool is_similar(const figure_t&) const override { return false; }
 
          // Comparison.
-         bool operator==(const figure& other) const override;
+         bool operator==(const figure_t& other) const override;
 
       protected:
          // Figure cache implementation.

@@ -20,23 +20,23 @@ namespace dak
       using geometry::is_colinear;
       using utility::L;
 
-      std::shared_ptr<layer> outline::clone() const
+      std::shared_ptr<layer> outline_t::clone() const
       {
-         return std::make_shared<outline>(*this);
+         return std::make_shared<outline_t>(*this);
       }
 
-      std::wstring outline::describe() const
+      std::wstring outline_t::describe() const
       {
          return L::t(L"Outlined");
       }
 
-      void outline::set_map(const geometry::map& m)
+      void outline_t::set_map(const geometry::map& m)
       {
          clear_cache();
-         thick::set_map(m);
+         thick_t::set_map(m);
       }
 
-      void outline::internal_draw(ui::drawing& drw)
+      void outline_t::internal_draw(ui::drawing& drw)
       {
          if (is_cache_invalid())
          {
@@ -47,21 +47,21 @@ namespace dak
          internal_draw_fat_lines(drw, cached_fat_lines);
       }
 
-      void outline::clear_cache()
+      void outline_t::clear_cache()
       {
          cached_fat_lines.clear();
          cached_width = NAN;
          cached_outline_width = NAN;
       }
 
-      bool outline::is_cache_invalid() const
+      bool outline_t::is_cache_invalid() const
       {
          return cached_fat_lines.size() <= 0
             || cached_width != width
             || cached_outline_width != outline_width;
       }
 
-      void outline::internal_draw_fat_lines(ui::drawing& drw, const fat_lines& fat_lines)
+      void outline_t::internal_draw_fat_lines(ui::drawing& drw, const fat_lines& fat_lines)
       {
          //#define DAK_TILING_STYLE_OUTLINE_RANDOM_COLOR
 
@@ -98,7 +98,7 @@ namespace dak
          }
       }
 
-      outline::fat_lines outline::generate_fat_lines(bool all_edges)
+      outline_t::fat_lines outline_t::generate_fat_lines(bool all_edges)
       {
          fat_lines fat_lines;
          fat_lines.reserve(map.all().size() / (all_edges ? 1 : 2));
@@ -116,7 +116,7 @@ namespace dak
          return fat_lines;
       }
 
-      outline::fat_line outline::generate_fat_line(const edge& edge, const size_t edge_index, double width)
+      outline_t::fat_line outline_t::generate_fat_line(const edge& edge, const size_t edge_index, double width)
       {
          fat_line fat_line;
 
@@ -131,8 +131,8 @@ namespace dak
 
       // Look at a given edge and construct a plausible set of points
       // to draw at the edge's 'p2' point.  Call this twice to get the
-      // complete outline of the hexagon to draw for this edge.
-      std::pair<point, point> outline::get_points(const edge& an_edge, size_t index, double width, bool& is_line_end)
+      // complete outline_t of the hexagon to draw for this edge.
+      std::pair<point, point> outline_t::get_points(const edge& an_edge, size_t index, double width, bool& is_line_end)
       {
          const geometry::map::range connections = map.outbounds(an_edge.p2);
          const size_t connection_count = connections.size();
@@ -156,22 +156,22 @@ namespace dak
          }
       }
 
-      std::pair<point, point> outline::get_points_one_connection(const edge& an_edge, size_t index, double width, const geometry::map::range&)
+      std::pair<point, point> outline_t::get_points_one_connection(const edge& an_edge, size_t index, double width, const geometry::map::range&)
       {
          return get_points_dead_end(an_edge, index, width);
       }
 
-      std::pair<point, point> outline::get_points_two_connections(const edge& an_edge, size_t index, double width, const geometry::map::range& connections)
+      std::pair<point, point> outline_t::get_points_two_connections(const edge& an_edge, size_t index, double width, const geometry::map::range& connections)
       {
          return get_points_continuation(an_edge, index, width, connections);
       }
 
-      std::pair<point, point> outline::get_points_many_connections(const edge& an_edge, size_t index, double width, const geometry::map::range& connections)
+      std::pair<point, point> outline_t::get_points_many_connections(const edge& an_edge, size_t index, double width, const geometry::map::range& connections)
       {
          return get_points_intersection(an_edge, index, width, width, connections);
       }
 
-      std::pair<point, point> outline::get_points_dead_end(const edge& an_edge, size_t index, double width)
+      std::pair<point, point> outline_t::get_points_dead_end(const edge& an_edge, size_t index, double width)
       {
          const point dir = (an_edge.p2 - an_edge.p1).normalize();
          const point perp = dir.perp();
@@ -180,7 +180,7 @@ namespace dak
          return std::pair<point, point>(below, above);
       }
 
-      std::pair<point, point> outline::get_points_continuation(const edge& an_edge, size_t index, double width, const geometry::map::range& connections)
+      std::pair<point, point> outline_t::get_points_continuation(const edge& an_edge, size_t index, double width, const geometry::map::range& connections)
       {
          const auto continuation = geometry::map::continuation(connections, an_edge);
 
@@ -201,7 +201,7 @@ namespace dak
          return std::pair<point, point>(below, above);
       }
 
-      std::pair<point, point> outline::get_points_intersection(const edge& an_edge, size_t index, double width, double other_edges_width, const geometry::map::range& connections)
+      std::pair<point, point> outline_t::get_points_intersection(const edge& an_edge, size_t index, double width, double other_edges_width, const geometry::map::range& connections)
       {
          const auto before_after = geometry::map::before_after(connections, an_edge);
 
@@ -231,7 +231,7 @@ namespace dak
       // Do a mitered join of the two fat lines (a la postscript, for example).
       // The join point on the other side of the joint can be computed by
       // reflecting the point returned by this function through the joint.
-      point outline::get_join(const point& joint, const point& a, const point& b, double width_a, double width_b)
+      point outline_t::get_join(const point& joint, const point& a, const point& b, double width_a, double width_b)
       {
          double th = joint.sweep(a, b);
 

@@ -14,16 +14,16 @@ namespace dak
       // Sketchy hand-drawn effect as a set of line segments whose
       // endpoints are jittered relative to the original edge.
 
-      class sketch : public colored
+      class sketch_t : public colored_t
       {
       public:
          // Creation.
-         sketch() { }
-         sketch(const ui::color& c) : colored(c) { }
-         sketch(const geometry::map& m, const ui::color& c) : colored(m, c) { }
+         sketch_t() { }
+         sketch_t(const ui::color& c) : colored_t(c) { }
+         sketch_t(const geometry::map& m, const ui::color& c) : colored_t(m, c) { }
 
          // Copy a layer.
-         std::shared_ptr<layer> clone() const override;
+         std::shared_ptr<layer_t> clone() const override;
 
          // Retrieve a description of this style.
          std::wstring describe() const override;

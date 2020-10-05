@@ -28,15 +28,15 @@ namespace dak
 {
    namespace tiling_ui_qt
    {
-      using tiling_style::style;
-      using tiling_style::plain;
-      using tiling_style::colored;
-      using tiling_style::thick;
-      using tiling_style::sketch;
-      using tiling_style::outline;
-      using tiling_style::emboss;
-      using tiling_style::filled;
-      using tiling_style::interlace;
+      using tiling_style::style_t;
+      using tiling_style::plain_t;
+      using tiling_style::colored_t;
+      using tiling_style::thick_t;
+      using tiling_style::sketch_t;
+      using tiling_style::outline_t;
+      using tiling_style::emboss_t;
+      using tiling_style::filled_t;
+      using tiling_style::interlace_t;
 
       using utility::L;
       typedef std::vector<std::shared_ptr<layer>> layers;
@@ -44,59 +44,59 @@ namespace dak
 
       namespace
       {
-         std::shared_ptr<style> make_plain()
+         std::shared_ptr<style_t> make_plain()
          {
-            return std::make_shared<plain>();
+            return std::make_shared<plain_t>();
          }
 
-         std::shared_ptr<style> make_thick()
+         std::shared_ptr<style_t> make_thick()
          {
-            return std::make_shared<thick>();
+            return std::make_shared<thick_t>();
          }
 
-         std::shared_ptr<style> make_sketch()
+         std::shared_ptr<style_t> make_sketch()
          {
-            return std::make_shared<sketch>();
+            return std::make_shared<sketch_t>();
          }
 
-         std::shared_ptr<style> make_outline()
+         std::shared_ptr<style_t> make_outline()
          {
-            return std::make_shared<outline>();
+            return std::make_shared<outline_t>();
          }
 
-         std::shared_ptr<style> make_emboss()
+         std::shared_ptr<style_t> make_emboss()
          {
-            return std::make_shared<emboss>();
+            return std::make_shared<emboss_t>();
          }
 
-         std::shared_ptr<style> make_filled()
+         std::shared_ptr<style_t> make_filled()
          {
-            return std::make_shared<filled>();
+            return std::make_shared<filled_t>();
          }
 
-         std::shared_ptr<style> make_interlace()
+         std::shared_ptr<style_t> make_interlace()
          {
-            return std::make_shared<interlace>();
+            return std::make_shared<interlace_t>();
          }
 
          struct
          {
             std::type_index type;
             const wchar_t* name;
-            std::shared_ptr<style>(*maker)();
+            std::shared_ptr<style_t>(*maker)();
          }
          style_names[] =
          {
-            { typeid(plain), L"Plain", make_plain },
-            { typeid(thick), L"Thick", make_thick },
-            { typeid(sketch), L"Sketched", make_sketch },
-            { typeid(outline), L"Outlined", make_outline },
-            { typeid(emboss), L"Embossed", make_emboss },
-            { typeid(filled), L"Filled", make_filled },
-            { typeid(interlace), L"Interlaced", make_interlace },
+            { typeid(plain_t), L"Plain", make_plain },
+            { typeid(thick_t), L"Thick", make_thick },
+            { typeid(sketch_t), L"Sketched", make_sketch },
+            { typeid(outline_t), L"Outlined", make_outline },
+            { typeid(emboss_t), L"Embossed", make_emboss },
+            { typeid(filled_t), L"Filled", make_filled },
+            { typeid(interlace_t), L"Interlaced", make_interlace },
          };
 
-         const wchar_t* get_style_name(const std::shared_ptr<style>& a_style)
+         const wchar_t* get_style_name(const std::shared_ptr<style_t>& a_style)
          {
             for (const auto& item : style_names)
                if (std::type_index(typeid(*a_style)) == item.type)
@@ -104,7 +104,7 @@ namespace dak
             return L::t(L"Unknown");
          }
 
-         std::shared_ptr<style> make_style(const QString& new_style_name)
+         std::shared_ptr<style_t> make_style(const QString& new_style_name)
          {
             for (const auto& item : style_names)
                if (new_style_name == QString::fromWCharArray(L::t(item.name)))
@@ -118,10 +118,10 @@ namespace dak
       //
       // A QWidget to select and order layers.
 
-      class layers_selector_ui
+      class layers_selector_ui_t
       {
       public:
-         layers_selector_ui(layers_selector& parent, int copy_icon, int add_icon, int remove_icon, int move_up_icon, int move_down_icon)
+         layers_selector_ui_t(layers_selector_t& parent, int copy_icon, int add_icon, int remove_icon, int move_up_icon, int move_down_icon)
          : editor(parent)
          {
             build_ui(parent, copy_icon, add_icon, remove_icon, move_up_icon, move_down_icon);
@@ -156,9 +156,9 @@ namespace dak
             return selected;
          };
 
-         std::vector<std::shared_ptr<style>> get_selected_styles() const
+         std::vector<std::shared_ptr<style_t>> get_selected_styles() const
          {
-            std::vector<std::shared_ptr<style>> selected;
+            std::vector<std::shared_ptr<style_t>> selected;
             for (auto layer : get_selected_layers())
             {
                if (auto style = extract_style(layer))
@@ -177,7 +177,7 @@ namespace dak
             int row = 0;
             for (auto& layer : edited)
             {
-               if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
+               if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
                {
                   const auto state = mo_layer->hide ? Qt::CheckState::Unchecked : Qt::CheckState::Checked;
                   auto draw_item = layer_list->item(row, draw_column);
@@ -204,9 +204,9 @@ namespace dak
          }
 
       private:
-         static std::shared_ptr<style> extract_style(const std::shared_ptr<layer>& layer)
+         static std::shared_ptr<style_t> extract_style(const std::shared_ptr<layer>& layer)
          {
-            if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
+            if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
             {
                return mo_layer->style;
             }
@@ -224,7 +224,7 @@ namespace dak
             return std::move(button);
          }
 
-         void build_ui(layers_selector& parent, int copy_icon, int add_icon, int remove_icon, int move_up_icon, int move_down_icon)
+         void build_ui(layers_selector_t& parent, int copy_icon, int add_icon, int remove_icon, int move_up_icon, int move_down_icon)
          {
             QVBoxLayout* layout = new QVBoxLayout(&parent);
             layout->setContentsMargins(0, 0, 0, 0);
@@ -287,7 +287,7 @@ namespace dak
 
             for (auto& layer : edited)
             {
-               if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(layer))
+               if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
                {
                   const int row = layer_list->rowCount();
                   layer_list->setRowCount(row + 1);
@@ -386,7 +386,7 @@ namespace dak
             {
                if (old_style)
                   new_style->make_similar(*old_style);
-               if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic>(edited[row]))
+               if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(edited[row]))
                   mo_layer->style = new_style;
                else
                   edited[row] = new_style;
@@ -514,7 +514,7 @@ namespace dak
          static constexpr int tiling_column = 1;
          static constexpr int style_column = 2;
 
-         layers_selector& editor;
+         layers_selector_t& editor;
          layers edited;
 
          std::unique_ptr<table_widget_with_combo> layer_list;
@@ -531,12 +531,12 @@ namespace dak
       //
       // A QWidget to select and order layers.
 
-      layers_selector::layers_selector(QWidget* parent, int copy_icon, int add_icon, int remove_icon, int move_up_icon, int move_down_icon)
-      : QWidget(parent), ui(std::make_unique<layers_selector_ui>(*this, copy_icon, add_icon, remove_icon, move_up_icon, move_down_icon))
+      layers_selector_t::layers_selector_t(QWidget* parent, int copy_icon, int add_icon, int remove_icon, int move_up_icon, int move_down_icon)
+      : QWidget(parent), ui(std::make_unique<layers_selector_ui_t>(*this, copy_icon, add_icon, remove_icon, move_up_icon, move_down_icon))
       {
       }
 
-      void layers_selector::set_edited(const layers& edited)
+      void layers_selector_t::set_edited(const layers& edited)
       {
          if (!ui)
             return;
@@ -544,7 +544,7 @@ namespace dak
          ui->set_edited(edited);
       }
 
-      const layers& layers_selector::get_edited() const
+      const layers& layers_selector_t::get_edited() const
       {
          static const layers empty;
          if (!ui)
@@ -553,7 +553,7 @@ namespace dak
          return ui->get_edited();
       }
 
-      void layers_selector::update_list_content()
+      void layers_selector_t::update_list_content()
       {
          if (!ui)
             return;
@@ -562,7 +562,7 @@ namespace dak
       }
 
 
-      layers layers_selector::get_selected_layers() const
+      layers layers_selector_t::get_selected_layers() const
       {
          if (!ui)
             return {};
@@ -570,7 +570,7 @@ namespace dak
          return ui->get_selected_layers();
       }
 
-      layers_selector::styles layers_selector::get_selected_styles() const
+      layers_selector_t::styles layers_selector_t::get_selected_styles() const
       {
          if (!ui)
             return {};

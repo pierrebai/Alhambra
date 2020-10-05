@@ -20,26 +20,26 @@ namespace dak
       // up with the feature that will eventually contain it, we need to do
       // some fancy reshuffling of the basic unit to move the apex to (1,0).
 
-      class extended_figure : public scale_figure
+      class extended_figure_t : public scale_figure_t
       {
       public:
-         std::shared_ptr<radial_figure> child;
+         std::shared_ptr<radial_figure_t> child;
 
-         extended_figure(const std::shared_ptr<radial_figure>& child);
-         extended_figure(const extended_figure& other);
-         extended_figure& operator=(const extended_figure& other);
+         extended_figure_t(const std::shared_ptr<radial_figure_t>& child);
+         extended_figure_t(const extended_figure_t& other);
+         extended_figure_t& operator=(const extended_figure_t& other);
 
          // Copy a figure.
-         std::shared_ptr<figure> clone() const override;
-         void make_similar(const figure& other) override;
+         std::shared_ptr<figure_t> clone() const override;
+         void make_similar(const figure_t& other) override;
 
          void child_changed();
 
          // Figure implementation.
-         bool is_similar(const figure& other) const override;
+         bool is_similar(const figure_t& other) const override;
 
          // Comparison.
-         bool operator==(const figure& other) const override;
+         bool operator==(const figure_t& other) const override;
 
          // Retrieve a description of this style.
          std::wstring describe() const override;
@@ -53,11 +53,11 @@ namespace dak
          void update_cached_values() const override;
 
          // Scale figure implementation.
-         const radial_figure* get_child() const override;
+         const radial_figure_t* get_child() const override;
          double compute_scale() const override;
 
       private:
-         static double compute_scale(std::shared_ptr<radial_figure> child);
+         static double compute_scale(std::shared_ptr<radial_figure_t> child);
          static void scale_to_unit(map& cunit);
 
          mutable double cached_s_last_build_unit = NAN;

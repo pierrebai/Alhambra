@@ -10,7 +10,7 @@ namespace dak
       using geometry::transform;
       using geometry::PI;
 
-      void radial_figure::build_map() const
+      void radial_figure_t::build_map() const
       {
          const map unit = build_unit();
 
@@ -28,13 +28,13 @@ namespace dak
          cached_map.end_merge_non_overlapping();
       }
 
-      bool radial_figure::is_cache_valid() const
+      bool radial_figure_t::is_cache_valid() const
       {
          return cached_n_last_build_unit == n
-             && figure::is_cache_valid();
+             && figure_t::is_cache_valid();
       }
 
-      void radial_figure::update_cached_values() const
+      void radial_figure_t::update_cached_values() const
       {
          cached_n_last_build_unit = n;
       }

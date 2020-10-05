@@ -10,33 +10,33 @@ namespace dak
 {
    namespace tiling_style
    {
-      using ui::layer;
+      using ui::layer_t;
 
       ////////////////////////////////////////////////////////////////////////////
       //
       // A style encapsulates drawing a map with some interesting style.
 
-      class style : public layer
+      class style_t : public layer_t
       {
       public:
          // Create an empty style.
-         style() { }
+         style_t() { }
 
          // Create a style.
-         style(const geometry::map& m) : map(m) { }
+         style_t(const geometry::map& m) : map(m) { }
 
          // Retrieve a description of this style.
          virtual std::wstring describe() const = 0;
 
          // Set or access the map used as the basis to build the style.
-         const geometry::map& get_map() const { return map; }
+         const geometry::edges_map_t& get_map() const { return map; }
          virtual void set_map(const geometry::map& m) { map = m; }
 
          // Copy a layer.
-         void make_similar(const layer& other) override;
+         void make_similar(const layer_t& other) override;
 
       protected:
-         geometry::map map;
+         geometry::edges_map_t map;
       };
    }
 }

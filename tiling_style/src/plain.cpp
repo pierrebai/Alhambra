@@ -11,18 +11,18 @@ namespace dak
       using ui::stroke;
       using utility::L;
 
-      std::shared_ptr<layer> plain::clone() const
+      std::shared_ptr<layer> plain_t::clone() const
       {
-         return std::make_shared<plain>(*this);
+         return std::make_shared<plain_t>(*this);
       }
 
-      std::wstring plain::describe() const
+      std::wstring plain_t::describe() const
       {
          return L::t(L"Plain");
       }
 
       // The internal draw is called with the layer transform already applied.
-      void plain::internal_draw(ui::drawing& drw)
+      void plain_t::internal_draw(ui::drawing& drw)
       {
          drw.set_color(color);
          drw.set_stroke(stroke(1., stroke::cap_style::round, stroke::join_style::round));

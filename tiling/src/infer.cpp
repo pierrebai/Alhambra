@@ -16,51 +16,51 @@ namespace dak
       using geometry::edge;
       using namespace geometry::intersect;
 
-      const wchar_t* infer_mode_name(infer_mode m)
+      const wchar_t* infer_mode_name(infer_mode_t m)
       {
          switch (m)
          {
-            case infer_mode::star:
+            case infer_mode_t::star:
                return L"Star";
-            case infer_mode::girih:
+            case infer_mode_t::girih:
                return L"Girih";
-            case infer_mode::intersect:
+            case infer_mode_t::intersect:
                return L"Intersect";
-            case infer_mode::progressive:
+            case infer_mode_t::progressive:
                return L"Progessive";
-            case infer_mode::hourglass:
+            case infer_mode_t::hourglass:
                return L"Hourglass";
-            case infer_mode::rosette:
+            case infer_mode_t::rosette:
                return L"Rosette";
-            case infer_mode::extended_rosette:
+            case infer_mode_t::extended_rosette:
                return L"Extended Rosette";
-            case infer_mode::simple:
+            case infer_mode_t::simple:
                return L"Simple";
             default:
                return L"Unknown";
          }
       }
 
-      infer_mode infer_mode_from_name(const wchar_t* name)
+      infer_mode_t infer_mode_from_name(const wchar_t* name)
       {
          if (!name)
-            return infer_mode::girih;
+            return infer_mode_t::girih;
 
          return infer_mode_from_name(std::wstring(name));
       }
 
-      infer_mode infer_mode_from_name(const std::wstring& name)
+      infer_mode_t infer_mode_from_name(const std::wstring& name)
       {
-         const infer_mode modes[] =
+         const infer_mode_t modes[] =
          {
-            infer_mode::star,
-            infer_mode::girih,
-            infer_mode::intersect,
-            infer_mode::progressive,
-            infer_mode::hourglass,
-            infer_mode::rosette,
-            infer_mode::extended_rosette,
-            infer_mode::simple,
+            infer_mode_t::star,
+            infer_mode_t::girih,
+            infer_mode_t::intersect,
+            infer_mode_t::progressive,
+            infer_mode_t::hourglass,
+            infer_mode_t::rosette,
+            infer_mode_t::extended_rosette,
+            infer_mode_t::simple,
          };
 
          for (const auto mode : modes)
@@ -68,7 +68,7 @@ namespace dak
                return mode;
 
          // Some reasonable default...
-         return infer_mode::girih;
+         return infer_mode_t::girih;
       }
 
       namespace
@@ -135,7 +135,7 @@ namespace dak
          }
       }
 
-      infer::infer(const std::shared_ptr<mosaic>& mo, const polygon& tile)
+      infer_t::infer_t(const std::shared_ptr<mosaic>& mo, const polygon& tile)
          : tiling(mo->tiling)
       {
          // Get a map for each tile in the prototype.
@@ -144,7 +144,7 @@ namespace dak
             if (tf.first != tile)
             {
                // We have to use the cached maps for irregulr to avoid infinite recursion.
-               if (auto irregular = std::dynamic_pointer_cast<irregular_figure>(tf.second))
+               if (auto irregular = std::dynamic_pointer_cast<irregular_figure_t>(tf.second))
                   maps[tf.first] = irregular->cached_map;
                else
                   maps[tf.first] = tf.second->get_map();
@@ -167,7 +167,7 @@ namespace dak
       // The next three routines create placed_points instances for all
       // the tiles in the nine translational units generated above.
 
-      void infer::add(const transform& trf, const polygon* tile)
+      void infer_t::add(const transform& trf, const polygon* tile)
       {
          int sz = length(tile->points);
          std::vector<point> fpts = geometry::apply(trf, tile->points);
@@ -178,14 +178,14 @@ namespace dak
          placed.emplace_back(placed_points(tile, trf, mids));
       }
 
-      void infer::add(const transform& base_trf)
+      void infer_t::add(const transform& base_trf)
       {
          for (const auto& placed : tiling.tiles)
             for (const auto& trf : placed.second)
                add(base_trf.compose(trf), &placed.first);
       }
 
-      void infer::add(int t1, int t2)
+      void infer_t::add(int t1, int t2)
       {
          add(transform::translate(tiling.t1.scale(t1) + tiling.t2.scale(t2)));
       }
@@ -196,7 +196,7 @@ namespace dak
       // one that is surrounded by other tiles.  That means that we
       // should just find an instance of that tile in the (0,0) unit.
 
-      const placed_points* infer::findPrimaryFeature(const polygon& tile) const
+      const placed_points* infer_t::findPrimaryFeature(const polygon& tile) const
       {
          // The start and end of the tiles in the (0,0) unit.
          auto iter = std::next(placed.begin(), length(placed) * 4 / 9);
@@ -238,7 +238,7 @@ namespace dak
       // For this edge of the tile being inferred, find the edges of
       // neighbouring tiles and store.
 
-      void infer::getAdjacency(const placed_points& pp, const point& main_point, std::vector<adjacency_info>& adjs) const
+      void infer_t::getAdjacency(const placed_points& pp, const point& main_point, std::vector<adjacency_info>& adjs) const
       {
          for (double tolerance = TOLERANCE; tolerance < 5.0; tolerance *= 2)
          {
@@ -259,7 +259,7 @@ namespace dak
          }
       }
 
-      std::vector<adjacency_info> infer::getAdjacencies(const placed_points& pp) const
+      std::vector<adjacency_info> infer_t::getAdjacencies(const placed_points& pp) const
       {
          std::vector<adjacency_info> ret;
 
@@ -273,7 +273,7 @@ namespace dak
       // Take the adjacencies and build a list of contacts by looking at
       // vertices of the maps for the adjacent tiles that lie on the 
       // boundary with the inference region.
-      void infer::buildContacts(const placed_points& pp, const std::vector<adjacency_info>& adjs, std::vector<contact>& contacts) const
+      void infer_t::buildContacts(const placed_points& pp, const std::vector<adjacency_info>& adjs, std::vector<contact>& contacts) const
       {
          std::vector<point> fpts = geometry::apply(pp.trf, pp.tile->points);
 
@@ -334,7 +334,7 @@ namespace dak
       //
       // Star inferring.
 
-      std::vector<point> infer::buildStarBranchPoints(
+      std::vector<point> infer_t::buildStarBranchPoints(
          double d, int s,
          double side_frac, double sign,
          const std::vector<point>& mid_points)
@@ -381,7 +381,7 @@ namespace dak
          return points;
       }
 
-      map infer::buildStarHalfBranch(
+      map infer_t::buildStarHalfBranch(
          double d, int s,
          double side_frac, double sign,
          const std::vector<point>& mid_points)
@@ -426,7 +426,7 @@ namespace dak
          return map;
       }
 
-      map infer::inferStar(const polygon& tile, double d, int s)
+      map infer_t::inferStar(const polygon& tile, double d, int s)
       {
          map infer_map;
 
@@ -455,7 +455,7 @@ namespace dak
       //
       // Girih inferring.
 
-      point infer::buildGirihHalfBranch(
+      point infer_t::buildGirihHalfBranch(
          const int side, const bool leftBranch,
          const double requiredRotation,
          const std::vector<point>& points, const std::vector<point>& midPoints)
@@ -473,7 +473,7 @@ namespace dak
          return halfBranch;
       }
 
-      intersection_info infer::FindClosestIntersection(
+      intersection_info infer_t::FindClosestIntersection(
          const int side, const point& sideHalf, const bool isLeftHalf,
          const double requiredRotation,
          const std::vector<point>& points, const std::vector<point>& midPoints)
@@ -527,7 +527,7 @@ namespace dak
          return info;
       }
 
-      map infer::buildGirihBranch(
+      map infer_t::buildGirihBranch(
          const int side,
          const double requiredRotation,
          const std::vector<point>& points, const std::vector<point>& midPoints)
@@ -553,7 +553,7 @@ namespace dak
          return infer_map;
       }
 
-      map infer::inferGirih(const polygon& tile, int starSides, double starSkip)
+      map infer_t::inferGirih(const polygon& tile, int starSides, double starSkip)
       {
          map infer_map;
 
@@ -591,7 +591,7 @@ namespace dak
       //
       // Intersect inferring.
 
-      int infer::getIntersectionRank(int side, bool isLeft, const std::vector<intersection_info>& infos)
+      int infer_t::getIntersectionRank(int side, bool isLeft, const std::vector<intersection_info>& infos)
       {
          for (int i = 0; i < length(infos); ++i)
             if (infos[i].otherSide == side && infos[i].otherIsLeft == isLeft)
@@ -599,7 +599,7 @@ namespace dak
          return 10000;  // TODO: magic number!!!
       }
 
-      std::vector<edges_length_info> infer::buildIntersectEdgesLengthInfos(
+      std::vector<edges_length_info> infer_t::buildIntersectEdgesLengthInfos(
          const int side, const point& sideHalf, const bool isLeftHalf,
          const double requiredRotation,
          const std::vector<point>& points, const std::vector<point>& midPoints)
@@ -650,7 +650,7 @@ namespace dak
          return infos;
       }
 
-      map infer::inferIntersect(const polygon& tile, int starSides, double starSkip, int s)
+      map infer_t::inferIntersect(const polygon& tile, int starSides, double starSkip, int s)
       {
          map infer_map;
 
@@ -748,7 +748,7 @@ namespace dak
       //
       // Progressive intersect inferring.
 
-      std::vector<intersection_info> infer::buildIntersectionInfos(
+      std::vector<intersection_info> infer_t::buildIntersectionInfos(
          const int side, point sideHalf, const bool isLeftHalf,
          const double requiredRotation,
          const std::vector<point>& points, const std::vector<point>& midPoints)
@@ -793,7 +793,7 @@ namespace dak
          return infos;
       }
 
-      map infer::inferIntersectProgressive(const polygon& tile, int starSides, double starSkip, int s)
+      map infer_t::inferIntersectProgressive(const polygon& tile, int starSides, double starSkip, int s)
       {
          map infer_map;
 
@@ -857,7 +857,7 @@ namespace dak
       //
       // Hourglass inferring.
 
-      map infer::inferHourglass(const polygon& tile, double d, int s)
+      map infer_t::inferHourglass(const polygon& tile, double d, int s)
       {
          map infer_map;
 
@@ -905,7 +905,7 @@ namespace dak
       static const int QE_POINT = 1;
       static const int F_POINT = 2;
 
-      std::vector<point> infer::buildRosetteBranchPoints(
+      std::vector<point> infer_t::buildRosetteBranchPoints(
          double q, int s, double r,
          double side_frac, double sign,
          const std::vector<point>& mid_points_orig,
@@ -960,7 +960,7 @@ namespace dak
          return geometry::translate(points, center);
       }
 
-      std::vector<point> infer::buildRosetteIntersections(
+      std::vector<point> infer_t::buildRosetteIntersections(
          double q, int s, double r,
          double side_frac, double sign,
          const std::vector<point>& mid_points,
@@ -998,7 +998,7 @@ namespace dak
       }
 
 
-      map infer::buildRosetteHalfBranch(
+      map infer_t::buildRosetteHalfBranch(
          double q, int s, double r,
          double side_frac, double sign,
          const std::vector<point>& mid_points,
@@ -1022,7 +1022,7 @@ namespace dak
          return from;
       }
 
-      map infer::inferRosette(const polygon& tile, double q, int s, double r)
+      map infer_t::inferRosette(const polygon& tile, double q, int s, double r)
       {
          map infer_map;
 
@@ -1051,7 +1051,7 @@ namespace dak
       //
       // "Normal" magic inferring.
 
-      map infer::simple_infer(const polygon& tile)
+      map infer_t::simple_infer(const polygon& tile)
       {
          map infer_map;
 

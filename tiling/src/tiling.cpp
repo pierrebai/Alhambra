@@ -8,15 +8,15 @@ namespace dak
       using geometry::polygon;
       using geometry::transform;
 
-      tiling::tiling()
+      tiling_t::tiling_t()
       {
       }
 
-      tiling::tiling(const std::wstring& name, const point& t1, const point& t2) : t1(t1), t2(t2), name(name)
+      tiling_t::tiling_t(const std::wstring& name, const point& t1, const point& t2) : t1(t1), t2(t2), name(name)
       {
       }
 
-      void tiling::swap(tiling& other)
+      void tiling_t::swap(tiling_t& other)
       {
          t1.swap(other.t1);
          t2.swap(other.t2);
@@ -26,12 +26,12 @@ namespace dak
          author.swap(other.author);
       }
 
-      bool tiling::operator==(const tiling& other) const
+      bool tiling_t::operator==(const tiling_t& other) const
       {
          return tiles == other.tiles && t1 == other.t1 && t2 == other.t2;
       }
 
-      rect tiling::bounds() const
+      rect tiling_t::bounds() const
       {
          rect tiling_bounds;
          for (const auto& poly_trf : tiles)

@@ -20,10 +20,10 @@ namespace dak
 {
    namespace tiling
    {
-      using geometry::map;
-      using geometry::point;
-      using geometry::polygon;
-      using geometry::transform;
+      using geometry::edges_map_t;
+      using geometry::point_t;
+      using geometry::polygon_t;
+      using geometry::transform_t;
       using geometry::PI;
       using geometry::TOLERANCE;
       using geometry::TOLERANCE_2;
@@ -46,18 +46,18 @@ namespace dak
       // probably coming from in here.  But you knew what you were infer
       // when you started using Taprats (sorry -- couldn't resist the pun).
 
-      class infer
+      class infer_t
       {
       public:
-         const dak::tiling::tiling&       tiling;
-         std::map<const polygon, map>     maps;
-         std::vector<placed_points>       placed;
+         const dak::tiling::tiling_t&             tiling;
+         std::map<const polygon_t, edges_map_t> maps;
+         std::vector<placed_points>             placed;
 
          ////////////////////////////////////////////////////////////////////////////
          //
          // Creation. Mosaic must exist as long as the infer object.
 
-         infer(const std::shared_ptr<mosaic>& mo, const polygon& tile);
+         infer_t(const std::shared_ptr<mosaic_t>& mo, const polygon& tile);
 
          ////////////////////////////////////////////////////////////////////////////
          //

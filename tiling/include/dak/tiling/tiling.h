@@ -30,7 +30,7 @@ namespace dak
       // of the translation vectors.  In practice, we only draw at those
       // linear combinations within some viewport.
 
-      class tiling
+      class tiling_t
       {
       public:
          // Translations to tile the plane. Two needed for two-dimensional plane.
@@ -48,17 +48,17 @@ namespace dak
          std::wstring   author;
 
          // Empty tiling.
-         tiling();
+         tiling_t();
 
          // Tiling with a name and translation vectors.
-         tiling(const std::wstring& name, const point& t1, const point& t2);
+         tiling_t(const std::wstring& name, const point& t1, const point& t2);
 
          // Swap two tilings.
-         void swap(tiling& other);
+         void swap(tiling_t& other);
 
          // Tiling comparison.
-         bool operator==(const tiling& other) const;
-         bool operator!=(const tiling& other) const { return !(*this == other); }
+         bool operator==(const tiling_t& other) const;
+         bool operator!=(const tiling_t& other) const { return !(*this == other); }
 
          // Calculate the bounds of the tiles of the tiling.
          rect bounds() const;
