@@ -1,0 +1,104 @@
+#pragma once
+
+#ifndef DAK_TILING_STYLE_INTERLACE_H
+#define DAK_TILING_STYLE_INTERLACE_H
+
+#include <dak/tiling_style/outline.h>
+
+#include <dak/geometry/utility.h>
+
+#include <set>
+
+namespace dak
+{
+   namespace tiling_style
+   {
+      using geometry::edge;
+      using geometry::point;
+      using geometry::polygon;
+
+      ////////////////////////////////////////////////////////////////////////////
+      //
+      // Probably the most important rendering style from an historical point
+      // of view.  Interlace assigns an over/under rule to the edges
+      // of the map and renders a weave the follows that assignment.  Getting
+      // the over/under rule is conceptually simple but difficult in practice,
+      // especially since we want to have some robustness against potential
+      // degenerate maps.
+      //
+      // Basically, if a diagram can be interlaced, you can just choose an
+      // over/under relationship at one vertex and propagate it to all other
+      // vertices using a depth-first search.
+
+      class interlace : public outline
+      {
+      public:
+         // Parameters of the rendering.
+         double shadow_width = 0.05;
+         double gap_width = 0.;
+
+         // Creation.
+         interlace() { }
+         interlace(const ui::color& c) : outline(c) { }
+         interlace(const geometry::map& m, const ui::color& c) : outline(m, c) { }
+         interlace(const ui::color& c, double w) : outline(c, w) { }
+         interlace(const ui::color& c, double w, double ow) : outline(c, w, ow) { }
+
+         // Copy a layer.
+         std::shared_ptr<layer> clone() const override;
+         void make_similar(const layer& other) override;
+
+         // Retrieve a description of this style.
+         std::wstring describe() const override;
+
+      protected:
+         // The total width including outline and gap.
+         double total_width() const { return width + outline_width * 0.5 + gap_width; }
+
+         // Generate the fat lines.
+         fat_lines generate_fat_lines(bool all_edges) override;
+
+         // Combine fat lines with their twin to have the correct contour at both ends.
+         fat_lines combine_fat_lines(const fat_lines& fat_lines);
+
+         // Get the two before/after points needed to draw the p2 junction
+         // of the given edge given the number of connections.
+         std::pair<point, point> get_points_many_connections(const edge& an_edge, size_t index, double width, const geometry::map::range& connections) override;
+
+         // Clear the cache when the map, transform or parameters changes.
+         void clear_cache() override;
+
+         // Verify if the cache is valid.
+         bool is_cache_invalid() const override;
+
+         // Context containing all data needed to do the over/under weaving.
+         //
+         // Generated fat lines are guaranteed to be in the same order as
+         // the canonical edges.
+         //
+         // This permits us to easily find the edge associated with each
+         // fat line and track which edge have already been processed.
+         struct context
+         {
+            const geometry::map::edges& edges;
+            std::vector<size_t> todos;
+            std::vector<bool> done_lines;
+         };
+
+         // Propagate over/under weaving.
+         void propagate_over_under(context& ctx);
+
+         // Propagate over/under weaving at the intersection at the p1 point of the given edge.
+         void propagate_over_under_at_edge_p1(const edge& cur_edge, size_t index, context& ctx);
+
+         // Keep a copy of the parameters when the cache was generated to detect when it goes stale.
+         double cached_shadow_width = NAN;
+         double cached_gap_width = NAN;
+         std::vector<bool> is_p1_over;
+      };
+   }
+}
+
+#endif
+
+// vim: sw=3 : sts=3 : et : sta : 

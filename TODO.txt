@@ -1,0 +1,7 @@
+- Manipulate canvas for a single layer.
+- Degenerate cases of inferring.
+- Wix for the installer.
+- Add a list for shared mosaics?
+- Use the same draw technique in interlace as in thick.
+- Add manipulate column in layers list.
+- Gesture input.
