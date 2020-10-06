@@ -1,6 +1,6 @@
 # Introduction
 
-         Over a thousand years ago, artisans in the Islamic world began to
+Over a thousand years ago, artisans in the Islamic world began to
 develop a system for constructing intricate geometric art based on radially
 symmetric starlike figures. As the centuries progressed, they raised this
 practice into a high art form, adorning architectural surfaces with colourful
@@ -58,11 +58,8 @@ Bridges proceedings.
 
 # Authors
 
-Original author: Craig S. Kaplan
-email: csk at cs.washington.edu
-
-Additional work by: Pierre Baillargeon
-email: pierrebai at hotmail.com
+- Original author: Craig S. Kaplan
+- Additional work by: Pierre Baillargeon
 
 
 # Licensing
@@ -83,11 +80,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # More information
 
-[1] E.H. Hankin, Memoirs of the Archaeological Societry of India, volume 15. Government of India, 1925.
-[2] A.J. Lee. Islamic Star Patterns. Muqarnas, 4:182-197, 1995.
-[3] http://vismath4.tripod.com/kaplan/index.html
-[4] http://www.cgl.uwaterloo.ca/~csk/washington/tile/papers/kaplan_bridges2000.pdf
-[5] http://www.peterlu.org//content/decagonal-and-quasicrystalline-tilings-medieval-islamic-architecture
+1. E.H. Hankin, Memoirs of the Archaeological Societry of India, volume 15. Government of India, 1925.
+2. A.J. Lee. Islamic Star Patterns. Muqarnas, 4:182-197, 1995.
+3. http://vismath4.tripod.com/kaplan/index.html
+4. http://www.cgl.uwaterloo.ca/~csk/washington/tile/papers/kaplan_bridges2000.pdf
+5. http://www.peterlu.org//content/decagonal-and-quasicrystalline-tilings-medieval-islamic-architecture
 
 
 # Dependencies and Build
