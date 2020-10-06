@@ -10,10 +10,10 @@ namespace dak
 {
    namespace tiling_style
    {
-      using geometry::point;
+      using geometry::point_t;
       using utility::L;
 
-      std::shared_ptr<layer> sketch_t::clone() const
+      std::shared_ptr<layer_t> sketch_t::clone() const
       {
          return std::make_shared<sketch_t>(*this);
       }
@@ -23,23 +23,23 @@ namespace dak
          return L::t(L"Sketched");
       }
 
-      void sketch_t::internal_draw(ui::drawing& drw)
+      void sketch_t::internal_draw(ui::drawing_t& drw)
       {
          drw.set_color(color);
-         drw.set_stroke(ui::stroke(1.));
+         drw.set_stroke(ui::stroke_t(1.));
 
          std::minstd_rand rand;
 
          const double val = drw.get_transform().dist_from_inverted_zero(15.0);
-         const point jitter(val, val);
-         const point halfjit(val / 2, val / 2);
+         const point_t jitter(val, val);
+         const point_t halfjit(val / 2, val / 2);
          for (const auto& e : map.all())
          {
             if (!e.is_canonical())
                continue;
 
-            const point p1 = e.p1 - halfjit;
-            const point p2 = e.p2 - halfjit;
+            const point_t p1 = e.p1 - halfjit;
+            const point_t p2 = e.p2 - halfjit;
 
             for (int c = 0; c < 8; ++c)
             {

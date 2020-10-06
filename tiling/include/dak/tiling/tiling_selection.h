@@ -7,7 +7,9 @@
 
 #include <dak/geometry/edge.h>
 
-#include <dak/utility/selection_t.h>
+#include <dak/utility/selection.h>
+
+#include <memory>
 
 namespace dak
 {
@@ -54,7 +56,7 @@ namespace dak
             return tile != nullptr;
          }
 
-         operator polygon() const
+         operator polygon_t() const
          {
             return tile->tile;
          }
@@ -66,21 +68,21 @@ namespace dak
          size_t p1 = -1;
          size_t p2 = -1;
 
-         operator edge() const
+         operator edge_t() const
          {
             if (!tile || p1 < 0 || p2 < 0)
-               return edge();
+               return edge_t();
 
-            return edge(tile->tile.points[p1].apply(tile->trf),
+            return edge_t(tile->tile.points[p1].apply(tile->trf),
                         tile->tile.points[p2].apply(tile->trf));
          }
 
-         edge raw_edge() const
+         edge_t raw_edge() const
          {
             if (!tile || p1 < 0 || p2 < 0)
-               return edge();
+               return edge_t();
 
-            return edge(tile->tile.points[p1],
+            return edge_t(tile->tile.points[p1],
                         tile->tile.points[p2]);
          }
 
@@ -120,12 +122,12 @@ namespace dak
             points.emplace_back(p2);
          }
 
-         operator point() const
+         operator point_t() const
          {
             if (!tile || points.size() <= 0)
-               return point();
+               return point_t();
 
-            point pt(0., 0.);
+            point_t pt(0., 0.);
             for (size_t index : points)
                pt = pt + tile->tile.points[index];
             return pt.scale(1. / points.size()).apply(tile->trf);
@@ -170,9 +172,9 @@ namespace dak
          // The point given must be in world-space, that is in the coordinate system
          // of the tiles.
 
-         selection_t find_selection(std::vector<std::shared_ptr<placed_tile_t>>& tiles, const point& wpt, double selection_distance);
-         selection_t find_selection(std::vector<std::shared_ptr<placed_tile_t>>& tiles, const point& wpt, double selection_distance, const selection_t& excluded_selection);
-         selection_t find_selection(std::vector<std::shared_ptr<placed_tile_t>>& tiles, const point& wpt, double selection_distance, const selection_t& excluded_selection, selection_type_t);
+         selection_t find_selection(std::vector<std::shared_ptr<placed_tile_t>>& tiles, const point_t& wpt, double selection_distance);
+         selection_t find_selection(std::vector<std::shared_ptr<placed_tile_t>>& tiles, const point_t& wpt, double selection_distance, const selection_t& excluded_selection);
+         selection_t find_selection(std::vector<std::shared_ptr<placed_tile_t>>& tiles, const point_t& wpt, double selection_distance, const selection_t& excluded_selection, selection_type_t);
 
          ////////////////////////////////////////////////////////////////////////////
          //

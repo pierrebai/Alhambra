@@ -1,8 +1,8 @@
 #include <dak/tiling_ui_qt/styles_editor.h>
 
-#include <dak/ui_qt/convert.h>
-#include <dak/ui_qt/int_editor_t.h>
-#include <dak/ui_qt/double_editor_t.h>
+#include <dak/ui/qt/convert.h>
+#include <dak/ui/qt/int_editor.h>
+#include <dak/ui/qt/double_editor.h>
 
 #include <dak/tiling_style/thick.h>
 #include <dak/tiling_style/emboss.h>
@@ -31,24 +31,24 @@ namespace dak
       using tiling_style::interlace_t;
 
       using utility::L;
-      typedef std::vector<std::shared_ptr<style_t>> styles;
-      typedef std::function<void(const styles& )> styles_changed_callback;
+      typedef std::vector<std::shared_ptr<style_t>> styles_t;
+      typedef std::function<void(const styles_t& )> styles_changed_callback;
 
       namespace
       {
          struct
          {
-            ui::stroke::join_style style;
+            ui::stroke_t::join_style_t style;
             const wchar_t* name;
          }
          const join_styles[] =
          {
-            { ui::stroke::join_style::bevel, L"Beveled Corners" },
-            { ui::stroke::join_style::miter, L"Mitered Corners" },
-            { ui::stroke::join_style::round, L"Rounded Corners" },
+            { ui::stroke_t::join_style_t::bevel, L"Beveled Corners" },
+            { ui::stroke_t::join_style_t::miter, L"Mitered Corners" },
+            { ui::stroke_t::join_style_t::round, L"Rounded Corners" },
          };
 
-         const wchar_t* get_join_style_name(const ui::stroke::join_style a_style)
+         const wchar_t* get_join_style_name(const ui::stroke_t::join_style_t a_style)
          {
             for (const auto& style : join_styles)
                if (style.style == a_style)
@@ -56,12 +56,12 @@ namespace dak
             return L::t(L"Unknown");
          }
 
-         ui::stroke::join_style get_join_style_from_name(const std::wstring& a_style)
+         ui::stroke_t::join_style_t get_join_style_from_name(const std::wstring& a_style)
          {
             for (const auto& style : join_styles)
                if (std::wstring(L::t(style.name)) == a_style)
                   return style.style;
-            return ui::stroke::join_style::round;
+            return ui::stroke_t::join_style_t::round;
          }
       }
 
@@ -72,19 +72,19 @@ namespace dak
       class styles_editor_ui_t
       {
       public:
-         styles_editor_ui_t(styles_editor_t& parent, const styles& ed)
+         styles_editor_ui_t(styles_editor_t& parent, const styles_t& ed)
          : editor(parent)
          {
             build_ui(parent);
             set_edited(ed);
          }
 
-         const styles& get_edited() const
+         const styles_t& get_edited() const
          {
             return edited;
          }
 
-         void set_edited(const styles& ed)
+         void set_edited(const styles_t& ed)
          {
             if (ed == edited)
                return;
@@ -106,17 +106,17 @@ namespace dak
             return selected;
          }
 
-         std::vector<dak::ui::color*> get_style_colors()
+         std::vector<dak::ui::color_t*> get_style_colors()
          {
-            std::vector<dak::ui::color*> selected;
+            std::vector<dak::ui::color_t*> selected;
             for (auto style : get_styles<colored_t>())
                selected.emplace_back(&style->color);
             return selected;
          };
 
-         std::vector<dak::ui::color*> get_style_outline_colors()
+         std::vector<dak::ui::color_t*> get_style_outline_colors()
          {
-            std::vector<dak::ui::color*> selected;
+            std::vector<dak::ui::color_t*> selected;
             for (auto style : get_styles<thick_t>())
                selected.emplace_back(&style->outline_color);
             return selected;
@@ -152,16 +152,16 @@ namespace dak
                QWidget* style_panel = new QWidget(&parent);
                QVBoxLayout* style_layout = new QVBoxLayout(style_panel);
                   style_layout->setContentsMargins(0, 0, 0, 0);
-                  width_editor = std::make_unique<dak::ui_qt::double_editor_t>(style_panel, L::t(L"Width"));
+                  width_editor = std::make_unique<dak::ui::qt::double_editor_t>(style_panel, L::t(L"Width"));
                   width_editor->set_limits(0.001, 40, 0.01);
                   style_layout->addWidget(width_editor.get());
-                  outline_width_editor = std::make_unique<dak::ui_qt::double_editor_t>(style_panel, L::t(L"Outline Width"));
+                  outline_width_editor = std::make_unique<dak::ui::qt::double_editor_t>(style_panel, L::t(L"Outline Width"));
                   outline_width_editor->set_limits(0, 20, 0.01);
                   style_layout->addWidget(outline_width_editor.get());
-                  gap_width_editor = std::make_unique<dak::ui_qt::double_editor_t>(style_panel, L::t(L"Gap Width"));
+                  gap_width_editor = std::make_unique<dak::ui::qt::double_editor_t>(style_panel, L::t(L"Gap Width"));
                   gap_width_editor->set_limits(0, 20, 0.01);
                   style_layout->addWidget(gap_width_editor.get());
-                  angle_editor = std::make_unique<ui_qt::double_editor_t>(style_panel, L::t(L"Angle"));
+                  angle_editor = std::make_unique<ui::qt::double_editor_t>(style_panel, L::t(L"Angle"));
                   style_layout->addWidget(angle_editor.get());
                layout->addWidget(style_panel);
 
@@ -282,7 +282,7 @@ namespace dak
                for (auto colored : get_styles<colored_t>())
                {
                   QPixmap color(16, 16);
-                  color.fill(ui_qt::convert(colored->color));
+                  color.fill(ui::qt::convert(colored->color));
                   color_button->setIcon(QIcon(color));
                   break;
                }
@@ -294,7 +294,7 @@ namespace dak
             for (auto thick : get_styles<thick_t>())
             {
                QPixmap color(16, 16);
-               color.fill(ui_qt::convert(thick->outline_color));
+               color.fill(ui::qt::convert(thick->outline_color));
                outline_color_button->setIcon(QIcon(color));
                break;
             }
@@ -309,12 +309,12 @@ namespace dak
             if (colors.size() <= 0)
                return;
 
-            QColor qc = QColorDialog::getColor(dak::ui_qt::convert(*colors[0]), color_button.get(), QString::fromWCharArray(L::t(L"Choose Layer Color")), QColorDialog::ColorDialogOption::ShowAlphaChannel);
+            QColor qc = QColorDialog::getColor(dak::ui::qt::convert(*colors[0]), color_button.get(), QString::fromWCharArray(L::t(L"Choose Layer Color")), QColorDialog::ColorDialogOption::ShowAlphaChannel);
             if (!qc.isValid())
                return;
 
             for (auto& c : colors)
-               *c = dak::ui_qt::convert(qc);
+               *c = dak::ui::qt::convert(qc);
 
             fill_ui_color();
 
@@ -330,12 +330,12 @@ namespace dak
             if (colors.size() <= 0)
                return;
 
-            QColor qc = QColorDialog::getColor(dak::ui_qt::convert(*colors[0]), outline_color_button.get(), QString::fromWCharArray(L::t(L"Choose Layer Outline Color")), QColorDialog::ColorDialogOption::ShowAlphaChannel);
+            QColor qc = QColorDialog::getColor(dak::ui::qt::convert(*colors[0]), outline_color_button.get(), QString::fromWCharArray(L::t(L"Choose Layer Outline Color")), QColorDialog::ColorDialogOption::ShowAlphaChannel);
             if (!qc.isValid())
                return;
 
             for (auto& c : colors)
-               *c = dak::ui_qt::convert(qc);
+               *c = dak::ui::qt::convert(qc);
 
             fill_ui_outline_color();
 
@@ -426,14 +426,14 @@ namespace dak
          }
 
          styles_editor_t& editor;
-         styles edited;
+         styles_t edited;
 
          std::unique_ptr<QPushButton> color_button;
          std::unique_ptr<QPushButton> outline_color_button;
-         std::unique_ptr<ui_qt::double_editor_t> width_editor;
-         std::unique_ptr<ui_qt::double_editor_t> outline_width_editor;
-         std::unique_ptr<ui_qt::double_editor_t> gap_width_editor;
-         std::unique_ptr<ui_qt::double_editor_t> angle_editor;
+         std::unique_ptr<ui::qt::double_editor_t> width_editor;
+         std::unique_ptr<ui::qt::double_editor_t> outline_width_editor;
+         std::unique_ptr<ui::qt::double_editor_t> gap_width_editor;
+         std::unique_ptr<ui::qt::double_editor_t> angle_editor;
          std::unique_ptr<QCheckBox> fill_inside_check;
          std::unique_ptr<QCheckBox> fill_outside_check;
          std::unique_ptr<QComboBox> join_combo;
@@ -455,19 +455,19 @@ namespace dak
       {
       }
 
-      styles_editor_t::styles_editor_t(QWidget* parent, const styles& edited, styles_changed_callback fc)
+      styles_editor_t::styles_editor_t(QWidget* parent, const styles_t& edited, styles_changed_callback fc)
       : QWidget(parent), ui(std::make_unique<styles_editor_ui_t>(*this, edited)), styles_changed(fc)
       {
       }
 
-      void styles_editor_t::set_edited(const styles& edited)
+      void styles_editor_t::set_edited(const styles_t& edited)
       {
          ui->set_edited(edited);
       }
 
-      const styles& styles_editor_t::get_edited() const
+      const styles_t& styles_editor_t::get_edited() const
       {
-         static const styles empty;
+         static const styles_t empty;
          if (!ui)
             return empty;
 

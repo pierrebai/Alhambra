@@ -8,15 +8,15 @@ namespace dak
 {
    namespace tiling_style
    {
-      using ui::stroke;
+      using ui::stroke_t;
       using utility::L;
 
-      std::shared_ptr<layer> thick_t::clone() const
+      std::shared_ptr<layer_t> thick_t::clone() const
       {
          return std::make_shared<thick_t>(*this);
       }
 
-      void thick_t::make_similar(const layer& other)
+      void thick_t::make_similar(const layer_t& other)
       {
          colored_t::make_similar(other);
 
@@ -33,15 +33,15 @@ namespace dak
          return L::t(L"Thick");
       }
 
-      ui::stroke thick_t::get_stroke(ui::drawing& drw, double sw) const
+      ui::stroke_t thick_t::get_stroke(ui::drawing_t& drw, double sw) const
       {
          const double w = drw.get_transform().dist_from_zero(sw);
-         return stroke(w,
-            join == stroke::join_style::round ? stroke::cap_style::round : stroke::cap_style::flat,
+         return stroke_t(w,
+            join == stroke_t::join_style_t::round ? stroke_t::cap_style_t::round : stroke_t::cap_style_t::flat,
             join);
       }
 
-      static void draw_edges(ui::drawing& drw, const geometry::map& map, const geometry::map::edges& edges)
+      static void draw_edges(ui::drawing_t& drw, const geometry::edges_map_t& map, const geometry::edges_map_t::edges_t& edges)
       {
          for (const auto &e : edges)
          {
@@ -59,7 +59,7 @@ namespace dak
          }
       }
 
-      void thick_t::internal_draw(ui::drawing& drw)
+      void thick_t::internal_draw(ui::drawing_t& drw)
       {
          // Note: we multiply the width by two because all other styles using
          //       the width actully widen the drawing in both perpendicular

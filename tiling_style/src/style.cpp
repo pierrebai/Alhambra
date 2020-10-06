@@ -6,9 +6,9 @@ namespace dak
 {
    namespace tiling_style
    {
-      void style_t::make_similar(const layer& other)
+      void style_t::make_similar(const layer_t& other)
       {
-         layer::make_similar(other);
+         layer_t::make_similar(other);
 
          if (const style_t* other_style = dynamic_cast<const style_t*>(&other))
          {

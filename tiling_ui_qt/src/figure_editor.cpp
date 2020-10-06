@@ -5,8 +5,8 @@
 #include <dak/tiling/irregular_figure.h>
 #include <dak/tiling/extended_figure.h>
 
-#include <dak/ui_qt/int_editor_t.h>
-#include <dak/ui_qt/double_editor_t.h>
+#include <dak/ui/qt/int_editor.h>
+#include <dak/ui/qt/double_editor.h>
 
 #include <dak/utility/text.h>
 
@@ -106,9 +106,9 @@ namespace dak
             QVBoxLayout* layout = new QVBoxLayout(&parent);
             layout->setContentsMargins(0, 0, 0, 0);
 
-            d_editor = std::make_unique<ui_qt::double_editor_t>(&parent, L::t(L"Branch Sharpness"), 0, [self=this](double new_value, bool interacting){ self->update_d(new_value, interacting); });
-            q_editor = std::make_unique<ui_qt::double_editor_t>(&parent, L::t(L"Flatness"), 0, [self=this](double new_value, bool interacting){ self->update_q(new_value, interacting); });
-            s_editor = std::make_unique<ui_qt::int_editor_t>(&parent, L::t(L"Intersections"), 0, [self=this](int new_value, bool interacting){ self->update_s(new_value, interacting); });
+            d_editor = std::make_unique<ui::qt::double_editor_t>(&parent, L::t(L"Branch Sharpness"), 0, [self=this](double new_value, bool interacting){ self->update_d(new_value, interacting); });
+            q_editor = std::make_unique<ui::qt::double_editor_t>(&parent, L::t(L"Flatness"), 0, [self=this](double new_value, bool interacting){ self->update_q(new_value, interacting); });
+            s_editor = std::make_unique<ui::qt::int_editor_t>(&parent, L::t(L"Intersections"), 0, [self=this](int new_value, bool interacting){ self->update_s(new_value, interacting); });
 
             d_editor->set_limits(-5., 5., 0.05);
             q_editor->set_limits(-1., 1., 0.01);
@@ -314,9 +314,9 @@ namespace dak
          figure_editor_t& editor;
          std::shared_ptr<figure_t> edited;
 
-         std::unique_ptr<ui_qt::double_editor_t> d_editor;
-         std::unique_ptr<ui_qt::int_editor_t> s_editor;
-         std::unique_ptr<ui_qt::double_editor_t> q_editor;
+         std::unique_ptr<ui::qt::double_editor_t> d_editor;
+         std::unique_ptr<ui::qt::int_editor_t> s_editor;
+         std::unique_ptr<ui::qt::double_editor_t> q_editor;
 
          int disable_feedback = 0;
       };

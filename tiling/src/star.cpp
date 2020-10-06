@@ -19,11 +19,11 @@ namespace dak
 {
    namespace tiling
    {
-      using geometry::transform;
-      using geometry::point;
+      using geometry::transform_t;
+      using geometry::point_t;
       using namespace geometry::intersect;
-      using geometry::edge;
-      using geometry::map;
+      using geometry::edge_t;
+      using geometry::edges_map_t;
       using geometry::PI;
       using geometry::TOLERANCE;
       using utility::L;
@@ -99,7 +99,7 @@ namespace dak
          cached_s_last_build_unit = s;
       }
 
-      map star_t::build_unit() const
+      edges_map_t star_t::build_unit() const
       {
          const double clamp_d = std::max(1.0, std::min(d, 0.5 * n - 0.01));
          const double did = std::floor(clamp_d);
@@ -123,58 +123,58 @@ namespace dak
             is_int = true;
          }
 
-         map from ;
+         edges_map_t from ;
 
-         std::vector<point> points;
+         std::vector<point_t> points;
          points.reserve(clamp_s + 1);
 
-         point a = point::unit_x();
-         point b = geometry::get_arc(clamp_d / n);
+         point_t a = point_t::unit_x();
+         point_t b = geometry::get_arc(clamp_d / n);
 
          for (int i = 1; i <= outer_s; ++i)
          {
-            const point ar = geometry::get_arc(i * 1. / n);
-            const point br = geometry::get_arc((i - clamp_d) / n);
+            const point_t ar = geometry::get_arc(i * 1. / n);
+            const point_t br = geometry::get_arc((i - clamp_d) / n);
 
-            point mid = intersect(a, b, ar, br);
+            point_t mid = intersect(a, b, ar, br);
 
             points.emplace_back(mid);
          }
 
-         point top_prev = a;
-         point bot_prev = a;
+         point_t top_prev = a;
+         point_t bot_prev = a;
 
          for (int i = 0; i < points.size(); ++i)
          {
-            const point top = points[i];
-            const point bot = point(top.x, -top.y);
+            const point_t top = points[i];
+            const point_t bot = point_t(top.x, -top.y);
 
-            from.insert(edge(top_prev, top));
-            from.insert(edge(bot_prev, bot));
+            from.insert(edge_t(top_prev, top));
+            from.insert(edge_t(bot_prev, bot));
 
             top_prev = top;
             bot_prev = bot;
          }
 
-         const transform trf = transform::rotate(2 * PI / n);
+         const transform_t trf = transform_t::rotate(2 * PI / n);
          if (clamp_s == di)
          {
-            const point midr = top_prev.apply(trf);
+            const point_t midr = top_prev.apply(trf);
 
             if (is_int)
             {
-               from.insert(edge(top_prev, midr));
+               from.insert(edge_t(top_prev, midr));
             }
             else
             {
-               const point ar = geometry::get_arc(did / n);
-               const point br = geometry::get_arc(-dfrac / n);
+               const point_t ar = geometry::get_arc(did / n);
+               const point_t br = geometry::get_arc(-dfrac / n);
 
-               const point c = geometry::get_arc(d / n);
+               const point_t c = geometry::get_arc(d / n);
 
-               point cent = intersect(ar, br, a, c);
-               from.insert(edge(top_prev, cent));
-               from.insert(edge(cent, midr));
+               point_t cent = intersect(ar, br, a, c);
+               from.insert(edge_t(top_prev, cent));
+               from.insert(edge_t(cent, midr));
             }
          }
 

@@ -12,7 +12,7 @@ namespace dak
 {
    namespace tiling_style
    {
-      using geometry::polygon;
+      using geometry::polygon_t;
 
       ////////////////////////////////////////////////////////////////////////////
       //
@@ -30,27 +30,27 @@ namespace dak
 
          // Creation.
          filled_t() { }
-         filled_t(const ui::color& c) : colored_t(c) {}
-         filled_t(const geometry::map& m) : colored_t(m) { }
-         filled_t(const geometry::map& m, const ui::color& c) : colored_t(m, c) { }
+         filled_t(const ui::color_t& c) : colored_t(c) {}
+         filled_t(const geometry::edges_map_t& m) : colored_t(m) { }
+         filled_t(const geometry::edges_map_t& m, const ui::color_t& c) : colored_t(m, c) { }
 
          // Copy a layer.
-         std::shared_ptr<layer> clone() const override;
-         void make_similar(const layer& other) override;
+         std::shared_ptr<layer_t> clone() const override;
+         void make_similar(const layer_t& other) override;
 
          // Retrieve a description of this style.
          std::wstring describe() const override;
 
          // Set the map used as the basis to build the style.
-         void set_map(const geometry::map& m) override;
+         void set_map(const geometry::edges_map_t& m) override;
 
       protected:
          // The internal draw is called with the layer transform already applied.
-         void internal_draw(ui::drawing& drw) override;
+         void internal_draw(ui::drawing_t& drw) override;
 
-         std::vector<polygon> cached_inside;
-         std::vector<polygon> cached_outside;
-         std::vector<polygon> cached_odd;
+         std::vector<polygon_t> cached_inside;
+         std::vector<polygon_t> cached_outside;
+         std::vector<polygon_t> cached_odd;
       };
    }
 }

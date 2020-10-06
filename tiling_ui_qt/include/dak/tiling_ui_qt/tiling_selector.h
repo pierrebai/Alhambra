@@ -23,7 +23,7 @@ namespace dak
       using dak::tiling::mosaic_t;
       using dak::tiling::known_tilings_t;
 
-      class tiling_selector_ui;
+      class tiling_selector_ui_t;
       struct tiling_editor_icons_t;
 
       ////////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,7 @@ namespace dak
          std::shared_ptr<mosaic_t> get_selected() const;
 
       protected:
-         std::unique_ptr<tiling_selector_ui> ui;
+         std::unique_ptr<tiling_selector_ui_t> ui;
       };
    }
 }

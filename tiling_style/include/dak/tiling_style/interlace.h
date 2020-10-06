@@ -13,9 +13,9 @@ namespace dak
 {
    namespace tiling_style
    {
-      using geometry::edge;
-      using geometry::point;
-      using geometry::polygon;
+      using geometry::edge_t;
+      using geometry::point_t;
+      using geometry::polygon_t;
 
       ////////////////////////////////////////////////////////////////////////////
       //
@@ -39,14 +39,14 @@ namespace dak
 
          // Creation.
          interlace_t() { }
-         interlace_t(const ui::color& c) : outline_t(c) { }
-         interlace_t(const geometry::map& m, const ui::color& c) : outline_t(m, c) { }
-         interlace_t(const ui::color& c, double w) : outline_t(c, w) { }
-         interlace_t(const ui::color& c, double w, double ow) : outline_t(c, w, ow) { }
+         interlace_t(const ui::color_t& c) : outline_t(c) { }
+         interlace_t(const geometry::edges_map_t& m, const ui::color_t& c) : outline_t(m, c) { }
+         interlace_t(const ui::color_t& c, double w) : outline_t(c, w) { }
+         interlace_t(const ui::color_t& c, double w, double ow) : outline_t(c, w, ow) { }
 
          // Copy a layer.
-         std::shared_ptr<layer> clone() const override;
-         void make_similar(const layer& other) override;
+         std::shared_ptr<layer_t> clone() const override;
+         void make_similar(const layer_t& other) override;
 
          // Retrieve a description of this style.
          std::wstring describe() const override;
@@ -59,11 +59,11 @@ namespace dak
          fat_lines_t generate_fat_lines(bool all_edges) override;
 
          // Combine fat lines with their twin to have the correct contour at both ends.
-         fat_lines_t combine_fat_lines(const fat_lines& fat_lines);
+         fat_lines_t combine_fat_lines(const fat_lines_t& fat_lines);
 
          // Get the two before/after points needed to draw the p2 junction
          // of the given edge given the number of connections.
-         std::pair<point, point> get_points_many_connections(const edge& an_edge, size_t index, double width, const geometry::map::range& connections) override;
+         std::pair<point_t, point_t> get_points_many_connections(const edge_t& an_edge, size_t index, double width, const geometry::edges_map_t::range_t& connections) override;
 
          // Clear the cache when the map, transform or parameters changes.
          void clear_cache() override;
@@ -80,7 +80,7 @@ namespace dak
          // fat line and track which edge have already been processed.
          struct context
          {
-            const geometry::map::edges& edges;
+            const geometry::edges_map_t::edges_t& edges;
             std::vector<size_t> todos;
             std::vector<bool> done_lines;
          };
@@ -89,7 +89,7 @@ namespace dak
          void propagate_over_under(context& ctx);
 
          // Propagate over/under weaving at the intersection at the p1 point of the given edge.
-         void propagate_over_under_at_edge_p1(const edge& cur_edge, size_t index, context& ctx);
+         void propagate_over_under_at_edge_p1(const edge_t& cur_edge, size_t index, context& ctx);
 
          // Keep a copy of the parameters when the cache was generated to detect when it goes stale.
          double cached_shadow_width = NAN;

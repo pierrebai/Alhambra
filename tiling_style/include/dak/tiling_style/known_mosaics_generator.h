@@ -33,7 +33,7 @@ namespace dak
       class known_mosaics_generator_t
       {
       public:
-         typedef std::vector<std::shared_ptr<layer>> layered_mosaic;
+         typedef std::vector<std::shared_ptr<layer_t>> layered_mosaic_t;
 
          known_mosaics_generator_t(const std::wstring& folder);
 
@@ -43,10 +43,10 @@ namespace dak
 
          const std::wstring current_name() const;
 
-         layered_mosaic generate_current(const tiling::known_tilings_t& known_tilings, std::vector<std::wstring>& errors) const;
+         layered_mosaic_t generate_current(const tiling::known_tilings_t& known_tilings, std::vector<std::wstring>& errors) const;
 
       private:
-         typedef std::vector< std::experimental::filesystem::path> filename_container;
+         typedef std::vector< std::filesystem::path> filename_container;
          filename_container filenames;
          filename_container::iterator iter;
       };

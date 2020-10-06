@@ -7,12 +7,12 @@ namespace dak
 {
    namespace tiling
    {
-      using geometry::transform;
+      using geometry::transform_t;
       using geometry::PI;
 
       void radial_figure_t::build_map() const
       {
-         const map unit = build_unit();
+         const edges_map_t unit = build_unit();
 
          cached_map.reserve(unit.all().size() * n);
 
@@ -22,7 +22,7 @@ namespace dak
             // Note: we could speed-up by only applying a base rotation
             //       multiple times to a non-const unit, but we would
             //       accumulate imprecisions for large n.
-            cached_map.merge_non_overlapping(unit.apply(transform::rotate(2 * PI * i / n)));
+            cached_map.merge_non_overlapping(unit.apply(transform_t::rotate(2 * PI * i / n)));
             //cached_map.merge(unit.apply(transform::rotate(2 * PI * i / n)));
          }
          cached_map.end_merge_non_overlapping();

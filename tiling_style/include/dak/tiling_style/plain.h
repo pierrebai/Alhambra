@@ -18,8 +18,8 @@ namespace dak
       public:
          // Creation.
          plain_t() { }
-         plain_t(const ui::color& c) : colored_t(c) { }
-         plain_t(const geometry::map& m, const ui::color& c) : colored_t(m, c) { }
+         plain_t(const ui::color_t& c) : colored_t(c) { }
+         plain_t(const geometry::edges_map_t& m, const ui::color_t& c) : colored_t(m, c) { }
 
          // Copy a layer.
          std::shared_ptr<layer_t> clone() const override;
@@ -29,7 +29,7 @@ namespace dak
 
       protected:
          // The internal draw is called with the layer transform already applied.
-         void internal_draw(ui::drawing& drw) override;
+         void internal_draw(ui::drawing_t& drw) override;
       };
    }
 }

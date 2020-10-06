@@ -1,7 +1,7 @@
 #include <dak/tiling_ui_qt/figure_selector.h>
-#include <dak/tiling_ui_qt/table_widget_with_combo.h>
 
-#include <dak/ui_qt/convert.h>
+#include <dak/QtAdditions/QTableWidgetWithComboBox.h>
+#include <dak/ui/qt/convert.h>
 
 #include <dak/tiling/star.h>
 #include <dak/tiling/rosette.h>
@@ -19,6 +19,8 @@
 
 namespace dak
 {
+   using namespace QtAdditions;
+
    namespace tiling_ui_qt
    {
       using tiling::star_t;
@@ -115,7 +117,7 @@ namespace dak
             for (const auto& infer : infer_modes)
                combo_items.append(QString::fromWCharArray(L::t(tiling::infer_mode_name(infer))));
 
-            figure_list = std::make_unique<table_widget_with_combo>(type_column, combo_items, &parent);
+            figure_list = std::make_unique<QTableWidgetWithComboBox>(type_column, combo_items, &parent);
             figure_list->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
             figure_list->setIconSize(QSize(64, 32));
             figure_list->setColumnCount(2);
@@ -317,7 +319,7 @@ namespace dak
          figure_selector_t& editor;
          figures edited;
 
-         std::unique_ptr<table_widget_with_combo> figure_list;
+         std::unique_ptr<QTableWidgetWithComboBox> figure_list;
 
          int disable_feedback = 0;
       };

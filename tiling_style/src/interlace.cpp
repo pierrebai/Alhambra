@@ -17,12 +17,12 @@ namespace dak
       using namespace geometry::intersect;
       using utility::L;
 
-      std::shared_ptr<layer> interlace_t::clone() const
+      std::shared_ptr<layer_t> interlace_t::clone() const
       {
          return std::make_shared<interlace_t>(*this);
       }
 
-      void interlace_t::make_similar(const layer& other)
+      void interlace_t::make_similar(const layer_t& other)
       {
          outline_t::make_similar(other);
 
@@ -38,11 +38,11 @@ namespace dak
          return L::t(L"Interlaced");
       }
 
-      void interlace_t::propagate_over_under_at_edge_p1(const edge& cur_edge, size_t index, context& ctx)
+      void interlace_t::propagate_over_under_at_edge_p1(const edge_t& cur_edge, size_t index, context& ctx)
       {
-         const geometry::map::range connections = map.outbounds(cur_edge.p1);
+         const geometry::edges_map_t::range_t connections = map.outbounds(cur_edge.p1);
          const size_t connection_count = connections.size();
-         const edge* conn_edges = &*(connections.begin());
+         const edge_t* conn_edges = &*(connections.begin());
 
          const auto todo_iter = std::lower_bound(connections.begin(), connections.end(), cur_edge);
          const size_t cur_index_in_conns = todo_iter - connections.begin();
@@ -53,7 +53,7 @@ namespace dak
 
          // Propagate to its twin.
          const bool twin_is_over = is_not_a_crossing ? is_crossing_over : !is_crossing_over;
-         const edge twin_edge = cur_edge.twin();
+         const edge_t twin_edge = cur_edge.twin();
          const auto twin_iter = std::lower_bound(ctx.edges.begin(), ctx.edges.end(), twin_edge);
          const size_t twin_index = twin_iter - ctx.edges.begin();
          if (!ctx.done_lines[twin_index])
@@ -69,7 +69,7 @@ namespace dak
          for (size_t offset = 1; offset < connection_count; ++offset)
          {
             const size_t next_index_in_conns = (cur_index_in_conns + offset) % connection_count;
-            const edge& next_edge = conn_edges[next_index_in_conns];
+            const edge_t& next_edge = conn_edges[next_index_in_conns];
             const auto next_iter = std::lower_bound(ctx.edges.begin(), ctx.edges.end(), next_edge);
             const size_t next_index = next_iter - ctx.edges.begin();
             if (!ctx.done_lines[next_index])
@@ -114,7 +114,7 @@ namespace dak
          }
       }
 
-      interlace_t::fat_lines interlace_t::generate_fat_lines(bool all_edges)
+      interlace_t::fat_lines_t interlace_t::generate_fat_lines(bool all_edges)
       {
          cached_shadow_width = shadow_width;
          cached_gap_width = gap_width;
@@ -126,7 +126,7 @@ namespace dak
          propagate_over_under(ctx);
 
          all_edges = true;
-         fat_lines fat_lines = outline_t::generate_fat_lines(all_edges);
+         fat_lines_t fat_lines = outline_t::generate_fat_lines(all_edges);
 
          fat_lines = combine_fat_lines(fat_lines);
 
@@ -135,9 +135,9 @@ namespace dak
          return fat_lines;
       }
 
-      interlace_t::fat_lines interlace_t::combine_fat_lines(const interlace_t::fat_lines& fat_lines)
+      interlace_t::fat_lines_t interlace_t::combine_fat_lines(const interlace_t::fat_lines_t& fat_lines)
       {
-         interlace_t::fat_lines combined;
+         interlace_t::fat_lines_t combined;
 
          const auto& edges = map.all();
          for (size_t edge_index = 0; edge_index < edges.size(); ++edge_index)
@@ -188,7 +188,7 @@ namespace dak
          return combined;
       }
 
-      std::pair<point, point> interlace_t::get_points_many_connections(const edge& an_edge, size_t index, double width, const geometry::map::range& connections)
+      std::pair<point_t, point_t> interlace_t::get_points_many_connections(const edge_t& an_edge, size_t index, double width, const geometry::edges_map_t::range_t& connections)
       {
          if (is_p1_over[index])
             return get_points_continuation(an_edge, index, width, connections);

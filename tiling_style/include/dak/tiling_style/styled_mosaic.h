@@ -6,7 +6,7 @@
 #include <dak/tiling_style/style.h>
 
 #include <dak/tiling/mosaic.h>
-#include <dak/ui/layer_t.h>
+#include <dak/ui/layer.h>
 
 namespace dak
 {
@@ -28,7 +28,7 @@ namespace dak
       {
       public:
          std::shared_ptr<tiling::mosaic_t> mosaic;
-         std::shared_ptr<tiling_style::style> style;
+         std::shared_ptr<style_t> style;
 
          // Create an empty mosaic layer_t.
          styled_mosaic_t() { }

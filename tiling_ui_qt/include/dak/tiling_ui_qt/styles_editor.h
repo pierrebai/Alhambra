@@ -37,7 +37,7 @@ namespace dak
          // Create a style editor with the given parent widget and style.
          styles_editor_t(QWidget* parent);
          styles_editor_t(QWidget* parent, styles_changed_callback style_changed);
-         styles_editor_t(QWidget* parent, const styles& edited, styles_changed_callback style_changed);
+         styles_editor_t(QWidget* parent, const styles_t& edited, styles_changed_callback style_changed);
 
          void set_edited(const styles_t& edited);
          const styles_t& get_edited() const;

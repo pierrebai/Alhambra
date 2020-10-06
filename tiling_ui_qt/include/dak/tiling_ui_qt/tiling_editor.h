@@ -8,7 +8,7 @@
 #include <dak/ui/color.h>
 #include <dak/ui/mouse.h>
 #include <dak/ui/drawing.h>
-#include <dak/ui_qt/message_reporter.h>
+#include <dak/ui/qt/message_reporter.h>
 
 #include <QtWidgets/qwidget.h>
 #include <QtWidgets/qaction.h>
@@ -20,10 +20,10 @@ namespace dak
    namespace tiling_ui_qt
    {
       using dak::tiling::tiling_t;
-      using dak::ui::drawing;
-      using dak::ui_qt::message_reporter;
+      using dak::ui::drawing_t;
+      using dak::ui::qt::message_reporter_t;
 
-      class tiling_editor_ui;
+      class tiling_editor_ui_t;
 
       ////////////////////////////////////////////////////////////////////////////
       //
@@ -95,7 +95,7 @@ namespace dak
          QAction*  toggle_inclusion_action = nullptr;
 
          // Creation.
-         tiling_editor_t(const tiling_editor_icons& icons, QWidget* parent);
+         tiling_editor_t(const tiling_editor_icons_t& icons, QWidget* parent);
 
          // Tiling management.
          void set_tiling(const tiling_t& tiling);
@@ -103,14 +103,14 @@ namespace dak
          bool verify_tiling(const std::wstring& operation);
 
          // Error reporting.
-         void report_error(const std::wstring& text, message_reporter::category cat = message_reporter::category::error);
+         void report_error(const std::wstring& text, message_reporter_t::category_t cat = message_reporter_t::category_t::error);
 
       private:
          // End-user actions.
          void build_actions(const tiling_editor_icons_t& icons);
          void build_ui();
 
-         std::shared_ptr<tiling_editor_ui> ui;
+         std::shared_ptr<tiling_editor_ui_t> ui;
       };
    }
 }

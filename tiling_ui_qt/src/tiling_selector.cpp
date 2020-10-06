@@ -1,15 +1,16 @@
 #include <dak/tiling_ui_qt/tiling_selector.h>
 #include <dak/tiling_ui_qt/tiling_editor.h>
+#include <dak/tiling_ui_qt/ask.h>
+#include <dak/tiling_ui_qt/mosaic_canvas.h>
+#include <dak/tiling_ui_qt/tiling_canvas.h>
 
-#include <dak/ui_qt/ask.h>
-#include <dak/ui_qt/convert.h>
-#include <dak/ui_qt/mosaic_canvas.h>
-#include <dak/ui_qt/tiling_canvas.h>
-#include <dak/ui_qt/utility.h>
+#include <dak/ui/qt/convert.h>
 
 #include <dak/tiling/known_tilings.h>
 
 #include <dak/utility/text.h>
+
+#include <dak/QtAdditions/QtUtilities.h>
 
 #include <QtWidgets/qboxlayout.h>
 #include <QtWidgets/qlabel.h>
@@ -28,19 +29,17 @@ namespace dak
    namespace tiling_ui_qt
    {
       using utility::L;
-      using ui_qt::mosaic_canvas;
-      using ui_qt::tiling_canvas;
-      using ui_qt::create_tool_button;
       using dak::tiling::known_tilings_t;
+      using namespace dak::QtAdditions;
 
       ////////////////////////////////////////////////////////////////////////////
       //
       // A QWidget to select a tiling.
 
-      class tiling_selector_ui
+      class tiling_selector_ui_t
       {
       public:
-         tiling_selector_ui(known_tilings_t& known_tilings, const tiling_editor_icons_t& icons, tiling_selector_t& parent)
+         tiling_selector_ui_t(known_tilings_t& known_tilings, const tiling_editor_icons_t& icons, tiling_selector_t& parent)
          : editor(parent), tilings(known_tilings), reporter(&parent)
          {
             build_ui(icons, parent);
@@ -90,7 +89,7 @@ namespace dak
 
                   QToolBar* toolbar = new QToolBar;
 
-                     open_action = create_tool_button(L::t(L"Open..."), icons.tiling_open, 'O', L::t(L"Open a tiling design. (Shortcut: o)"), [self = this]()
+                     open_action = CreateToolButton(L::t(L"Open..."), icons.tiling_open, 'O', L::t(L"Open a tiling design. (Shortcut: o)"), [self = this]()
                      {
                         self->open_tiling();
                      });
@@ -108,11 +107,11 @@ namespace dak
                stacked_canvas = std::make_unique<QStackedWidget>(selection_panel);
                   stacked_canvas->setContentsMargins(0, 0, 0, 0);
 
-                  example_canvas = std::make_unique<mosaic_canvas>(stacked_canvas.get());
+                  example_canvas = std::make_unique<mosaic_canvas_t>(stacked_canvas.get());
                   example_canvas->setMinimumSize(400, 400);
                   stacked_canvas->addWidget(example_canvas.get());
 
-                  raw_tiling_canvas = std::make_unique<tiling_canvas>(stacked_canvas.get());
+                  raw_tiling_canvas = std::make_unique<tiling_canvas_t>(stacked_canvas.get());
                   raw_tiling_canvas->setMinimumSize(400, 400);
                   stacked_canvas->addWidget(raw_tiling_canvas.get());
 
@@ -160,7 +159,7 @@ namespace dak
             tiling_list->blockSignals(disable_feedback > 0);
          }
 
-         void set_tiling(tiling_t& tiling, const std::experimental::filesystem::path& path)
+         void set_tiling(tiling_t& tiling, const std::filesystem::path& path)
          {
             disable_feedback++;
             tiling_list->blockSignals(disable_feedback > 0);
@@ -244,8 +243,8 @@ namespace dak
          {
             try
             {
-               std::experimental::filesystem::path path;
-               tiling_t tiling = ui_qt::ask_open_tiling(path, &editor);
+               std::filesystem::path path;
+               tiling_t tiling = tiling_ui_qt::ask_open_tiling(path, &editor);
                if (tiling.is_invalid())
                   return;
                set_tiling(tiling, path);
@@ -256,7 +255,7 @@ namespace dak
                const std::wstring error = error_msg.length() > 0
                   ? std::wstring(L::t(L"Reason given: ")) + error_msg + std::wstring(L::t(L"."))
                   : std::wstring(L::t(L"No reason given for the error."));
-               reporter.report(std::wstring(L::t(L"Cannot read the selected tiling!\n")) + error, message_reporter::category::error);
+               reporter.report(std::wstring(L::t(L"Cannot read the selected tiling!\n")) + error, message_reporter_t::category_t::error);
             }
          }
 
@@ -271,14 +270,14 @@ namespace dak
 
          std::unique_ptr<QListWidget> tiling_list;
          std::unique_ptr<QStackedWidget> stacked_canvas;
-         std::unique_ptr<mosaic_canvas> example_canvas;
-         std::unique_ptr<tiling_canvas> raw_tiling_canvas;
+         std::unique_ptr<mosaic_canvas_t> example_canvas;
+         std::unique_ptr<tiling_canvas_t> raw_tiling_canvas;
 
          std::unique_ptr<QDialogButtonBox> dialog_buttons;
 
          int disable_feedback = 0;
 
-         message_reporter reporter;
+         message_reporter_t reporter;
       };
 
       ////////////////////////////////////////////////////////////////////////////
@@ -291,7 +290,7 @@ namespace dak
       }
 
       tiling_selector_t::tiling_selector_t(known_tilings_t& known_tilings, const tiling_editor_icons_t& icons, QWidget* parent, tiling_chosen_callback tc)
-      : QDialog(parent), ui(std::make_unique<tiling_selector_ui>(known_tilings, icons, *this)), tiling_chosen(tc)
+      : QDialog(parent), ui(std::make_unique<tiling_selector_ui_t>(known_tilings, icons, *this)), tiling_chosen(tc)
       {
       }
 

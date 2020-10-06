@@ -15,12 +15,12 @@ namespace dak
    namespace tiling
    {
       class tiling_t;
-      using known_tilings = std::vector<tiling_t>;
+      using known_tilings_t = std::vector<tiling_t>;
    }
 
    namespace tiling_style
    {
-      using tiling::known_tilings;
+      using tiling::known_tilings_t;
 
       ////////////////////////////////////////////////////////////////////////////
       // 
@@ -29,13 +29,13 @@ namespace dak
       class known_mosaics_t
       {
       public:
-         typedef std::vector<std::shared_ptr<layer>> layered_mosaic;
+         typedef std::vector<std::shared_ptr<layer_t>> layered_mosaic_t;
 
-         std::vector<layered_mosaic> mosaics;
+         std::vector<layered_mosaic_t> mosaics;
 
-         known_mosaics_t(const std::wstring& folder, const known_tilings& knowns, std::vector<std::wstring>& errors) { read_mosaics(folder, knowns, errors); }
+         known_mosaics_t(const std::wstring& folder, const known_tilings_t& knowns, std::vector<std::wstring>& errors) { read_mosaics(folder, knowns, errors); }
 
-         void read_mosaics(const std::wstring& folder, const known_tilings& knowns, std::vector<std::wstring>& errors);
+         void read_mosaics(const std::wstring& folder, const known_tilings_t& knowns, std::vector<std::wstring>& errors);
       };
    }
 }

@@ -1,8 +1,8 @@
 #include <dak/tiling_ui_qt/tiling_window.h>
 #include <dak/tiling_ui_qt/tiling_selector.h>
+#include <dak/tiling_ui_qt/ask.h>
 
-#include <dak/ui_qt/utility.h>
-#include <dak/ui_qt/ask.h>
+#include <dak/QtAdditions/QtUtilities.h>
 
 #include <dak/tiling/tiling_io.h>
 
@@ -21,7 +21,8 @@ namespace dak
    namespace tiling_ui_qt
    {
       using dak::utility::L;
-      using namespace ui_qt;
+      using namespace ui::qt;
+      using namespace QtAdditions;
 
       // Creation.
       tiling_window_t::tiling_window_t(dak::tiling::known_tilings_t& known_tilings, const tiling_editor_icons_t& icons, QWidget *parent)
@@ -37,22 +38,22 @@ namespace dak
 
       void tiling_window_t::build_actions(const tiling_editor_icons_t& icons)
       {
-         new_action = create_tool_button(L::t(L"New Tiling"), icons.tiling_new, 'N', L::t(L"Start a new tiling design. (Shortcut: n)"), [self = this]()
+         new_action = CreateToolButton(L::t(L"New Tiling"), icons.tiling_new, 'N', L::t(L"Start a new tiling design. (Shortcut: n)"), [self = this]()
          {
             self->new_tiling();
          });
 
-         open_action = create_tool_button(L::t(L"Open..."), icons.tiling_open, 'O', L::t(L"Open a tiling design. (Shortcut: o)"), [self = this]()
+         open_action = CreateToolButton(L::t(L"Open..."), icons.tiling_open, 'O', L::t(L"Open a tiling design. (Shortcut: o)"), [self = this]()
          {
             self->open_tiling();
          });
 
-         select_action = create_tool_button(L::t(L"Select..."), icons.tiling_open, QKeySequence("Shift+O"), L::t(L"Select a tiling design among built-in ones. (Shortcut: <shift> + o)"), [icons, self = this]()
+         select_action = CreateToolButton(L::t(L"Select..."), icons.tiling_open, QKeySequence("Shift+O"), L::t(L"Select a tiling design among built-in ones. (Shortcut: <shift> + o)"), [icons, self = this]()
          {
             self->select_tiling(icons);
          });
 
-         save_action = create_tool_button(L::t(L"Save As..."), icons.tiling_save, 'S', L::t(L"Save the tiling design. (Shortcut: s)"), [self = this]()
+         save_action = CreateToolButton(L::t(L"Save As..."), icons.tiling_save, 'S', L::t(L"Save the tiling design. (Shortcut: s)"), [self = this]()
          {
             self->save_tiling();
          });
@@ -76,29 +77,29 @@ namespace dak
 
          toolbar->addSeparator();
 
-         toolbar->addWidget(create_tool_button(editor->add_poly_action));
-         toolbar->addWidget(create_tool_button(editor->draw_poly_toggle));
-         toolbar->addWidget(create_tool_button(editor->copy_poly_toggle));
-         toolbar->addWidget(create_tool_button(editor->delete_poly_toggle));
-         toolbar->addWidget(create_tool_button(editor->move_poly_toggle));
+         toolbar->addWidget(CreateToolButton(editor->add_poly_action));
+         toolbar->addWidget(CreateToolButton(editor->draw_poly_toggle));
+         toolbar->addWidget(CreateToolButton(editor->copy_poly_toggle));
+         toolbar->addWidget(CreateToolButton(editor->delete_poly_toggle));
+         toolbar->addWidget(CreateToolButton(editor->move_poly_toggle));
 
          toolbar->addSeparator();
 
-         toolbar->addWidget(create_tool_button(editor->toggle_inclusion_toggle));
-         toolbar->addWidget(create_tool_button(editor->exclude_all_action));
-         toolbar->addWidget(create_tool_button(editor->fill_trans_action));
-         toolbar->addWidget(create_tool_button(editor->remove_excluded_action));
+         toolbar->addWidget(CreateToolButton(editor->toggle_inclusion_toggle));
+         toolbar->addWidget(CreateToolButton(editor->exclude_all_action));
+         toolbar->addWidget(CreateToolButton(editor->fill_trans_action));
+         toolbar->addWidget(CreateToolButton(editor->remove_excluded_action));
 
          toolbar->addSeparator();
 
-         toolbar->addWidget(create_tool_button(editor->draw_trans_toggle));
-         toolbar->addWidget(create_tool_button(editor->clear_trans_action));
+         toolbar->addWidget(CreateToolButton(editor->draw_trans_toggle));
+         toolbar->addWidget(CreateToolButton(editor->clear_trans_action));
 
          toolbar->addSeparator();
 
-         toolbar->addWidget(create_tool_button(editor->pan_toggle));
-         toolbar->addWidget(create_tool_button(editor->rotate_toggle));
-         toolbar->addWidget(create_tool_button(editor->zoom_toggle));
+         toolbar->addWidget(CreateToolButton(editor->pan_toggle));
+         toolbar->addWidget(CreateToolButton(editor->rotate_toggle));
+         toolbar->addWidget(CreateToolButton(editor->zoom_toggle));
 
          addToolBar(Qt::ToolBarArea::TopToolBarArea, toolbar);
 
@@ -161,7 +162,7 @@ namespace dak
 
          try
          {
-            std::experimental::filesystem::path path;
+            std::filesystem::path path;
             tiling_t tiling = ask_open_tiling(path, this);
             if (tiling.is_invalid())
                return;
@@ -210,22 +211,22 @@ namespace dak
          {
             if (!editor->verify_tiling(L""))
             {
-               yes_no_cancel answer = ask_yes_no_cancel(
+               yes_no_cancel_t answer = ask_yes_no_cancel(
                   L::t(L"Unsaved Tiling Warning"),
                   std::wstring(L::t(L"The current tiling is incomplete and will be lost.\nAre you sure you want to ")) + action + L::t(L"?"),
                   this);
-               if (answer != yes_no_cancel::yes)
+               if (answer != yes_no_cancel_t::yes)
                   return false;
             }
             else
             {
-               yes_no_cancel answer = ask_yes_no_cancel(
+               yes_no_cancel_t answer = ask_yes_no_cancel(
                   L::t(L"Unsaved Tiling Warning"),
                   std::wstring(L::t(L"The current tiling has not been saved.\nDo you want to save it before ")) + actioning + L::t(L"?"),
                   this);
-               if (answer == yes_no_cancel::cancel)
+               if (answer == yes_no_cancel_t::cancel)
                   return false;
-               else if (answer == yes_no_cancel::yes)
+               else if (answer == yes_no_cancel_t::yes)
                   if (!save_tiling())
                      return false;
             }

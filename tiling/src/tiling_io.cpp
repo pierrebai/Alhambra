@@ -36,8 +36,8 @@ namespace dak
          int tile_count = 0;
          file >> tile_count;
 
-         point t1;
-         point t2;
+         point_t t1;
+         point_t t2;
          file >> t1.x >> t1.y >> t2.x >> t2.y;
 
          tiling_t new_tiling(name, t1, t2);
@@ -51,17 +51,17 @@ namespace dak
 
             bool reg = (tile_type == L"regular");
 
-            std::vector<transform>* trfs = nullptr;
+            std::vector<transform_t>* trfs = nullptr;
             if (reg)
             {
-               trfs = &new_tiling.tiles[polygon::make_regular(side_count)];
+               trfs = &new_tiling.tiles[polygon_t::make_regular(side_count)];
             }
             else
             {
-               polygon poly;
+               polygon_t poly;
                for (int si = 0; si < side_count; ++si)
                {
-                  point pt;
+                  point_t pt;
                   file >> pt.x >> pt.y;
                   poly.points.emplace_back(pt);
                }
@@ -70,7 +70,7 @@ namespace dak
 
             for (int trfi = 0; trfi < trf_count; ++trfi)
             {
-               transform trf;
+               transform_t trf;
                file >> trf.scale_x >> trf.rot_1   >> trf.trans_x
                     >> trf.rot_2   >> trf.scale_y >> trf.trans_y;
                trfs->emplace_back(trf);
@@ -94,8 +94,8 @@ namespace dak
 
          for (const auto& poly_trf : t.tiles)
          {
-            const polygon& poly = poly_trf.first;
-            const std::vector<transform>& trfs = poly_trf.second;
+            const polygon_t& poly = poly_trf.first;
+            const std::vector<transform_t>& trfs = poly_trf.second;
 
             if (poly.is_regular())
             {
@@ -103,7 +103,7 @@ namespace dak
             }
             else {
                file << L"        polygon " << poly.points.size() << L" " << trfs.size() << std::endl;
-               for (const point& pt : poly.points)
+               for (const point_t& pt : poly.points)
                   file << L"        " << pt.x << L" " << pt.y << std::endl;
             }
             file << std::endl;

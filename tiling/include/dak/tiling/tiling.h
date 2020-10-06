@@ -15,10 +15,10 @@ namespace dak
 {
    namespace tiling
    {
-      using geometry::point;
-      using geometry::polygon;
-      using geometry::transform;
-      using geometry::rect;
+      using geometry::point_t;
+      using geometry::polygon_t;
+      using geometry::transform_t;
+      using geometry::rectangle_t;
 
       ////////////////////////////////////////////////////////////////////////////
       //
@@ -36,11 +36,11 @@ namespace dak
          // Translations to tile the plane. Two needed for two-dimensional plane.
          // (Of course, more complex tiling exists with rotations and mirrors.)
          // (They are not supported.)
-         point t1;
-         point t2;
+         point_t t1;
+         point_t t2;
 
          // The polygonal tiles and where they are placed within the tiling.
-         std::map<polygon, std::vector<transform>> tiles;
+         std::map<polygon_t, std::vector<transform_t>> tiles;
 
          // Information about the tiling: name, description and author.
          std::wstring   name;
@@ -51,7 +51,7 @@ namespace dak
          tiling_t();
 
          // Tiling with a name and translation vectors.
-         tiling_t(const std::wstring& name, const point& t1, const point& t2);
+         tiling_t(const std::wstring& name, const point_t& t1, const point_t& t2);
 
          // Swap two tilings.
          void swap(tiling_t& other);
@@ -61,10 +61,10 @@ namespace dak
          bool operator!=(const tiling_t& other) const { return !(*this == other); }
 
          // Calculate the bounds of the tiles of the tiling.
-         rect bounds() const;
+         rectangle_t bounds() const;
 
          // Verify if the tiling is invalid.
-         bool is_invalid() const { return tiles.empty() || t1.is_invalid() || t1 == point(0., 0.) || t2.is_invalid() || t2 == point(0., 0.); }
+         bool is_invalid() const { return tiles.empty() || t1.is_invalid() || t1 == point_t(0., 0.) || t2.is_invalid() || t2 == point_t(0., 0.); }
       };
    }
 }

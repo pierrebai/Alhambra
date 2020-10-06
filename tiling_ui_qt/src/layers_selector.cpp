@@ -1,8 +1,11 @@
 #include <dak/tiling_ui_qt/layers_selector.h>
-#include <dak/tiling_ui_qt/table_widget_with_combo.h>
-#include <dak/ui_qt/utility.h>
+#include <dak/tiling_ui_qt/drawing.h>
 
-#include <dak/ui_qt/convert.h>
+#include <dak/QtAdditions/QTableWidgetWithComboBox.h>
+#include <dak/QtAdditions/QtUtilities.h>
+
+#include <dak/ui/qt/convert.h>
+#include <dak/ui/qt/painter_drawing.h>
 
 #include <dak/tiling_style/plain.h>
 #include <dak/tiling_style/thick.h>
@@ -21,11 +24,15 @@
 #include <QtWidgets/qpushbutton.h>
 #include <QtWidgets/qheaderview.h>
 
+#include <QtGui/qpainter.h>
+
 #include <algorithm>
 #include <typeindex>
 
 namespace dak
 {
+   using namespace QtAdditions;
+
    namespace tiling_ui_qt
    {
       using tiling_style::style_t;
@@ -39,8 +46,32 @@ namespace dak
       using tiling_style::interlace_t;
 
       using utility::L;
-      typedef std::vector<std::shared_ptr<layer>> layers;
-      typedef std::function<void(const layers& )> selection_changed_callback;
+      typedef std::vector<std::shared_ptr<layer_t>> layers_t;
+      typedef std::function<void(const layers_t& )> selection_changed_callback_t;
+
+      QIcon get_icon(const std::shared_ptr<styled_mosaic_t>& sm, int w, int h)
+      {
+         if (!sm)
+            return QIcon();
+
+         ui::color_t co = ui::color_t::black();
+         if (auto style = std::dynamic_pointer_cast<colored_t>(sm->style))
+            co = style->color;
+         return get_icon(sm->mosaic, co, w, h);
+      }
+
+      QIcon get_icon(const std::shared_ptr<mosaic_t>& mosaic, const ui::color_t& co, int w, int h)
+      {
+         if (!mosaic)
+            return QIcon();
+
+         QPixmap pixmap(w, h);
+         QPainter painter(&pixmap);
+         ui::qt::painter_drawing_t drw(painter);
+         draw_tiling(drw, mosaic, co, 1);
+
+         return QIcon(pixmap);
+      }
 
       namespace
       {
@@ -116,7 +147,7 @@ namespace dak
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // A QWidget to select and order layers.
+      // A QWidget to select and order layers_t.
 
       class layers_selector_ui_t
       {
@@ -127,12 +158,12 @@ namespace dak
             build_ui(parent, copy_icon, add_icon, remove_icon, move_up_icon, move_down_icon);
          }
 
-         const layers& get_edited() const
+         const layers_t& get_edited() const
          {
             return edited;
          }
 
-         void set_edited(const layers& ed)
+         void set_edited(const layers_t& ed)
          {
             if (ed == edited)
                return;
@@ -146,9 +177,9 @@ namespace dak
             fill_ui(selected);
          }
 
-         layers get_selected_layers() const
+         layers_t get_selected_layers() const
          {
-            std::vector<std::shared_ptr<layer>> selected;
+            std::vector<std::shared_ptr<layer_t>> selected;
             for (int index : get_selected_indexes())
             {
                selected.emplace_back(edited[index]);
@@ -159,9 +190,9 @@ namespace dak
          std::vector<std::shared_ptr<style_t>> get_selected_styles() const
          {
             std::vector<std::shared_ptr<style_t>> selected;
-            for (auto layer : get_selected_layers())
+            for (auto layer_t : get_selected_layers())
             {
-               if (auto style = extract_style(layer))
+               if (auto style = extract_style(layer_t))
                {
                   selected.emplace_back(style);
                }
@@ -175,9 +206,9 @@ namespace dak
             layer_list->blockSignals(disable_feedback > 0);
 
             int row = 0;
-            for (auto& layer : edited)
+            for (auto& layer_t : edited)
             {
-               if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
+               if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer_t))
                {
                   const auto state = mo_layer->hide ? Qt::CheckState::Unchecked : Qt::CheckState::Checked;
                   auto draw_item = layer_list->item(row, draw_column);
@@ -185,7 +216,7 @@ namespace dak
 
                   // Note: make icon larger than what was set in the table view
                   //       so that it gets scaled down with some smoothing.
-                  const QIcon qicon = ui_qt::get_icon(mo_layer, 128, 64);
+                  const QIcon qicon = get_icon(mo_layer, 128, 64);
                   const QString tiling_name = QString::fromWCharArray(mo_layer->mosaic->tiling.name.c_str());
                   auto tiling_item = layer_list->item(row, tiling_column);
                   tiling_item->setIcon(qicon);
@@ -204,9 +235,9 @@ namespace dak
          }
 
       private:
-         static std::shared_ptr<style_t> extract_style(const std::shared_ptr<layer>& layer)
+         static std::shared_ptr<style_t> extract_style(const std::shared_ptr<layer_t>& layer_t)
          {
-            if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
+            if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer_t))
             {
                return mo_layer->style;
             }
@@ -219,7 +250,7 @@ namespace dak
          static std::unique_ptr<QPushButton> make_button(int icon, const wchar_t* tooltip)
          {
             std::unique_ptr<QPushButton> button = std::make_unique<QPushButton>();
-            button->setIcon(QIcon(ui_qt::create_pixmap_from_resource(icon)));
+            button->setIcon(QIcon(CreatePixmapFromResource(icon)));
             button->setToolTip(QString::fromWCharArray(tooltip));
             return std::move(button);
          }
@@ -248,7 +279,7 @@ namespace dak
             for (const auto& item : style_names)
                combo_items.append(QString::fromWCharArray(L::t(item.name)));
 
-            layer_list = std::make_unique<table_widget_with_combo>(style_column, combo_items, &parent);
+            layer_list = std::make_unique<QTableWidgetWithComboBox>(style_column, combo_items, &parent);
             layer_list->setIconSize(QSize(64, 32));
             layer_list->setColumnCount(3);
             layer_list->setHorizontalHeaderLabels(QStringList(
@@ -285,9 +316,9 @@ namespace dak
 
             layer_list->setRowCount(0);
 
-            for (auto& layer : edited)
+            for (auto& layer_t : edited)
             {
-               if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
+               if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer_t))
                {
                   const int row = layer_list->rowCount();
                   layer_list->setRowCount(row + 1);
@@ -299,7 +330,7 @@ namespace dak
 
                   // Note: make the icon larger than what was set in the table view
                   //       so that it gets scaled down with some smoothing.
-                  const QIcon qicon = ui_qt::get_icon(mo_layer, 128, 64);
+                  const QIcon qicon = get_icon(mo_layer, 128, 64);
                   const QString tiling_name = QString::fromWCharArray(mo_layer->mosaic->tiling.name.c_str());
                   auto tiling_item = new QTableWidgetItem(qicon, tiling_name);
                   tiling_item->setFlags(Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsSelectable);
@@ -398,7 +429,7 @@ namespace dak
          {
             update_enabled();
 
-            // Note: used to avoid re-calculating the layer when just setting its value in the UI.
+            // Note: used to avoid re-calculating the layer_t when just setting its value in the UI.
             if (disable_feedback)
                return;
 
@@ -471,7 +502,7 @@ namespace dak
 
          void move_layers_up()
          {
-            // Treat each target index in order: find if it must receive the layer from below moving up.
+            // Treat each target index in order: find if it must receive the layer_t from below moving up.
             auto selected = get_selected_indexes();
             int target = 0;
             for (int& index : selected)
@@ -491,7 +522,7 @@ namespace dak
 
          void move_layers_down()
          {
-            // Treat each target index in reverse order: find if it must receive the layer from up moving down.
+            // Treat each target index in reverse order: find if it must receive the layer_t from up moving down.
             auto selected = get_selected_indexes();
             std::reverse(selected.begin(), selected.end());
             int target = int(edited.size()) - 1;
@@ -515,9 +546,9 @@ namespace dak
          static constexpr int style_column = 2;
 
          layers_selector_t& editor;
-         layers edited;
+         layers_t edited;
 
-         std::unique_ptr<table_widget_with_combo> layer_list;
+         std::unique_ptr<QTableWidgetWithComboBox> layer_list;
          std::unique_ptr<QPushButton> clone_layer_button;
          std::unique_ptr<QPushButton> add_layer_button;
          std::unique_ptr<QPushButton> remove_layers_button;
@@ -529,14 +560,14 @@ namespace dak
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // A QWidget to select and order layers.
+      // A QWidget to select and order layers_t.
 
       layers_selector_t::layers_selector_t(QWidget* parent, int copy_icon, int add_icon, int remove_icon, int move_up_icon, int move_down_icon)
       : QWidget(parent), ui(std::make_unique<layers_selector_ui_t>(*this, copy_icon, add_icon, remove_icon, move_up_icon, move_down_icon))
       {
       }
 
-      void layers_selector_t::set_edited(const layers& edited)
+      void layers_selector_t::set_edited(const layers_t& edited)
       {
          if (!ui)
             return;
@@ -544,9 +575,9 @@ namespace dak
          ui->set_edited(edited);
       }
 
-      const layers& layers_selector_t::get_edited() const
+      const layers_t& layers_selector_t::get_edited() const
       {
-         static const layers empty;
+         static const layers_t empty;
          if (!ui)
             return empty;
 
@@ -562,7 +593,7 @@ namespace dak
       }
 
 
-      layers layers_selector_t::get_selected_layers() const
+      layers_t layers_selector_t::get_selected_layers() const
       {
          if (!ui)
             return {};

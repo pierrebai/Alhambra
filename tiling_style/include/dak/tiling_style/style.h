@@ -3,7 +3,7 @@
 #ifndef DAK_TILING_STYLE_STYLE_H
 #define DAK_TILING_STYLE_STYLE_H
 
-#include <dak/geometry/map.h>
+#include <dak/geometry/edges_map.h>
 #include <dak/ui/layer.h>
 
 namespace dak
@@ -23,14 +23,14 @@ namespace dak
          style_t() { }
 
          // Create a style.
-         style_t(const geometry::map& m) : map(m) { }
+         style_t(const geometry::edges_map_t& m) : map(m) { }
 
          // Retrieve a description of this style.
          virtual std::wstring describe() const = 0;
 
          // Set or access the map used as the basis to build the style.
          const geometry::edges_map_t& get_map() const { return map; }
-         virtual void set_map(const geometry::map& m) { map = m; }
+         virtual void set_map(const geometry::edges_map_t& m) { map = m; }
 
          // Copy a layer.
          void make_similar(const layer_t& other) override;

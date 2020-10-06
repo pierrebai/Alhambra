@@ -7,8 +7,8 @@ namespace dak
 {
    namespace tiling
    {
-      using geometry::map;
-      using geometry::transform;
+      using geometry::edges_map_t;
+      using geometry::transform_t;
 
       mosaic_t::mosaic_t(const mosaic_t& other)
       : tiling(other.tiling)
@@ -64,32 +64,32 @@ namespace dak
             if (iter == tile_figures.end())
                continue;
 
-            const geometry::map& map = iter->second->get_map();
-            count += map.all().size() * tile_placements.second.size();
+            const geometry::edges_map_t& edges_map_t = iter->second->get_map();
+            count += edges_map_t.all().size() * tile_placements.second.size();
          }
 
          return count;
       }
 
-      map mosaic_t::construct(const rect& region) const
+      edges_map_t mosaic_t::construct(const rectangle_t& region) const
       {
-         map final_map;
+         edges_map_t final_map;
          final_map.reserve(count_fill_replications(region, tiling.t1, tiling.t2) * count_tiling_edges());
          final_map.begin_merge_non_overlapping();
          geometry::fill(region, tiling.t1, tiling.t2, [&tiling=tiling, &tile_figures=tile_figures,&final_map=final_map](int t1, int t2)
          {
-            const auto receive_trf = transform::translate(tiling.t1.scale(t1) + tiling.t2.scale(t2));
+            const auto receive_trf = transform_t::translate(tiling.t1.scale(t1) + tiling.t2.scale(t2));
             for (const auto& tile_placements : tiling.tiles)
             {
                const auto iter = tile_figures.find(tile_placements.first);
                if (iter == tile_figures.end())
                   continue;
 
-               const geometry::map& map = iter->second->get_map();
+               const geometry::edges_map_t& edges_map_t = iter->second->get_map();
                for (const auto& trf : tile_placements.second)
                {
-                  const transform total_trf = receive_trf.compose(trf);
-                  const geometry::map placed = map.apply(total_trf);
+                  const transform_t total_trf = receive_trf.compose(trf);
+                  const geometry::edges_map_t placed = edges_map_t.apply(total_trf);
                   final_map.merge_non_overlapping(placed);
                   //final_map.merge(placed);
                }

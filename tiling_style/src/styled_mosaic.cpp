@@ -6,42 +6,42 @@ namespace dak
    namespace tiling_style
    {
       styled_mosaic_t::styled_mosaic_t(const styled_mosaic_t& other)
-      : layer(other)
-      , mosaic(std::make_shared<tiling::mosaic>(other.mosaic ? *other.mosaic : tiling::mosaic()))
-      , style_t(other.style ? std::dynamic_pointer_cast<tiling_style::style>(other.style->clone()) : std::shared_ptr<tiling_style::style>(new plain))
+      : layer_t(other)
+      , mosaic(std::make_shared<tiling::mosaic_t>(other.mosaic ? *other.mosaic : tiling::mosaic_t()))
+      , style(other.style ? std::dynamic_pointer_cast<tiling_style::style_t>(other.style->clone()) : std::shared_ptr<tiling_style::style_t>(new plain_t))
       {
       }
 
-      void styled_mosaic_t::make_similar(const layer& other)
+      void styled_mosaic_t::make_similar(const layer_t& other)
       {
-         if (style_t)
+         if (style)
          {
             if (const styled_mosaic_t* other_mosaic_layer = dynamic_cast<const styled_mosaic_t*>(&other))
             {
                if (other_mosaic_layer->style)
-                  style_t->make_similar(*other_mosaic_layer->style);
+                  style->make_similar(*other_mosaic_layer->style);
             }
             else if (const tiling_style::style_t* other_style = dynamic_cast<const tiling_style::style_t*>(&other))
             {
-               style_t->make_similar(*other_style);
+               style->make_similar(*other_style);
             }
          }
       }
 
       styled_mosaic_t& styled_mosaic_t::operator=(const styled_mosaic_t& other)
       {
-         layer::operator=(other);
+         layer_t::operator=(other);
          mosaic = std::make_shared<tiling::mosaic_t>(other.mosaic ? *other.mosaic : tiling::mosaic_t());
-         style_t = other.style ? std::dynamic_pointer_cast<tiling_style::style_t>(other.style->clone()) : std::shared_ptr<tiling_style::style_t>(new plain_t);
+         style = other.style ? std::dynamic_pointer_cast<tiling_style::style_t>(other.style->clone()) : std::shared_ptr<tiling_style::style_t>(new plain_t);
          return *this;
       }
 
-      std::shared_ptr<layer> styled_mosaic::clone() const
+      std::shared_ptr<layer_t> styled_mosaic_t::clone() const
       {
-         return std::make_shared<styled_mosaic>(*this);
+         return std::make_shared<styled_mosaic_t>(*this);
       }
 
-      void styled_mosaic::update_style(const rect& region)
+      void styled_mosaic_t::update_style(const rectangle_t& region)
       {
          if (!style)
             return;
@@ -52,7 +52,7 @@ namespace dak
          style->set_map(mosaic->construct(region));
       }
 
-      void styled_mosaic::internal_draw(ui::drawing& drw)
+      void styled_mosaic_t::internal_draw(ui::drawing_t& drw)
       {
          if (!style)
             return;

@@ -1,0 +1,6 @@
+[submodule "QtAdditions"]
+	path = QtAdditions
+	url = https://github.com/pierrebai/QtAdditions.git
+[submodule "dak_utility"]
+	path = dak_utility
+	url = https://github.com/pierrebai/dak_utility.git

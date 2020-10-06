@@ -14,9 +14,9 @@ namespace dak
 {
    namespace tiling
    {
-      using geometry::point;
-      using geometry::polygon;
-      using geometry::transform;
+      using geometry::point_t;
+      using geometry::polygon_t;
+      using geometry::transform_t;
       using geometry::TOLERANCE_2;
 
       ////////////////////////////////////////////////////////////////////////////
@@ -29,14 +29,14 @@ namespace dak
       // compare two edges by just comparing their midpoints
       // instead of comparing the endpoints pairwise.
 
-      class placed_points
+      class placed_points_t
       {
       public:
-         const polygon*       tile;
-         transform            trf;
-         std::vector<point>   mids;
+         const polygon_t*       tile;
+         transform_t            trf;
+         std::vector<point_t>   mids;
 
-         placed_points(const polygon* tile, const transform& trf, const std::vector<point>& mids)
+         placed_points_t(const polygon_t* tile, const transform_t& trf, const std::vector<point_t>& mids)
          : tile(tile), mids(mids), trf(trf)
          {
          }
@@ -51,11 +51,11 @@ namespace dak
       {
       public:
          double            tolerance = 0;
-         polygon           tile;
-         transform         trf;
+         polygon_t         tile;
+         transform_t       trf;
          int               edge = -1;
 
-         adjacency_info(const polygon& tile, int edge, const transform& trf, double tolerance)
+         adjacency_info(const polygon_t& tile, int edge, const transform_t& trf, double tolerance)
          : tile(tile), edge(edge), trf(trf), tolerance(tolerance)
          {
          }
@@ -70,14 +70,14 @@ namespace dak
       {
       public:
          double   distance_2 = 1e100;  // The square of the distance (square to avoid a square root op.)
-         point    intersection;        // The intersection point.
+         point_t  intersection;        // The intersection point.
          int      side = -1;           // Which side of the tile this describes.
          int      otherSide = -1;      // Which other side it meets.
          bool     otherIsLeft = false; // True if the other side is the left edge.
 
          intersection_info() { }
 
-         intersection_info(int side, int otherSide, bool otherIsLeft, double distance_2, point i)
+         intersection_info(int side, int otherSide, bool otherIsLeft, double distance_2, point_t i)
          {
             this->side = side;
             this->otherSide = otherSide;
@@ -109,20 +109,20 @@ namespace dak
       ////////////////////////////////////////////////////////////////////////////
       //
       // Information about the length of edges connecting two sides and
-      // the intersection point.
+      // the intersection point_t.
 
-      class edges_length_info
+      class edges_length_info_t
       {
       public:
          double   distance_2;       // The square of the distance (square to avoid a square root op.)
-         point    intersection;     // The intersection point.
+         point_t  intersection;     // The intersection point.
          int      side1;            // Which side of the tile this describes.
          int      side2;            // Which side of the tile this describes.
          int      intersection_count;
          bool     isLeft1;          // True if first side is left edge.
          bool     isLeft2;          // True if second side is left edge.
 
-         edges_length_info(int side1, bool isLeft1, int side2, bool isLeft2, int ic, double distance_2, point i)
+         edges_length_info_t(int side1, bool isLeft1, int side2, bool isLeft2, int ic, double distance_2, point_t i)
          {
             this->side1 = side1;
             this->isLeft1 = isLeft1;
@@ -133,7 +133,7 @@ namespace dak
             this->intersection = i;
          }
 
-         bool operator==(edges_length_info other) const
+         bool operator==(edges_length_info_t other) const
          {
             int ic_diff = intersection_count - other.intersection_count;
             if (ic_diff != 0)
@@ -143,12 +143,12 @@ namespace dak
             return diff > -TOLERANCE_2 && diff < TOLERANCE_2;
          }
 
-         bool operator<(edges_length_info other) const
+         bool operator<(edges_length_info_t other) const
          {
             return compareTo(other) < 0;
          }
 
-         int compareTo(const edges_length_info& other) const
+         int compareTo(const edges_length_info_t& other) const
          {
             const double diff = distance_2 - other.distance_2;
             if (diff < -TOLERANCE_2)
@@ -168,17 +168,17 @@ namespace dak
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // The information about one point of contact on the boundary of the
+      // The information about one point of contact_t on the boundary of the
       // region being inferred.
 
-      class contact
+      class contact_t
       {
       public:
-         point    position;
-         point    other;
-         point    end;
+         point_t  position;
+         point_t  other;
+         point_t  end;
 
-         point    isect;
+         point_t  isect;
          int      isect_idx = -1;
 
          static const int COLINEAR_NONE = 0;
@@ -189,7 +189,7 @@ namespace dak
 
          bool     taken = false;
 
-         contact(const point& position, const point& other)
+         contact_t(const point_t& position, const point_t& other)
          : position(position), other(other), end(position + (position - other).normalize().scale(10000.0))
          {
          }

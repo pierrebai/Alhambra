@@ -4,15 +4,15 @@ namespace dak
 {
    namespace tiling
    {
-      using geometry::point;
-      using geometry::polygon;
-      using geometry::transform;
+      using geometry::point_t;
+      using geometry::polygon_t;
+      using geometry::transform_t;
 
       tiling_t::tiling_t()
       {
       }
 
-      tiling_t::tiling_t(const std::wstring& name, const point& t1, const point& t2) : t1(t1), t2(t2), name(name)
+      tiling_t::tiling_t(const std::wstring& name, const point_t& t1, const point_t& t2) : t1(t1), t2(t2), name(name)
       {
       }
 
@@ -31,9 +31,9 @@ namespace dak
          return tiles == other.tiles && t1 == other.t1 && t2 == other.t2;
       }
 
-      rect tiling_t::bounds() const
+      rectangle_t tiling_t::bounds() const
       {
-         rect tiling_bounds;
+         rectangle_t tiling_bounds;
          for (const auto& poly_trf : tiles)
          {
             for (const auto& trf : poly_trf.second)

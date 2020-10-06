@@ -45,7 +45,7 @@ namespace dak
          std::wstring describe() const override;
 
          // Radial figure implementation.
-         map build_unit() const override;
+         edges_map_t build_unit() const override;
 
       protected:
          // Figure cache implementation.
@@ -58,7 +58,7 @@ namespace dak
 
       private:
          static double compute_scale(std::shared_ptr<radial_figure_t> child);
-         static void scale_to_unit(map& cunit);
+         static void scale_to_unit(edges_map_t& cunit);
 
          mutable double cached_s_last_build_unit = NAN;
       };

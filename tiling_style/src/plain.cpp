@@ -8,10 +8,10 @@ namespace dak
 {
    namespace tiling_style
    {
-      using ui::stroke;
+      using ui::stroke_t;
       using utility::L;
 
-      std::shared_ptr<layer> plain_t::clone() const
+      std::shared_ptr<layer_t> plain_t::clone() const
       {
          return std::make_shared<plain_t>(*this);
       }
@@ -22,10 +22,10 @@ namespace dak
       }
 
       // The internal draw is called with the layer transform already applied.
-      void plain_t::internal_draw(ui::drawing& drw)
+      void plain_t::internal_draw(ui::drawing_t& drw)
       {
          drw.set_color(color);
-         drw.set_stroke(stroke(1., stroke::cap_style::round, stroke::join_style::round));
+         drw.set_stroke(stroke_t(1., stroke_t::cap_style_t::round, stroke_t::join_style_t::round));
          for (const auto& e : map.all())
             if (e.is_canonical())
                drw.draw_line(e.p1, e.p2);

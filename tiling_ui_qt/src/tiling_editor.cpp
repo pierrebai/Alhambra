@@ -1,8 +1,7 @@
 #include <dak/tiling_ui_qt/tiling_editor.h>
 
-#include <dak/ui_qt/drawing_canvas.h>
-#include <dak/ui_qt/utility.h>
-#include <dak/ui_qt/convert.h>
+#include <dak/ui/qt/drawing_canvas.h>
+#include <dak/ui/qt/convert.h>
 
 #include <dak/tiling/tiling_selection.h>
 
@@ -10,6 +9,8 @@
 
 #include <dak/utility/containers.h>
 #include <dak/utility/text.h>
+
+#include <dak/QtAdditions/QtUtilities.h>
 
 #include <QtWidgets/qboxlayout.h>
 #include <QtWidgets/qactiongroup.h>
@@ -21,18 +22,19 @@ namespace dak
    namespace tiling_ui_qt
    {
       using namespace dak::ui;
-      using namespace dak::ui_qt;
+      using namespace dak::ui::qt;
       using namespace dak::tiling;
+      using namespace dak::QtAdditions;
 
-      using dak::geometry::polygon;
-      using dak::geometry::transform;
-      using dak::geometry::point;
-      using dak::geometry::edge;
+      using dak::geometry::polygon_t;
+      using dak::geometry::transform_t;
+      using dak::geometry::point_t;
+      using dak::geometry::edge_t;
 
       using dak::utility::L;
 
-      typedef dak::ui::mouse::buttons mouse_buttons;
-      typedef dak::ui::mouse::event mouse_event;
+      typedef dak::ui::mouse::buttons_t mouse_buttons_t;
+      typedef dak::ui::mouse::event_t mouse_event_t;
 
       namespace
       {
@@ -40,7 +42,7 @@ namespace dak
          //
          // Mouse mode, triggered by the toolbar or user interaction.
 
-         enum class mouse_mode
+         enum class mouse_mode_t
          {
             normal            = 0,
             copy_polygon      = 1,
@@ -58,8 +60,8 @@ namespace dak
          //
          // Mouse interactions. (See below.)
 
-         class mouse_action;
-         class mouse_receiver;
+         class mouse_action_t;
+         class mouse_receiver_t;
 
          static constexpr double selection_distance = 8.;
 
@@ -69,10 +71,10 @@ namespace dak
       //
       // UI implementation of the tiling editor.
 
-      class tiling_editor_ui : public drawing_canvas
+      class tiling_editor_ui_t : public drawing_canvas_t
       {
       public:
-         tiling_editor_ui(QWidget* parent);
+         tiling_editor_ui_t(QWidget* parent);
 
          // Tiling management.
          void set_tiling(const tiling_t& tiling);
@@ -81,10 +83,10 @@ namespace dak
          void show_entire_tiling();
 
          // Error reporting.
-         void report_error(const std::wstring& message, message_reporter::category cat = message_reporter::category::error);
+         void report_error(const std::wstring& message, message_reporter_t::category_t cat = message_reporter_t::category_t::error);
          void paint(QPainter& painter) override;
-         void draw(drawing& drw) override;
-         static void draw_placed_tile(drawing& drw, const placed_tile_t& tile, const color& col);
+         void draw(drawing_t& drw) override;
+         static void draw_placed_tile(drawing_t& drw, const placed_tile_t& tile, const color_t& col);
 
          // Create copies of the feature to help visualise the result in the panel.
          void fill_using_translations();
@@ -94,12 +96,12 @@ namespace dak
          bool is_included(const std::shared_ptr<placed_tile_t>& placed) const;
 
          // Tiling translation vector.
-         void add_to_translation(const point& wpt, bool ending);
+         void add_to_translation(const point_t& wpt, bool ending);
 
-         // const polygon& management.
+         // const polygon_t& management.
          std::shared_ptr<placed_tile_t> add_placed_tile(const placed_tile_t&);
          void remove_placed_tile(const std::shared_ptr<placed_tile_t>& placed);
-         void remove_placed_tile(const selection& sel);
+         void remove_placed_tile(const selection_t& sel);
 
          void toggle_inclusion(const std::shared_ptr<placed_tile_t>&);
 
@@ -114,165 +116,165 @@ namespace dak
          bool is_translation_invalid();
 
          // Mouse mode handling.
-         void update_mouse_mode(QAction* action, mouse_mode mode);
-         void update_selection_under_mouse(const selection& sel);
-         void update_selection_from_point(const point& wpt);
+         void update_mouse_mode(QAction* action, mouse_mode_t mode);
+         void update_selection_under_mouse(const selection_t& sel);
+         void update_selection_from_point(const point_t& wpt);
 
          // Internal translation.
-         point get_translation_1() const;
-         point get_translation_2() const;
+         point_t get_translation_1() const;
+         point_t get_translation_2() const;
 
          // Possible user actions.
-         void toggle_inclusion(const selection& sel);
+         void toggle_inclusion(const selection_t& sel);
          void clear_translation();
          void update_polygon_sides(int number);
          void add_regular_polygon();
-         void delete_polygon(const selection& sel);
-         void copy_polygon(const selection& sel);
+         void delete_polygon(const selection_t& sel);
+         void copy_polygon(const selection_t& sel);
          void forget_polygon();
 
          // Mouse events.
-         void start_mouse_interaction(const point& wpt, mouse_buttons mouseButton);
-         selection find_selection_under_mouse(selection_type_t sel_types);
-         selection find_selection(const point& wpt, selection_type_t sel_types);
-         selection find_selection(const point& wpt, const selection& excluded, selection_type_t sel_types);
+         void start_mouse_interaction(const point_t& wpt, mouse_buttons_t mouseButton);
+         selection_t find_selection_under_mouse(selection_type_t sel_types);
+         selection_t find_selection(const point_t& wpt, selection_type_t sel_types);
+         selection_t find_selection(const point_t& wpt, const selection_t& excluded, selection_type_t sel_types);
 
-         const std::shared_ptr<mouse_action>& get_mouse_interaction() const { return mouse_interaction; }
+         const std::shared_ptr<mouse_action_t>& get_mouse_interaction() const { return mouse_interaction; }
          void clear_mouse_interaction() { mouse_interaction = nullptr; }
 
          // Convert back a model position in screen coordinates.
-         point world_to_screen(const point& wpt);
-         point screen_to_world(const point wpt);
+         point_t world_to_screen(const point_t& wpt);
+         point_t screen_to_world(const point_t wpt);
 
          // Various colors used to draw the tiling.
-         static constexpr color in_tiling_color = color::from_fractions(1.0f, 0.85f, 0.85f);
-         static constexpr color overlapping_color = color::from_fractions(1.0f, 0.4f, 0.1f, 0.9f);
-         static constexpr color under_mouse_color = color::from_fractions(0.5f, 1.0f, 0.5f, 0.6f);
-         static constexpr color drag_color = color::from_fractions(0.8f, 0.7f, 0.4f, 0.9f);
-         static constexpr color construction_color = color::green().percent(80);
-         static constexpr color normal_color = color::from_fractions(0.85f, 0.85f, 1.0f, 0.9f);
+         static constexpr color_t in_tiling_color = color_t::from_fractions(1.0f, 0.85f, 0.85f);
+         static constexpr color_t overlapping_color = color_t::from_fractions(1.0f, 0.4f, 0.1f, 0.9f);
+         static constexpr color_t under_mouse_color = color_t::from_fractions(0.5f, 1.0f, 0.5f, 0.6f);
+         static constexpr color_t drag_color = color_t::from_fractions(0.8f, 0.7f, 0.4f, 0.9f);
+         static constexpr color_t construction_color = color_t::green().percent(80);
+         static constexpr color_t normal_color = color_t::from_fractions(0.85f, 0.85f, 1.0f, 0.9f);
 
          // The edited tiling.
          tiling_t edited;
          std::vector<std::shared_ptr<placed_tile_t>> tiles;
-         std::set<std::shared_ptr<placed_tile>> overlaps;
-         std::set<std::shared_ptr<placed_tile>> inclusions;
+         std::set<std::shared_ptr<placed_tile_t>> overlaps;
+         std::set<std::shared_ptr<placed_tile_t>> inclusions;
 
-         // Current mouse selection.
-         selection   current_selection;
-         selection   under_mouse;
+         // Current mouse selection_t.
+         selection_t   current_selection;
+         selection_t   under_mouse;
 
          // Interaction mode.
-         mouse_mode current_mouse_mode;
+         mouse_mode_t current_mouse_mode;
 
          // Accumulation of number of sides to create a regular polygon.
          int poly_side_count = 0;
 
-         // Accumulation of selected vertices when drawing polygons.
-         polygon new_polygon;
+         // Accumulation of selected vertices when drawing_t polygons.
+         polygon_t new_polygon;
 
          // Translation vector so that the tiling tiles the plane.
          bool   drawing_translation = false;
-         point  trans1_start;
-         point  trans1_end;
-         point  trans2_start;
-         point  trans2_end;
+         point_t  trans1_start;
+         point_t  trans1_end;
+         point_t  trans2_start;
+         point_t  trans2_end;
 
       private:
          // Mouse interaction underway.
-         std::shared_ptr<mouse_action>   mouse_interaction;
-         std::shared_ptr<mouse_receiver> receiver;
+         std::shared_ptr<mouse_action_t>   mouse_interaction;
+         std::shared_ptr<mouse_receiver_t> receiver;
 
          // Error reporting.
-         message_reporter reporter;
+         message_reporter_t reporter;
       };
 
       ////////////////////////////////////////////////////////////////////////////
       //
       // Mouse interactions.
       //
-      // Called by the mouse_receiver class. Each sub-class of the mouse_action
+      // Called by the mouse_receiver_t class. Each sub-class of the mouse_action_t
       // embodies a particular interaction: drawing a polygon, moving a polygon,
       // etc.
 
       namespace
       {
-         class mouse_action
+         class mouse_action_t
          {
          public:
-            mouse_action(tiling_editor_ui& editor, const selection& sel, const point& wpt)
+            mouse_action_t(tiling_editor_ui_t& editor, const selection_t& sel, const point_t& wpt)
             : editor(editor), cur_sel(sel), last_drag(wpt)
             {
                editor.update();
             }
 
-            virtual void update_dragging(const point& wpt)
+            virtual void update_dragging(const point_t& wpt)
             {
                last_drag = wpt;
                editor.update();
             }
 
-            virtual void end_dragging(const point& wpt)
+            virtual void end_dragging(const point_t& wpt)
             {
                editor.update();
                editor.clear_mouse_interaction();
             }
 
-            virtual void draw(drawing&)
+            virtual void draw(drawing_t&)
             {
-               // Sub-classes add drawing.
+               // Sub-classes add drawing_t.
             }
 
          protected:
-            tiling_editor_ui& editor;
-            selection         cur_sel;
-            point             last_drag;
+            tiling_editor_ui_t& editor;
+            selection_t         cur_sel;
+            point_t             last_drag;
          };
 
-         class move_polygon : public mouse_action
+         class move_polygon : public mouse_action_t
          {
          public:
-            move_polygon(tiling_editor_ui& editor, const selection& sel, const point& wpt)
-            : mouse_action(editor, sel, wpt)
+            move_polygon(tiling_editor_ui_t& editor, const selection_t& sel, const point_t& wpt)
+            : mouse_action_t(editor, sel, wpt)
             {
             }
 
-            void update_dragging(const point& wpt) override
+            void update_dragging(const point_t& wpt) override
             {
                if (const std::shared_ptr<placed_tile_t>& placed = tiling_selection::get_placed_tile(cur_sel))
                {
-                  point diff = wpt - last_drag;
+                  point_t diff = wpt - last_drag;
                   if (!diff.is_invalid())
-                     placed->trf = transform::translate(diff).compose(placed->trf);
+                     placed->trf = transform_t::translate(diff).compose(placed->trf);
                }
-               mouse_action::update_dragging(wpt);
+               mouse_action_t::update_dragging(wpt);
             }
          };
 
          class copy_move_polygon : public move_polygon
          {
          public:
-            transform initial_transform;
+            transform_t initial_transform;
 
-            transform current_trf()
+            transform_t current_trf()
             {
                const std::shared_ptr<placed_tile_t>& placed = tiling_selection::get_placed_tile(cur_sel);
                if (!placed)
-                  return transform::identity();
+                  return transform_t::identity();
 
                return placed->trf;
             }
 
-            copy_move_polygon(tiling_editor_ui& editor, const selection& sel, const point& wpt)
+            copy_move_polygon(tiling_editor_ui_t& editor, const selection_t& sel, const point_t& wpt)
             : move_polygon(editor, sel, wpt), initial_transform(current_trf())
             {
                editor.copy_polygon(sel);
             }
 
-            void end_dragging(const point& wpt) override
+            void end_dragging(const point_t& wpt) override
             {
-               point initial_pos = editor.world_to_screen(point::origin().apply(initial_transform));
-               point final_pos = editor.world_to_screen(point::origin().apply(current_trf()));
+               point_t initial_pos = editor.world_to_screen(point_t::origin().apply(initial_transform));
+               point_t final_pos = editor.world_to_screen(point_t::origin().apply(current_trf()));
                if (initial_pos.distance_2(final_pos) > 49.)
                {
                   // Nothing to do to confirm placed tile.
@@ -280,34 +282,34 @@ namespace dak
                else
                {
                   editor.remove_placed_tile(cur_sel);
-                  cur_sel = selection();
+                  cur_sel = selection_t();
                }
                move_polygon::end_dragging(wpt);
             }
          };
 
-         class draw_translation : public mouse_action
+         class draw_translation : public mouse_action_t
          {
          public:
-            draw_translation(tiling_editor_ui& editor, const selection& sel, const point& wpt)
-            : mouse_action(editor, sel, wpt)
+            draw_translation(tiling_editor_ui_t& editor, const selection_t& sel, const point_t& wpt)
+            : mouse_action_t(editor, sel, wpt)
             {
-               const point pt = tiling_selection::get_point(sel);
+               const point_t pt = tiling_selection::get_point(sel);
                if (!pt.is_invalid())
                   editor.add_to_translation(pt, false);
             }
 
-            void update_dragging(const point& wpt) override
+            void update_dragging(const point_t& wpt) override
             {
-               selection sel = editor.find_selection(wpt, selection_type_t::point);
-               const point pt = tiling_selection::get_point(sel);
+               selection_t sel = editor.find_selection(wpt, selection_type_t::point);
+               const point_t pt = tiling_selection::get_point(sel);
                if (!pt.is_invalid())
                   editor.trans1_end = pt;
 
-               mouse_action::update_dragging(wpt);
+               mouse_action_t::update_dragging(wpt);
             }
 
-            void draw(drawing& drw) override
+            void draw(drawing_t& drw) override
             {
                if (editor.trans1_start.is_invalid() || last_drag.is_invalid())
                   return;
@@ -319,26 +321,26 @@ namespace dak
                drw.fill_arrow(editor.trans1_start, last_drag, arrow_length, arrow_width);
             }
 
-            void end_dragging(const point& wpt) override
+            void end_dragging(const point_t& wpt) override
             {
-               selection sel = editor.find_selection(wpt, selection_type_t::point);
-               const point pt = tiling_selection::get_point(sel);
+               selection_t sel = editor.find_selection(wpt, selection_type_t::point);
+               const point_t pt = tiling_selection::get_point(sel);
                if (!pt.is_invalid())
                   editor.add_to_translation(pt, true);
 
-               mouse_action::end_dragging(wpt);
+               mouse_action_t::end_dragging(wpt);
             }
          };
 
-         class join_edge : public mouse_action
+         class join_edge : public mouse_action_t
          {
          public:
-            join_edge(tiling_editor_ui& editor, const selection& sel, const point& wpt)
-            : mouse_action(editor, sel, wpt)
+            join_edge(tiling_editor_ui_t& editor, const selection_t& sel, const point_t& wpt)
+            : mouse_action_t(editor, sel, wpt)
             {
             }
 
-            bool snap_to_edge(const point& wpt)
+            bool snap_to_edge(const point_t& wpt)
             {
                const std::shared_ptr<placed_tile_t>& placed = tiling_selection::get_placed_tile(cur_sel);
                if (!placed)
@@ -347,20 +349,20 @@ namespace dak
                if (placed->trf.is_invalid())
                   return false;
 
-               selection new_sel = editor.find_selection(wpt, cur_sel, selection_type_t::edge);
+               selection_t new_sel = editor.find_selection(wpt, cur_sel, selection_type_t::edge);
                const std::shared_ptr<placed_tile_t>& new_placed = tiling_selection::get_placed_tile(new_sel);
                if (!new_placed)
                   return false;
 
-               const edge p = tiling_selection::get_edge(cur_sel).raw_edge();
+               const edge_t p = tiling_selection::get_edge(cur_sel).raw_edge();
                if (p.is_invalid())
                   return false;
 
-               const edge q = tiling_selection::get_edge(new_sel);
+               const edge_t q = tiling_selection::get_edge(new_sel);
                if (q.is_invalid())
                   return false;
 
-               transform match = transform::match_lines(p.p1, p.p2, q.p2, q.p1);
+               transform_t match = transform_t::match_lines(p.p1, p.p2, q.p2, q.p1);
                if (match.is_invalid())
                   return false;
 
@@ -369,74 +371,74 @@ namespace dak
                return true;
             }
 
-            void update_dragging(const point& wpt) override
+            void update_dragging(const point_t& wpt) override
             {
                if (cur_sel.has_selection())
                {
                   if (!snap_to_edge(wpt))
                   {
-                     point diff = wpt - last_drag;
+                     point_t diff = wpt - last_drag;
                      if (const std::shared_ptr<placed_tile_t>& placed = tiling_selection::get_placed_tile(cur_sel))
-                        placed->trf = transform::translate(diff).compose(placed->trf);
+                        placed->trf = transform_t::translate(diff).compose(placed->trf);
                   }
                }
-               mouse_action::update_dragging(wpt);
+               mouse_action_t::update_dragging(wpt);
             }
 
-            void end_dragging(const point& wpt) override
+            void end_dragging(const point_t& wpt) override
             {
                snap_to_edge(wpt);
-               mouse_action::end_dragging(wpt);
+               mouse_action_t::end_dragging(wpt);
             }
          };
 
          class copy_join_edge : public join_edge
          {
          public:
-            const transform initial_transform;
+            const transform_t initial_transform;
 
-            transform current_trf()
+            transform_t current_trf()
             {
                const std::shared_ptr<placed_tile_t>& placed = tiling_selection::get_placed_tile(cur_sel);
                if (!placed)
-                  return transform::identity();
+                  return transform_t::identity();
 
                return placed->trf;
             }
 
-            copy_join_edge(tiling_editor_ui& editor, const selection& sel, const point& wpt)
+            copy_join_edge(tiling_editor_ui_t& editor, const selection_t& sel, const point_t& wpt)
             : join_edge(editor, sel, wpt), initial_transform(current_trf())
             {
                editor.copy_polygon(sel);
             }
 
-            void end_dragging(const point& wpt) override
+            void end_dragging(const point_t& wpt) override
             {
-               point initial_pos = editor.world_to_screen(point::origin().apply(initial_transform));
-               point final_pos = editor.world_to_screen(point::origin().apply(current_trf()));
+               point_t initial_pos = editor.world_to_screen(point_t::origin().apply(initial_transform));
+               point_t final_pos = editor.world_to_screen(point_t::origin().apply(current_trf()));
                if (initial_pos.distance_2(final_pos) < 49.)
                {
                   editor.remove_placed_tile(cur_sel);
-                  cur_sel = selection();
+                  cur_sel = selection_t();
                }
                join_edge::end_dragging(wpt);
             }
          };
 
-         class draw_polygon : public mouse_action
+         class draw_polygon : public mouse_action_t
          {
          public:
 
-            draw_polygon(tiling_editor_ui& editor, const selection& sel, const point& wpt)
-            : mouse_action(editor, sel, wpt)
+            draw_polygon(tiling_editor_ui_t& editor, const selection_t& sel, const point_t& wpt)
+            : mouse_action_t(editor, sel, wpt)
             {
                add_vertex(sel);
             }
 
-            void add_vertex(const selection& sel)
+            void add_vertex(const selection_t& sel)
             {
                auto& pts = editor.new_polygon.points;
-               const point pt = tiling_selection::get_point(sel);
+               const point_t pt = tiling_selection::get_point(sel);
                if (pt.is_invalid())
                {
                   pts.clear();
@@ -444,9 +446,9 @@ namespace dak
                }
                else if (pts.size() > 2 && pt.distance_2(pts[0]) < geometry::TOLERANCE_2)
                {
-                  editor.add_placed_tile(placed_tile_t{ editor.new_polygon, transform::identity() });
+                  editor.add_placed_tile(placed_tile_t{ editor.new_polygon, transform_t::identity() });
                   pts.clear();
-                  cur_sel = selection();
+                  cur_sel = selection_t();
                   editor.clear_mouse_interaction();
                }
                else if (!utility::contains(pts, pt))
@@ -457,17 +459,17 @@ namespace dak
                cur_sel = sel;
             }
 
-            void update_dragging(const point& wpt) override
+            void update_dragging(const point_t& wpt) override
             {
-               selection sel = editor.find_selection(wpt, selection_type_t::point);
-               const point pt = tiling_selection::get_point(sel);
+               selection_t sel = editor.find_selection(wpt, selection_type_t::point);
+               const point_t pt = tiling_selection::get_point(sel);
                if (pt.is_invalid())
-                  mouse_action::update_dragging(wpt);
+                  mouse_action_t::update_dragging(wpt);
                else
-                  mouse_action::update_dragging(pt);
+                  mouse_action_t::update_dragging(pt);
             }
 
-            void draw(drawing& drw) override
+            void draw(drawing_t& drw) override
             {
                if (editor.new_polygon.points.size() > 0)
                {
@@ -482,33 +484,33 @@ namespace dak
                }
             }
 
-            void end_dragging(const point& wpt) override
+            void end_dragging(const point_t& wpt) override
             {
                add_vertex(editor.find_selection(wpt, selection_type_t::point));
-               // Note: do *not* call mouse_action::end_dragging() to allow chaining
-               //       drawing polygon sides.
+               // Note: do *not* call mouse_action_t::end_dragging() to allow chaining
+               //       drawing_t polygon_t sides.
             }
          };
 
-         class mouse_receiver : public ui::mouse::receiver
+         class mouse_receiver_t : public ui::mouse::receiver_t
          {
          public:
-            tiling_editor_ui& editor;
+            tiling_editor_ui_t& editor;
 
-            mouse_receiver(tiling_editor_ui& editor)
+            mouse_receiver_t(tiling_editor_ui_t& editor)
             : editor(editor)
             {
             }
 
-            void mouse_pressed(const mouse_event& e) override
+            void mouse_pressed(const mouse_event_t& e) override
             {
                // Mouse events with shift key are used to pan/zoom/rotate the view
                // in transformer class registered as a mouse receiver in canvas.
-               if (e.has_modifiers(modifiers::shift))
+               if (e.has_modifiers(modifiers_t::shift))
                   return;
 
-               const point wpt = editor.screen_to_world(e.position);
-               selection sel;
+               const point_t wpt = editor.screen_to_world(e.position);
+               selection_t sel;
 
                // Note: the interaction can clear editor.mouse_interaction,
                //       so keep a copy of the shared pointer during the call.
@@ -516,47 +518,47 @@ namespace dak
 
                switch (editor.current_mouse_mode)
                {
-                  case mouse_mode::normal:
+                  case mouse_mode_t::normal:
                      editor.start_mouse_interaction(wpt, e.buttons);
                      break;
-                  case mouse_mode::copy_polygon:
+                  case mouse_mode_t::copy_polygon:
                      if ((sel = editor.find_selection(wpt, selection_type_t::edge)).has_selection())
                         inter.reset(new copy_join_edge(editor, sel, wpt));
                      else if ((sel = editor.find_selection(wpt, selection_type_t::tile)).has_selection())
                         inter.reset(new copy_move_polygon(editor, sel, wpt));
                      break;
-                  case mouse_mode::move_polygon:
+                  case mouse_mode_t::move_polygon:
                      if ((sel = editor.find_selection(wpt, selection_type_t::edge)).has_selection())
                         inter.reset(new join_edge(editor, sel, wpt));
                      else if ((sel = editor.find_selection(wpt, selection_type_t::tile)).has_selection())
                         inter.reset(new move_polygon(editor, sel, wpt));
                      break;
-                  case mouse_mode::delete_polygon:
+                  case mouse_mode_t::delete_polygon:
                      editor.delete_polygon(editor.find_selection(wpt, selection_type_t::tile));
                      break;
-                  case mouse_mode::draw_fill_vectors:
+                  case mouse_mode_t::draw_fill_vectors:
                      if ((sel = editor.find_selection(wpt, selection_type_t::point)).has_selection())
                         inter.reset(new draw_translation(editor, sel, wpt));
                      break;
-                  case mouse_mode::draw_polygon:
+                  case mouse_mode_t::draw_polygon:
                      if ((sel = editor.find_selection(wpt, selection_type_t::point)).has_selection())
                         inter.reset(new draw_polygon(editor, sel, wpt));
                      break;
-                  case mouse_mode::include_polygon:
+                  case mouse_mode_t::include_polygon:
                      editor.toggle_inclusion(editor.find_selection(wpt, selection_type_t::tile));
                      break;
-                  case mouse_mode::pan_view:
+                  case mouse_mode_t::pan_view:
                      break;
-                  case mouse_mode::rotate_view:
+                  case mouse_mode_t::rotate_view:
                      break;
-                  case mouse_mode::zoom_view:
+                  case mouse_mode_t::zoom_view:
                      break;
                }
             }
 
-            void mouse_released(const mouse_event& e) override
+            void mouse_released(const mouse_event_t& e) override
             {
-               const point wpt = editor.screen_to_world(e.position);
+               const point_t wpt = editor.screen_to_world(e.position);
                // Note: the interaction can clear editor.mouse_interaction,
                //       so keep a copy of the shared pointer during the call.
                if (auto inter = editor.get_mouse_interaction())
@@ -565,14 +567,14 @@ namespace dak
                }
             }
 
-            void mouse_clicked(const mouse_event&) override
+            void mouse_clicked(const mouse_event_t&) override
             {
                // nothing.
             }
 
-            void mouse_dragged(const mouse_event& e) override
+            void mouse_dragged(const mouse_event_t& e) override
             {
-               const point wpt = editor.screen_to_world(e.position);
+               const point_t wpt = editor.screen_to_world(e.position);
 
                // Note: the interaction can clear editor.mouse_interaction,
                //       so keep a copy of the shared pointer during the call.
@@ -582,11 +584,11 @@ namespace dak
 
                switch (editor.current_mouse_mode)
                {
-                  case mouse_mode::normal:
-                  case mouse_mode::copy_polygon:
-                  case mouse_mode::move_polygon:
-                  case mouse_mode::draw_fill_vectors:
-                  case mouse_mode::draw_polygon:
+                  case mouse_mode_t::normal:
+                  case mouse_mode_t::copy_polygon:
+                  case mouse_mode_t::move_polygon:
+                  case mouse_mode_t::draw_fill_vectors:
+                  case mouse_mode_t::draw_polygon:
                      inter->update_dragging(wpt);
                      break;
                   default:
@@ -595,27 +597,27 @@ namespace dak
                }
             }
 
-            void mouse_moved(const mouse_event& e) override
+            void mouse_moved(const mouse_event_t& e) override
             {
-               const point wpt = editor.screen_to_world(e.position);
+               const point_t wpt = editor.screen_to_world(e.position);
                editor.update_selection_from_point(wpt);
             }
 
-            void mouse_entered(const mouse_event& e) override
+            void mouse_entered(const mouse_event_t& e) override
             {
-               const point wpt = editor.screen_to_world(e.position);
+               const point_t wpt = editor.screen_to_world(e.position);
                editor.update_selection_from_point(wpt);
             }
 
-            void mouse_exited(const mouse_event& e) override
+            void mouse_exited(const mouse_event_t& e) override
             {
-               const point wpt = editor.screen_to_world(e.position);
+               const point_t wpt = editor.screen_to_world(e.position);
                editor.update_selection_from_point(wpt);
             }
 
-            void mouse_wheel(const mouse_event& e) override
+            void mouse_wheel(const mouse_event_t& e) override
             {
-               const point wpt = editor.screen_to_world(e.position);
+               const point_t wpt = editor.screen_to_world(e.position);
                editor.update_selection_from_point(wpt);
             }
          };
@@ -626,47 +628,47 @@ namespace dak
       // Tiling editor UI.
 
       // Creation.
-      tiling_editor_ui::tiling_editor_ui(QWidget* parent)
-      : drawing_canvas(parent), reporter(this)
+      tiling_editor_ui_t::tiling_editor_ui_t(QWidget* parent)
+      : drawing_canvas_t(parent), reporter(this)
       {
 
-         receiver = std::shared_ptr<mouse_receiver>(new mouse_receiver(*this));
+         receiver = std::shared_ptr<mouse_receiver_t>(new mouse_receiver_t(*this));
          emi.event_receivers.push_back(receiver.get());
          set_tiling(tiling_t());
       }
 
       // Tiling management.
 
-      void tiling_editor_ui::show_entire_tiling()
+      void tiling_editor_ui_t::show_entire_tiling()
       {
          if (tiles.size() <= 0)
             return;
 
          // Find bounding-box of all tiles.
-         geometry::rect bbox(0, 0, 0, 0);
+         geometry::rectangle_t bbox(0, 0, 0, 0);
          for (const auto& placed : tiles)
             bbox = placed->tile.apply(placed->trf).bounds().combine(bbox);
 
          // Make it so we can see 9 instances (3x3) of the tiling.
          bbox = bbox.central_scale(3.);
-         geometry::rect region = convert(geometry());
-         const transform fill_trf = transform::match_lines(bbox.top_left(), bbox.top_right(), region.top_left(), region.top_right());
+         geometry::rectangle_t region = convert(geometry());
+         const transform_t fill_trf = transform_t::match_lines(bbox.top_left(), bbox.top_right(), region.top_left(), region.top_right());
          painter_trf_drawing.set_transform(fill_trf);
       }
 
-      void tiling_editor_ui::set_tiling(const tiling_t& tiling)
+      void tiling_editor_ui_t::set_tiling(const tiling_t& tiling)
       {
          edited = tiling;
          tiles.clear();
-         current_selection = selection();
-         under_mouse = selection();
+         current_selection = selection_t();
+         under_mouse = selection_t();
          drawing_translation = false;
 
-         point trans_origin;
+         point_t trans_origin;
          if (edited.tiles.size() > 0)
          {
             const auto& tile = tiling.tiles.begin()->first;
-            const transform& trf = tiling.tiles.begin()->second.front();
+            const transform_t& trf = tiling.tiles.begin()->second.front();
             trans_origin = tile.center().apply(trf);
          }
 
@@ -691,7 +693,7 @@ namespace dak
          update();
       }
 
-      tiling_t tiling_editor_ui::create_tiling()
+      tiling_t tiling_editor_ui_t::create_tiling()
       {
          // TODO: name, author, description.
          tiling_t new_tiling;
@@ -703,14 +705,14 @@ namespace dak
          return new_tiling;
       }
 
-      bool tiling_editor_ui::verify_tiling(const std::wstring& operation)
+      bool tiling_editor_ui_t::verify_tiling(const std::wstring& operation)
       {
          if (tiles.size() <= 0)
          {
             if (operation.length())
                report_error(std::wstring(L::t(L"Cannot ")) + operation + L::t(L" the tiling without polygons!\n") +
                             L::t(L"Please add some polygons to the tiling.\n") +
-                            L::t(L"(Enter a number and press <Enter> to create a regular polygon.)"));
+                            L::t(L"(Enter a number and press <Enter> to create a regular polygon_t.)"));
             return false;
          }
 
@@ -720,7 +722,7 @@ namespace dak
             if (operation.length())
                report_error(std::wstring(L::t(L"Cannot ")) + operation + L::t(L" the tiling without selected tiles!\n") +
                             L::t(L"Please select some tiles for inclusion.\n") +
-                            L::t(L"(Press the T key while the mouse is over a polygon.)"));
+                            L::t(L"(Press the T key while the mouse is over a polygon_t.)"));
             return false;
          }
 
@@ -729,7 +731,7 @@ namespace dak
             if (operation.length())
                report_error(std::wstring(L::t(L"Cannot ")) + operation + L::t(L" the tiling without translation vectors!\n") +
                             L::t(L"Please define the two translation vectors.\n") +
-                            L::t(L"(Middle mouse button on polygon vertex or center and drag to another.)"));
+                            L::t(L"(Middle mouse button on polygon_t vertex or center and drag to another.)"));
             return false;
          }
 
@@ -740,13 +742,13 @@ namespace dak
       //
       // Repaint.
 
-      void tiling_editor_ui::paint(QPainter& painter)
+      void tiling_editor_ui_t::paint(QPainter& painter)
       {
-         drawing_canvas::paint(painter);
+         drawing_canvas_t::paint(painter);
          reporter.paint(painter);
       }
 
-      void tiling_editor_ui::draw_placed_tile(drawing& drw, const placed_tile_t& tile, const color& col)
+      void tiling_editor_ui_t::draw_placed_tile(drawing_t& drw, const placed_tile_t& tile, const color_t& col)
       {
          const auto poly = tile.tile.apply(tile.trf);
 
@@ -754,19 +756,19 @@ namespace dak
          drw.fill_polygon(poly);
 
          drw.set_stroke(2.);
-         drw.set_color(color::black());
+         drw.set_color(color_t::black());
          drw.draw_polygon(poly);
 
-         drw.set_color(color::red());
+         drw.set_color(color_t::red());
          const double radius = drw.get_transform().dist_from_inverted_zero( 6. );
          drw.draw_oval(poly.center(), radius, radius);
       }
 
-      void tiling_editor_ui::draw(drawing& drw)
+      void tiling_editor_ui_t::draw(drawing_t& drw)
       {
          for (const auto& tile : tiles)
          {
-            const color& co = is_overlapping(tile) ? overlapping_color
+            const color_t& co = is_overlapping(tile) ? overlapping_color
                             : is_included(tile)    ? in_tiling_color
                             : normal_color;
             draw_placed_tile(drw, *tile, co);
@@ -774,8 +776,8 @@ namespace dak
 
          if (under_mouse.has_selection())
          {
-            const point pt = tiling_selection::get_point(under_mouse);
-            edge edge = tiling_selection::get_edge(under_mouse);
+            const point_t pt = tiling_selection::get_point(under_mouse);
+            edge_t edge = tiling_selection::get_edge(under_mouse);
             const std::shared_ptr<placed_tile_t>& placed = tiling_selection::get_placed_tile(under_mouse);
             if (!pt.is_invalid())
             {
@@ -820,7 +822,7 @@ namespace dak
          {
             drw.set_color(construction_color);
             double radius = drw.get_transform().dist_from_inverted_zero(3.0);
-            point prev = new_polygon.points.back();
+            point_t prev = new_polygon.points.back();
             for (const auto& pt : new_polygon.points)
             {
                drw.fill_oval(pt, radius, radius);
@@ -835,16 +837,16 @@ namespace dak
       //
       // Error reporting.
 
-      void tiling_editor_ui::report_error(const std::wstring& text, message_reporter::category cat)
+      void tiling_editor_ui_t::report_error(const std::wstring& text, message_reporter_t::category_t cat)
       {
          reporter.report(text, cat);
       }
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // const polygon& management.
+      // const polygon_t& management.
 
-      std::shared_ptr<placed_tile_t> tiling_editor_ui::add_placed_tile(const placed_tile_t& placed)
+      std::shared_ptr<placed_tile_t> tiling_editor_ui_t::add_placed_tile(const placed_tile_t& placed)
       {
          auto new_tile = std::make_shared<placed_tile_t>(placed);
          tiles.push_back(new_tile);
@@ -855,13 +857,13 @@ namespace dak
          return new_tile;
       }
 
-      void tiling_editor_ui::remove_placed_tile(const std::shared_ptr<placed_tile_t>& placed)
+      void tiling_editor_ui_t::remove_placed_tile(const std::shared_ptr<placed_tile_t>& placed)
       {
          const std::shared_ptr<placed_tile_t>& placed_under_mouse = tiling_selection::get_placed_tile(under_mouse);
          if (placed && placed == placed_under_mouse)
-            under_mouse = selection();
+            under_mouse = selection_t();
 
-         // Note: do *not* use remove_if since there might be more than one polygon that matches.
+         // Note: do *not* use remove_if since there might be more than one polygon_t that matches.
          //       This happens with copy_move_polygon if the user doesn't move the mouse.
          const auto pos = std::find(tiles.begin(), tiles.end(), placed);
          if (pos != tiles.end())
@@ -871,13 +873,13 @@ namespace dak
          update();
       }
 
-      void tiling_editor_ui::remove_placed_tile(const selection& sel)
+      void tiling_editor_ui_t::remove_placed_tile(const selection_t& sel)
       {
          const std::shared_ptr<placed_tile_t>& placed = tiling_selection::get_placed_tile(sel);
          remove_placed_tile(placed);
       }
 
-      void tiling_editor_ui::toggle_inclusion(const std::shared_ptr<placed_tile_t>& placed)
+      void tiling_editor_ui_t::toggle_inclusion(const std::shared_ptr<placed_tile_t>& placed)
       {
          if (!placed)
             return;
@@ -894,7 +896,7 @@ namespace dak
       //
       // Create copies of the feature to help visualise the result in the panel.
 
-      void tiling_editor_ui::fill_using_translations()
+      void tiling_editor_ui_t::fill_using_translations()
       {
          if (!verify_tiling(L::t(L"fill the surrounding of")))
             return;
@@ -903,17 +905,17 @@ namespace dak
          create_polygon_copies();
       }
 
-      void tiling_editor_ui::remove_excluded()
+      void tiling_editor_ui_t::remove_excluded()
       {
          tiles.erase(std::remove_if(tiles.begin(), tiles.end(), [inclusions=inclusions](std::shared_ptr<placed_tile_t>& plt) { return inclusions.count(plt) <= 0; }), tiles.end());
-         under_mouse = selection();
-         current_selection = selection();
+         under_mouse = selection_t();
+         current_selection = selection_t();
 
          update_overlaps();
          update();
       }
 
-      void tiling_editor_ui::exclude_all()
+      void tiling_editor_ui_t::exclude_all()
       {
          inclusions.clear();
 
@@ -921,19 +923,19 @@ namespace dak
          update();
       }
 
-      bool tiling_editor_ui::is_included(const std::shared_ptr<placed_tile_t>& placed) const
+      bool tiling_editor_ui_t::is_included(const std::shared_ptr<placed_tile_t>& placed) const
       {
          return inclusions.count(placed) > 0;
       }
 
 
-      void tiling_editor_ui::create_polygon_copies()
+      void tiling_editor_ui_t::create_polygon_copies()
       {
          if (is_translation_invalid())
             return;
 
-         const point t1 = get_translation_1();
-         const point t2 = get_translation_2();
+         const point_t t1 = get_translation_1();
+         const point_t t2 = get_translation_2();
 
          // Note: make a copy because we are going to add new tiles which can reallocate the vector.
          std::vector<std::shared_ptr<placed_tile_t>> copy_tiles = tiles;
@@ -942,8 +944,8 @@ namespace dak
             if (!is_included(placed))
                continue;
 
-            const polygon& tile = placed->tile;
-            const transform& trf = placed->trf;
+            const polygon_t& tile = placed->tile;
+            const transform_t& trf = placed->trf;
 
             for (int y = -1; y <= 1; ++y)
             {
@@ -952,7 +954,7 @@ namespace dak
                   if (y == 0 && x == 0)
                      continue;
 
-                  const transform& placement = transform::translate(t1.scale(x) + t2.scale(y)).compose(trf);
+                  const transform_t& placement = transform_t::translate(t1.scale(x) + t2.scale(y)).compose(trf);
                   tiles.push_back(std::make_shared<placed_tile_t>(placed_tile_t{tile, placement}));
                }
             }
@@ -972,15 +974,15 @@ namespace dak
       //       copy, or other gross errors that are hard to see (especially once
       //       the plane if fully tiled!).
 
-      void tiling_editor_ui::update_overlap(std::shared_ptr<placed_tile_t>& checked_tile)
+      void tiling_editor_ui_t::update_overlap(std::shared_ptr<placed_tile_t>& checked_tile)
       {
          if (!is_included(checked_tile))
             return;
 
-         const point checked_center = checked_tile->tile.apply(checked_tile->trf).center();
+         const point_t checked_center = checked_tile->tile.apply(checked_tile->trf).center();
          const bool trans_valid = !is_translation_invalid();
-         const point t1 = trans_valid ? get_translation_1() : point::origin();
-         const point t2 = trans_valid ? get_translation_2() : point::origin();
+         const point_t t1 = trans_valid ? get_translation_1() : point_t::origin();
+         const point_t t2 = trans_valid ? get_translation_2() : point_t::origin();
 
          for (auto& placed : tiles)
          {
@@ -990,14 +992,14 @@ namespace dak
             if (*placed == *checked_tile)
                continue;
 
-            const polygon tile = placed->tile.apply(placed->trf);
+            const polygon_t tile = placed->tile.apply(placed->trf);
 
             for (int y = -1; y <= 1; ++y)
             {
                for (int x = -1; x <= 1; ++x)
                {
-                  const transform trf = transform::translate(t1.scale(x) + t2.scale(y));
-                  const polygon trans_tile = tile.apply(trf);
+                  const transform_t trf = transform_t::translate(t1.scale(x) + t2.scale(y));
+                  const polygon_t trans_tile = tile.apply(trf);
                   if (trans_tile.is_inside(checked_center))
                   {
                      overlaps.insert(checked_tile);
@@ -1008,7 +1010,7 @@ namespace dak
          }
       }
 
-      void tiling_editor_ui::update_overlaps()
+      void tiling_editor_ui_t::update_overlaps()
       {
          overlaps.clear();
 
@@ -1016,7 +1018,7 @@ namespace dak
             update_overlap(placed);
       }
 
-      bool tiling_editor_ui::is_overlapping(const std::shared_ptr<placed_tile_t>& placed) const
+      bool tiling_editor_ui_t::is_overlapping(const std::shared_ptr<placed_tile_t>& placed) const
       {
          return overlaps.count(placed) > 0;
       }
@@ -1029,7 +1031,7 @@ namespace dak
       // get over-written in turn, so that both can be alternatively changed
       // by the end-user.
 
-      void tiling_editor_ui::add_to_translation(const point& pt, bool ending)
+      void tiling_editor_ui_t::add_to_translation(const point_t& pt, bool ending)
       {
          if (trans1_start.is_invalid())
          {
@@ -1047,14 +1049,14 @@ namespace dak
             trans2_start = trans1_start;
             trans2_end = trans1_end;
             trans1_start = pt;
-            trans1_end = point();
+            trans1_end = point_t();
          }
 
          update_overlaps();
          update();
       }
 
-      bool tiling_editor_ui::is_translation_invalid()
+      bool tiling_editor_ui_t::is_translation_invalid()
       {
          return trans1_start.is_invalid() || trans1_end.is_invalid()
              || trans2_start.is_invalid() || trans2_end.is_invalid();
@@ -1064,41 +1066,41 @@ namespace dak
       //
       // Mouse mode handling.
 
-      void tiling_editor_ui::update_mouse_mode(QAction* action, mouse_mode mode)
+      void tiling_editor_ui_t::update_mouse_mode(QAction* action, mouse_mode_t mode)
       {
          bool selected = action->isChecked();
-         mouse_mode new_mode = selected ? mode : mouse_mode::normal;
-         if (new_mode == current_mouse_mode && new_mode != mouse_mode::normal)
+         mouse_mode_t new_mode = selected ? mode : mouse_mode_t::normal;
+         if (new_mode == current_mouse_mode && new_mode != mouse_mode_t::normal)
          {
-            new_mode = mouse_mode::normal;
+            new_mode = mouse_mode_t::normal;
             action->setChecked(false);
          }
          current_mouse_mode = new_mode;
 
          switch (current_mouse_mode)
          {
-            case mouse_mode::pan_view:
-               transformer.forced_interaction_mode = dak::ui::transformer::interaction_mode::moving;
+            case mouse_mode_t::pan_view:
+               transformer.forced_interaction_mode = dak::ui::transformer_t::interaction_mode_t::moving;
                break;
-            case mouse_mode::rotate_view:
-               transformer.forced_interaction_mode = dak::ui::transformer::interaction_mode::rotating;
+            case mouse_mode_t::rotate_view:
+               transformer.forced_interaction_mode = dak::ui::transformer_t::interaction_mode_t::rotating;
                break;
-            case mouse_mode::zoom_view:
-               transformer.forced_interaction_mode = dak::ui::transformer::interaction_mode::scaling;
+            case mouse_mode_t::zoom_view:
+               transformer.forced_interaction_mode = dak::ui::transformer_t::interaction_mode_t::scaling;
                break;
             default:
-               transformer.forced_interaction_mode = dak::ui::transformer::interaction_mode::normal;
+               transformer.forced_interaction_mode = dak::ui::transformer_t::interaction_mode_t::normal;
                break;
          }
       }
 
-      void tiling_editor_ui::update_selection_under_mouse(const selection& sel)
+      void tiling_editor_ui_t::update_selection_under_mouse(const selection_t& sel)
       {
          if (!sel.has_selection())
          {
             if (under_mouse.has_selection())
             {
-               under_mouse = selection();
+               under_mouse = selection_t();
                update();
             }
          }
@@ -1109,40 +1111,40 @@ namespace dak
          }
       }
 
-      void tiling_editor_ui::update_selection_from_point(const point& wpt)
+      void tiling_editor_ui_t::update_selection_from_point(const point_t& wpt)
       {
-         selection sel;
+         selection_t sel;
 
          switch (current_mouse_mode)
          {
-            case mouse_mode::normal:
+            case mouse_mode_t::normal:
                update_selection_under_mouse(find_selection(wpt, selection_type_t::all));
                break;
-            case mouse_mode::move_polygon:
-            case mouse_mode::copy_polygon:
+            case mouse_mode_t::move_polygon:
+            case mouse_mode_t::copy_polygon:
                if ((sel = find_selection(wpt, selection_type_t::edge_or_tile)).has_selection())
                   update_selection_under_mouse(sel);
                else
                   update_selection_under_mouse(find_selection(wpt, selection_type_t::edge_or_tile));
                break;
-            case mouse_mode::delete_polygon:
-            case mouse_mode::include_polygon:
+            case mouse_mode_t::delete_polygon:
+            case mouse_mode_t::include_polygon:
                update_selection_under_mouse(find_selection(wpt, selection_type_t::tile));
                break;
-            case mouse_mode::draw_fill_vectors:
+            case mouse_mode_t::draw_fill_vectors:
                if ((sel = find_selection(wpt, selection_type_t::point)).has_selection())
                   update_selection_under_mouse(sel);
                else
                   update_selection_under_mouse(find_selection(wpt, selection_type_t::point));
                break;
-            case mouse_mode::draw_polygon:
+            case mouse_mode_t::draw_polygon:
                if ((sel = find_selection(wpt, selection_type_t::point)).has_selection())
                   update_selection_under_mouse(sel);
                break;
-            case mouse_mode::pan_view:
-            case mouse_mode::rotate_view:
-            case mouse_mode::zoom_view:
-               sel = selection();
+            case mouse_mode_t::pan_view:
+            case mouse_mode_t::rotate_view:
+            case mouse_mode_t::zoom_view:
+               sel = selection_t();
                update_selection_under_mouse(sel);
                break;
          }
@@ -1152,17 +1154,17 @@ namespace dak
       //
       // Internal tiling creation.
 
-      point tiling_editor_ui::get_translation_1() const
+      point_t tiling_editor_ui_t::get_translation_1() const
       {
          return trans1_end - trans1_start;
       }
 
-      point tiling_editor_ui::get_translation_2() const
+      point_t tiling_editor_ui_t::get_translation_2() const
       {
          return trans2_end - trans2_start;
       }
 
-      void tiling_editor_ui::toggle_inclusion(const selection& sel)
+      void tiling_editor_ui_t::toggle_inclusion(const selection_t& sel)
       {
          auto placed = tiling_selection::get_placed_tile(sel);
          if (!placed)
@@ -1172,15 +1174,15 @@ namespace dak
          update();
       }
 
-      void tiling_editor_ui::clear_translation()
+      void tiling_editor_ui_t::clear_translation()
       {
-         trans1_start = trans1_end = point();
-         trans2_start = trans2_end = point();
+         trans1_start = trans1_end = point_t();
+         trans2_start = trans2_end = point_t();
          update_overlaps();
          update();
       }
 
-      void tiling_editor_ui::update_polygon_sides(int number)
+      void tiling_editor_ui_t::update_polygon_sides(int number)
       {
          poly_side_count = poly_side_count * 10 + number;
          if (poly_side_count > 100)
@@ -1189,7 +1191,7 @@ namespace dak
          switch (poly_side_count) {
             case 0:
             case 1:
-            case 2:     name = L::t(L"Add polygon");   break;
+            case 2:     name = L::t(L"Add polygon_t");   break;
             case 3:     name = L::t(L"Add Triangle");  break;
             case 4:     name = L::t(L"Add Square");    break;
             case 5:     name = L::t(L"Add Pentagon");  break;
@@ -1211,32 +1213,32 @@ namespace dak
             editor->add_poly_action->setText(QString::fromStdWString(name));
       }
 
-      void tiling_editor_ui::add_regular_polygon()
+      void tiling_editor_ui_t::add_regular_polygon()
       {
          if (poly_side_count > 2)
          {
-            const polygon f = polygon::make_regular(poly_side_count);
-            add_placed_tile({ f, transform::identity() });
+            const polygon_t f = polygon_t::make_regular(poly_side_count);
+            add_placed_tile({ f, transform_t::identity() });
 
             if (tiles.size() == 1)
                show_entire_tiling();
          }
          else
          {
-            report_error(std::wstring(L::t(L"Cannot create a polygon with too few sides!\n")) +
-                         std::wstring(L::t(L"Please enter a number of side on the keyboard before adding the polygon.\n")) +
+            report_error(std::wstring(L::t(L"Cannot create a polygon_t with too few sides!\n")) +
+                         std::wstring(L::t(L"Please enter a number of side on the keyboard before adding the polygon_t.\n")) +
                          std::wstring(L::t(L"(Enter a number and then press <Enter>.)")));
          }
          poly_side_count = 0;
          update_polygon_sides(0);
       }
 
-      void tiling_editor_ui::delete_polygon(const selection& sel)
+      void tiling_editor_ui_t::delete_polygon(const selection_t& sel)
       {
          remove_placed_tile(sel);
       }
 
-      void tiling_editor_ui::copy_polygon(const selection& sel)
+      void tiling_editor_ui_t::copy_polygon(const selection_t& sel)
       {
          const std::shared_ptr<placed_tile_t>& placed = tiling_selection::get_placed_tile(sel);
          if (!placed)
@@ -1246,7 +1248,7 @@ namespace dak
             inclusions.insert(new_tile);
       }
 
-      void tiling_editor_ui::forget_polygon()
+      void tiling_editor_ui_t::forget_polygon()
       {
          new_polygon.points.clear();
          poly_side_count = 0;
@@ -1256,17 +1258,17 @@ namespace dak
       //
       // Mouse tracking.
 
-      selection tiling_editor_ui::find_selection_under_mouse(selection_type_t sel_types)
+      selection_t tiling_editor_ui_t::find_selection_under_mouse(selection_type_t sel_types)
       {
          return find_selection(screen_to_world(transformer.get_tracked_point()), sel_types);
       }
 
-      selection tiling_editor_ui::find_selection(const point& wpt, selection_type_t sel_types)
+      selection_t tiling_editor_ui_t::find_selection(const point_t& wpt, selection_type_t sel_types)
       {
-         return find_selection(wpt, selection(), sel_types);
+         return find_selection(wpt, selection_t(), sel_types);
       }
 
-      selection tiling_editor_ui::find_selection(const point& wpt, const selection& excluded, selection_type_t sel_types)
+      selection_t tiling_editor_ui_t::find_selection(const point_t& wpt, const selection_t& excluded, selection_type_t sel_types)
       {
          const double sel_dist = painter_trf_drawing.get_transform().dist_from_inverted_zero(selection_distance);
          return tiling_selection::find_selection(tiles, wpt, sel_dist, excluded, sel_types);
@@ -1276,17 +1278,17 @@ namespace dak
       //
       // Mouse events.
 
-      void tiling_editor_ui::start_mouse_interaction(const point& wpt, mouse_buttons mouseButton)
+      void tiling_editor_ui_t::start_mouse_interaction(const point_t& wpt, mouse_buttons_t mouseButton)
       {
-         const selection& sel = find_selection(wpt, selection_type_t::all);
+         const selection_t& sel = find_selection(wpt, selection_type_t::all);
          if (sel.has_selection())
          {
             switch (mouseButton)
             {
-               case mouse_buttons::one:
+               case mouse_buttons_t::one:
                {
                   // Drawing polygons is special because it requires multiple independent clicks.
-                  // Otherwise, try to get what is under the mouse from more specific (point) to
+                  // Otherwise, try to get what is under the mouse from more specific (point_t) to
                   // less specific (edge, then tile).
                   if (std::dynamic_pointer_cast<draw_polygon>(mouse_interaction))
                   {
@@ -1311,13 +1313,13 @@ namespace dak
                   break;
                }
 
-               case mouse_buttons::two:
+               case mouse_buttons_t::two:
                {
                   mouse_interaction.reset(new draw_translation(*this, sel, wpt));
                   return;
                }
 
-               case mouse_buttons::three:
+               case mouse_buttons_t::three:
                {
                   if (tiling_selection::get_edge(sel))
                   {
@@ -1337,12 +1339,12 @@ namespace dak
          mouse_interaction = nullptr;
       }
 
-      point tiling_editor_ui::world_to_screen(const point& wpt)
+      point_t tiling_editor_ui_t::world_to_screen(const point_t& wpt)
       {
          return wpt.apply(painter_trf_drawing.get_transform());
       }
 
-      point tiling_editor_ui::screen_to_world(const point spt)
+      point_t tiling_editor_ui_t::screen_to_world(const point_t spt)
       {
          return spt.apply(painter_trf_drawing.get_transform().invert());
       }
@@ -1352,8 +1354,8 @@ namespace dak
       // Tiling editor.
 
       // Creation.
-      tiling_editor_t::tiling_editor(const tiling_editor_icons_t& icons, QWidget* parent)
-      : QWidget(parent), ui(std::shared_ptr<tiling_editor_ui>(new tiling_editor_ui(this)))
+      tiling_editor_t::tiling_editor_t(const tiling_editor_icons_t& icons, QWidget* parent)
+      : QWidget(parent), ui(std::shared_ptr<tiling_editor_ui_t>(new tiling_editor_ui_t(this)))
       {
          build_actions(icons);
          build_ui();
@@ -1374,7 +1376,7 @@ namespace dak
          return ui->verify_tiling(operation);
       }
 
-      void tiling_editor_t::report_error(const std::wstring& text, message_reporter::category cat)
+      void tiling_editor_t::report_error(const std::wstring& text, message_reporter_t::category_t cat)
       {
          ui->report_error(text, cat);
       }
@@ -1393,98 +1395,98 @@ namespace dak
 
       void tiling_editor_t::build_actions(const tiling_editor_icons_t& icons)
       {
-         clear_trans_action = create_action(L::t(L"Clear Vectors"), icons.clear_translation, 'U', L::t(L"Clear the translation vectors used to tile the plane. (Shortcut: U.)"), [ui=ui]()
+         clear_trans_action = CreateAction(L::t(L"Clear Vectors"), icons.clear_translation, 'U', L::t(L"Clear the translation vectors used to tile the plane. (Shortcut: U.)"), [ui=ui]()
          {
             ui->clear_translation();
          });
 
-         fill_trans_action = create_action(L::t(L"Fill Tiling"), icons.fill_with_translation, 'F', L::t(L"Surround the design with copies using the translation vectors. (Shortcut: F.)"), [ui=ui]()
+         fill_trans_action = CreateAction(L::t(L"Fill Tiling"), icons.fill_with_translation, 'F', L::t(L"Surround the design with copies using the translation vectors. (Shortcut: F.)"), [ui=ui]()
          {
             ui->fill_using_translations();
          });
 
-         remove_excluded_action = create_action(L::t(L"Clean Tiling"), icons.remove_excluded, 'R', L::t(L"Remove all polygons that are not included in the tiling. (Shortcut: R)"), [ui=ui]()
+         remove_excluded_action = CreateAction(L::t(L"Clean Tiling"), icons.remove_excluded, 'R', L::t(L"Remove all polygons that are not included in the tiling. (Shortcut: R)"), [ui=ui]()
          {
             ui->remove_excluded();
          });
 
-         exclude_all_action = create_action(L::t(L"Exclude All"), icons.exclude_all, 'E', L::t(L"Exclude all polygons from the tiling. (Shortcut: E)"), [ui=ui]()
+         exclude_all_action = CreateAction(L::t(L"Exclude All"), icons.exclude_all, 'E', L::t(L"Exclude all polygons from the tiling. (Shortcut: E)"), [ui=ui]()
          {
             ui->exclude_all();
          });
 
-         add_poly_action = create_action(L::t(L"Add polygon"), icons.add_polygon, QKeySequence(Qt::Key_Return), L::t(L"Add a regular polygon with X side, where X is a number you entered with the keyboard. (Shortcut: <Return>)"), [ui=ui]()
+         add_poly_action = CreateAction(L::t(L"Add polygon_t"), icons.add_polygon, QKeySequence(Qt::Key_Return), L::t(L"Add a regular polygon_t with X side, where X is a number you entered with the keyboard. (Shortcut: <Return>)"), [ui=ui]()
          {
             ui->add_regular_polygon();
          });
 
-         draw_trans_toggle = create_toggle(L::t(L"Draw Vectors"), icons.draw_translation, {}, L::t(L"Select the two translation vectors used to tile the plane, using the mouse. (Drag with the mouse.)"), [self=this, ui=ui]()
+         draw_trans_toggle = CreateToggle(L::t(L"Draw Vectors"), icons.draw_translation, {}, L::t(L"Select the two translation vectors used to tile the plane, using the mouse. (Drag with the mouse.)"), [self=this, ui=ui]()
          {
-            ui->update_mouse_mode(self->draw_trans_toggle, mouse_mode::draw_fill_vectors);
+            ui->update_mouse_mode(self->draw_trans_toggle, mouse_mode_t::draw_fill_vectors);
          });
 
-         draw_poly_toggle = create_toggle(L::t(L"Draw Polygon"), icons.draw_polygon, {}, L::t(L"Select a series of vertices counter-clockwise to draw a free-form polygon. (Click on vertices.)"), [self=this, ui=ui]()
+         draw_poly_toggle = CreateToggle(L::t(L"Draw Polygon"), icons.draw_polygon, {}, L::t(L"Select a series of vertices counter-clockwise to draw a free-form polygon_t. (Click on vertices.)"), [self=this, ui=ui]()
          {
-            ui->update_mouse_mode(self->draw_poly_toggle, mouse_mode::draw_polygon);
+            ui->update_mouse_mode(self->draw_poly_toggle, mouse_mode_t::draw_polygon);
          });
 
-         copy_poly_action = create_action(L::t(L"Copy Polygon"), icons.copy_polygon, 'C', L::t(L"Copy a polygon by drag-and-drop with the mouse. (Press C or drag with the mouse.)"), [self = this, ui = ui]()
+         copy_poly_action = CreateAction(L::t(L"Copy Polygon"), icons.copy_polygon, 'C', L::t(L"Copy a polygon_t by drag-and-drop with the mouse. (Press C or drag with the mouse.)"), [self = this, ui = ui]()
          {
-            selection sel = ui->find_selection_under_mouse(selection_type_t::tile);
+            selection_t sel = ui->find_selection_under_mouse(selection_type_t::tile);
             ui->copy_polygon(sel);
          });
 
-         copy_poly_toggle = create_toggle(L::t(L"Copy Polygon"), icons.copy_polygon, {}, L::t(L"Copy a polygon by drag-and-drop with the mouse. (Press C or drag with the mouse.)"), [self = this, ui = ui]()
+         copy_poly_toggle = CreateToggle(L::t(L"Copy Polygon"), icons.copy_polygon, {}, L::t(L"Copy a polygon_t by drag-and-drop with the mouse. (Press C or drag with the mouse.)"), [self = this, ui = ui]()
          {
-            selection sel = ui->find_selection_under_mouse(selection_type_t::tile);
-            ui->update_mouse_mode(self->copy_poly_toggle, mouse_mode::copy_polygon);
+            selection_t sel = ui->find_selection_under_mouse(selection_type_t::tile);
+            ui->update_mouse_mode(self->copy_poly_toggle, mouse_mode_t::copy_polygon);
          });
 
-         move_poly_toggle = create_toggle(L::t(L"Move Polygon"), icons.move_polygon, {}, L::t(L"Move a polygon by drag-and-drop with the mouse. (Drag with the mouse.)"), [self=this, ui=ui]()
+         move_poly_toggle = CreateToggle(L::t(L"Move Polygon"), icons.move_polygon, {}, L::t(L"Move a polygon_t by drag-and-drop with the mouse. (Drag with the mouse.)"), [self=this, ui=ui]()
          {
-            ui->update_mouse_mode(self->move_poly_toggle, mouse_mode::move_polygon);
+            ui->update_mouse_mode(self->move_poly_toggle, mouse_mode_t::move_polygon);
          });
 
-         delete_poly_action = create_action(L::t(L"Delete Polygon"), icons.delete_polygon, 'D', L::t(L"Delete polygons by clicking on them with the mouse. (Shortcut: D)"), [self=this, ui=ui]()
+         delete_poly_action = CreateAction(L::t(L"Delete Polygon"), icons.delete_polygon, 'D', L::t(L"Delete polygons by clicking on them with the mouse. (Shortcut: D)"), [self=this, ui=ui]()
          {
-            selection sel = ui->find_selection_under_mouse(selection_type_t::tile);
+            selection_t sel = ui->find_selection_under_mouse(selection_type_t::tile);
             ui->delete_polygon(sel);
          });
 
-         delete_poly_toggle = create_toggle(L::t(L"Delete Polygon"), icons.delete_polygon, {}, L::t(L"Delete polygons by clicking on them with the mouse. (Shortcut: D)"), [self = this, ui = ui]()
+         delete_poly_toggle = CreateToggle(L::t(L"Delete Polygon"), icons.delete_polygon, {}, L::t(L"Delete polygons by clicking on them with the mouse. (Shortcut: D)"), [self = this, ui = ui]()
          {
-            ui->update_mouse_mode(self->delete_poly_toggle, mouse_mode::delete_polygon);
+            ui->update_mouse_mode(self->delete_poly_toggle, mouse_mode_t::delete_polygon);
          });
 
-         toggle_inclusion_action = create_action(L::t(L"Include Polygon"), icons.toggle_inclusion, 'T', L::t(L"Toggle the inclusion of polygons in the tiling by clicking on them with the mouse. (Shortcut: T)"), [self=this, ui=ui]()
+         toggle_inclusion_action = CreateAction(L::t(L"Include Polygon"), icons.toggle_inclusion, 'T', L::t(L"Toggle the inclusion of polygons in the tiling by clicking on them with the mouse. (Shortcut: T)"), [self=this, ui=ui]()
          {
-            selection sel = ui->find_selection_under_mouse(selection_type_t::tile);
+            selection_t sel = ui->find_selection_under_mouse(selection_type_t::tile);
             ui->toggle_inclusion(sel);
          });
 
-         toggle_inclusion_toggle = create_toggle(L::t(L"Include Polygon"), icons.toggle_inclusion, {}, L::t(L"Toggle the inclusion of polygons in the tiling by clicking on them with the mouse. (Shortcut: T)"), [self = this, ui = ui]()
+         toggle_inclusion_toggle = CreateToggle(L::t(L"Include Polygon"), icons.toggle_inclusion, {}, L::t(L"Toggle the inclusion of polygons in the tiling by clicking on them with the mouse. (Shortcut: T)"), [self = this, ui = ui]()
          {
-            ui->update_mouse_mode(self->toggle_inclusion_toggle, mouse_mode::include_polygon);
+            ui->update_mouse_mode(self->toggle_inclusion_toggle, mouse_mode_t::include_polygon);
          });
 
-         pan_toggle = create_toggle(L::t(L"Pan"), icons.canvas_translate, {}, L::t(L"Pan the view by drag-and-drop with the mouse. (<Shift> + left mouse button.)"), [self=this, ui=ui]()
+         pan_toggle = CreateToggle(L::t(L"Pan"), icons.canvas_translate, {}, L::t(L"Pan the view by drag-and-drop with the mouse. (<Shift> + left mouse button.)"), [self=this, ui=ui]()
          {
-            ui->update_mouse_mode(self->pan_toggle, mouse_mode::pan_view);
+            ui->update_mouse_mode(self->pan_toggle, mouse_mode_t::pan_view);
          });
 
-         rotate_toggle = create_toggle(L::t(L"Rotate"), icons.canvas_rotate, {}, L::t(L"Rotate the view by drag-and-drop with the mouse. (<Shift> + middle mouse button.)"), [self=this, ui=ui]()
+         rotate_toggle = CreateToggle(L::t(L"Rotate"), icons.canvas_rotate, {}, L::t(L"Rotate the view by drag-and-drop with the mouse. (<Shift> + middle mouse button.)"), [self=this, ui=ui]()
          {
-            ui->update_mouse_mode(self->rotate_toggle, mouse_mode::rotate_view);
+            ui->update_mouse_mode(self->rotate_toggle, mouse_mode_t::rotate_view);
          });
 
-         zoom_toggle = create_toggle(L::t(L"Zoom"), icons.canvas_zoom, {}, L::t(L"Zoom the view by drag-and-drop with the mouse. (<Shift> + right mouse button.)"), [self=this, ui=ui]()
+         zoom_toggle = CreateToggle(L::t(L"Zoom"), icons.canvas_zoom, {}, L::t(L"Zoom the view by drag-and-drop with the mouse. (<Shift> + right mouse button.)"), [self=this, ui=ui]()
          {
-            ui->update_mouse_mode(self->zoom_toggle, mouse_mode::zoom_view);
+            ui->update_mouse_mode(self->zoom_toggle, mouse_mode_t::zoom_view);
          });
 
          for (int i = 0; i < 10; ++i)
          {
-            number_actions[i] = create_action(QString::asprintf("%d", i).toStdWString().c_str(), 0, '0' + i, nullptr, [ui=ui, i=i]()
+            number_actions[i] = CreateAction(QString::asprintf("%d", i), 0, '0' + i, nullptr, [ui=ui, i=i]()
             {
                ui->update_polygon_sides(i);
             });

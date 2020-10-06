@@ -98,10 +98,10 @@ namespace dak
 
       void irregular_figure_t::build_map() const
       {
-         if (!mosaic_t)
+         if (!mosaic)
             return;
 
-         dak::tiling::infer_t inf(mosaic_t, poly);
+         dak::tiling::infer_t inf(mosaic, poly);
 
          switch (infer)
          {

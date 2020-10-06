@@ -29,20 +29,20 @@ namespace dak
          rosette_t(int n) : radial_figure_t(n) { }
          rosette_t(int n, double q, int s);
 
-         // Copy a figure.
+         // Copy a figure_t.
          std::shared_ptr<figure_t> clone() const override;
-         void make_similar(const figure& other) override;
+         void make_similar(const figure_t& other) override;
 
          // Figure implementation.
-         bool is_similar(const figure& other) const override;
+         bool is_similar(const figure_t& other) const override;
 
          // Comparison.
-         bool operator==(const figure& other) const override;
+         bool operator==(const figure_t& other) const override;
 
          // Retrieve a description of this style.
          std::wstring describe() const override;
 
-         // Radial figure implementation.
+         // Radial figure_t implementation.
          edges_map_t build_unit() const override;
 
       protected:

@@ -14,11 +14,11 @@ namespace dak
 {
    namespace tiling
    {
-      using geometry::transform;
-      using geometry::point;
+      using geometry::transform_t;
+      using geometry::point_t;
       using namespace geometry::intersect;
-      using geometry::edge;
-      using geometry::map;
+      using geometry::edge_t;
+      using geometry::edges_map_t;
       using geometry::PI;
       using geometry::TOLERANCE;
       using utility::L;
@@ -122,14 +122,14 @@ namespace dak
          return child.get();
       }
 
-      map extended_figure_t::build_unit() const
+      edges_map_t extended_figure_t::build_unit() const
       {
-         map cunit = scale_figure_t::build_unit();
+         edges_map_t cunit = scale_figure_t::build_unit();
 
          // We want the tip of the new figure to still be at (1,0).
          const double s = compute_scale();
          if (!utility::near(s, 1.0))
-            cunit.apply_to_self(transform::rotate(PI / n));
+            cunit.apply_to_self(transform_t::rotate(PI / n));
 
          scale_to_unit(cunit);
 
@@ -144,24 +144,24 @@ namespace dak
          // Find the vertex at (1,0), extend its incoming edges, intersect
          // with rotations of same, and use the location of the intersection
          // to compute a scale factor.
-         map cunit = child->build_unit();
+         edges_map_t cunit = child->build_unit();
 
-         const point tip_pos = point::unit_x();
-         const transform trf = transform::rotate(2.0 * PI / child->n);
+         const point_t tip_pos = point_t::unit_x();
+         const transform_t trf = transform_t::rotate(2.0 * PI / child->n);
 
          // Find the tip, i.e. the vertex at (1,0)
-         for (const edge& edge : cunit.outbounds(tip_pos))
+         for (const edge_t& edge : cunit.outbounds(tip_pos))
          {
-            const point& bpos = edge.p2;
+            const point_t& bpos = edge.p2;
             if (bpos.y < 0.0)
             {
-               const point seg_end = tip_pos + (tip_pos - bpos).normalize().scale(100.0);
-               const point neg_seg = point(seg_end.x, -seg_end.y);
+               const point_t seg_end = tip_pos + (tip_pos - bpos).normalize().scale(100.0);
+               const point_t neg_seg = point_t(seg_end.x, -seg_end.y);
 
-               const point ra = tip_pos.apply(trf);
-               const point rb = neg_seg.apply(trf);
+               const point_t ra = tip_pos.apply(trf);
+               const point_t rb = neg_seg.apply(trf);
 
-               const point isect = intersect(tip_pos, seg_end, ra, rb);
+               const point_t isect = intersect(tip_pos, seg_end, ra, rb);
                return isect.is_invalid() ? 1.0 : std::cos(PI / child->n) / isect.mag();
             }
          }
@@ -169,7 +169,7 @@ namespace dak
          return 1.0;
       }
 
-      void extended_figure_t::scale_to_unit(map& cunit)
+      void extended_figure_t::scale_to_unit(edges_map_t& cunit)
       {
          const auto iter = std::max_element(cunit.all().begin(), cunit.all().end(), [](const auto& lhs, const auto& rhs) {
             return std::max(lhs.p1.x, lhs.p2.x) < std::max(rhs.p1.x, rhs.p2.x);
@@ -178,7 +178,7 @@ namespace dak
          if (iter == cunit.all().end())
             return;
 
-         cunit.apply_to_self(transform::scale(1.0 / std::max(iter->p1.x, iter->p2.x)));
+         cunit.apply_to_self(transform_t::scale(1.0 / std::max(iter->p1.x, iter->p2.x)));
       }
    }
 }

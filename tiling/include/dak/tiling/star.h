@@ -26,19 +26,19 @@ namespace dak
 
          // Copy a figure.
          std::shared_ptr<figure_t> clone() const override;
-         void make_similar(const figure& other) override;
+         void make_similar(const figure_t& other) override;
 
          // Figure implementation.
-         bool is_similar(const figure& other) const override;
+         bool is_similar(const figure_t& other) const override;
 
          // Comparison.
-         bool operator==(const figure& other) const override;
+         bool operator==(const figure_t& other) const override;
 
          // Retrieve a description of this style.
          std::wstring describe() const override;
 
          // Radial figure implementation.
-         map build_unit() const override;
+         edges_map_t build_unit() const override;
 
       protected:
          // Figure cache implementation.

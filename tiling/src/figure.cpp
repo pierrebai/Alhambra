@@ -4,12 +4,12 @@ namespace dak
 {
    namespace tiling
    {
-      const map& figure_t::get_map() const
+      const edges_map_t& figure_t::get_map() const
       {
          if (is_cache_valid())
             return cached_map;
 
-         cached_map = map();
+         cached_map = edges_map_t();
 
          build_map();
 

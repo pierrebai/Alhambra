@@ -15,18 +15,18 @@ namespace dak
 {
    namespace tiling
    {
-      using geometry::polygon;
+      using geometry::polygon_t;
       class infer_t;
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // Figure based on a non-regular polygon.
+      // Figure based on a non-regular polygon_t.
 
       class irregular_figure_t : public figure_t
       {
       public:
          std::shared_ptr<dak::tiling::mosaic_t> mosaic;
-         polygon poly;
+         polygon_t poly;
 
          infer_mode_t infer = infer_mode_t::girih;
          double q = 0.;
@@ -34,9 +34,9 @@ namespace dak
          int    s = 1;
 
          irregular_figure_t() { }
-         irregular_figure_t(const std::shared_ptr<dak::tiling::mosaic_t>& mo, const polygon& p) : irregular_figure_t(mo, p, infer_mode_t::girih) { }
-         irregular_figure_t(const std::shared_ptr<dak::tiling::mosaic_t>& mo, const polygon& p, infer_mode_t i) : irregular_figure_t(mo, p, i, std::max(0.333, p.points.size() / 1.7)) { }
-         irregular_figure_t(const std::shared_ptr<dak::tiling::mosaic_t>& mo, const polygon& p, infer_mode_t i, double d) : mosaic(mo), poly(p), infer(i), d(d) { }
+         irregular_figure_t(const std::shared_ptr<dak::tiling::mosaic_t>& mo, const polygon_t& p) : irregular_figure_t(mo, p, infer_mode_t::girih) { }
+         irregular_figure_t(const std::shared_ptr<dak::tiling::mosaic_t>& mo, const polygon_t& p, infer_mode_t i) : irregular_figure_t(mo, p, i, std::max(0.333, p.points.size() / 1.7)) { }
+         irregular_figure_t(const std::shared_ptr<dak::tiling::mosaic_t>& mo, const polygon_t& p, infer_mode_t i, double d) : mosaic(mo), poly(p), infer(i), d(d) { }
 
          // Copy a figure.
          std::shared_ptr<figure_t> clone() const override;
@@ -58,7 +58,7 @@ namespace dak
          void build_map() const;
 
       private:
-         mutable polygon cached_poly;
+         mutable polygon_t cached_poly;
          mutable infer_mode_t cached_infer = infer_mode_t::girih;
 
          mutable double cached_q = NAN;

@@ -6,15 +6,15 @@
 #include <dak/tiling/figure.h>
 #include <dak/tiling/tiling.h>
 
-#include <dak/geometry/map.h>
-#include <dak/geometry/rect.h>
+#include <dak/geometry/edges_map.h>
+#include <dak/geometry/rectangle.h>
 
 namespace dak
 {
    namespace tiling
    {
-      using geometry::map;
-      using geometry::rect;
+      using geometry::edges_map_t;
+      using geometry::rectangle_t;
 
       ////////////////////////////////////////////////////////////////////////////
       //
@@ -29,7 +29,7 @@ namespace dak
          tiling_t tiling;
 
          // Figures giving how to draw each tile.
-         std::map<polygon, std::shared_ptr<figure_t>> tile_figures;
+         std::map<polygon_t, std::shared_ptr<figure_t>> tile_figures;
 
          // Empty mosaic.
          mosaic_t() { }
@@ -50,7 +50,7 @@ namespace dak
          bool same_figures(const mosaic_t& other) const;
 
          // Construct a map in the given polygonal region using the tiling and figures.
-         map construct(const rect& region) const;
+         edges_map_t construct(const rectangle_t& region) const;
 
          // Count how many edge an instance of the tiling requires.
          size_t count_tiling_edges() const;

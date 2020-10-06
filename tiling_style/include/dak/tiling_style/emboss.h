@@ -49,11 +49,11 @@ namespace dak
 
       protected:
          // The internal draw is called with the layer_t transform already applied.
-         void internal_draw_fat_lines(ui::drawing_t& drw, const fat_lines& fat_lines) override;
+         void internal_draw_fat_lines(ui::drawing_t& drw, const fat_lines_t& fat_lines) override;
 
          void draw_trap(ui::drawing_t& drw, const point_t& a, const point_t& b, const point_t& c, const point_t& d, const point_t& light, const ui::color_t* greys);
 
-         std::pair<point_t, point_t> get_points_many_connections(const edge_t& an_edge, size_t index, double width, const geometry::edges_map_t::range& connections) override;
+         std::pair<point_t, point_t> get_points_many_connections(const edge_t& an_edge, size_t index, double width, const geometry::edges_map_t::range_t& connections) override;
       };
    }
 }

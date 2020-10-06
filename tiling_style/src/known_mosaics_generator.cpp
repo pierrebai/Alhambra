@@ -17,7 +17,7 @@ namespace dak
       known_mosaics_generator_t::known_mosaics_generator_t(const std::wstring& folder)
       : iter(filenames.end())
       {
-         for (const auto entry : std::experimental::filesystem::directory_iterator(folder))
+         for (const auto entry : std::filesystem::directory_iterator(folder))
             filenames.emplace_back(entry.path());
          iter = filenames.end();
       }
@@ -48,9 +48,9 @@ namespace dak
             return iter->filename();
       }
 
-      known_mosaics_generator_t::layered_mosaic known_mosaics_generator_t::generate_current(const tiling::known_tilings_t& known_tilings, std::vector<std::wstring>& errors) const
+      known_mosaics_generator_t::layered_mosaic_t known_mosaics_generator_t::generate_current(const tiling::known_tilings_t& known_tilings, std::vector<std::wstring>& errors) const
       {
-         static layered_mosaic empty;
+         static layered_mosaic_t empty;
          if (iter == filenames.end())
             return empty;
 

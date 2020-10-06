@@ -3,7 +3,9 @@
 #ifndef DAK_TILING_FIGURE_H
 #define DAK_TILING_FIGURE_H
 
-#include <dak/geometry/map.h>
+#include <dak/geometry/edges_map.h>
+
+#include <memory>
 
 namespace dak
 {

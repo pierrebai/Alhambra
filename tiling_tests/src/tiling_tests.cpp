@@ -21,15 +21,15 @@ namespace tiling_tests
          Assert::IsTrue(t1.tiles.empty());
          Assert::IsTrue(t1.name.empty());
 
-         tiling_t t2(L"tiling 2", point(1., 2.), point(3., 4.));
+         tiling_t t2(L"tiling 2", point_t(1., 2.), point_t(3., 4.));
 
          Assert::IsFalse(t2.t1.is_invalid());
          Assert::IsFalse(t2.t2.is_invalid());
          Assert::IsTrue(t2.tiles.empty());
          Assert::IsFalse(t2.name.empty());
 
-         t2.tiles[polygon({ point(1., 2.), point(3., 4.), point(5., 6.) })].emplace_back(transform_t::identity());
-         t2.tiles[polygon({ point(1., 2.), point(3., 4.), point(5., 6.) })].emplace_back(transform_t::identity());
+         t2.tiles[polygon_t({ point_t(1., 2.), point_t(3., 4.), point_t(5., 6.) })].emplace_back(transform_t::identity());
+         t2.tiles[polygon_t({ point_t(1., 2.), point_t(3., 4.), point_t(5., 6.) })].emplace_back(transform_t::identity());
 
          Assert::IsFalse(t2.tiles.empty());
          Assert::IsFalse(t2.tiles.empty());

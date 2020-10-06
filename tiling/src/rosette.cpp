@@ -19,11 +19,11 @@ namespace dak
 {
    namespace tiling
    {
-      using geometry::transform;
-      using geometry::point;
+      using geometry::transform_t;
+      using geometry::point_t;
       using namespace geometry::intersect;
-      using geometry::edge;
-      using geometry::map;
+      using geometry::edge_t;
+      using geometry::edges_map_t;
       using geometry::PI;
       using geometry::TOLERANCE;
       using utility::L;
@@ -104,12 +104,12 @@ namespace dak
          cached_s_last_build_unit = s;
       }
 
-      map rosette_t::build_unit() const
+      edges_map_t rosette_t::build_unit() const
       {
          const double don = 1. / n;
 
-         point tip = point(1.0, 0.0);           // The point to build from
-         point rtip = geometry::get_arc(don);   // The next point over.
+         point_t tip = point_t(1.0, 0.0);           // The point_t to build from
+         point_t rtip = geometry::get_arc(don);   // The next point_t over.
 
          double q_clamp = std::min(std::max(q, -0.99), 0.99);
          int s_clamp = std::min(s, (n - 1) / 2);
@@ -119,12 +119,12 @@ namespace dak
          // The center of the bottom edge of that triangle defines the
          // bisector of the angle leaving up_outer that we care about.
          const double r_outer = 1.0 / std::cos(PI * don);
-         const point up_outer = geometry::get_arc(0.5 * don).scale(r_outer);
-         const point bisector = (up_outer - point(0.0, r_outer)).scale(0.5);
+         const point_t up_outer = geometry::get_arc(0.5 * don).scale(r_outer);
+         const point_t bisector = (up_outer - point_t(0.0, r_outer)).scale(0.5);
 
          double th = (rtip - tip).angle();
 
-         const point stable_isect = up_outer +  up_outer.normalize().scale(-up_outer.y);
+         const point_t stable_isect = up_outer +  up_outer.normalize().scale(-up_outer.y);
          const double stable_angle = (stable_isect - tip).angle();
 
          if (q_clamp >= 0.0)
@@ -138,27 +138,27 @@ namespace dak
          }
 
          // Heh heh - you said q-tip - heh heh.
-         const point qtip = point(1.0 + std::cos(th), std::sin(th));
+         const point_t qtip = point_t(1.0 + std::cos(th), std::sin(th));
 
-         const point key_point = intersect(tip, qtip, up_outer, bisector);
+         const point_t key_point = intersect(tip, qtip, up_outer, bisector);
 
-         const point key_end = key_point.convex_sum(stable_isect, 10.0);
+         const point_t key_end = key_point.convex_sum(stable_isect, 10.0);
 
-         std::vector<point> points;
+         std::vector<point_t> points;
          points.reserve(s_clamp + 2);
 
          points.emplace_back(key_point);
 
-         point key_r_p = point(key_point.x, -key_point.y);
-         point key_r_e = point(key_end.x, -key_end.y);
+         point_t key_r_p = point_t(key_point.x, -key_point.y);
+         point_t key_r_e = point_t(key_end.x, -key_end.y);
 
-         const transform trf = transform::rotate(2 * PI / n);
+         const auto trf = transform_t::rotate(2 * PI / n);
          for (int i = 1; i <= s_clamp; ++i)
          {
             key_r_p = key_r_p.apply(trf);
             key_r_e = key_r_e.apply(trf);
 
-            const point mid = intersect(key_point, key_end, key_r_p, key_r_e);
+            const point_t mid = intersect(key_point, key_end, key_r_p, key_r_e);
 
             // FIXME --
             // For some combinations of n, q and s (for example, 
@@ -172,18 +172,18 @@ namespace dak
                points.emplace_back(mid);
          }
 
-         map from;
+         edges_map_t from;
 
-         point top_prev = tip;
-         point bot_prev = tip;
+         point_t top_prev = tip;
+         point_t bot_prev = tip;
 
          for (int i = 0; i < points.size(); ++i)
          {
-            const point& top = points[i];
-            const point bot = point(top.x, -top.y);
+            const point_t& top = points[i];
+            const point_t bot = point_t(top.x, -top.y);
 
-            from.insert(edge(top_prev, top));
-            from.insert(edge(bot_prev, bot));
+            from.insert(edge_t(top_prev, top));
+            from.insert(edge_t(bot_prev, bot));
 
             top_prev = top;
             bot_prev = bot;

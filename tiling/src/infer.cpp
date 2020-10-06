@@ -13,7 +13,7 @@ namespace dak
 {
    namespace tiling
    {
-      using geometry::edge;
+      using geometry::edge_t;
       using namespace geometry::intersect;
 
       const wchar_t* infer_mode_name(infer_mode_t m)
@@ -119,7 +119,7 @@ namespace dak
          //
          // TODO: use bezier interpolation instead of linear.
 
-         point getArc(double frac, const std::vector<point>& pts)
+         point_t getArc(double frac, const std::vector<point_t>& pts)
          {
             while (frac > 1.0)
                frac -= 1.0;
@@ -127,18 +127,18 @@ namespace dak
                frac += 1.0;
             int indexPrev = ((int) std::floor(length(pts) * frac + 0.01)) % length(pts);
             int indexNext = ((int) std::ceil(length(pts) * frac - 0.01)) % length(pts);
-            const point& prev = pts[indexPrev];
-            const point& next = pts[indexNext];
+            const point_t& prev = pts[indexPrev];
+            const point_t& next = pts[indexNext];
 
             double pts_frac = length(pts) * frac - indexPrev;
             return prev.convex_sum(next, pts_frac);
          }
       }
 
-      infer_t::infer_t(const std::shared_ptr<mosaic>& mo, const polygon& tile)
+      infer_t::infer_t(const std::shared_ptr<mosaic_t>& mo, const polygon_t& tile)
          : tiling(mo->tiling)
       {
-         // Get a map for each tile in the prototype.
+         // Get a edges_map_t for each tile in the prototype.
          for (const auto& tf : mo->tile_figures)
          {
             if (tf.first != tile)
@@ -154,7 +154,7 @@ namespace dak
          // I'm going to generate all the tiles in the translational units
          // (x,y) where -1 <= x, y <= 1.  This is guaranteed to surround
          // every tile in the (0,0) unit by tiles.  You can then get
-         // a sense of what other tiles surround a tile on every edge.
+         // a sense of what other tiles surround a tile on every edge_t.
          for (int y = -1; y <= 1; ++y)
             for (int x = -1; x <= 1; ++x)
                add(x, y);
@@ -164,21 +164,21 @@ namespace dak
       //
       // Building a 3x3 tiling of the prototype.
       //
-      // The next three routines create placed_points instances for all
+      // The next three routines create placed_points_t instances for all
       // the tiles in the nine translational units generated above.
 
-      void infer_t::add(const transform& trf, const polygon* tile)
+      void infer_t::add(const transform_t& trf, const polygon_t* tile)
       {
          int sz = length(tile->points);
-         std::vector<point> fpts = geometry::apply(trf, tile->points);
-         std::vector<point> mids;
+         std::vector<point_t> fpts = geometry::apply(trf, tile->points);
+         std::vector<point_t> mids;
          for (int idx = 0; idx < sz; ++idx)
             mids.emplace_back(fpts[idx].convex_sum(fpts[(idx + 1) % sz], 0.5));
 
-         placed.emplace_back(placed_points(tile, trf, mids));
+         placed.emplace_back(placed_points_t(tile, trf, mids));
       }
 
-      void infer_t::add(const transform& base_trf)
+      void infer_t::add(const transform_t& base_trf)
       {
          for (const auto& placed : tiling.tiles)
             for (const auto& trf : placed.second)
@@ -187,26 +187,26 @@ namespace dak
 
       void infer_t::add(int t1, int t2)
       {
-         add(transform::translate(tiling.t1.scale(t1) + tiling.t2.scale(t2)));
+         add(transform_t::translate(tiling.t1.scale(t1) + tiling.t2.scale(t2)));
       }
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // Choose an appropriate transform of the tile to infer, i.e.
+      // Choose an appropriate transform_t of the tile to infer, i.e.
       // one that is surrounded by other tiles.  That means that we
       // should just find an instance of that tile in the (0,0) unit.
 
-      const placed_points* infer_t::findPrimaryFeature(const polygon& tile) const
+      const placed_points_t* infer_t::findPrimaryFeature(const polygon_t& tile) const
       {
          // The start and end of the tiles in the (0,0) unit.
          auto iter = std::next(placed.begin(), length(placed) * 4 / 9);
          const auto end = std::next(placed.begin(), length(placed) * 5 / 9);
          int cur_reg_count = -1;
-         const placed_points* cur = nullptr;
+         const placed_points_t* cur = nullptr;
 
          for (; iter < end; ++iter)
          {
-            const placed_points& pp = *iter;
+            const placed_points_t& pp = *iter;
 
             if (*pp.tile != tile)
                continue;
@@ -235,10 +235,10 @@ namespace dak
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // For this edge of the tile being inferred, find the edges of
+      // For this edge_t of the tile being inferred, find the edges of
       // neighbouring tiles and store.
 
-      void infer_t::getAdjacency(const placed_points& pp, const point& main_point, std::vector<adjacency_info>& adjs) const
+      void infer_t::getAdjacency(const placed_points_t& pp, const point_t& main_point, std::vector<adjacency_info>& adjs) const
       {
          for (double tolerance = TOLERANCE; tolerance < 5.0; tolerance *= 2)
          {
@@ -259,7 +259,7 @@ namespace dak
          }
       }
 
-      std::vector<adjacency_info> infer_t::getAdjacencies(const placed_points& pp) const
+      std::vector<adjacency_info> infer_t::getAdjacencies(const placed_points_t& pp) const
       {
          std::vector<adjacency_info> ret;
 
@@ -273,13 +273,13 @@ namespace dak
       // Take the adjacencies and build a list of contacts by looking at
       // vertices of the maps for the adjacent tiles that lie on the 
       // boundary with the inference region.
-      void infer_t::buildContacts(const placed_points& pp, const std::vector<adjacency_info>& adjs, std::vector<contact>& contacts) const
+      void infer_t::buildContacts(const placed_points_t& pp, const std::vector<adjacency_info>& adjs, std::vector<contact_t>& contacts) const
       {
-         std::vector<point> fpts = geometry::apply(pp.trf, pp.tile->points);
+         std::vector<point_t> fpts = geometry::apply(pp.trf, pp.tile->points);
 
-         // Get the transformed map for each adjacent tile.  I'm surprised
+         // Get the transformed edges_map_t for each adjacent tile.  I'm surprised
          // at how fast this ends up being!
-         std::vector<map> amaps;
+         std::vector<edges_map_t> amaps;
          for (int idx = 0; idx < length(adjs); ++idx)
          {
             if (adjs[idx].tile.is_invalid())
@@ -291,39 +291,39 @@ namespace dak
                const auto iter = maps.find(adjs[idx].tile);
                if (iter == maps.end())
                   continue;
-               const map& fig = iter->second;
+               const edges_map_t& fig = iter->second;
                amaps.emplace_back(fig.apply(adjs[idx].trf));
             }
          }
 
-         // Now, for each edge in the transformed tile, find a (hopefully
-         // _the_) vertex in the adjacent map that lies on the edge.  When
+         // Now, for each edge_t in the transformed tile, find a (hopefully
+         // _the_) vertex in the adjacent edges_map_t that lies on the edge_t.  When
          // a vertex is found, all (hopefully _both_) the edges incident 
          // on that vertex are added as contacts.
 
          for (int idx = 0; idx < length(fpts); ++idx)
          {
-            const point& a = fpts[idx];
-            const point& b = fpts[(idx + 1) % length(fpts)];
+            const point_t& a = fpts[idx];
+            const point_t& b = fpts[(idx + 1) % length(fpts)];
 
-            const map& map = amaps[idx];
+            const edges_map_t& edges_map_t = amaps[idx];
             const adjacency_info& adj = adjs[idx];
 
-            for (const auto& v : map.all())
+            for (const auto& v : edges_map_t.all())
             {
                if (!v.is_canonical())
                   continue;
-               const point& pos = v.p1;
+               const point_t& pos = v.p1;
                const double distance_2 = pos.distance_2_to_line(a, b);
                if (utility::near_zero(distance_2, adj.tolerance)
                    && !geometry::near(pos, a, adj.tolerance)
                    && !geometry::near(pos, b, adj.tolerance))
                {
-                  // This vertex lies on the edge.  Add all its edges
+                  // This vertex lies on the edge_t.  Add all its edges
                   // to the contact list.
-                  for (const auto& edge : map.outbounds(pos))
+                  for (const auto& edge_t : edges_map_t.outbounds(pos))
                   {
-                     contacts.emplace_back(contact(pos, edge.p2));
+                     contacts.emplace_back(contact_t(pos, edge_t.p2));
                   }
                }
             }
@@ -334,10 +334,10 @@ namespace dak
       //
       // Star inferring.
 
-      std::vector<point> infer_t::buildStarBranchPoints(
+      std::vector<point_t> infer_t::buildStarBranchPoints(
          double d, int s,
          double side_frac, double sign,
-         const std::vector<point>& mid_points)
+         const std::vector<point_t>& mid_points)
       {
          int side_count = length(mid_points);
          double circle_frac = 1. / side_count;
@@ -360,17 +360,17 @@ namespace dak
             d_i += 1;
          }
 
-         point a = getArc(side_frac, mid_points);
-         point b = getArc(side_frac + sign * clamp_d * circle_frac, mid_points);
+         point_t a = getArc(side_frac, mid_points);
+         point_t b = getArc(side_frac + sign * clamp_d * circle_frac, mid_points);
 
-         std::vector<point> points;
+         std::vector<point_t> points;
          points.emplace_back(a);
 
          for (int idx = 1; idx <= outer_s; ++idx)
          {
-            point ar = getArc(side_frac + sign * idx             * circle_frac, mid_points);
-            point br = getArc(side_frac + sign * (idx - clamp_d) * circle_frac, mid_points);
-            point intersection = intersect(a, b, ar, br);
+            point_t ar = getArc(side_frac + sign * idx             * circle_frac, mid_points);
+            point_t br = getArc(side_frac + sign * (idx - clamp_d) * circle_frac, mid_points);
+            point_t intersection = intersect(a, b, ar, br);
             // FIXME: we should handle the concave case by extending the intersection.
             //        (After all, two lines will intersect if not parallel and two
             //         consecutive edges can hardly be parallel.)
@@ -381,17 +381,17 @@ namespace dak
          return points;
       }
 
-      map infer_t::buildStarHalfBranch(
+      edges_map_t infer_t::buildStarHalfBranch(
          double d, int s,
          double side_frac, double sign,
-         const std::vector<point>& mid_points)
+         const std::vector<point_t>& mid_points)
       {
-         map map;
+         edges_map_t edges_map_t;
 
-         std::vector<point> points = buildStarBranchPoints(d, s, side_frac, sign, mid_points);
+         std::vector<point_t> points = buildStarBranchPoints(d, s, side_frac, sign, mid_points);
 
          for (int idx = 1; idx < length(points); ++idx)
-            map.insert(edge(points[idx - 1], points[idx]));
+            edges_map_t.insert(edge_t(points[idx - 1], points[idx]));
 
          int side_count = length(mid_points);
          double circle_frac = 1. / side_count;
@@ -402,40 +402,40 @@ namespace dak
 
          if (s == d_i && sign > 0)
          {
-            std::vector<point> next_branch_points = buildStarBranchPoints(d, s, side_frac + sign * circle_frac, sign, mid_points);
-            const point& midr = next_branch_points[length(next_branch_points) - 1];
+            std::vector<point_t> next_branch_points = buildStarBranchPoints(d, s, side_frac + sign * circle_frac, sign, mid_points);
+            const point_t& midr = next_branch_points[length(next_branch_points) - 1];
 
             if (d_frac == 0.0)
             {
-               map.insert(edge(points.back(), midr));
+               edges_map_t.insert(edge_t(points.back(), midr));
             }
             else
             {
-               point ar = getArc(side_frac + sign * d_i    * circle_frac, mid_points);
-               point br = getArc(side_frac - sign * d_frac * circle_frac, mid_points);
-               point c = getArc(side_frac + sign * d * circle_frac, mid_points);
-               point cent = intersect(ar, br, points[0], c);
+               point_t ar = getArc(side_frac + sign * d_i    * circle_frac, mid_points);
+               point_t br = getArc(side_frac - sign * d_frac * circle_frac, mid_points);
+               point_t c = getArc(side_frac + sign * d * circle_frac, mid_points);
+               point_t cent = intersect(ar, br, points[0], c);
                if (!cent.is_invalid())
                {
-                  map.insert(edge(points.back(), cent));
-                  map.insert(edge(cent, midr));
+                  edges_map_t.insert(edge_t(points.back(), cent));
+                  edges_map_t.insert(edge_t(cent, midr));
                }
             }
          }
 
-         return map;
+         return edges_map_t;
       }
 
-      map infer_t::inferStar(const polygon& tile, double d, int s)
+      edges_map_t infer_t::inferStar(const polygon_t& tile, double d, int s)
       {
-         map infer_map;
+         edges_map_t infer_map;
 
-         // Get the index of a good transform for this tile.
-         const placed_points* pmain = findPrimaryFeature(tile);
+         // Get the index of a good transform_t for this tile.
+         const placed_points_t* pmain = findPrimaryFeature(tile);
          if (!pmain)
             return infer_map;
 
-         const std::vector<point>& mid_points = pmain->mids;
+         const std::vector<point_t>& mid_points = pmain->mids;
 
          int side_count = length(mid_points);
          for (int side = 0; side < side_count; ++side)
@@ -455,16 +455,16 @@ namespace dak
       //
       // Girih inferring.
 
-      point infer_t::buildGirihHalfBranch(
+      point_t infer_t::buildGirihHalfBranch(
          const int side, const bool leftBranch,
          const double requiredRotation,
-         const std::vector<point>& points, const std::vector<point>& midPoints)
+         const std::vector<point_t>& points, const std::vector<point_t>& midPoints)
       {
          const int side_count = length(points);
          const int next = (side + 1) % side_count;
-         transform rot = transform::rotate(midPoints[side],
+         transform_t rot = transform_t::rotate(midPoints[side],
                                            leftBranch ? -requiredRotation : requiredRotation);
-         point halfBranch = points[leftBranch ? side : next].apply(rot);
+         point_t halfBranch = points[leftBranch ? side : next].apply(rot);
 
          halfBranch = halfBranch - midPoints[side];
          halfBranch = halfBranch.scale(32); // TODO: magic number!!!
@@ -474,13 +474,13 @@ namespace dak
       }
 
       intersection_info infer_t::FindClosestIntersection(
-         const int side, const point& sideHalf, const bool isLeftHalf,
+         const int side, const point_t& sideHalf, const bool isLeftHalf,
          const double requiredRotation,
-         const std::vector<point>& points, const std::vector<point>& midPoints)
+         const std::vector<point_t>& points, const std::vector<point_t>& midPoints)
       {
          intersection_info info;
 
-         const point& sideMidPoint = midPoints[side];
+         const point_t& sideMidPoint = midPoints[side];
 
          const bool otherIsLeft = !isLeftHalf;
 
@@ -490,9 +490,9 @@ namespace dak
             if (i_side == side)
                continue;
 
-            const point& otherMidPoint = midPoints[i_side];
+            const point_t& otherMidPoint = midPoints[i_side];
 
-            point intersection;
+            point_t intersection;
             if (utility::near_zero(otherMidPoint.distance_2_to_line(sideMidPoint, sideHalf)))
             {
                // Edge meets directly the other mid-points, so the distance is the shortest possible.
@@ -500,7 +500,7 @@ namespace dak
             }
             else
             {
-               point otherSide = buildGirihHalfBranch(i_side, otherIsLeft, requiredRotation, points, midPoints);
+               point_t otherSide = buildGirihHalfBranch(i_side, otherIsLeft, requiredRotation, points, midPoints);
                intersection = intersect(otherMidPoint, otherSide, sideMidPoint, sideHalf);
             }
 
@@ -527,57 +527,57 @@ namespace dak
          return info;
       }
 
-      map infer_t::buildGirihBranch(
+      edges_map_t infer_t::buildGirihBranch(
          const int side,
          const double requiredRotation,
-         const std::vector<point>& points, const std::vector<point>& midPoints)
+         const std::vector<point_t>& points, const std::vector<point_t>& midPoints)
       {
-         map infer_map;
+         edges_map_t infer_map;
 
-         // Find which other edge will intersect this one first.
+         // Find which other edge_t will intersect this one first.
          for (int i_halves = 0; i_halves < 2; ++i_halves)
          {
             bool isLeftHalf = (i_halves == 0);
 
             // Find an intersection, if any.
-            point sideHalf = buildGirihHalfBranch(side, isLeftHalf, requiredRotation, points, midPoints);
+            point_t sideHalf = buildGirihHalfBranch(side, isLeftHalf, requiredRotation, points, midPoints);
             intersection_info info = FindClosestIntersection(
                side, sideHalf, isLeftHalf, requiredRotation, points, midPoints);
             if (info.intersection.is_invalid())
                continue;
 
-            // Mid-point of this side is always included in the map.
-            infer_map.insert(edge(midPoints[side], info.intersection));
+            // Mid-point_t of this side is always included in the edges_map_t.
+            infer_map.insert(edge_t(midPoints[side], info.intersection));
          }
 
          return infer_map;
       }
 
-      map infer_t::inferGirih(const polygon& tile, int starSides, double starSkip)
+      edges_map_t infer_t::inferGirih(const polygon_t& tile, int starSides, double starSkip)
       {
-         map infer_map;
+         edges_map_t infer_map;
 
          // We use the number of side of the star and how many side it
          // hops over from branch to branch (where 1 would mean drawing
-         // a polygon) and deduce the inner angle of the star branches.
+         // a polygon_t) and deduce the inner angle of the star branches.
          // We support fractional side skipping.
          const double polygonInnerAngle = PI * (starSides - 2) / starSides;
          const double starBranchInnerAngle = (starSkip * polygonInnerAngle) - (starSkip - 1) * PI;
          const double requiredRotation = (PI - starBranchInnerAngle) / 2;
 
-         // Get the index of a good transform for this tile.
-         const placed_points* pmain = findPrimaryFeature(tile);
+         // Get the index of a good transform_t for this tile.
+         const placed_points_t* pmain = findPrimaryFeature(tile);
          if (!pmain)
             return infer_map;
 
-         const std::vector<point>& mid_points = pmain->mids;
+         const std::vector<point_t>& mid_points = pmain->mids;
 
-         std::vector<point> points = geometry::apply(pmain->trf, pmain->tile->points);
+         std::vector<point_t> points = geometry::apply(pmain->trf, pmain->tile->points);
 
          const int side_count = length(mid_points);
          for (int side = 0; side < side_count; ++side)
          {
-            map branchMap = buildGirihBranch(side, requiredRotation, points, mid_points);
+            edges_map_t branchMap = buildGirihBranch(side, requiredRotation, points, mid_points);
             if (branchMap.all().size() > 0)
                infer_map.merge(branchMap);
          }
@@ -599,19 +599,19 @@ namespace dak
          return 10000;  // TODO: magic number!!!
       }
 
-      std::vector<edges_length_info> infer_t::buildIntersectEdgesLengthInfos(
-         const int side, const point& sideHalf, const bool isLeftHalf,
+      std::vector<edges_length_info_t> infer_t::buildIntersectEdgesLengthInfos(
+         const int side, const point_t& sideHalf, const bool isLeftHalf,
          const double requiredRotation,
-         const std::vector<point>& points, const std::vector<point>& midPoints)
+         const std::vector<point_t>& points, const std::vector<point_t>& midPoints)
       {
-         // First, get a list of intersections for this edge so that we can sort the
-         // edge pairs by the fewest number of intersections.
+         // First, get a list of intersections for this edge_t so that we can sort the
+         // edge_t pairs by the fewest number of intersections.
          std::vector<intersection_info> inter_infos = buildIntersectionInfos(side, sideHalf, isLeftHalf,
                                                                              requiredRotation, points, midPoints);
 
-         std::vector<edges_length_info> infos;
+         std::vector<edges_length_info_t> infos;
 
-         const point& sideMidPoint = midPoints[side];
+         const point_t& sideMidPoint = midPoints[side];
 
          const int side_count = length(points);
          for (int i_side = side + 1; i_side < side_count; ++i_side)
@@ -619,15 +619,15 @@ namespace dak
             for (int i_halves = 0; i_halves < 2; ++i_halves)
             {
                const bool otherIsLeft = (i_halves == 0);
-               const point& otherMidPoint = midPoints[i_side];
-               point otherSide = buildGirihHalfBranch(i_side, otherIsLeft, requiredRotation, points, midPoints);
+               const point_t& otherMidPoint = midPoints[i_side];
+               point_t otherSide = buildGirihHalfBranch(i_side, otherIsLeft, requiredRotation, points, midPoints);
                std::vector<intersection_info> other_inter_infos = buildIntersectionInfos(i_side, otherSide, otherIsLeft,
                                                                                          requiredRotation, points, midPoints);
 
-               point intersection = intersect(otherMidPoint, otherSide, sideMidPoint, sideHalf);
+               point_t intersection = intersect(otherMidPoint, otherSide, sideMidPoint, sideHalf);
                if (intersection.is_invalid())
                {
-                  // Lines are parallel, see if they actually point at each other.
+                  // Lines are parallel, see if they actually point_t at each other.
                   if (utility::near_zero(otherMidPoint.distance_2_to_line(sideMidPoint, sideHalf)))
                   {
                      // Edge meets directly the other mid-points, so the distance is the middle in-between.
@@ -636,12 +636,12 @@ namespace dak
                }
                if (!intersection.is_invalid())
                {
-                  if (polygon(points).is_inside(intersection))
+                  if (polygon_t(points).is_inside(intersection))
                   {
                      const int inter_rank = getIntersectionRank(i_side, otherIsLeft, inter_infos);
                      const int other_rank = getIntersectionRank(side, isLeftHalf, other_inter_infos);
                      const double distance_2 = intersection.distance_2(sideMidPoint) + intersection.distance_2(otherMidPoint);
-                     infos.emplace_back(edges_length_info(side, isLeftHalf, i_side, otherIsLeft, inter_rank + other_rank, distance_2, intersection));
+                     infos.emplace_back(edges_length_info_t(side, isLeftHalf, i_side, otherIsLeft, inter_rank + other_rank, distance_2, intersection));
                   }
                }
             }
@@ -650,31 +650,31 @@ namespace dak
          return infos;
       }
 
-      map infer_t::inferIntersect(const polygon& tile, int starSides, double starSkip, int s)
+      edges_map_t infer_t::inferIntersect(const polygon_t& tile, int starSides, double starSkip, int s)
       {
-         map infer_map;
+         edges_map_t infer_map;
 
          // We use the number of side of the star and how many side it
          // hops over from branch to branch (where 1 would mean drawing
-         // a polygon) and deduce the inner angle of the star branches.
+         // a polygon_t) and deduce the inner angle of the star branches.
          // We support fractional side skipping.
          const double polygonInnerAngle = PI * (starSides - 2) / starSides;
          const double starBranchInnerAngle = (starSkip * polygonInnerAngle) - (starSkip - 1) * PI;
          const double requiredRotation = (PI - starBranchInnerAngle) / 2;
 
-         // Get the index of a good transform for this tile.
-         const placed_points* pmain = findPrimaryFeature(tile);
+         // Get the index of a good transform_t for this tile.
+         const placed_points_t* pmain = findPrimaryFeature(tile);
          if (!pmain)
             return infer_map;
 
          // Get the mid-points of each side of the tile.
-         const std::vector<point>& mid_points = pmain->mids;
+         const std::vector<point_t>& mid_points = pmain->mids;
 
          // Get the corners of the tiles.
-         std::vector<point> points = geometry::apply(pmain->trf, pmain->tile->points);
+         std::vector<point_t> points = geometry::apply(pmain->trf, pmain->tile->points);
 
-         // Accumulate all edge intersections and their length.
-         std::vector<edges_length_info> infos;
+         // Accumulate all edge_t intersections and their length.
+         std::vector<edges_length_info_t> infos;
 
          const int side_count = length(mid_points);
          for (int side = 0; side < side_count; ++side)
@@ -682,8 +682,8 @@ namespace dak
             for (int i_halves = 0; i_halves < 2; ++i_halves)
             {
                const bool isLeftHalf = (i_halves == 0);
-               point sideHalf = buildGirihHalfBranch(side, isLeftHalf, requiredRotation, points, mid_points);
-               std::vector<edges_length_info> side_infos = buildIntersectEdgesLengthInfos(side, sideHalf, isLeftHalf,
+               point_t sideHalf = buildGirihHalfBranch(side, isLeftHalf, requiredRotation, points, mid_points);
+               std::vector<edges_length_info_t> side_infos = buildIntersectEdgesLengthInfos(side, sideHalf, isLeftHalf,
                                                                                           requiredRotation, points, mid_points);
                if (side_infos.size() > 0)
                {
@@ -692,15 +692,15 @@ namespace dak
             }
          }
 
-         // Sort edge-to-edge intersection by their total length.
-         std::sort(infos.begin(), infos.end(), [](const edges_length_info& a, const edges_length_info& b) {
+         // Sort edge_t-to-edge_t intersection by their total length.
+         std::sort(infos.begin(), infos.end(), [](const edges_length_info_t& a, const edges_length_info_t& b) {
             return a.compareTo(b);
          });
 
-         // Record the starting point of each edge. As we grow the edge,
+         // Record the starting point_t of each edge_t. As we grow the edge_t,
          // when we want more than one intersection (s > 1), we will update
          // these starting points.
-         std::vector<std::vector<point>> froms = std::vector<std::vector<point>>(side_count);
+         std::vector<std::vector<point_t>> froms = std::vector<std::vector<point_t>>(side_count);
          std::vector<std::vector<int>> counts = std::vector<std::vector<int>>(side_count);
          for (int i = 0; i < side_count; ++i)
          {
@@ -710,27 +710,27 @@ namespace dak
             counts[i].push_back(0);
          }
 
-         // Build the map using the shortest edges first.
+         // Build the edges_map_t using the shortest edges first.
          for (int i = 0; i < length(infos); ++i)
          {
-            const edges_length_info& info = infos[i];
+            const edges_length_info_t& info = infos[i];
             int side1 = info.side1;
             int isLeft1 = info.isLeft1 ? 0 : 1;
             int side2 = info.side2;
             int isLeft2 = info.isLeft2 ? 0 : 1;
             if (counts[side1][isLeft1] < s && counts[side2][isLeft2] < s)
             {
-               const point& from1 = froms[side1][isLeft1];
-               const point& from2 = froms[side2][isLeft2];
+               const point_t& from1 = froms[side1][isLeft1];
+               const point_t& from2 = froms[side2][isLeft2];
                if (!info.intersection.is_invalid())
                {
-                  infer_map.insert(edge(from1, info.intersection));
-                  infer_map.insert(edge(info.intersection, from2));
+                  infer_map.insert(edge_t(from1, info.intersection));
+                  infer_map.insert(edge_t(info.intersection, from2));
                   froms[side1][isLeft1] = froms[side2][isLeft2] = info.intersection;
                }
                else
                {
-                  infer_map.insert(edge(from1, from2));
+                  infer_map.insert(edge_t(from1, from2));
                   froms[side1][isLeft1] = from2;
                   froms[side2][isLeft2] = from1;
                }
@@ -749,13 +749,13 @@ namespace dak
       // Progressive intersect inferring.
 
       std::vector<intersection_info> infer_t::buildIntersectionInfos(
-         const int side, point sideHalf, const bool isLeftHalf,
+         const int side, point_t sideHalf, const bool isLeftHalf,
          const double requiredRotation,
-         const std::vector<point>& points, const std::vector<point>& midPoints)
+         const std::vector<point_t>& points, const std::vector<point_t>& midPoints)
       {
          std::vector<intersection_info> infos;
 
-         const point& sideMidPoint = midPoints[side];
+         const point_t& sideMidPoint = midPoints[side];
 
          const int side_count = length(points);
          for (int i_side = 0; i_side < side_count; ++i_side)
@@ -766,10 +766,10 @@ namespace dak
             for (int i_halves = 0; i_halves < 2; ++i_halves)
             {
                const bool otherIsLeft = (i_halves == 0);
-               const point& otherMidPoint = midPoints[i_side];
+               const point_t& otherMidPoint = midPoints[i_side];
 
-               point otherSide = buildGirihHalfBranch(i_side, otherIsLeft, requiredRotation, points, midPoints);
-               point intersection = intersect(otherMidPoint, otherSide, sideMidPoint, sideHalf);
+               point_t otherSide = buildGirihHalfBranch(i_side, otherIsLeft, requiredRotation, points, midPoints);
+               point_t intersection = intersect(otherMidPoint, otherSide, sideMidPoint, sideHalf);
                if (intersection.is_invalid())
                {
                   if (utility::near_zero(otherMidPoint.distance_2_to_line(sideMidPoint, sideHalf))) {
@@ -785,7 +785,7 @@ namespace dak
             }
          }
 
-         // Sort edge-to-edge intersection by their total length.
+         // Sort edge_t-to-edge_t intersection by their total length.
          std::sort(infos.begin(), infos.end(), [](const intersection_info& a, const intersection_info& b) {
             return a.compareTo(b);
          });
@@ -793,28 +793,28 @@ namespace dak
          return infos;
       }
 
-      map infer_t::inferIntersectProgressive(const polygon& tile, int starSides, double starSkip, int s)
+      edges_map_t infer_t::inferIntersectProgressive(const polygon_t& tile, int starSides, double starSkip, int s)
       {
-         map infer_map;
+         edges_map_t infer_map;
 
          // We use the number of side of the star and how many side it
          // hops over from branch to branch (where 1 would mean drawing
-         // a polygon) and deduce the inner angle of the star branches.
+         // a polygon_t) and deduce the inner angle of the star branches.
          // We support fractional side skipping.
          const double polygonInnerAngle = PI * (starSides - 2) / starSides;
          const double starBranchInnerAngle = (starSkip * polygonInnerAngle) - (starSkip - 1) * PI;
          const double requiredRotation = (PI - starBranchInnerAngle) / 2;
 
-         // Get the index of a good transform for this tile.
-         const placed_points* pmain = findPrimaryFeature(tile);
+         // Get the index of a good transform_t for this tile.
+         const placed_points_t* pmain = findPrimaryFeature(tile);
          if (!pmain)
             return infer_map;
 
          // Get the mid-points of each side of the tile.
-         const std::vector<point>& mid_points = pmain->mids;
+         const std::vector<point_t>& mid_points = pmain->mids;
 
          // Get the corners of the tiles.
-         std::vector<point> points = geometry::apply(pmain->trf, pmain->tile->points);
+         std::vector<point_t> points = geometry::apply(pmain->trf, pmain->tile->points);
 
          const int side_count = length(mid_points);
          for (int side = 0; side < side_count; ++side)
@@ -822,24 +822,24 @@ namespace dak
             for (int i_halves = 0; i_halves < 2; ++i_halves)
             {
                const bool isLeftHalf = (i_halves == 0);
-               point sideHalf = buildGirihHalfBranch(side, isLeftHalf, requiredRotation, points, mid_points);
+               point_t sideHalf = buildGirihHalfBranch(side, isLeftHalf, requiredRotation, points, mid_points);
                std::vector<intersection_info> infos = buildIntersectionInfos(side, sideHalf, isLeftHalf,
                                                                              requiredRotation, points, mid_points);
                if (infos.size() > 0)
                {
-                  // Record the starting point of the edge. As we grow the edge,
+                  // Record the starting point_t of the edge_t. As we grow the edge_t,
                   // when we want more than one intersection (s > 1), we will update
-                  // this starting point.
-                  point from = mid_points[side];
+                  // this starting point_t.
+                  point_t from = mid_points[side];
 
-                  // Build the map using the shortest edges first.
+                  // Build the edges_map_t using the shortest edges first.
                   int count = 0;
                   for (int i = 0; i < length(infos) && count < s; ++i)
                   {
                      const intersection_info& info = infos[i];
                      if (!info.intersection.is_invalid())
                      {
-                        infer_map.insert(edge(from, info.intersection));
+                        infer_map.insert(edge_t(from, info.intersection));
                         from = info.intersection;
                         count++;
                      }
@@ -857,16 +857,16 @@ namespace dak
       //
       // Hourglass inferring.
 
-      map infer_t::inferHourglass(const polygon& tile, double d, int s)
+      edges_map_t infer_t::inferHourglass(const polygon_t& tile, double d, int s)
       {
-         map infer_map;
+         edges_map_t infer_map;
 
-         // Get the index of a good transform for this tile.
-         const placed_points* pmain = findPrimaryFeature(tile);
+         // Get the index of a good transform_t for this tile.
+         const placed_points_t* pmain = findPrimaryFeature(tile);
          if (!pmain)
             return infer_map;
 
-         const std::vector<point>& mid_points = pmain->mids;
+         const std::vector<point_t>& mid_points = pmain->mids;
 
          int side_count = length(mid_points);
 
@@ -905,54 +905,54 @@ namespace dak
       static const int QE_POINT = 1;
       static const int F_POINT = 2;
 
-      std::vector<point> infer_t::buildRosetteBranchPoints(
+      std::vector<point_t> infer_t::buildRosetteBranchPoints(
          double q, int s, double r,
          double side_frac, double sign,
-         const std::vector<point>& mid_points_orig,
-         const std::vector<point>& corner_points_orig)
+         const std::vector<point_t>& mid_points_orig,
+         const std::vector<point_t>& corner_points_orig)
       {
          int side_count = length(mid_points_orig);
          double circle_frac = 1 / (double) side_count;
 
-         point center = geometry::center(mid_points_orig);
-         const std::vector<point> mid_points = geometry::translate(mid_points_orig, center.scale(-1));
-         const std::vector<point> corner_points = geometry::translate(corner_points_orig, geometry::center(corner_points_orig).scale(-1));
+         point_t center = geometry::center(mid_points_orig);
+         const std::vector<point_t> mid_points = geometry::translate(mid_points_orig, center.scale(-1));
+         const std::vector<point_t> corner_points = geometry::translate(corner_points_orig, geometry::center(corner_points_orig).scale(-1));
 
-         point tip = getArc(side_frac, mid_points);                        // The point to build from.
-         point rtip = getArc(side_frac + sign * circle_frac, mid_points);  // The next point over.
+         point_t tip = getArc(side_frac, mid_points);                        // The point_t to build from.
+         point_t rtip = getArc(side_frac + sign * circle_frac, mid_points);  // The next point_t over.
 
          double q_clamp = std::min(std::max(q, -0.99), 0.99);
          int s_clamp = std::min(s, side_count / 2);
 
          // Consider an equilateral triangle formed by the origin,
-         // up_outer and a vertical edge extending down from up_outer.
-         // The center of the bottom edge of that triangle defines the
+         // up_outer and a vertical edge_t extending down from up_outer.
+         // The center of the bottom edge_t of that triangle defines the
          // bisector of the angle leaving up_outer that we care about.
-         point up_outer = getArc(side_frac + circle_frac, corner_points);
-         point down_outer = getArc(side_frac, corner_points);
+         point_t up_outer = getArc(side_frac + circle_frac, corner_points);
+         point_t down_outer = getArc(side_frac, corner_points);
          if (sign < 0.0)
          {
-            point temp = up_outer;
+            point_t temp = up_outer;
             up_outer = down_outer;
             down_outer = temp;
          }
 
-         point bisector = down_outer.scale(0.5);
+         point_t bisector = down_outer.scale(0.5);
          bisector = bisector - up_outer;
          bisector = bisector.scale(10.0); // TODO: magic number
          bisector = bisector + up_outer;
 
-         point e = intersect(up_outer, bisector, tip, rtip);
+         point_t e = intersect(up_outer, bisector, tip, rtip);
          if (e.is_invalid())
-            e = up_outer.convex_sum(point::origin(), 0.5);
-         point ad = intersect(up_outer, bisector, tip, point::origin());
+            e = up_outer.convex_sum(point_t::origin(), 0.5);
+         point_t ad = intersect(up_outer, bisector, tip, point_t::origin());
          if (ad.is_invalid())
-            ad = point::origin();
-         point qe = q_clamp >= 0 ? e.convex_sum(up_outer, q) : e.convex_sum(ad, -q);
+            ad = point_t::origin();
+         point_t qe = q_clamp >= 0 ? e.convex_sum(up_outer, q) : e.convex_sum(ad, -q);
 
-         point f = up_outer.scale(r);
+         point_t f = up_outer.scale(r);
 
-         std::vector<point> points = std::vector<point>(3);
+         std::vector<point_t> points = std::vector<point_t>(3);
          points[TIP_POINT] = tip;
          points[QE_POINT] = qe;
          points[F_POINT] = f;
@@ -960,27 +960,27 @@ namespace dak
          return geometry::translate(points, center);
       }
 
-      std::vector<point> infer_t::buildRosetteIntersections(
+      std::vector<point_t> infer_t::buildRosetteIntersections(
          double q, int s, double r,
          double side_frac, double sign,
-         const std::vector<point>& mid_points,
-         const std::vector<point>& corner_points,
-         const std::vector<point>& points)
+         const std::vector<point_t>& mid_points,
+         const std::vector<point_t>& corner_points,
+         const std::vector<point_t>& points)
       {
          int side_count = length(mid_points);
          double circle_frac = 1. / side_count;
 
-         std::vector<point> intersections;
+         std::vector<point_t> intersections;
 
-         point qe_f = points[F_POINT] - points[QE_POINT];
+         point_t qe_f = points[F_POINT] - points[QE_POINT];
          double other_sign = -1.0;
          {
             for (int is = 1; is <= s + 1 && length(intersections) < s; ++is)
             {
-               std::vector<point> other_points = buildRosetteBranchPoints(
+               std::vector<point_t> other_points = buildRosetteBranchPoints(
                   q, s, r, side_frac + sign * circle_frac * is, other_sign * sign, mid_points, corner_points);
-               point other_qe_f = other_points[F_POINT] - other_points[QE_POINT];
-               point meet_f = intersect(
+               point_t other_qe_f = other_points[F_POINT] - other_points[QE_POINT];
+               point_t meet_f = intersect(
                   points[QE_POINT], points[QE_POINT] + qe_f.scale(10.0),
                   other_points[QE_POINT], other_points[QE_POINT] + other_qe_f.scale(10.0));
                if (meet_f.is_invalid())
@@ -989,8 +989,8 @@ namespace dak
             }
          }
 
-         const point& qe = points[QE_POINT];
-         std::sort(intersections.begin(), intersections.end(), [qe](const point& a, const point& b) {
+         const point_t& qe = points[QE_POINT];
+         std::sort(intersections.begin(), intersections.end(), [qe](const point_t& a, const point_t& b) {
             return (a - qe).mag_2() < (b - qe).mag_2();
          });
 
@@ -998,41 +998,41 @@ namespace dak
       }
 
 
-      map infer_t::buildRosetteHalfBranch(
+      edges_map_t infer_t::buildRosetteHalfBranch(
          double q, int s, double r,
          double side_frac, double sign,
-         const std::vector<point>& mid_points,
-         const std::vector<point>& corner_points)
+         const std::vector<point_t>& mid_points,
+         const std::vector<point_t>& corner_points)
       {
-         std::vector<point> points = buildRosetteBranchPoints(q, s, r, side_frac, sign, mid_points, corner_points);
-         std::vector<point> intersections = buildRosetteIntersections(q, s, r, side_frac, sign, mid_points, corner_points, points);
+         std::vector<point_t> points = buildRosetteBranchPoints(q, s, r, side_frac, sign, mid_points, corner_points);
+         std::vector<point_t> intersections = buildRosetteIntersections(q, s, r, side_frac, sign, mid_points, corner_points, points);
 
-         map from;
+         edges_map_t from;
 
          for (int idx = 0; idx < length(points) - 1; ++idx)
-            from.insert(edge(points[idx], points[idx + 1]));
+            from.insert(edge_t(points[idx], points[idx + 1]));
 
-         point prev = points.back();
+         point_t prev = points.back();
          for (int is = 0; is < s && is < length(intersections); ++is)
          {
-            from.insert(edge(prev, intersections[is]));
+            from.insert(edge_t(prev, intersections[is]));
             prev = intersections[is];
          }
 
          return from;
       }
 
-      map infer_t::inferRosette(const polygon& tile, double q, int s, double r)
+      edges_map_t infer_t::inferRosette(const polygon_t& tile, double q, int s, double r)
       {
-         map infer_map;
+         edges_map_t infer_map;
 
-         // Get the index of a good transform for this tile.
-         const placed_points* pmain = findPrimaryFeature(tile);
+         // Get the index of a good transform_t for this tile.
+         const placed_points_t* pmain = findPrimaryFeature(tile);
          if (!pmain)
             return infer_map;
 
-         const std::vector<point>& mid_points = pmain->mids;
-         const std::vector<point> corner_points = geometry::apply(pmain->trf, tile.points);
+         const std::vector<point_t>& mid_points = pmain->mids;
+         const std::vector<point_t> corner_points = geometry::apply(pmain->trf, tile.points);
 
          int side_count = length(mid_points);
          for (int side = 0; side < side_count; ++side)
@@ -1051,44 +1051,44 @@ namespace dak
       //
       // "Normal" magic inferring.
 
-      map infer_t::simple_infer(const polygon& tile)
+      edges_map_t infer_t::simple_infer(const polygon_t& tile)
       {
-         map infer_map;
+         edges_map_t infer_map;
 
-         // Get the index of a good transform for this tile.
-         const placed_points* pmain = findPrimaryFeature(tile);
+         // Get the index of a good transform_t for this tile.
+         const placed_points_t* pmain = findPrimaryFeature(tile);
          if (!pmain)
             return infer_map;
 
-         const std::vector<point> fpts = geometry::apply(pmain->trf, pmain->tile->points);
-         const polygon fpts_poly(fpts);
+         const std::vector<point_t> fpts = geometry::apply(pmain->trf, pmain->tile->points);
+         const polygon_t fpts_poly(fpts);
 
          std::vector<adjacency_info> adjs = getAdjacencies(*pmain);
-         std::vector<contact> cons;
+         std::vector<contact_t> cons;
          buildContacts(*pmain, adjs, cons);
 
          // For every contact, if it hasn't found an extension,
          // Look at all other contacts for likely candidates.
          for (int idx = 0; idx < length(cons); ++idx)
          {
-            contact& con = cons[idx];
+            contact_t& con = cons[idx];
             if (con.taken)
                continue;
 
             int jbest = -1;
 
-            point bestisect;
+            point_t bestisect;
             double bestdist = 0.0;
             int bestkind = NONE;
 
             for (int jdx = 0; jdx < length(cons); ++jdx)
             {
-               point isect;
+               point_t isect;
 
                if (jdx == idx)
                   continue;
 
-               const contact& ocon = cons[jdx];
+               const contact_t& ocon = cons[jdx];
 
                if (ocon.taken)
                   continue;
@@ -1104,16 +1104,16 @@ namespace dak
                if (geometry::is_colinear(con.other, con.position, ocon.position) &&
                    geometry::is_colinear(con.position, ocon.position, ocon.other))
                {
-                  // The two segments have to point at each other.
-                  point d1 = con.position - con.other;
-                  point d2 = ocon.position - ocon.other;
-                  point dc = con.position - ocon.position;
+                  // The two segments have to point_t at each other.
+                  point_t d1 = con.position - con.other;
+                  point_t d2 = ocon.position - ocon.other;
+                  point_t dc = con.position - ocon.position;
 
-                  // They point in the same direction.
+                  // They point_t in the same direction.
                   if (d1.dot(d2) > 0.0)
                      continue;
 
-                  // The first segment must point at the second point.
+                  // The first segment must point_t at the second point_t.
                   if (d1.dot(dc) > 0.0)
                      continue;
                   if (d2.dot(dc) < 0.0)
@@ -1172,14 +1172,14 @@ namespace dak
             if (jbest == -1)
                continue;
 
-            contact& ocon = cons[jbest];
+            contact_t& ocon = cons[jbest];
             con.taken = true;
             ocon.taken = true;
 
             if (bestkind == INSIDE_COLINEAR)
             {
-               con.colinear = contact::COLINEAR_MASTER;
-               ocon.colinear = contact::COLINEAR_SLAVE;
+               con.colinear = contact_t::COLINEAR_MASTER;
+               ocon.colinear = contact_t::COLINEAR_SLAVE;
             }
             else
             {
@@ -1192,22 +1192,22 @@ namespace dak
          }
 
          // Using the stored intersections in the contacts, 
-         // build a inferred map.
+         // build a inferred edges_map_t.
 
          for (int idx = 0; idx < length(cons); ++idx)
          {
-            const contact& con = cons[idx];
+            const contact_t& con = cons[idx];
 
             if (con.isect.is_invalid())
             {
-               if (con.colinear == contact::COLINEAR_MASTER)
+               if (con.colinear == contact_t::COLINEAR_MASTER)
                {
-                  infer_map.insert(edge(con.position, cons[con.isect_idx].position));
+                  infer_map.insert(edge_t(con.position, cons[con.isect_idx].position));
                }
             }
             else
             {
-               infer_map.insert(edge(con.position, con.isect));
+               infer_map.insert(edge_t(con.position, con.isect));
             }
          }
 
@@ -1218,7 +1218,7 @@ namespace dak
 
          for (int idx = 0; idx < length(cons); ++idx)
          {
-            contact& con = cons[idx];
+            contact_t& con = cons[idx];
             if (con.isect_idx == -1)
             {
                for (int jdx = 0; jdx < length(cons); ++jdx)
@@ -1226,17 +1226,17 @@ namespace dak
                   if (jdx == idx)
                      continue;
 
-                  contact& ocon = cons[jdx];
+                  contact_t& ocon = cons[jdx];
                   if (ocon.isect_idx != -1)
                      continue;
 
                   // Two unmatched edges.  match them up.
-                  point ex1 = con.position + con.position - con.other.normalize().scale(minlen*0.5);
-                  point ex2 = ocon.position + ocon.position - ocon.other.normalize().scale(minlen*0.5);
+                  point_t ex1 = con.position + con.position - con.other.normalize().scale(minlen*0.5);
+                  point_t ex2 = ocon.position + ocon.position - ocon.other.normalize().scale(minlen*0.5);
 
-                  infer_map.insert(edge(con.position, ex1));
-                  infer_map.insert(edge(ex1, ex2));
-                  infer_map.insert(edge(ex2, ocon.position));
+                  infer_map.insert(edge_t(con.position, ex1));
+                  infer_map.insert(edge_t(ex1, ex2));
+                  infer_map.insert(edge_t(ex2, ocon.position));
 
                   con.isect_idx = jdx;
                   ocon.isect_idx = idx;

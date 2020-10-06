@@ -6,7 +6,7 @@ namespace dak
 {
    namespace tiling_style
    {
-      void colored_t::make_similar(const layer& other)
+      void colored_t::make_similar(const layer_t& other)
       {
          style_t::make_similar(other);
 

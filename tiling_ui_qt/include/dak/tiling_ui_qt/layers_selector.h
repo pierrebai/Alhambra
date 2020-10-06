@@ -9,6 +9,7 @@
 #include <dak/tiling_style/styled_mosaic.h>
 
 #include <dak/ui/layer.h>
+#include <dak/ui/color.h>
 
 #include <QtWidgets/qwidget>
 
@@ -19,12 +20,16 @@ namespace dak
 {
    namespace tiling_ui_qt
    {
-      using ui::layer;
-      using tiling::mosaic;
+      using ui::layer_t;
+      using tiling::mosaic_t;
       using tiling_style::style_t;
       using tiling_style::styled_mosaic_t;
 
       class layers_selector_ui_t;
+
+      // Create an icon for the given mosaic.
+      QIcon get_icon(const std::shared_ptr<styled_mosaic_t>& sm, int w, int h);
+      QIcon get_icon(const std::shared_ptr<mosaic_t>& mosaic, const ui::color_t& co, int w, int h);
 
       ////////////////////////////////////////////////////////////////////////////
       //
@@ -34,7 +39,7 @@ namespace dak
       {
       public:
          // What is being edited.
-         typedef std::vector<std::shared_ptr<layer>> layers;
+         typedef std::vector<std::shared_ptr<layer_t>> layers;
          typedef std::vector<std::shared_ptr<tiling_style::style_t>> styles;
 
          // Callback when the selection changed.
@@ -45,11 +50,11 @@ namespace dak
          typedef std::function<void(const layers&)> layers_changed_callback;
          layers_changed_callback layers_changed;
 
-         // Callback when a new layer should be added.
+         // Callback when a new layer_t should be added.
          typedef std::function<void()> new_layer_requested_callback;
          new_layer_requested_callback new_layer_requested;
 
-         // Create a layer selector with the given parent widget and layers.
+         // Create a layer_t selector with the given parent widget and layers.
          layers_selector_t(QWidget* parent, int copy_icon, int add_icon, int remove_icon, int move_up_icon, int move_down_icon);
 
          // Set the layers being edited.

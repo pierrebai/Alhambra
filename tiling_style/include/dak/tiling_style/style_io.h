@@ -20,9 +20,9 @@ namespace dak
       //
       // Functions for reading and writing layers of styles from and to I/O streams.
 
-      std::vector<std::shared_ptr<ui::layer>> read_layered_mosaic(std::wistream& file, const known_tilings_t& knowns);
+      std::vector<std::shared_ptr<ui::layer_t>> read_layered_mosaic(std::wistream& file, const known_tilings_t& knowns);
 
-      void write_layered_mosaic(std::wostream& file, const std::vector<std::shared_ptr<ui::layer>>& layers);
+      void write_layered_mosaic(std::wostream& file, const std::vector<std::shared_ptr<ui::layer_t>>& layers);
    }
 }
 

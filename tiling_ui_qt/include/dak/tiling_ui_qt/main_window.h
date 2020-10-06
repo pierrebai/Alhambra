@@ -9,14 +9,14 @@
 #include <dak/tiling_ui_qt/layers_selector.h>
 #include <dak/tiling_ui_qt/tiling_editor.h>
 
-#include <dak/ui_qt/layered_canvas.h>
+#include <dak/ui/qt/layered_canvas.h>
 
 #include <dak/tiling_style/known_mosaics_generator.h>
 
 #include <dak/tiling/mosaic.h>
 #include <dak/tiling/known_tilings.h>
 
-#include <dak/geometry/rect.h>
+#include <dak/geometry/rectangle.h>
 
 #include <dak/utility/undo_stack.h>
 
@@ -72,7 +72,7 @@ namespace dak
          main_window_t(const main_window_icons_t& icons);
 
       protected:
-         typedef std::map<std::shared_ptr<mosaic>, dak::geometry::map> calculated_mosaics;
+         typedef std::map<std::shared_ptr<mosaic_t>, dak::geometry::edges_map_t> calculated_mosaics;
 
          // Create the UI elements.
          void build_ui(const main_window_icons_t& icons);
@@ -84,17 +84,17 @@ namespace dak
          void fill_ui();
 
          // The redraw UI call-backs.
-         geometry::rect window_filling_region();
-         std::vector<std::shared_ptr<layer>> get_avail_layers();
-         void update_layered_transform(const geometry::rect& bounds);
-         const geometry::map& find_calculated_mosaic(calculated_mosaics& calc_mos, const std::shared_ptr<mosaic>& mosaic);
-         void update_canvas_layers(const std::vector<std::shared_ptr<layer>>& layers);
+         geometry::rectangle_t window_filling_region();
+         std::vector<std::shared_ptr<layer_t>> get_avail_layers();
+         void update_layered_transform(const geometry::rectangle_t& bounds);
+         const geometry::edges_map_t& find_calculated_mosaic(calculated_mosaics& calc_mos, const std::shared_ptr<mosaic_t>& mosaic);
+         void update_canvas_layers(const std::vector<std::shared_ptr<layer_t>>& layers);
 
          // The layers UI call-backs.
-         std::vector<std::shared_ptr<layer>> get_selected_layers();
+         std::vector<std::shared_ptr<layer_t>> get_selected_layers();
          std::vector<std::shared_ptr<tiling_style::style_t>> get_selected_styles();
-         std::vector<std::shared_ptr<mosaic>> get_selected_mosaics();
-         std::vector<std::shared_ptr<layer>> find_styles_layers(const std::vector<std::shared_ptr<tiling_style::style_t>>& styles);
+         std::vector<std::shared_ptr<mosaic_t>> get_selected_mosaics();
+         std::vector<std::shared_ptr<layer_t>> find_styles_layers(const std::vector<std::shared_ptr<tiling_style::style_t>>& styles);
          void update_layer_list();
          void fill_layer_list();
 
@@ -114,11 +114,11 @@ namespace dak
          void commit_to_undo();
 
          // Layer manipulations.
-         dak::ui::layered::layers clone_layers(const dak::ui::layered::layers& layers);
-         void add_layer(const std::shared_ptr<mosaic>& new_mosaic);
+         dak::ui::layered_t::layers_t clone_layers(const dak::ui::layered_t::layers_t& layers);
+         void add_layer(const std::shared_ptr<mosaic_t>& new_mosaic);
 
          // The mosaic tool-bar buttons.
-         void update_mosaic_map(const std::vector<std::shared_ptr<layer>>& layers, const std::wstring& name);
+         void update_mosaic_map(const std::vector<std::shared_ptr<layer_t>>& layers, const std::wstring& name);
 
          // The canvas manipulation tool-bar buttons.
          void update_canvas_mode();
@@ -132,8 +132,8 @@ namespace dak
          std::vector<std::wstring> errors;
          dak::tiling::known_tilings_t known_tilings;
          dak::tiling_style::known_mosaics_generator_t mosaic_gen;
-         dak::utility::undo_stack undo_stack;
-         dak::ui::layered layered;
+         dak::utility::undo_stack_t undo_stack;
+         dak::ui::layered_t layered;
 
          // UI elements.
          QAction* previous_mosaic_action = nullptr;
@@ -183,7 +183,7 @@ namespace dak
          dak::tiling_ui_qt::figure_selector_t* figure_list = nullptr;
          figure_editor_t* figure_editor = nullptr;
 
-         dak::ui_qt::layered_canvas* canvas = nullptr;
+         dak::ui::qt::layered_canvas_t* canvas = nullptr;
       };
    }
 }

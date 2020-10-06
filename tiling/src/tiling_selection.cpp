@@ -8,17 +8,17 @@ namespace dak
    {
       namespace tiling_selection
       {
-         selection find_selection(std::vector<std::shared_ptr<placed_tile_t>>& tiles, const point& wpt, double selection_distance)
+         selection_t find_selection(std::vector<std::shared_ptr<placed_tile_t>>& tiles, const point_t& wpt, double selection_distance)
          {
-            return find_selection(tiles, wpt, selection_distance, selection(), selection_type_t::all);
+            return find_selection(tiles, wpt, selection_distance, selection_t(), selection_type_t::all);
          }
 
-         selection find_selection(std::vector<std::shared_ptr<placed_tile_t>>& tiles, const point& wpt, double sel_dist, const selection& excluded_sel)
+         selection_t find_selection(std::vector<std::shared_ptr<placed_tile_t>>& tiles, const point_t& wpt, double sel_dist, const selection_t& excluded_sel)
          {
             return find_selection(tiles, wpt, sel_dist, excluded_sel, selection_type_t::all);
          }
 
-         selection find_selection(std::vector<std::shared_ptr<placed_tile_t>>& tiles, const point& wpt, double sel_dist, const selection& excluded_sel, selection_type_t sel_types)
+         selection_t find_selection(std::vector<std::shared_ptr<placed_tile_t>>& tiles, const point_t& wpt, double sel_dist, const selection_t& excluded_sel, selection_type_t sel_types)
          {
             const double sel_dist_2 = sel_dist * sel_dist;
             const std::shared_ptr<placed_tile_t> other_than = get_placed_tile(excluded_sel);
@@ -32,9 +32,9 @@ namespace dak
                if (other_than == placed)
                   continue;
 
-               selection new_sel;
+               selection_t new_sel;
 
-               const point lpt = wpt.apply(placed->trf.invert());
+               const point_t lpt = wpt.apply(placed->trf.invert());
                if ((sel_types & selection_type_t::tile) == selection_type_t::tile)
                   if (placed->tile.is_inside(lpt))
                      new_sel.add(tile_selection_t{placed});
@@ -56,19 +56,19 @@ namespace dak
                   size_t prev_i = placed->tile.points.size() - 1;
                   for (size_t i = 0; i < placed->tile.points.size(); ++i)
                   {
-                     const point& pt = placed->tile.points[i];
+                     const point_t& pt = placed->tile.points[i];
 
-                     const point& prev_pt = placed->tile.points[prev_i];
+                     const point_t& prev_pt = placed->tile.points[prev_i];
 
                      // Don't allow selecting end-points of the edge when the edge is too short.
-                     // Here we define too short as 4 times the selection distance, which is 16 when squared.
+                     // Here we define too short as 4 times the selection_t distance, which is 16 when squared.
                      if (pt.distance_2(prev_pt) > sel_dist_2 * 16)
                         if ((sel_types & selection_type_t::point) == selection_type_t::point)
                            if (geometry::near(lpt, pt, sel_dist_2))
                               new_sel.add(point_selection_t(placed, i));
 
                      // Don't allow selecting the middle of the edge when the edge is too short.
-                     // Here we define too short as 6 times the selection distance, which is 36 when squared.
+                     // Here we define too short as 6 times the selection_t distance, which is 36 when squared.
                      if (pt.distance_2(prev_pt) > sel_dist_2 * 36)
                         if ((sel_types & selection_type_t::point) == selection_type_t::point)
                            if (geometry::near(lpt, prev_pt.convex_sum(pt, 0.5), sel_dist_2))
@@ -87,10 +87,10 @@ namespace dak
                   return new_sel;
             }
 
-            return selection();
+            return selection_t();
          }
 
-         tile_selection_t get_placed_tile(const selection& sel)
+         tile_selection_t get_placed_tile(const selection_t& sel)
          {
             for (const std::any& data : sel.data)
             {
@@ -110,7 +110,7 @@ namespace dak
             return tile_selection_t();
          }
 
-         edge_selection_t get_edge(const selection& sel)
+         edge_selection_t get_edge(const selection_t& sel)
          {
             for (const std::any& data : sel.data)
             {
@@ -122,7 +122,7 @@ namespace dak
             return edge_selection_t();
          }
 
-         point_selection_t get_point(const selection& sel)
+         point_selection_t get_point(const selection_t& sel)
          {
             for (const std::any& data : sel.data)
             {
