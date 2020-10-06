@@ -55,6 +55,30 @@ add_custom_command(TARGET Alhambra POST_BUILD
    COMMAND "${Qt5_DIR}/../../../bin/windeployqt.exe" --no-webkit2 --no-angle --no-system-d3d-compiler --no-opengl-sw "$<TARGET_FILE:Alhambra>"
 )
 
+add_custom_command(TARGET Alhambra POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${PROJECT_SOURCE_DIR}/tiling/mosaics
+                ${CMAKE_CURRENT_BINARY_DIR}/mosaics
+)
+
+add_custom_command(TARGET Alhambra POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${PROJECT_SOURCE_DIR}/tiling/tilings
+                ${CMAKE_CURRENT_BINARY_DIR}/tilings
+)
+
+add_custom_command(TARGET Alhambra POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${PROJECT_SOURCE_DIR}/tiling/mosaics
+                "$<TARGET_FILE_DIR:Alhambra>/mosaics"
+)
+
+add_custom_command(TARGET Alhambra POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${PROJECT_SOURCE_DIR}/tiling/tilings
+                "$<TARGET_FILE_DIR:Alhambra>/tilings"
+)
+
 install(
    DIRECTORY
    "$<TARGET_FILE_DIR:Alhambra>/"
@@ -68,10 +92,10 @@ set(CPACK_GENERATOR NSIS)
 set(CPACK_PACKAGE_NAME "Alhambra")
 set(CPACK_PACKAGE_VENDOR "Pierre Baillargeon")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Alhambra - An application to create islamic tilings.")
-set(CPACK_PACKAGE_VERSION "1.0.2")
+set(CPACK_PACKAGE_VERSION "1.2.0")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
-set(CPACK_PACKAGE_VERSION_MINOR "0")
-set(CPACK_PACKAGE_VERSION_PATCH "2")
+set(CPACK_PACKAGE_VERSION_MINOR "2")
+set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "Alhambra")
 set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
 

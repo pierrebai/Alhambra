@@ -141,6 +141,7 @@ namespace dak
             figures_dock->setWidget(figures_container);
 
          canvas = new layered_canvas_t(nullptr);
+         canvas->transformer.mouse_interaction_modifier = ui::modifiers_t::none;
 
          setCentralWidget(canvas);
          addToolBar(toolbar);
