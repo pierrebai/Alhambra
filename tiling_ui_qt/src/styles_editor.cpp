@@ -3,6 +3,7 @@
 #include <dak/ui/qt/convert.h>
 #include <dak/ui/qt/int_editor.h>
 #include <dak/ui/qt/double_editor.h>
+#include <dak/ui/qt/color_editor.h>
 
 #include <dak/tiling_style/thick.h>
 #include <dak/tiling_style/emboss.h>
@@ -129,9 +130,9 @@ namespace dak
                QWidget* style_buttons_panel = new QWidget(&parent);
                QHBoxLayout* style_buttons_layout = new QHBoxLayout(style_buttons_panel);
                   style_buttons_layout->setContentsMargins(0, 0, 0, 0);
-                  color_button = std::make_unique<QPushButton>(QString::fromWCharArray(L::t(L"Color")), style_buttons_panel);
+                  color_button = std::make_unique<ui::qt::color_editor_t>(style_buttons_panel, L::t(L"Color"));
                   style_buttons_layout->addWidget(color_button.get());
-                  outline_color_button = std::make_unique<QPushButton>(QString::fromWCharArray(L::t(L"Outline")), style_buttons_panel);
+                  outline_color_button = std::make_unique<ui::qt::color_editor_t>(style_buttons_panel, L::t(L"Outline"));
                   style_buttons_layout->addWidget(outline_color_button.get());
                   join_combo = std::make_unique<QComboBox>(style_buttons_panel);
                   for (const auto& style : join_styles)
@@ -175,8 +176,8 @@ namespace dak
             angle_editor->setEnabled(false);
             join_combo->setEnabled(false);
 
-            color_button->connect(color_button.get(), &QPushButton::clicked, [&]() { update_color(); });
-            outline_color_button->connect(outline_color_button.get(), &QPushButton::clicked, [&]() { update_outline_color(); });
+            color_button->on_color_changed = [&](ui::color_t a_color) { update_color(a_color); };
+            outline_color_button->on_color_changed = [&](ui::color_t a_color) { update_outline_color(a_color); };
             width_editor->value_changed = [self=this](double new_value, bool interacting) { self->update_width(new_value, interacting); };
             outline_width_editor->value_changed = [self=this](double new_value, bool interacting) { self->update_outline_width(new_value, interacting); };
             gap_width_editor->value_changed = [self=this](double new_value, bool interacting) { self->update_gap_width(new_value, interacting); };
@@ -281,9 +282,7 @@ namespace dak
             {
                for (auto colored : get_styles<colored_t>())
                {
-                  QPixmap color(16, 16);
-                  color.fill(ui::qt::convert(colored->color));
-                  color_button->setIcon(QIcon(color));
+                  color_button->set_color(colored->color);
                   break;
                }
             }
@@ -293,14 +292,12 @@ namespace dak
          {
             for (auto thick : get_styles<thick_t>())
             {
-               QPixmap color(16, 16);
-               color.fill(ui::qt::convert(thick->outline_color));
-               outline_color_button->setIcon(QIcon(color));
+               outline_color_button->set_color(thick->outline_color);
                break;
             }
          }
 
-         void update_color()
+         void update_color(ui::color_t a_color)
          {
             if (disable_feedback)
                return;
@@ -309,19 +306,15 @@ namespace dak
             if (colors.size() <= 0)
                return;
 
-            QColor qc = QColorDialog::getColor(dak::ui::qt::convert(*colors[0]), color_button.get(), QString::fromWCharArray(L::t(L"Choose Layer Color")), QColorDialog::ColorDialogOption::ShowAlphaChannel);
-            if (!qc.isValid())
-               return;
-
             for (auto& c : colors)
-               *c = dak::ui::qt::convert(qc);
+               *c = a_color;
 
             fill_ui_color();
 
             update(false);
          }
 
-         void update_outline_color()
+         void update_outline_color(ui::color_t a_color)
          {
             if (disable_feedback)
                return;
@@ -330,12 +323,8 @@ namespace dak
             if (colors.size() <= 0)
                return;
 
-            QColor qc = QColorDialog::getColor(dak::ui::qt::convert(*colors[0]), outline_color_button.get(), QString::fromWCharArray(L::t(L"Choose Layer Outline Color")), QColorDialog::ColorDialogOption::ShowAlphaChannel);
-            if (!qc.isValid())
-               return;
-
             for (auto& c : colors)
-               *c = dak::ui::qt::convert(qc);
+               *c = a_color;
 
             fill_ui_outline_color();
 
@@ -428,8 +417,8 @@ namespace dak
          styles_editor_t& editor;
          styles_t edited;
 
-         std::unique_ptr<QPushButton> color_button;
-         std::unique_ptr<QPushButton> outline_color_button;
+         std::unique_ptr<ui::qt::color_editor_t> color_button;
+         std::unique_ptr<ui::qt::color_editor_t> outline_color_button;
          std::unique_ptr<ui::qt::double_editor_t> width_editor;
          std::unique_ptr<ui::qt::double_editor_t> outline_width_editor;
          std::unique_ptr<ui::qt::double_editor_t> gap_width_editor;
