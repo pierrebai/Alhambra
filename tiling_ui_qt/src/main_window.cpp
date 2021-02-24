@@ -15,6 +15,8 @@
 
 #include <dak/QtAdditions/QtUtilities.h>
 
+#include <QtCore/qstandardpaths.h>
+#include <QtCore/qdir.h>
 #include <QtGui/qpainter.h>
 #include <QtGui/qevent.h>
 #include <QtWidgets/qboxlayout.h>
@@ -37,12 +39,26 @@ namespace dak
       using dak::utility::L;
 
       main_window_t::main_window_t(const main_window_icons_t& icons)
-      : known_tilings(read_tilings(LR"(./tilings)", errors))
-      , mosaic_gen(LR"(./mosaics)")
+      : known_tilings()
+      , mosaic_gen()
       {
+         QDir documentFolder = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+         
+         add_tilings_from(LR"(./tilings)");
+         add_tilings_from(documentFolder.absoluteFilePath("tilings").toStdWString());
+
+         mosaic_gen.add_folder(LR"(./mosaics)");
+         mosaic_gen.add_folder(documentFolder.absoluteFilePath("mosaics").toStdWString());
+
          build_ui(icons);
          fill_ui();
          connect_ui(icons);
+      }
+
+      void main_window_t::add_tilings_from(const std::wstring& folder)
+      {
+         const auto new_tilings = read_tilings(folder, errors);
+         known_tilings.insert(known_tilings.end(), new_tilings.begin(), new_tilings.end());
       }
 
       // Create the UI elements.

@@ -14,8 +14,12 @@ namespace dak
 {
    namespace tiling_style
    {
-      known_mosaics_generator_t::known_mosaics_generator_t(const std::wstring& folder)
-      : iter(filenames.end())
+      known_mosaics_generator_t::known_mosaics_generator_t()
+         : iter(filenames.end())
+      {
+      }
+
+      void known_mosaics_generator_t::add_folder(const std::wstring& folder)
       {
          for (const auto entry : std::filesystem::directory_iterator(folder))
             filenames.emplace_back(entry.path());

@@ -74,6 +74,9 @@ namespace dak
       protected:
          typedef std::map<std::shared_ptr<mosaic_t>, dak::geometry::edges_map_t> calculated_mosaics;
 
+         // Add the tiling found in the given folder.
+         void add_tilings_from(const std::wstring& folder);
+
          // Create the UI elements.
          void build_ui(const main_window_icons_t& icons);
 

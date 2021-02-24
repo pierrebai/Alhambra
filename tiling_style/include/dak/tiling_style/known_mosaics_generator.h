@@ -35,7 +35,9 @@ namespace dak
       public:
          typedef std::vector<std::shared_ptr<layer_t>> layered_mosaic_t;
 
-         known_mosaics_generator_t(const std::wstring& folder);
+         known_mosaics_generator_t();
+
+         void add_folder(const std::wstring& folder);
 
          known_mosaics_generator_t& next();
 

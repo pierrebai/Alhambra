@@ -139,7 +139,7 @@ namespace dak
          selection_t find_selection(const point_t& wpt, selection_type_t sel_types);
          selection_t find_selection(const point_t& wpt, const selection_t& excluded, selection_type_t sel_types);
 
-         const std::shared_ptr<mouse_action_t>& get_mouse_interaction() const { return mouse_interaction; }
+         std::shared_ptr<mouse_action_t>& get_mouse_interaction() { return mouse_interaction; }
          void clear_mouse_interaction() { mouse_interaction = nullptr; }
 
          // Convert back a model position in screen coordinates.
@@ -165,7 +165,7 @@ namespace dak
          selection_t   under_mouse;
 
          // Interaction mode.
-         mouse_mode_t current_mouse_mode;
+         mouse_mode_t current_mouse_mode = mouse_mode_t::normal;
 
          // Accumulation of number of sides to create a regular polygon.
          int poly_side_count = 0;
@@ -514,7 +514,7 @@ namespace dak
 
                // Note: the interaction can clear editor.mouse_interaction,
                //       so keep a copy of the shared pointer during the call.
-               auto inter = editor.get_mouse_interaction();
+               auto& inter = editor.get_mouse_interaction();
 
                switch (editor.current_mouse_mode)
                {
