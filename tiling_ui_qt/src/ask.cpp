@@ -37,7 +37,7 @@ namespace dak
       }
 
       // Show a dialog to open or save a tiling.
-      tiling_t ask_open_tiling(std::filesystem::path& path, QWidget* parent)
+      std::shared_ptr<tiling_t> ask_open_tiling(std::filesystem::path& path, QWidget* parent)
       {
          path = ask_open(L::t(L"Load Tiling"), L::t(tiling_file_types), parent);
          if (path.empty())
@@ -46,14 +46,17 @@ namespace dak
          return dak::tiling::read_tiling(file);
       }
 
-      bool ask_save_tiling(tiling_t& tiling, std::filesystem::path& path, QWidget* parent)
+      bool ask_save_tiling(const std::shared_ptr<tiling_t>& tiling, std::filesystem::path& path, QWidget* parent)
       {
+         if (!tiling)
+            return false;
+
          path = ask_save(L::t(L"Save Tiling"), L::t(tiling_file_types), parent);
          if (path.empty())
             return false;
 
-         if( tiling.name.empty() )
-            tiling.name = path.stem();
+         if( tiling->name.empty() )
+            tiling->name = path.stem();
 
          {
             std::wofstream file(path, std::ios::out | std::ios::trunc);

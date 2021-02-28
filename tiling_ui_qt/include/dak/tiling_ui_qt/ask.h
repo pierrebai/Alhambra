@@ -3,6 +3,8 @@
 #ifndef DAK_TILING_UI_QT_ASK_H
 #define DAK_TILING_UI_QT_ASK_H
 
+#include <dak/tiling/known_tilings.h>
+
 #include <memory>
 #include <vector>
 
@@ -17,12 +19,6 @@ namespace dak
       class styled_mosaic_t;
    }
 
-   namespace tiling
-   {
-      class tiling_t;
-      using known_tilings_t = std::vector<tiling_t>;
-   }
-
    namespace tiling_ui_qt
    {
       using dak::tiling_style::styled_mosaic_t;
@@ -35,8 +31,8 @@ namespace dak
 
       // Show a dialog to open or save a tiling.
       // The given path is updated with the selected one, if any.
-      tiling_t ask_open_tiling(std::filesystem::path& path, QWidget* parent);
-      bool ask_save_tiling(tiling_t& tiling, std::filesystem::path& path, QWidget* parent);
+      std::shared_ptr<tiling_t> ask_open_tiling(std::filesystem::path& path, QWidget* parent);
+      bool ask_save_tiling(const std::shared_ptr<tiling_t>& tiling, std::filesystem::path& path, QWidget* parent);
 
       // Show a dialog to open or save a layered mosaic.
       // The given path is updated with the selected one, if any.

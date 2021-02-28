@@ -10,6 +10,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <functional>
 
 namespace dak
 {
@@ -22,24 +23,21 @@ namespace dak
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // The representation of a tiling, which will serve as the skeleton for
-      // Islamic designs.  A tiling has two translation vectors and a set of
-      // placed tiles that make up a translational unit.  The idea is that
-      // the whole tiling can be replicated across the plane by placing
-      // a copy of the translational unit at every integer linear combination
-      // of the translation vectors.  In practice, we only draw at those
-      // linear combinations within some viewport.
+      // The common representation of a tiling, which will serve as the skeleton
+      // for Islamic designs. A tiling has a set of placed tiles that make up
+      // a base tiling unit.
+      //
+      // The idea is that the base tiling unit can be replicated across the plane
+      // by following a recipe for the placement of each copies.
+      //
+      // The sub-classes of tiling_t provide the fill() function which does this
+      // replication process for their particular duplication recipe.
 
       class tiling_t
       {
       public:
-         // Translations to tile the plane. Two needed for two-dimensional plane.
-         // (Of course, more complex tiling exists with rotations and mirrors.)
-         // (They are not supported.)
-         point_t t1;
-         point_t t2;
-
          // The polygonal tiles and where they are placed within the tiling.
+         // This form the tiling base unit.
          std::map<polygon_t, std::vector<transform_t>> tiles;
 
          // Information about the tiling: name, description and author.
@@ -50,21 +48,66 @@ namespace dak
          // Empty tiling.
          tiling_t();
 
-         // Tiling with a name and translation vectors.
-         tiling_t(const std::wstring& name, const point_t& t1, const point_t& t2);
+         // Tiling with a name.
+         tiling_t(const std::wstring& name);
 
          // Swap two tilings.
          void swap(tiling_t& other);
 
          // Tiling comparison.
-         bool operator==(const tiling_t& other) const;
-         bool operator!=(const tiling_t& other) const { return !(*this == other); }
+         virtual bool operator==(const tiling_t& other) const;
+         virtual bool operator!=(const tiling_t& other) const { return !(*this == other); }
 
-         // Calculate the bounds of the tiles of the tiling.
+         // Calculate the bounds of the polygonal tiles of the tiling.
          rectangle_t bounds() const;
 
          // Verify if the tiling is invalid.
-         bool is_invalid() const { return tiles.empty() || t1.is_invalid() || t1 == point_t(0., 0.) || t2.is_invalid() || t2 == point_t(0., 0.); }
+         virtual bool is_invalid() const;
+
+         // Fill the given region with copies of the tiling,
+         // calling the callback for each transform that place a copy of the tiling.
+         virtual void fill(const rectangle_t& region, std::function<void(const tiling_t& tiling, const transform_t& placement)> fill_callback) const = 0;
+
+         // Fill a region around one copy of the tiling,
+         // calling the callback for each transform that place a copy of the tiling.
+         virtual void surround(std::function<void(const tiling_t& tiling, const transform_t& placement)> fill_callback) const = 0;
+      };
+
+      // A translation tiling has two translation vectors.
+      //
+      // Places copy of the translational unit at every integer linear
+      // combination of the translation vectors.  In practice, we only
+      // draw at those linear combinations within some viewport.
+      class translation_tiling_t : public tiling_t
+      {
+      public:
+         // Translations to tile the plane. Two needed for two-dimensional plane.
+         point_t t1;
+         point_t t2;
+
+         // Empty tiling.
+         translation_tiling_t();
+
+         // Tiling with a name and translation vectors.
+         translation_tiling_t(const std::wstring& name, const point_t& t1, const point_t& t2);
+
+         // Swap two tilings.
+         void swap(translation_tiling_t& other);
+
+         // Tiling comparison.
+         bool operator==(const tiling_t& other) const override;
+         bool operator!=(const tiling_t& other) const override { return !(*this == other); }
+
+         // Verify if the tiling is invalid.
+         bool is_invalid() const override;
+
+         // Fill the given region with copies of the tiling,
+         // calling the callback for each transform that place a copy of the tiling.
+         void fill(const rectangle_t& region, std::function<void(const tiling_t& tiling, const transform_t& placement)> fill_callback) const override;
+
+         // Fill a region around one copy of the tiling,
+         // calling the callback for each transform that place a copy of the tiling.
+         void surround(std::function<void(const tiling_t& tiling, const transform_t& placement)> fill_callback) const override;
       };
    }
 }

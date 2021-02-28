@@ -14,14 +14,14 @@ namespace tiling_tests
 		
 		TEST_METHOD(tiling_constructor)
 		{
-         const tiling_t t1;
+         const translation_tiling_t t1;
 
          Assert::IsTrue(t1.t1.is_invalid());
          Assert::IsTrue(t1.t2.is_invalid());
          Assert::IsTrue(t1.tiles.empty());
          Assert::IsTrue(t1.name.empty());
 
-         tiling_t t2(L"tiling 2", point_t(1., 2.), point_t(3., 4.));
+         translation_tiling_t t2(L"tiling 2", point_t(1., 2.), point_t(3., 4.));
 
          Assert::IsFalse(t2.t1.is_invalid());
          Assert::IsFalse(t2.t2.is_invalid());

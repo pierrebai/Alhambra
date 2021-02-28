@@ -4,6 +4,7 @@
 #define DAK_TILING_UI_QT_TILING_SELECTOR_H
 
 #include <dak/tiling/mosaic.h>
+#include <dak/tiling/known_tilings.h>
 
 #include <QtWidgets/qdialog>
 
@@ -12,15 +13,9 @@
 
 namespace dak
 {
-   namespace tiling
-   {
-      class tiling_t;
-      using known_tilings_t = std::vector<tiling_t>;
-   }
-
    namespace tiling_ui_qt
    {
-      using dak::tiling::mosaic_t;
+      using dak::tiling::tiling_t;
       using dak::tiling::known_tilings_t;
 
       class tiling_selector_ui_t;
@@ -34,14 +29,14 @@ namespace dak
       {
       public:
          // Callback when the tiling has been chosen.
-         typedef std::function<void(const std::shared_ptr<mosaic_t>&)> tiling_chosen_callback;
+         typedef std::function<void(const std::shared_ptr<tiling_t>&)> tiling_chosen_callback;
          tiling_chosen_callback tiling_chosen;
 
          // Create a tiling selector with the given parent widget.
          tiling_selector_t(known_tilings_t& known_tilings, const tiling_editor_icons_t& icons, QWidget* parent);
          tiling_selector_t(known_tilings_t& known_tilings, const tiling_editor_icons_t& icons, QWidget* parent, tiling_chosen_callback tc);
 
-         std::shared_ptr<mosaic_t> get_selected() const;
+         std::shared_ptr<tiling_t> get_selected() const;
 
       protected:
          std::unique_ptr<tiling_selector_ui_t> ui;

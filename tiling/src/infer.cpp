@@ -155,9 +155,9 @@ namespace dak
          // (x,y) where -1 <= x, y <= 1.  This is guaranteed to surround
          // every tile in the (0,0) unit by tiles.  You can then get
          // a sense of what other tiles surround a tile on every edge_t.
-         for (int y = -1; y <= 1; ++y)
-            for (int x = -1; x <= 1; ++x)
-               add(x, y);
+         tiling->surround([self = this](const tiling_t&, const transform_t& placement) {
+            self->add(placement);
+         });
       }
 
       ////////////////////////////////////////////////////////////////////////////
@@ -180,14 +180,9 @@ namespace dak
 
       void infer_t::add(const transform_t& base_trf)
       {
-         for (const auto& placed : tiling.tiles)
+         for (const auto& placed : tiling->tiles)
             for (const auto& trf : placed.second)
                add(base_trf.compose(trf), &placed.first);
-      }
-
-      void infer_t::add(int t1, int t2)
-      {
-         add(transform_t::translate(tiling.t1.scale(t1) + tiling.t2.scale(t2)));
       }
 
       ////////////////////////////////////////////////////////////////////////////

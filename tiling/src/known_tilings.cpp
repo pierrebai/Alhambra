@@ -44,12 +44,15 @@ namespace dak
          return tilings;
       }
 
-      std::shared_ptr<mosaic_t> generate_mosaic(const tiling_t& tiling)
+      std::shared_ptr<mosaic_t> generate_mosaic(const std::shared_ptr<const tiling_t>& tiling)
       {
+         if (!tiling)
+            return {};
+
          auto mo = std::make_shared<mosaic_t>(tiling);
 
          // Fill all regular tiles with stars.
-         for (const auto& placed : mo->tiling.tiles)
+         for (const auto& placed : mo->tiling->tiles)
          {
             const auto& tile = placed.first;
             if (tile.is_regular())
@@ -59,7 +62,7 @@ namespace dak
          }
 
          // Fill all irregular tiles with inferred girih.
-         for (const auto& placed : mo->tiling.tiles)
+         for (const auto& placed : mo->tiling->tiles)
          {
             const auto& tile = placed.first;
             if (!tile.is_regular())

@@ -4,6 +4,7 @@
 #define DAK_TILING_STYLE_KNOWN_MOSAICS_H
 
 #include <dak/tiling/tiling.h>
+#include <dak/tiling/known_tilings.h>
 
 #include <dak/tiling_style/style.h>
 #include <dak/tiling_style/styled_mosaic.h>
@@ -13,12 +14,6 @@
 
 namespace dak
 {
-   namespace tiling
-   {
-      class tiling_t;
-      using known_tilings_t = std::vector<tiling_t>;
-   }
-
    namespace tiling_style
    {
       using tiling::known_tilings_t;

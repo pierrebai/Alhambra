@@ -23,6 +23,7 @@ namespace dak
       using dak::utility::L;
       using namespace ui::qt;
       using namespace QtAdditions;
+      using dak::tiling::translation_tiling_t;
 
       // Creation.
       tiling_window_t::tiling_window_t(dak::tiling::known_tilings_t& known_tilings, const tiling_editor_icons_t& icons, QWidget *parent)
@@ -126,7 +127,7 @@ namespace dak
       //
       // Open a design.
 
-      void tiling_window_t::set_tiling(const tiling_t& tiling, const file_path_t& file)
+      void tiling_window_t::set_tiling(const std::shared_ptr<tiling_t>& tiling, const file_path_t& file)
       {
          original_tiling = tiling;
          original_file = file;
@@ -139,7 +140,7 @@ namespace dak
          if (!save_if_required(L::t(L"start a new tiling"), L::t(L"starting a new tiling")))
             return;
 
-         set_tiling(tiling_t(), file_path_t());
+         set_tiling(std::make_shared<translation_tiling_t>(), file_path_t());
          return;
       }
 
@@ -148,9 +149,9 @@ namespace dak
          if (!save_if_required(L::t(L"edit another tiling"), L::t(L"editing another tiling")))
             return;
 
-         auto selector = new tiling_selector_t(known_tilings, icons, this, [self = this](const std::shared_ptr<mosaic_t>& mo)
+         auto selector = new tiling_selector_t(known_tilings, icons, this, [self = this](const std::shared_ptr<tiling_t>& tiling)
          {
-            self->set_tiling(mo->tiling, file_path_t());
+            self->set_tiling(tiling, file_path_t());
          });
          selector->show();
       }
@@ -163,8 +164,8 @@ namespace dak
          try
          {
             std::filesystem::path path;
-            tiling_t tiling = ask_open_tiling(path, this);
-            if (tiling.is_invalid())
+            auto tiling = ask_open_tiling(path, this);
+            if (!tiling || tiling->is_invalid())
                return;
             set_tiling(tiling, path);
          }
@@ -186,21 +187,21 @@ namespace dak
       {
          // Note: if the current tiling has no tile, we pretend it didn't change
          //       because there is nothing to be lost if closed.
-         tiling_t current_tiling = create_tiling_from_data(original_file);
-         return (!current_tiling.tiles.empty() && current_tiling != original_tiling);
+         auto current_tiling = create_tiling_from_data(original_file);
+         return (original_tiling && current_tiling && !current_tiling->tiles.empty() && *current_tiling != *original_tiling);
       }
 
-      tiling_t tiling_window_t::create_tiling_from_data(const file_path_t& file)
+      std::shared_ptr<tiling_t> tiling_window_t::create_tiling_from_data(const file_path_t& file)
       {
          auto tiling = editor->create_tiling();
-         if (tiling.is_invalid())
+         if (!tiling || tiling->is_invalid())
             return tiling;
 
          // TODO: tiling description.
          //tiling_desc.fill_tiling_Info(tiling);
 
-         if (tiling.name.length() <= 0)
-            tiling.name = file.filename();
+         if (tiling->name.length() <= 0)
+            tiling->name = file.filename();
 
          return tiling;
       }
@@ -243,7 +244,7 @@ namespace dak
          try
          {
             file_path_t path;
-            tiling_t tiling = create_tiling_from_data(path);
+            auto tiling = create_tiling_from_data(path);
             if (!ask_save_tiling(tiling, path, this))
                return false;
             original_file = path;

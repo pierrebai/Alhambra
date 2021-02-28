@@ -49,9 +49,9 @@ namespace dak
       class infer_t
       {
       public:
-         const dak::tiling::tiling_t&           tiling;
+         std::shared_ptr<const tiling_t>&       tiling;
          std::map<const polygon_t, edges_map_t> maps;
-         std::vector<placed_points_t>             placed;
+         std::vector<placed_points_t>           placed;
 
          ////////////////////////////////////////////////////////////////////////////
          //

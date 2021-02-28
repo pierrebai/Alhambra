@@ -6,6 +6,7 @@
 #include <dak/tiling_ui_qt/tiling_editor.h>
 
 #include <dak/tiling/tiling.h>
+#include <dak/tiling/known_tilings.h>
 
 #include <QtWidgets/qwidget>
 #include <QtWidgets/qboxlayout.h>
@@ -21,12 +22,6 @@
 
 namespace dak
 {
-   namespace tiling
-   {
-      class tiling_t;
-      using known_tilings_t = std::vector<tiling_t>;
-   }
-
    namespace tiling_ui_qt
    {
       using dak::tiling::tiling_t;
@@ -56,14 +51,14 @@ namespace dak
          void select_tiling(const tiling_editor_icons_t& icons);
          bool save_tiling();
 
-         void set_tiling(const tiling_t& tiling, const file_path_t& file);
-         tiling_t create_tiling_from_data(const file_path_t& file);
+         void set_tiling(const std::shared_ptr<tiling_t>& tiling, const file_path_t& file);
+         std::shared_ptr<tiling_t> create_tiling_from_data(const file_path_t& file);
          bool has_original_data_changed();
          bool save_if_required(const std::wstring& action, const std::wstring& actioning);
 
          // Tiling being designed: all features and those actually in the tiling.
-         file_path_t      original_file;
-         tiling_t         original_tiling;
+         file_path_t               original_file;
+         std::shared_ptr<tiling_t> original_tiling;
 
          tiling_editor_t* editor = nullptr;
 

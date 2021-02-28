@@ -77,8 +77,8 @@ namespace dak
          tiling_editor_ui_t(QWidget* parent);
 
          // Tiling management.
-         void set_tiling(const tiling_t& tiling);
-         tiling_t create_tiling();
+         void set_tiling(const std::shared_ptr<tiling_t>& tiling);
+         std::shared_ptr<tiling_t> create_tiling();
          bool verify_tiling(const std::wstring& operation);
          void show_entire_tiling();
 
@@ -155,7 +155,7 @@ namespace dak
          static constexpr color_t normal_color = color_t::from_fractions(0.85f, 0.85f, 1.0f, 0.9f);
 
          // The edited tiling.
-         tiling_t edited;
+         std::shared_ptr<tiling_t> edited;
          std::vector<std::shared_ptr<placed_tile_t>> tiles;
          std::set<std::shared_ptr<placed_tile_t>> overlaps;
          std::set<std::shared_ptr<placed_tile_t>> inclusions;
@@ -634,7 +634,7 @@ namespace dak
 
          receiver = std::shared_ptr<mouse_receiver_t>(new mouse_receiver_t(*this));
          emi.event_receivers.push_back(receiver.get());
-         set_tiling(tiling_t());
+         set_tiling(nullptr);
       }
 
       // Tiling management.
@@ -656,36 +656,43 @@ namespace dak
          painter_trf_drawing.set_transform(fill_trf);
       }
 
-      void tiling_editor_ui_t::set_tiling(const tiling_t& tiling)
+      void tiling_editor_ui_t::set_tiling(const std::shared_ptr<tiling_t>& tiling)
       {
          edited = tiling;
          tiles.clear();
          current_selection = selection_t();
          under_mouse = selection_t();
          drawing_translation = false;
+         trans1_start = trans1_end = trans2_start = trans2_end = point_t();
 
-         point_t trans_origin;
-         if (edited.tiles.size() > 0)
+         if (tiling)
          {
-            const auto& tile = tiling.tiles.begin()->first;
-            const transform_t& trf = tiling.tiles.begin()->second.front();
-            trans_origin = tile.center().apply(trf);
-         }
-
-         for (const auto& placed : edited.tiles)
-         {
-            for (const auto& trf : placed.second)
+            point_t trans_origin;
+            if (tiling->tiles.size() > 0)
             {
-               auto plt = std::make_shared<placed_tile_t>(placed_tile_t{placed.first, trf});
-               tiles.push_back(plt);
-               inclusions.insert(plt);
+               const auto& tile = tiling->tiles.begin()->first;
+               const transform_t& trf = tiling->tiles.begin()->second.front();
+               trans_origin = tile.center().apply(trf);
+            }
+
+            for (const auto& placed : tiling->tiles)
+            {
+               for (const auto& trf : placed.second)
+               {
+                  auto plt = std::make_shared<placed_tile_t>(placed_tile_t{ placed.first, trf });
+                  tiles.push_back(plt);
+                  inclusions.insert(plt);
+               }
+            }
+
+            if (auto trans_tiling = std::dynamic_pointer_cast<const translation_tiling_t>(tiling))
+            {
+               trans1_start = trans_origin;
+               trans1_end = trans_origin + trans_tiling->t1;
+               trans2_start = trans_origin;
+               trans2_end = trans_origin + trans_tiling->t2;
             }
          }
-
-         trans1_start = trans_origin;
-         trans1_end = trans_origin + tiling.t1;
-         trans2_start = trans_origin;
-         trans2_end = trans_origin + tiling.t2;
 
          create_polygon_copies();
          update_overlaps();
@@ -693,16 +700,16 @@ namespace dak
          update();
       }
 
-      tiling_t tiling_editor_ui_t::create_tiling()
+      std::shared_ptr<tiling_t> tiling_editor_ui_t::create_tiling()
       {
          // TODO: name, author, description.
-         tiling_t new_tiling;
+         translation_tiling_t new_tiling;
          new_tiling.t1 = get_translation_1();
          new_tiling.t2 = get_translation_2();
          for (const auto& placed : tiles)
             if (is_included(placed))
                new_tiling.tiles[placed->tile].emplace_back(placed->trf);
-         return new_tiling;
+         return std::make_shared<translation_tiling_t>(new_tiling);
       }
 
       bool tiling_editor_ui_t::verify_tiling(const std::wstring& operation)
@@ -1361,12 +1368,12 @@ namespace dak
          build_ui();
       }
 
-      void tiling_editor_t::set_tiling(const tiling_t& tiling)
+      void tiling_editor_t::set_tiling(const std::shared_ptr<tiling_t>& tiling)
       {
          ui->set_tiling(tiling);
       }
       
-      tiling_t tiling_editor_t::create_tiling()
+      std::shared_ptr<tiling_t> tiling_editor_t::create_tiling()
       {
          return ui->create_tiling();
       }

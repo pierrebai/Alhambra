@@ -11,6 +11,8 @@ namespace dak
 {
    namespace tiling_ui_qt
    {
+      using dak::tiling::tiling_t;
+
       ////////////////////////////////////////////////////////////////////////////
       //
       // A widget drawing_canvas working with a tiling.
@@ -19,7 +21,7 @@ namespace dak
       {
       public:
          // This is the tiling to draw on the drawing_canvas.
-         dak::tiling::tiling_t tiling;
+         std::shared_ptr<tiling_t> tiling;
 
          // Create a drawing_canvas with the given parent widget.
          tiling_canvas_t(QWidget* parent);

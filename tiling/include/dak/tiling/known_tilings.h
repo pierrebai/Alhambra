@@ -18,10 +18,10 @@ namespace dak
       // 
       // Reads all tiling files in a given folder.
 
-      using known_tilings_t = std::vector<tiling_t>;
+      using known_tilings_t = std::vector<std::shared_ptr<tiling_t>>;
 
       known_tilings_t read_tilings(const std::wstring& folder, std::vector<std::wstring>& errors);
-      std::shared_ptr<mosaic_t> generate_mosaic(const tiling_t& tiling);
+      std::shared_ptr<mosaic_t> generate_mosaic(const std::shared_ptr<const tiling_t>& tiling);
    }
 }
 

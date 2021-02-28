@@ -29,7 +29,6 @@ namespace dak
    namespace tiling_ui_qt
    {
       using utility::L;
-      using dak::tiling::known_tilings_t;
       using namespace dak::QtAdditions;
 
       ////////////////////////////////////////////////////////////////////////////
@@ -46,9 +45,9 @@ namespace dak
             fill_ui(get_selected_index());
          }
 
-         const std::shared_ptr<mosaic_t>& get_selected() const
+         const std::shared_ptr<tiling_t> get_selected() const
          {
-            return example_canvas->mosaic;
+            return raw_tiling_canvas->tiling;
          }
 
       private:
@@ -148,7 +147,7 @@ namespace dak
 
             for (auto& tiling : tilings)
             {
-               tiling_list->addItem(QString::fromWCharArray(tiling.name.c_str()));
+               tiling_list->addItem(QString::fromWCharArray(tiling->name.c_str()));
             }
 
             set_selected_index(selected);
@@ -159,13 +158,13 @@ namespace dak
             tiling_list->blockSignals(disable_feedback > 0);
          }
 
-         void set_tiling(tiling_t& tiling, const std::filesystem::path& path)
+         void set_tiling(const std::shared_ptr<tiling_t>& tiling, const std::filesystem::path& path)
          {
             disable_feedback++;
             tiling_list->blockSignals(disable_feedback > 0);
 
             tilings.push_back(tiling);
-            tiling_list->addItem(QString::fromWCharArray(tiling.name.c_str()));
+            tiling_list->addItem(QString::fromWCharArray(tiling->name.c_str()));
 
             set_selected_index(int(tilings.size() - 1));
 
@@ -200,7 +199,7 @@ namespace dak
                raw_tiling_canvas->repaint();
 
                tiling_description->setTextFormat(Qt::TextFormat::RichText);
-               tiling_description->setText(QString::asprintf(R"(%ls<p><hr><i><b>%ls</b></i>)", tiling.description.c_str(), tiling.author.c_str()));
+               tiling_description->setText(QString::asprintf(R"(%ls<p><hr><i><b>%ls</b></i>)", tiling->description.c_str(), tiling->author.c_str()));
             }
             else
             {
@@ -244,8 +243,8 @@ namespace dak
             try
             {
                std::filesystem::path path;
-               tiling_t tiling = tiling_ui_qt::ask_open_tiling(path, &editor);
-               if (tiling.is_invalid())
+               auto tiling = tiling_ui_qt::ask_open_tiling(path, &editor);
+               if (!tiling || tiling->is_invalid())
                   return;
                set_tiling(tiling, path);
             }
@@ -294,7 +293,7 @@ namespace dak
       {
       }
 
-      std::shared_ptr<mosaic_t> tiling_selector_t::get_selected() const
+      std::shared_ptr<tiling_t> tiling_selector_t::get_selected() const
       {
          if (!ui)
             return nullptr;

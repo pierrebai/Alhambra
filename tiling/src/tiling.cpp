@@ -12,14 +12,13 @@ namespace dak
       {
       }
 
-      tiling_t::tiling_t(const std::wstring& name, const point_t& t1, const point_t& t2) : t1(t1), t2(t2), name(name)
+      tiling_t::tiling_t(const std::wstring& name)
+         : name(name)
       {
       }
 
       void tiling_t::swap(tiling_t& other)
       {
-         t1.swap(other.t1);
-         t2.swap(other.t2);
          tiles.swap(other.tiles);
          name.swap(other.name);
          description.swap(other.description);
@@ -28,7 +27,7 @@ namespace dak
 
       bool tiling_t::operator==(const tiling_t& other) const
       {
-         return tiles == other.tiles && t1 == other.t1 && t2 == other.t2;
+         return tiles == other.tiles;
       }
 
       rectangle_t tiling_t::bounds() const
@@ -46,6 +45,11 @@ namespace dak
             }
          }
          return tiling_bounds;
+      }
+
+      bool tiling_t::is_invalid() const
+      {
+         return tiles.empty();
       }
    }
 }

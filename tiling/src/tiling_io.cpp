@@ -19,7 +19,7 @@ namespace dak
       // is done, because I don't expect you to write these files by hand --
       // they should be auto-generated from DesignerPanel.
 
-      tiling_t read_tiling(std::wistream& file)
+      std::shared_ptr<tiling_t> read_tiling(std::wistream& file)
       {
          file.imbue(std::locale("C"));
 
@@ -40,7 +40,7 @@ namespace dak
          point_t t2;
          file >> t1.x >> t1.y >> t2.x >> t2.y;
 
-         tiling_t new_tiling(name, t1, t2);
+         translation_tiling_t new_tiling(name, t1, t2);
 
          for (int i = 0; i < tile_count; ++i)
          {
@@ -79,20 +79,24 @@ namespace dak
 
          file >> std::quoted(new_tiling.description) >> quoted(new_tiling.author);
 
-         return new_tiling;
+         return std::make_shared<translation_tiling_t>(new_tiling);
       }
 
-      void write_tiling(const tiling_t& t, std::wostream& file)
+      void write_tiling(const std::shared_ptr<const tiling_t>& tiling, std::wostream& file)
       {
+         auto trans_tiling = std::dynamic_pointer_cast<const translation_tiling_t>(tiling);
+         if (!trans_tiling)
+            return;
+
          file.precision(17);
          file.imbue(std::locale("C"));
 
-         file << L"tiling " << std::quoted(t.name) << L" " << t.tiles.size() << std::endl;
-         file << L"    " << t.t1.x << L" " << t.t1.y << std::endl;
-         file << L"    " << t.t2.x << L" " << t.t2.y << std::endl;
+         file << L"tiling " << std::quoted(trans_tiling->name) << L" " << trans_tiling->tiles.size() << std::endl;
+         file << L"    " << trans_tiling->t1.x << L" " << trans_tiling->t1.y << std::endl;
+         file << L"    " << trans_tiling->t2.x << L" " << trans_tiling->t2.y << std::endl;
          file << std::endl;
 
-         for (const auto& poly_trf : t.tiles)
+         for (const auto& poly_trf : trans_tiling->tiles)
          {
             const polygon_t& poly = poly_trf.first;
             const std::vector<transform_t>& trfs = poly_trf.second;
@@ -116,8 +120,8 @@ namespace dak
             file << std::endl;
          }
 
-         file << L"   " << std::quoted(t.description) << std::endl;
-         file << L"   " << std::quoted(t.author) << std::endl;
+         file << L"   " << std::quoted(trans_tiling->description) << std::endl;
+         file << L"   " << std::quoted(trans_tiling->author) << std::endl;
       }
    }
 }

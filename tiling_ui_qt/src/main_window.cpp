@@ -299,7 +299,13 @@ namespace dak
 
          layer_list->new_layer_requested = [&known_tilings=this->known_tilings, &icons, self=this]()
          {
-            auto selector = new tiling_selector_t(known_tilings, icons, nullptr, [self=self](const std::shared_ptr<mosaic_t>& new_mosaic) { self->add_layer(new_mosaic); });
+            auto selector = new tiling_selector_t(known_tilings, icons, nullptr, [self=self](const std::shared_ptr<tiling_t>& tiling)
+            {
+               auto mosaic = generate_mosaic(tiling);
+               if (!mosaic)
+                  return;
+               self->add_layer(mosaic);
+            });
             selector->show();
          };
 
@@ -737,7 +743,7 @@ namespace dak
 
          if (was_empty)
          {
-            update_layered_transform(mo_layer->mosaic->tiling.bounds());
+            update_layered_transform(mo_layer->mosaic->tiling->bounds());
             clear_undo_stack();
             // Note: when adding layers, allow undoing back to an empty canvas.
             undo_stack.simple_commit({ 0, nullptr, [self=this](const std::any&) { self->awaken_to_empty_canvas(); } });
@@ -765,7 +771,7 @@ namespace dak
          layered.set_layers(layers);
          if (layers.size() > 0)
             if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layered.get_layers()[0]))
-               update_layered_transform(mo_layer->mosaic->tiling.bounds());
+               update_layered_transform(mo_layer->mosaic->tiling->bounds());
 
          fill_layer_list();
          commit_to_undo();

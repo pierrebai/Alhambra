@@ -206,25 +206,29 @@ namespace dak
             layer_list->blockSignals(disable_feedback > 0);
 
             int row = 0;
-            for (auto& layer_t : edited)
+            for (auto& layer : edited)
             {
-               if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer_t))
+               if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
                {
+                  if (row >= layer_list->rowCount())
+                     layer_list->setRowCount(row + 1);
+
                   const auto state = mo_layer->hide ? Qt::CheckState::Unchecked : Qt::CheckState::Checked;
-                  auto draw_item = layer_list->item(row, draw_column);
+                  auto draw_item = new QTableWidgetItem();
                   draw_item->setCheckState(state);
+                  layer_list->setItem(row, draw_column, draw_item);
 
                   // Note: make icon larger than what was set in the table view
                   //       so that it gets scaled down with some smoothing.
                   const QIcon qicon = get_icon(mo_layer, 128, 64);
-                  const QString tiling_name = QString::fromWCharArray(mo_layer->mosaic->tiling.name.c_str());
-                  auto tiling_item = layer_list->item(row, tiling_column);
-                  tiling_item->setIcon(qicon);
-                  tiling_item->setText(tiling_name);
+                  const QString tiling_name = QString::fromWCharArray(mo_layer->mosaic->tiling->name.c_str());
+                  auto tiling_item = new QTableWidgetItem(qicon, tiling_name);
+                  tiling_item->setFlags(Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsSelectable);
+                  layer_list->setItem(row, tiling_column, tiling_item);
 
                   const QString style_name = QString::fromWCharArray(get_style_name(mo_layer->style));
-                  auto style_item = layer_list->item(row, style_column);
-                  style_item->setText(style_name);
+                  auto style_item = new QTableWidgetItem(style_name);
+                  layer_list->setItem(row, style_column, style_item);
 
                   row++;
                }
@@ -315,32 +319,7 @@ namespace dak
             layer_list->blockSignals(disable_feedback > 0);
 
             layer_list->setRowCount(0);
-
-            for (auto& layer_t : edited)
-            {
-               if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer_t))
-               {
-                  const int row = layer_list->rowCount();
-                  layer_list->setRowCount(row + 1);
-
-                  const auto state = mo_layer->hide ? Qt::CheckState::Unchecked : Qt::CheckState::Checked;
-                  auto draw_item = new QTableWidgetItem();
-                  draw_item->setCheckState(state);
-                  layer_list->setItem(row, draw_column, draw_item);
-
-                  // Note: make the icon larger than what was set in the table view
-                  //       so that it gets scaled down with some smoothing.
-                  const QIcon qicon = get_icon(mo_layer, 128, 64);
-                  const QString tiling_name = QString::fromWCharArray(mo_layer->mosaic->tiling.name.c_str());
-                  auto tiling_item = new QTableWidgetItem(qicon, tiling_name);
-                  tiling_item->setFlags(Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsSelectable);
-                  layer_list->setItem(row, tiling_column, tiling_item);
-
-                  const QString style_name = QString::fromWCharArray(get_style_name(mo_layer->style));
-                  auto style_item = new QTableWidgetItem(style_name);
-                  layer_list->setItem(row, style_column, style_item);
-               }
-            }
+            update_list_content();
 
             layer_list->resizeColumnsToContents();
             layer_list->horizontalHeader()->setSectionResizeMode(tiling_column, QHeaderView::ResizeMode::Stretch);

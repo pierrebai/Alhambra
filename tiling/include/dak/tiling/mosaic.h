@@ -26,7 +26,7 @@ namespace dak
       {
       public:
          // The tiling used to built the mosaic from tiles.
-         tiling_t tiling;
+         std::shared_ptr<const tiling_t> tiling;
 
          // Figures giving how to draw each tile.
          std::map<polygon_t, std::shared_ptr<figure_t>> tile_figures;
@@ -35,7 +35,7 @@ namespace dak
          mosaic_t() { }
 
          // Mosaic of the given tiling, with empty figures.
-         mosaic_t(const dak::tiling::tiling_t& t) : tiling(t) { }
+         mosaic_t(std::shared_ptr<const tiling_t> t) : tiling(t) { }
 
          // Copy.
          mosaic_t(const mosaic_t& other);
@@ -56,7 +56,7 @@ namespace dak
          size_t count_tiling_edges() const;
 
          // Verify if the mosaic is invalid.
-         bool is_invalid() const { return tiling.is_invalid() || tile_figures.empty(); }
+         bool is_invalid() const { return !tiling || tiling->is_invalid() || tile_figures.empty(); }
       };
    }
 }

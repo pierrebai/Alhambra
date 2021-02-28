@@ -5,6 +5,8 @@
 
 #include <dak/tiling_style/style.h>
 
+#include <dak/tiling/known_tilings.h>
+
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -16,16 +18,11 @@ namespace dak
       class rectangle_t;
    }
 
-   namespace tiling
-   {
-      class tiling_t;
-      using known_tilings_t = std::vector<tiling_t>;
-   }
-
    namespace tiling_style
    {
       using geometry::rectangle_t;
       class styled_mosaic_t;
+      using tiling::known_tilings_t;
 
       ////////////////////////////////////////////////////////////////////////////
       // 

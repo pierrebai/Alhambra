@@ -258,7 +258,7 @@ namespace dak
             file >> dummy >> std::quoted(tiling_name) >> figure_count;
 
             for (const auto& tiling : knowns)
-               if (tiling.name == tiling_name)
+               if (tiling->name == tiling_name)
                   new_mosaic->tiling = tiling;
 
             for (int i = 0; i < figure_count; ++i)
@@ -342,7 +342,7 @@ namespace dak
 
          void write_mosaic(std::wostream& file, const mosaic_t& mosaic)
          {
-            file << L"  mosaic " << std::quoted(mosaic.tiling.name) << " " << mosaic.tile_figures.size() << L"\n";
+            file << L"  mosaic " << std::quoted(mosaic.tiling->name) << " " << mosaic.tile_figures.size() << L"\n";
 
             for (const auto& poly_figure : mosaic.tile_figures)
             {

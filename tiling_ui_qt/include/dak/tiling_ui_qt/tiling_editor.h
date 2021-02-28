@@ -98,8 +98,8 @@ namespace dak
          tiling_editor_t(const tiling_editor_icons_t& icons, QWidget* parent);
 
          // Tiling management.
-         void set_tiling(const tiling_t& tiling);
-         tiling_t create_tiling();
+         void set_tiling(const std::shared_ptr<tiling_t>& tiling);
+         std::shared_ptr<tiling_t> create_tiling();
          bool verify_tiling(const std::wstring& operation);
 
          // Error reporting.

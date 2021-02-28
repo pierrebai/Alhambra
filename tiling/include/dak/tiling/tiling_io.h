@@ -15,9 +15,9 @@ namespace dak
       //
       // Functions for reading and writing tilings from and to I/O streams.
 
-      tiling_t read_tiling(std::wistream& file);
+      std::shared_ptr<tiling_t> read_tiling(std::wistream& file);
 
-      void write_tiling(const tiling_t& t, std::wostream& file);
+      void write_tiling(const std::shared_ptr<const tiling_t>& tiling, std::wostream& file);
    }
 }
 
