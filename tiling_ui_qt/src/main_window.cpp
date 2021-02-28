@@ -451,7 +451,7 @@ namespace dak
       bool main_window_t::save_mosaic()
       {
          std::filesystem::path path;
-         return ask_save_layered_mosaic(get_avail_layers(), path, this);
+         return ask_save_layered_mosaic(get_avail_mosaics(), path, this);
       }
 
       /////////////////////////////////////////////////////////////////////////
@@ -464,6 +464,16 @@ namespace dak
          geometry::rectangle_t region = convert(canvas->geometry());
          region.x = region.y = 0;
          return region.apply(canvas->layered->get_transform().invert());
+      }
+
+      std::vector<std::shared_ptr<styled_mosaic_t>> main_window_t::get_avail_mosaics()
+      {
+         const auto& layers = get_avail_layers();
+         std::vector<std::shared_ptr<styled_mosaic_t>> mosaics;
+         for (const auto& layer : layers)
+            if (const auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
+               mosaics.push_back(mo_layer);
+         return mosaics;
       }
 
       std::vector<std::shared_ptr<layer_t>> main_window_t::get_avail_layers()
@@ -549,14 +559,11 @@ namespace dak
       {
          // Find the layers that corresonpond to the list of styles given.
          std::vector<std::shared_ptr<layer_t>> layers;
-         for (auto& layer : get_avail_layers())
+         for (auto& mo_layer : get_avail_mosaics())
          {
-            if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
+            if (std::find(styles.begin(), styles.end(), mo_layer->style) != styles.end())
             {
-               if (std::find(styles.begin(), styles.end(), mo_layer->style) != styles.end())
-               {
-                  layers.emplace_back(layer);
-               }
+               layers.emplace_back(mo_layer);
             }
          }
          return layers;
@@ -744,6 +751,12 @@ namespace dak
       /////////////////////////////////////////////////////////////////////////
       //
       // The mosaic tool-bar buttons.
+
+      void main_window_t::update_mosaic_map(const std::vector<std::shared_ptr<styled_mosaic_t>>& mosaics, const std::wstring& name)
+      {
+         std::vector<std::shared_ptr<layer_t>> layers(mosaics.begin(), mosaics.end());
+         return update_mosaic_map(layers, name);
+      }
 
       void main_window_t::update_mosaic_map(const std::vector<std::shared_ptr<layer_t>>& layers, const std::wstring& name)
       {

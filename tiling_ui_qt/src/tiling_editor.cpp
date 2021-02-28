@@ -1191,7 +1191,7 @@ namespace dak
          switch (poly_side_count) {
             case 0:
             case 1:
-            case 2:     name = L::t(L"Add polygon_t");   break;
+            case 2:     name = L::t(L"Add Polygon");   break;
             case 3:     name = L::t(L"Add Triangle");  break;
             case 4:     name = L::t(L"Add Square");    break;
             case 5:     name = L::t(L"Add Pentagon");  break;
@@ -1415,7 +1415,7 @@ namespace dak
             ui->exclude_all();
          });
 
-         add_poly_action = CreateAction(L::t(L"Add polygon_t"), icons.add_polygon, QKeySequence(Qt::Key_Return), L::t(L"Add a regular polygon_t with X side, where X is a number you entered with the keyboard. (Shortcut: <Return>)"), [ui=ui]()
+         add_poly_action = CreateAction(L::t(L"Add Polygon"), icons.add_polygon, QKeySequence(Qt::Key_Return), L::t(L"Add a regular polygon_t with X side, where X is a number you entered with the keyboard. (Shortcut: <Return>)"), [ui=ui]()
          {
             ui->add_regular_polygon();
          });

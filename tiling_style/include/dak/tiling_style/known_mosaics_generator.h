@@ -25,6 +25,7 @@ namespace dak
    namespace tiling_style
    {
       using geometry::rectangle_t;
+      class styled_mosaic_t;
 
       ////////////////////////////////////////////////////////////////////////////
       // 
@@ -33,7 +34,7 @@ namespace dak
       class known_mosaics_generator_t
       {
       public:
-         typedef std::vector<std::shared_ptr<layer_t>> layered_mosaic_t;
+         typedef std::vector<std::shared_ptr<styled_mosaic_t>> layered_mosaic_t;
 
          known_mosaics_generator_t();
 

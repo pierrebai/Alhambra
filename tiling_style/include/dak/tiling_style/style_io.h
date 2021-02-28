@@ -4,8 +4,8 @@
 #define DAK_TILING_TILING_STYLE_IO_H
 
 
-#include <dak/ui/layer.h>
 #include <dak/tiling/known_tilings.h>
+#include <dak/tiling_style/styled_mosaic.h>
 
 #include <vector>
 #include <iostream>
@@ -20,9 +20,9 @@ namespace dak
       //
       // Functions for reading and writing layers of styles from and to I/O streams.
 
-      std::vector<std::shared_ptr<ui::layer_t>> read_layered_mosaic(std::wistream& file, const known_tilings_t& knowns);
+      std::vector<std::shared_ptr<styled_mosaic_t>> read_layered_mosaic(std::wistream& file, const known_tilings_t& knowns);
 
-      void write_layered_mosaic(std::wostream& file, const std::vector<std::shared_ptr<ui::layer_t>>& layers);
+      void write_layered_mosaic(std::wostream& file, const std::vector<std::shared_ptr<styled_mosaic_t>>& layers);
    }
 }
 

@@ -33,6 +33,7 @@ namespace dak
    namespace tiling_ui_qt
    {
       typedef dak::tiling::mosaic_t mosaic_t;
+      typedef dak::tiling_style::styled_mosaic_t styled_mosaic_t;
       typedef dak::ui::layer_t layer_t;
 
       ////////////////////////////////////////////////////////////////////////////
@@ -88,6 +89,7 @@ namespace dak
 
          // The redraw UI call-backs.
          geometry::rectangle_t window_filling_region();
+         std::vector<std::shared_ptr<styled_mosaic_t>> get_avail_mosaics();
          std::vector<std::shared_ptr<layer_t>> get_avail_layers();
          void update_layered_transform(const geometry::rectangle_t& bounds);
          const geometry::edges_map_t& find_calculated_mosaic(calculated_mosaics& calc_mos, const std::shared_ptr<mosaic_t>& mosaic);
@@ -121,6 +123,7 @@ namespace dak
          void add_layer(const std::shared_ptr<mosaic_t>& new_mosaic);
 
          // The mosaic tool-bar buttons.
+         void update_mosaic_map(const std::vector<std::shared_ptr<styled_mosaic_t>>& mosaics, const std::wstring& name);
          void update_mosaic_map(const std::vector<std::shared_ptr<layer_t>>& layers, const std::wstring& name);
 
          // The canvas manipulation tool-bar buttons.

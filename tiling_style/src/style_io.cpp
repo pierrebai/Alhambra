@@ -371,11 +371,11 @@ namespace dak
       //
       // Functions for reading and writing a layered mosaic.
 
-      std::vector<std::shared_ptr<ui::layer_t>> read_layered_mosaic(std::wistream& file, const known_tilings_t& knowns)
+      std::vector<std::shared_ptr<styled_mosaic_t>> read_layered_mosaic(std::wistream& file, const known_tilings_t& knowns)
       {
          file.imbue(std::locale("C"));
 
-         std::vector<std::shared_ptr<ui::layer_t>> new_layers;
+         std::vector<std::shared_ptr<styled_mosaic_t>> new_layers;
 
          std::wstring dummy;
          size_t count = 0;
@@ -445,20 +445,17 @@ namespace dak
          return new_layers;
       }
 
-      void write_layered_mosaic(std::wostream& file, const std::vector<std::shared_ptr<ui::layer_t>>& layers)
+      void write_layered_mosaic(std::wostream& file, const std::vector<std::shared_ptr<styled_mosaic_t>>& layers)
       {
          file.precision(17);
          file.imbue(std::locale("C"));
 
          file << L"layers " << layers.size() << "\n";
 
-         for (const auto& layer_t : layers)
+         for (const auto& styled_mosaic : layers)
          {
-            if (const auto styled_mosaic = std::dynamic_pointer_cast<tiling_style::styled_mosaic_t>(layer_t))
-            {
-               write_style(file, *styled_mosaic->style);
-               write_mosaic(file, *styled_mosaic->mosaic);
-            }
+            write_style(file, *styled_mosaic->style);
+            write_mosaic(file, *styled_mosaic->mosaic);
          }
       }
    }

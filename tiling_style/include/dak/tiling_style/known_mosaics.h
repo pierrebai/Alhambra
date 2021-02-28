@@ -6,6 +6,7 @@
 #include <dak/tiling/tiling.h>
 
 #include <dak/tiling_style/style.h>
+#include <dak/tiling_style/styled_mosaic.h>
 
 #include <string>
 #include <vector>
@@ -29,7 +30,7 @@ namespace dak
       class known_mosaics_t
       {
       public:
-         typedef std::vector<std::shared_ptr<layer_t>> layered_mosaic_t;
+         typedef std::vector<std::shared_ptr<styled_mosaic_t>> layered_mosaic_t;
 
          std::vector<layered_mosaic_t> mosaics;
 

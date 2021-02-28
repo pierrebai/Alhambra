@@ -12,9 +12,9 @@ class QWidget;
 
 namespace dak
 {
-   namespace ui
+   namespace tiling_style
    {
-      class layer_t;
+      class styled_mosaic_t;
    }
 
    namespace tiling
@@ -25,7 +25,7 @@ namespace dak
 
    namespace tiling_ui_qt
    {
-      using dak::ui::layer_t;
+      using dak::tiling_style::styled_mosaic_t;
       using dak::tiling::tiling_t;
       using dak::tiling::known_tilings_t;
 
@@ -40,8 +40,8 @@ namespace dak
 
       // Show a dialog to open or save a layered mosaic.
       // The given path is updated with the selected one, if any.
-      std::vector<std::shared_ptr<ui::layer_t>> ask_open_layered_mosaic(const known_tilings_t& knowns, std::filesystem::path& path, QWidget* parent);
-      bool ask_save_layered_mosaic(const std::vector<std::shared_ptr<ui::layer_t>>& layers, std::filesystem::path& path, QWidget* parent);
+      std::vector<std::shared_ptr<styled_mosaic_t>> ask_open_layered_mosaic(const known_tilings_t& knowns, std::filesystem::path& path, QWidget* parent);
+      bool ask_save_layered_mosaic(const std::vector<std::shared_ptr<styled_mosaic_t>>& layers, std::filesystem::path& path, QWidget* parent);
 
       // Ask yes/no/cancel.
       enum class yes_no_cancel_t
