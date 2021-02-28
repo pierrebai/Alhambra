@@ -285,9 +285,14 @@ namespace dak
             {
                const auto iter = maps.find(adjs[idx].tile);
                if (iter == maps.end())
-                  continue;
-               const edges_map_t& fig = iter->second;
-               amaps.emplace_back(fig.apply(adjs[idx].trf));
+               {
+                  amaps.emplace_back();
+               }
+               else
+               {
+                  const edges_map_t& fig = iter->second;
+                  amaps.emplace_back(fig.apply(adjs[idx].trf));
+               }
             }
          }
 
@@ -689,7 +694,7 @@ namespace dak
 
          // Sort edge_t-to-edge_t intersection by their total length.
          std::sort(infos.begin(), infos.end(), [](const edges_length_info_t& a, const edges_length_info_t& b) {
-            return a.compareTo(b);
+            return a.compareTo(b) < 0;
          });
 
          // Record the starting point_t of each edge_t. As we grow the edge_t,
@@ -782,7 +787,7 @@ namespace dak
 
          // Sort edge_t-to-edge_t intersection by their total length.
          std::sort(infos.begin(), infos.end(), [](const intersection_info& a, const intersection_info& b) {
-            return a.compareTo(b);
+            return a.compareTo(b) < 0;
          });
 
          return infos;
