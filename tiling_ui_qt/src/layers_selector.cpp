@@ -147,7 +147,7 @@ namespace dak
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // A QWidget to select and order layers_t.
+      // A QWidget to select and order layers.
 
       class layers_selector_ui_t
       {
@@ -408,7 +408,7 @@ namespace dak
          {
             update_enabled();
 
-            // Note: used to avoid re-calculating the layer_t when just setting its value in the UI.
+            // Note: used to avoid re-calculating the layer when just setting its value in the UI.
             if (disable_feedback)
                return;
 
@@ -481,7 +481,7 @@ namespace dak
 
          void move_layers_up()
          {
-            // Treat each target index in order: find if it must receive the layer_t from below moving up.
+            // Treat each target index in order: find if it must receive the layer from below moving up.
             auto selected = get_selected_indexes();
             int target = 0;
             for (int& index : selected)
@@ -501,7 +501,7 @@ namespace dak
 
          void move_layers_down()
          {
-            // Treat each target index in reverse order: find if it must receive the layer_t from up moving down.
+            // Treat each target index in reverse order: find if it must receive the layer from up moving down.
             auto selected = get_selected_indexes();
             std::reverse(selected.begin(), selected.end());
             int target = int(edited.size()) - 1;
@@ -539,7 +539,7 @@ namespace dak
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // A QWidget to select and order layers_t.
+      // A QWidget to select and order layers.
 
       layers_selector_t::layers_selector_t(QWidget* parent, int copy_icon, int add_icon, int remove_icon, int move_up_icon, int move_down_icon)
       : QWidget(parent), ui(std::make_unique<layers_selector_ui_t>(*this, copy_icon, add_icon, remove_icon, move_up_icon, move_down_icon))

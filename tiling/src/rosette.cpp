@@ -108,8 +108,8 @@ namespace dak
       {
          const double don = 1. / n;
 
-         point_t tip = point_t(1.0, 0.0);           // The point_t to build from
-         point_t rtip = geometry::get_arc(don);   // The next point_t over.
+         point_t tip = point_t(1.0, 0.0);         // The point to build from
+         point_t rtip = geometry::get_arc(don);   // The next point over.
 
          double q_clamp = std::min(std::max(q, -0.99), 0.99);
          int s_clamp = std::min(s, (n - 1) / 2);

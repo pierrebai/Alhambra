@@ -41,7 +41,7 @@ namespace dak
       //
       // Different types of possible selections in a tiling.
 
-      // Whole tile selection_t.
+      // Whole tile selection.
       struct tile_selection_t
       {
          std::shared_ptr<placed_tile_t> tile;
@@ -62,7 +62,7 @@ namespace dak
          }
       };
 
-      // Tile edge selection_t.
+      // Tile edge selection.
       struct edge_selection_t : tile_selection_t
       {
          size_t p1 = -1;
@@ -92,7 +92,7 @@ namespace dak
          }
       };
 
-      // Point selection_t: single vertex, center of tile or center of an edge.
+      // Point selection: single vertex, center of tile or center of an edge.
       struct point_selection_t : tile_selection_t
       {
          std::vector<size_t> points;
@@ -141,7 +141,7 @@ namespace dak
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // Combinable selection_t types.
+      // Combinable selection types.
 
       enum class selection_type_t
       {

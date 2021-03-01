@@ -50,10 +50,10 @@ namespace tiling_tests
          known_tilings_t tilings = read_tilings(KNOWN_TILINGS_DIR, errors);
          for (const auto& tiling : tilings)
          {
-            // Create a mosaic_t with the tiling.
+            // Create a mosaic with the tiling.
             auto mo = std::make_shared<mosaic_t>(tiling);
 
-            // Fill all regular tiles with rosette_t.
+            // Fill all regular tiles with rosette.
             for (const auto& placed : mo->tiling->tiles)
             {
                const polygon_t& tile = placed.first;
@@ -121,10 +121,10 @@ namespace tiling_tests
             if (counter++ % 10 != 0)
                continue;
 
-            // Create a mosaic_t with the tiling.
+            // Create a mosaic with the tiling.
             auto mo = std::make_shared<mosaic_t>(tiling);
 
-            // Fill all regular tiles with rosette_t.
+            // Fill all regular tiles with rosette.
             for (const auto& placed : mo->tiling->tiles)
             {
                const polygon_t& tile = placed.first;
@@ -189,7 +189,7 @@ namespace tiling_tests
          known_tilings_t tilings = read_tilings(KNOWN_TILINGS_DIR, errors);
          for (const auto& tiling : tilings)
          {
-            // Create a mosaic_t with the tiling.
+            // Create a mosaic with the tiling.
             auto mo = std::make_shared<mosaic_t>(tiling);
 
             // Fill all tiles with inferred girih.
@@ -264,7 +264,7 @@ namespace tiling_tests
             if (counter++ % 10 != 0)
                continue;
 
-            // Create a mosaic_t with the tiling.
+            // Create a mosaic with the tiling.
             auto mo = std::make_shared<mosaic_t>(tiling);
 
             // Fill all tiles with inferred girih.

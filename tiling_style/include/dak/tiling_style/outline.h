@@ -35,7 +35,7 @@ namespace dak
          outline_t(const ui::color_t& c, double w) : thick_t(c, w) { }
          outline_t(const ui::color_t& c, double w, double ow) : thick_t(c, w, ow) { }
 
-         // Copy a layer_t.
+         // Copy a layer.
          std::shared_ptr<layer_t> clone() const override;
 
          // Retrieve a description of this style.
@@ -48,7 +48,7 @@ namespace dak
          // The internal draw is called with the layer transform already applied.
          void internal_draw(ui::drawing_t& drw) override;
 
-         // Information about each widened edge_t.
+         // Information about each widened edge.
          struct fat_line_t
          {
             polygon_t hexagon;
@@ -72,29 +72,29 @@ namespace dak
          // The generated fat lines are guaranteed to be in the same order as the canonical edges.
          virtual fat_lines_t generate_fat_lines(bool all_edges);
 
-         // Generate one fat line of the edge_t and width.
+         // Generate one fat line of the edge and width.
          fat_line_t generate_fat_line(const edge_t& edge_t, const size_t edge_index, double width);
 
          // Draw the fat lines. Override in-sub-class to change the rendering.
          virtual void internal_draw_fat_lines(ui::drawing_t& drw, const fat_lines_t& fat_lines);
 
          // Get the two points at the left and right needed to draw the p2 junction
-         // of the given edge_t at the given width.
+         // of the given edge at the given width.
          std::pair<point_t, point_t> get_points(const edge_t& edge_t, size_t index, double width, bool& is_line_end);
 
          // Get the two before/after points needed to draw the p2 junction
-         // of the given edge_t given the number of connections.
+         // of the given edge given the number of connections.
          virtual std::pair<point_t, point_t> get_points_one_connection(  const edge_t& an_edge, size_t index, double width, const geometry::edges_map_t::range_t& connections);
          virtual std::pair<point_t, point_t> get_points_two_connections( const edge_t& an_edge, size_t index, double width, const geometry::edges_map_t::range_t& connections);
          virtual std::pair<point_t, point_t> get_points_many_connections(const edge_t& an_edge, size_t index, double width, const geometry::edges_map_t::range_t& connections);
 
          // Get the two before/after points needed to draw the p2 junction
-         // of the given edge_t when we want to treat the intersection ina specific way.
+         // of the given edge when we want to treat the intersection ina specific way.
          std::pair<point_t, point_t> get_points_dead_end(    const edge_t& an_edge, size_t index, double width);
          std::pair<point_t, point_t> get_points_continuation(const edge_t& an_edge, size_t index, double width, const geometry::edges_map_t::range_t& connections);
          std::pair<point_t, point_t> get_points_intersection(const edge_t& an_edge, size_t index, double width, double other_edges_width, const geometry::edges_map_t::range_t& connections);
 
-         // Calculate the position of a point_t to draw the junction properly
+         // Calculate the position of a point to draw the junction properly
          // given the angle between and b at the joint.
          static point_t get_join(const point_t& joint, const point_t& a, const point_t& b, double width, double other_edges_width);
       };

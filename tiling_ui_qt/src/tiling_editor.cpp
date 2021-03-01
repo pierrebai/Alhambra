@@ -98,7 +98,7 @@ namespace dak
          // Tiling translation vector.
          void add_to_translation(const point_t& wpt, bool ending);
 
-         // const polygon_t& management.
+         // Polygon management.
          std::shared_ptr<placed_tile_t> add_placed_tile(const placed_tile_t&);
          void remove_placed_tile(const std::shared_ptr<placed_tile_t>& placed);
          void remove_placed_tile(const selection_t& sel);
@@ -160,7 +160,7 @@ namespace dak
          std::set<std::shared_ptr<placed_tile_t>> overlaps;
          std::set<std::shared_ptr<placed_tile_t>> inclusions;
 
-         // Current mouse selection_t.
+         // Current mouse selection.
          selection_t   current_selection;
          selection_t   under_mouse;
 
@@ -170,7 +170,7 @@ namespace dak
          // Accumulation of number of sides to create a regular polygon.
          int poly_side_count = 0;
 
-         // Accumulation of selected vertices when drawing_t polygons.
+         // Accumulation of selected vertices when drawing polygons.
          polygon_t new_polygon;
 
          // Translation vector so that the tiling tiles the plane.
@@ -222,7 +222,7 @@ namespace dak
 
             virtual void draw(drawing_t&)
             {
-               // Sub-classes add drawing_t.
+               // Sub-classes add drawing.
             }
 
          protected:
@@ -488,7 +488,7 @@ namespace dak
             {
                add_vertex(editor.find_selection(wpt, selection_type_t::point));
                // Note: do *not* call mouse_action_t::end_dragging() to allow chaining
-               //       drawing_t polygon_t sides.
+               //       drawing polygon sides.
             }
          };
 
@@ -851,7 +851,7 @@ namespace dak
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // const polygon_t& management.
+      // Polygon management.
 
       std::shared_ptr<placed_tile_t> tiling_editor_ui_t::add_placed_tile(const placed_tile_t& placed)
       {
@@ -870,7 +870,7 @@ namespace dak
          if (placed && placed == placed_under_mouse)
             under_mouse = selection_t();
 
-         // Note: do *not* use remove_if since there might be more than one polygon_t that matches.
+         // Note: do *not* use remove_if since there might be more than one polygon that matches.
          //       This happens with copy_move_polygon if the user doesn't move the mouse.
          const auto pos = std::find(tiles.begin(), tiles.end(), placed);
          if (pos != tiles.end())
@@ -1295,7 +1295,7 @@ namespace dak
                case mouse_buttons_t::one:
                {
                   // Drawing polygons is special because it requires multiple independent clicks.
-                  // Otherwise, try to get what is under the mouse from more specific (point_t) to
+                  // Otherwise, try to get what is under the mouse from more specific (point) to
                   // less specific (edge, then tile).
                   if (std::dynamic_pointer_cast<draw_polygon>(mouse_interaction))
                   {

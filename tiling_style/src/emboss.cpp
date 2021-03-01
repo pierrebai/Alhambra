@@ -74,7 +74,7 @@ namespace dak
       {
          const point_t N = (a - d).perp().normalize();
 
-         // dd is a normalized floating point_t value corresponding to 
+         // dd is a normalized floating point value corresponding to 
          // the brightness to use.
          const double dd = 0.5 * (N.x * light.x + N.y * light.y + 1.0);
 

@@ -109,7 +109,7 @@ namespace dak
       ////////////////////////////////////////////////////////////////////////////
       //
       // Information about the length of edges connecting two sides and
-      // the intersection point_t.
+      // the intersection point.
 
       class edges_length_info_t
       {
@@ -168,7 +168,7 @@ namespace dak
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // The information about one point of contact_t on the boundary of the
+      // The information about one point of contact on the boundary of the
       // region being inferred.
 
       class contact_t

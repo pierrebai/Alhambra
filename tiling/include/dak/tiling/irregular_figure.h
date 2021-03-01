@@ -20,7 +20,7 @@ namespace dak
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // Figure based on a non-regular polygon_t.
+      // Figure based on a non-regular polygon.
 
       class irregular_figure_t : public figure_t
       {

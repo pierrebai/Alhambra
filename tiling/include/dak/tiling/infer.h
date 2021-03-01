@@ -72,7 +72,7 @@ namespace dak
 
          ////////////////////////////////////////////////////////////////////////////
          //
-         // Choose an appropriate transform_t of the tile to infer, i.e.
+         // Choose an appropriate transform of the tile to infer, i.e.
          // one that is surrounded by other tiles.  That means that we
          // should just find an instance of that tile in the (0,0) unit.
 

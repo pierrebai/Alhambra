@@ -40,7 +40,7 @@ namespace dak
          emboss_t(const ui::color_t& c, double w) : outline_t(c, w) { }
          emboss_t(const ui::color_t& c, double w, double ow) : outline_t(c, w, ow) { }
 
-         // Copy a layer_t.
+         // Copy a layer.
          std::shared_ptr<layer_t> clone() const override;
          void make_similar(const layer_t& other) override;
 
@@ -48,7 +48,7 @@ namespace dak
          std::wstring describe() const override;
 
       protected:
-         // The internal draw is called with the layer_t transform already applied.
+         // The internal draw is called with the layer transform already applied.
          void internal_draw_fat_lines(ui::drawing_t& drw, const fat_lines_t& fat_lines) override;
 
          void draw_trap(ui::drawing_t& drw, const point_t& a, const point_t& b, const point_t& c, const point_t& d, const point_t& light, const ui::color_t* greys);

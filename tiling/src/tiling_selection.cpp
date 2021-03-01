@@ -61,14 +61,14 @@ namespace dak
                      const point_t& prev_pt = placed->tile.points[prev_i];
 
                      // Don't allow selecting end-points of the edge when the edge is too short.
-                     // Here we define too short as 4 times the selection_t distance, which is 16 when squared.
+                     // Here we define too short as 4 times the selection distance, which is 16 when squared.
                      if (pt.distance_2(prev_pt) > sel_dist_2 * 16)
                         if ((sel_types & selection_type_t::point) == selection_type_t::point)
                            if (geometry::near(lpt, pt, sel_dist_2))
                               new_sel.add(point_selection_t(placed, i));
 
                      // Don't allow selecting the middle of the edge when the edge is too short.
-                     // Here we define too short as 6 times the selection_t distance, which is 36 when squared.
+                     // Here we define too short as 6 times the selection distance, which is 36 when squared.
                      if (pt.distance_2(prev_pt) > sel_dist_2 * 36)
                         if ((sel_types & selection_type_t::point) == selection_type_t::point)
                            if (geometry::near(lpt, prev_pt.convex_sum(pt, 0.5), sel_dist_2))

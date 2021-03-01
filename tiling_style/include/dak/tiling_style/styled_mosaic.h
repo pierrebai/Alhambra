@@ -22,7 +22,7 @@ namespace dak
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // Group a moasic with the draw style in a layer_t.
+      // Group a moasic with the draw style in a layer.
 
       class styled_mosaic_t : public layer_t
       {
@@ -30,10 +30,10 @@ namespace dak
          std::shared_ptr<tiling::mosaic_t> mosaic;
          std::shared_ptr<style_t> style;
 
-         // Create an empty mosaic layer_t.
+         // Create an empty mosaic layer.
          styled_mosaic_t() { }
 
-         // Copy a layer_t.
+         // Copy a layer.
          styled_mosaic_t(const styled_mosaic_t&);
          styled_mosaic_t& operator=(const styled_mosaic_t&);
 
@@ -44,7 +44,7 @@ namespace dak
          void update_style(const rectangle_t& region);
 
       protected:
-         // layer_t implementation.
+         // layer implementation.
          void internal_draw(ui::drawing_t& drw) override;
       };
    }

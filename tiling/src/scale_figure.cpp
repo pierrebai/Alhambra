@@ -33,7 +33,7 @@ namespace dak
 
          // Locate the other vertex of the segment we're going to
          // extend.
-         // Note: since we ask for outbound edges, the other point_t is p2.
+         // Note: since we ask for outbound edges, the other point is p2.
          point_t below_tip;
          for (const auto& edge : cunit.outbounds(tip_pos))
          {

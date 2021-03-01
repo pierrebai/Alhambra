@@ -129,9 +129,9 @@ namespace dak
          return fat_line;
       }
 
-      // Look at a given edge_t and construct a plausible set of points
-      // to draw at the edge_t's 'p2' point_t.  Call this twice to get the
-      // complete outline_t of the hexagon to draw for this edge_t.
+      // Look at a given edge and construct a plausible set of points
+      // to draw at the edge's 'p2' point.  Call this twice to get the
+      // complete outline of the hexagon to draw for this edge.
       std::pair<point_t, point_t> outline_t::get_points(const edge_t& an_edge, size_t index, double width, bool& is_line_end)
       {
          const geometry::edges_map_t::range_t connections = map.outbounds(an_edge.p2);
@@ -185,7 +185,7 @@ namespace dak
          const auto continuation = geometry::edges_map_t::continuation(connections, an_edge);
 
          // Note: should not happen, if there is more than one connection there
-         //       should be an edge_t before and an edge_t after the edge_t,
+         //       should be an edge before and an edge after the edge,
          //       but we need to handle failure just in case.
          if (continuation.is_invalid())
             return get_points_dead_end(an_edge, index, width);
@@ -206,7 +206,7 @@ namespace dak
          const auto before_after = geometry::edges_map_t::before_after(connections, an_edge);
 
          // Note: should not happen, if there is more than one connection there
-         //       should be an edge_t before and an edge_t after the edge_t,
+         //       should be an edge before and an edge after the edge,
          //       but we need to handle failure just in case.
          if (before_after.first.is_invalid())
             return get_points_dead_end(an_edge, index, width);
@@ -229,8 +229,8 @@ namespace dak
       }
 
       // Do a mitered join of the two fat lines (a la postscript, for example).
-      // The join point_t on the other side of the joint can be computed by
-      // reflecting the point_t returned by this function through the joint.
+      // The join point on the other side of the joint can be computed by
+      // reflecting the point returned by this function through the joint.
       point_t outline_t::get_join(const point_t& joint, const point_t& a, const point_t& b, double width_a, double width_b)
       {
          double th = joint.sweep(a, b);
