@@ -5,6 +5,7 @@
 #include <dak/QtAdditions/QtUtilities.h>
 
 #include <dak/tiling/tiling_io.h>
+#include <dak/tiling/translation_tiling.h>
 
 #include <dak/utility/text.h>
 

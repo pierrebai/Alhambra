@@ -4,6 +4,7 @@
 #include <dak/ui/qt/convert.h>
 
 #include <dak/tiling/tiling_selection.h>
+#include <dak/tiling/translation_tiling.h>
 
 #include <dak/geometry/utility.h>
 

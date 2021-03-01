@@ -22,7 +22,7 @@ namespace tiling_tests
 	TEST_CLASS(tiling_io_tests)
 	{
 	public:
-      #define KNOWN_TILINGS_DIR L""
+      #define KNOWN_TILINGS_DIR L"../../../tiling/tilings"
 		
 		TEST_METHOD(tiling_io_read_all_tilings)
 		{
@@ -30,10 +30,10 @@ namespace tiling_tests
          known_tilings_t tilings = read_tilings(KNOWN_TILINGS_DIR, errors);
          for (const auto& tiling : tilings)
          {
-            Assert::IsFalse(tiling->name.empty());
-            Assert::IsFalse(tiling->description.empty());
-            Assert::IsFalse(tiling->author.empty());
-            Assert::IsFalse(tiling->tiles.empty());
+            Assert::IsFalse(tiling->name.empty(), (tiling->name + std::wstring(L" has an empty name")).c_str());
+            Assert::IsFalse(tiling->description.empty(), (tiling->name + std::wstring(L" has an empty description")).c_str());
+            Assert::IsFalse(tiling->author.empty(), (tiling->name + std::wstring(L" has an empty author")).c_str());
+            Assert::IsFalse(tiling->tiles.empty(), (tiling->name + std::wstring(L" has no tiles")).c_str());
          }
       }
 
@@ -83,7 +83,7 @@ namespace tiling_tests
                      continue;
                   auto map = iter->second->get_map();
                   const auto errors = map.verify();
-                  Assert::AreEqual<size_t>(0, errors.size(), errors.size() > 0 ? errors[0].c_str() : L"no error");
+                  Assert::AreEqual<size_t>(0, errors.size(), errors.size() > 0 ? (tiling.name + std::wstring(L": ") + errors[0]).c_str() : L"no error");
                   for (const auto& trf : tile_placements.second)
                   {
                      //point_t p1 = tile_placements.first->points.back();
@@ -154,7 +154,7 @@ namespace tiling_tests
                      continue;
                   auto map = iter->second->get_map();
                   const auto errors = map.verify();
-                  Assert::AreEqual<size_t>(0, errors.size(), errors.size() > 0 ? errors[0].c_str() : L"no error");
+                  Assert::AreEqual<size_t>(0, errors.size(), errors.size() > 0 ? (tiling.name + std::wstring(L": ") + errors[0]).c_str() : L"no error");
                   for (const auto& trf : tile_placements.second)
                   {
                      //point_t p1 = tile_placements.first->points.back();
@@ -201,7 +201,7 @@ namespace tiling_tests
 
             edges_map_t final_map;
             rectangle_t region(point_t(0, 0), point_t(30, 30));
-            //final_map.reserve(count_fill_replications(region, mo->tiling.t1, mo->tiling.t2) * mo->count_tiling_edges());
+            final_map.reserve(mo->tiling->count_fill_copies(region) * mo->count_tiling_edges());
             final_map.begin_merge_non_overlapping();
             mo->tiling->fill(region, [&mo, &final_map](const tiling_t& tiling, const transform_t& receive_trf) {
                for (const auto tile_placements : mo->tiling->tiles)
@@ -211,7 +211,7 @@ namespace tiling_tests
                      continue;
                   auto map = iter->second->get_map();
                   const auto errors = map.verify();
-                  Assert::AreEqual<size_t>(0, errors.size(), errors.size() > 0 ? errors[0].c_str() : L"no error");
+                  Assert::AreEqual<size_t>(0, errors.size(), errors.size() > 0 ? (tiling.name + std::wstring(L": ") + errors[0]).c_str() : L"no error");
                   for (const auto& trf : tile_placements.second)
                   {
                      const auto placed = map.apply(trf).apply(receive_trf);
@@ -228,7 +228,7 @@ namespace tiling_tests
             face_t::make_faces(final_map, white, black, red, exteriors);
 
             const auto face_errors = face_t::verify(final_map, white, black, red, exteriors);
-            Assert::AreEqual<size_t>(0, face_errors.size(), face_errors.size() > 0 ? face_errors[0].c_str() : L"no error");
+            Assert::AreEqual<size_t>(0, face_errors.size(), face_errors.size() > 0 ? (tiling->name + std::wstring(L": ") + face_errors[0]).c_str() : L"no error");
 
             std::wofstream drawing_file(drawings_dir / (tiling->name + L".faces.csv"), std::ios::trunc | std::ios::out);
             for (const auto& face : white)
@@ -276,7 +276,7 @@ namespace tiling_tests
 
             edges_map_t final_map;
             rectangle_t region(point_t(0, 0), point_t(30, 30));
-            //final_map.reserve(count_fill_replications(region, mo->tiling.t1, mo->tiling.t2) * mo->count_tiling_edges());
+            final_map.reserve(mo->tiling->count_fill_copies(region) * mo->count_tiling_edges());
             final_map.begin_merge_non_overlapping();
             mo->tiling->fill(region, [&mo, &final_map](const tiling_t& tiling, const transform_t& receive_trf) {
                for (const auto tile_placements : mo->tiling->tiles)

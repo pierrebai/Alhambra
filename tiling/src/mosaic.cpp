@@ -74,8 +74,7 @@ namespace dak
       edges_map_t mosaic_t::construct(const rectangle_t& region) const
       {
          edges_map_t final_map;
-         if (auto trans_t = std::dynamic_pointer_cast<const translation_tiling_t>(tiling))
-            final_map.reserve(count_fill_replications(region, trans_t->t1, trans_t->t2) * count_tiling_edges());
+         final_map.reserve(tiling->count_fill_copies(region) * count_tiling_edges());
          final_map.begin_merge_non_overlapping();
          tiling->fill(region, [&tile_figures=tile_figures,&final_map=final_map](const tiling_t& tiling, const transform_t& receive_trf)
          {

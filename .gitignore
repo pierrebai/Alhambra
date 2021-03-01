@@ -344,3 +344,4 @@ healthchecksdb
 # Tantrix solutions
 *.solutions.txt
 
+/tiling/drawings

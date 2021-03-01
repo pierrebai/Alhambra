@@ -1,4 +1,5 @@
-#include <dak/tiling/tiling.h>
+#include <dak/tiling/translation_tiling.h>
+
 #include <dak/geometry/utility.h>
 
 namespace dak
@@ -47,6 +48,11 @@ namespace dak
             const transform_t placement = transform_t::translate(self->t1.scale(t1) + self->t2.scale(t2));
             fill_callback(*self, placement);
          });
+      }
+
+      size_t translation_tiling_t::count_fill_copies(const rectangle_t& region) const
+      {
+         return count_fill_replications(region, t1, t2);
       }
 
       void translation_tiling_t::surround(std::function<void(const tiling_t& tiling, const transform_t&)> fill_callback) const
