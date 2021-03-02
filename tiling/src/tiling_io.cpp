@@ -1,6 +1,7 @@
 #include <dak/tiling/tiling_io.h>
 
 #include <dak/tiling/translation_tiling.h>
+#include <dak/tiling/inflation_tiling.h>
 
 #include <dak/utility/text.h>
 
@@ -21,29 +22,8 @@ namespace dak
       // is done, because I don't expect you to write these files by hand --
       // they should be auto-generated from DesignerPanel.
 
-      std::shared_ptr<tiling_t> read_tiling(std::wistream& file)
+      static void read_tiles(std::wistream& file, tiling_t& new_tiling, int tile_count)
       {
-         file.imbue(std::locale("C"));
-
-         std::wstring sentry;
-         file >> sentry;
-         if (sentry != L"tiling")
-            throw std::exception(L::t("This isn't a tiling file."));
-
-         std::wstring name;
-         file >> std::quoted(name);
-         if (name.empty())
-            throw std::exception(L::t("Invalid tiling file."));
-
-         int tile_count = 0;
-         file >> tile_count;
-
-         point_t t1;
-         point_t t2;
-         file >> t1.x >> t1.y >> t2.x >> t2.y;
-
-         translation_tiling_t new_tiling(name, t1, t2);
-
          for (int i = 0; i < tile_count; ++i)
          {
             std::wstring tile_type;
@@ -73,32 +53,91 @@ namespace dak
             for (int trfi = 0; trfi < trf_count; ++trfi)
             {
                transform_t trf;
-               file >> trf.scale_x >> trf.rot_1   >> trf.trans_x
-                    >> trf.rot_2   >> trf.scale_y >> trf.trans_y;
+               file >> trf.scale_x >> trf.rot_1 >> trf.trans_x
+                  >> trf.rot_2 >> trf.scale_y >> trf.trans_y;
                trfs->emplace_back(trf);
             }
          }
+      }
 
+      static void read_descriptions(std::wistream& file, tiling_t& new_tiling)
+      {
          file >> std::quoted(new_tiling.description) >> quoted(new_tiling.author);
+      }
 
-         return std::make_shared<translation_tiling_t>(new_tiling);
+      std::shared_ptr<tiling_t> read_tiling(std::wistream& file)
+      {
+         file.imbue(std::locale("C"));
+
+         std::wstring sentry;
+         file >> sentry;
+         if (sentry != L"tiling" && sentry != L"inflation-tiling")
+            throw std::exception(L::t("This isn't a tiling file."));
+
+         const bool is_inflation = (sentry == L"inflation-tiling");
+
+         std::wstring name;
+         file >> std::quoted(name);
+         if (name.empty())
+            throw std::exception(L::t("Invalid tiling file."));
+
+         int tile_count = 0;
+         file >> tile_count;
+
+         std::shared_ptr<tiling_t> new_tiling;
+
+         if (is_inflation)
+         {
+            edge_t s1;
+            edge_t s2;
+            double factor = 1.;
+
+            file >> s1.p1.x >> s1.p1.y >> s1.p2.x >> s1.p2.y;
+            file >> s2.p1.x >> s2.p1.y >> s2.p2.x >> s2.p2.y;
+            file >> factor;
+
+            new_tiling = std::make_shared<inflation_tiling_t>(name, s1, s2, factor);
+         }
+         else
+         {
+            point_t t1;
+            point_t t2;
+            file >> t1.x >> t1.y >> t2.x >> t2.y;
+
+            new_tiling = std::make_shared<translation_tiling_t>(name, t1, t2);
+         }
+
+         read_tiles(file, *new_tiling, tile_count);
+         read_descriptions(file, *new_tiling);
+
+         return new_tiling;
       }
 
       void write_tiling(const std::shared_ptr<const tiling_t>& tiling, std::wostream& file)
       {
-         auto trans_tiling = std::dynamic_pointer_cast<const translation_tiling_t>(tiling);
-         if (!trans_tiling)
-            return;
-
          file.precision(17);
          file.imbue(std::locale("C"));
 
-         file << L"tiling " << std::quoted(trans_tiling->name) << L" " << trans_tiling->tiles.size() << std::endl;
-         file << L"    " << trans_tiling->t1.x << L" " << trans_tiling->t1.y << std::endl;
-         file << L"    " << trans_tiling->t2.x << L" " << trans_tiling->t2.y << std::endl;
-         file << std::endl;
+         if (auto trans_tiling = std::dynamic_pointer_cast<const translation_tiling_t>(tiling))
+         {
+            file << L"tiling " << std::quoted(trans_tiling->name) << L" " << trans_tiling->tiles.size() << std::endl;
+            file << L"    " << trans_tiling->t1.x << L" " << trans_tiling->t1.y << std::endl;
+            file << L"    " << trans_tiling->t2.x << L" " << trans_tiling->t2.y << std::endl;
+            file << std::endl;
 
-         for (const auto& poly_trf : trans_tiling->tiles)
+         }
+         else if (auto inflation_tiling = std::dynamic_pointer_cast<const inflation_tiling_t>(tiling))
+         {
+            file << L"inflation-tiling " << std::quoted(inflation_tiling->name) << L" " << inflation_tiling->tiles.size() << std::endl;
+            file << L"    " << inflation_tiling->s1.p1.x << L" " << inflation_tiling->s1.p1.y << std::endl;
+            file << L"    " << inflation_tiling->s1.p2.x << L" " << inflation_tiling->s1.p2.y << std::endl;
+            file << L"    " << inflation_tiling->s2.p1.x << L" " << inflation_tiling->s2.p1.y << std::endl;
+            file << L"    " << inflation_tiling->s2.p2.x << L" " << inflation_tiling->s2.p2.y << std::endl;
+            file << L"    " << inflation_tiling->factor  << std::endl;
+            file << std::endl;
+         }
+
+         for (const auto& poly_trf : tiling->tiles)
          {
             const polygon_t& poly = poly_trf.first;
             const std::vector<transform_t>& trfs = poly_trf.second;
@@ -122,8 +161,8 @@ namespace dak
             file << std::endl;
          }
 
-         file << L"   " << std::quoted(trans_tiling->description) << std::endl;
-         file << L"   " << std::quoted(trans_tiling->author) << std::endl;
+         file << L"   " << std::quoted(tiling->description) << std::endl;
+         file << L"   " << std::quoted(tiling->author) << std::endl;
       }
    }
 }

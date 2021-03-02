@@ -11,6 +11,9 @@
 
 #include <QtWidgets/qerrormessage.h>
 
+#include <QtCore/qstandardpaths.h>
+#include <QtCore/qdir.h>
+
 #include <fstream>
 
 namespace dak
@@ -26,20 +29,32 @@ namespace dak
       }
 
 
-      std::filesystem::path ask_open(const wchar_t* title, const wchar_t* file_types, QWidget* parent)
+      std::filesystem::path get_user_tilings_folder()
+      {
+         QDir documentFolder = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+         return documentFolder.absoluteFilePath("Alhambra/tilings").toStdWString();
+      }
+
+      std::filesystem::path get_user_mosaics_folder()
+      {
+         QDir documentFolder = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+         return documentFolder.absoluteFilePath("Alhambra/mosaics").toStdWString();
+      }
+
+      std::filesystem::path ask_open(const wchar_t* title, const wchar_t* file_types, QWidget* parent, const wchar_t* /*initial_path*/ )
       {
          return QtAdditions::AskOpen(QString::fromWCharArray(title), QString::fromWCharArray(file_types), parent);
       }
 
-      std::filesystem::path ask_save(const wchar_t* title, const wchar_t* file_types, QWidget* parent)
+      std::filesystem::path ask_save(const wchar_t* title, const wchar_t* file_types, QWidget* parent, const wchar_t* initial_path)
       {
-         return QtAdditions::AskSave(QString::fromWCharArray(title), QString::fromWCharArray(file_types), "", parent);
+         return QtAdditions::AskSave(QString::fromWCharArray(title), QString::fromWCharArray(file_types), QString::fromWCharArray(initial_path), parent);
       }
 
       // Show a dialog to open or save a tiling.
       std::shared_ptr<tiling_t> ask_open_tiling(std::filesystem::path& path, QWidget* parent)
       {
-         path = ask_open(L::t(L"Load Tiling"), L::t(tiling_file_types), parent);
+         path = ask_open(L::t(L"Load Tiling"), L::t(tiling_file_types), parent, get_user_tilings_folder().c_str());
          if (path.empty())
             return {};
          std::wifstream file(path);
@@ -51,7 +66,7 @@ namespace dak
          if (!tiling)
             return false;
 
-         path = ask_save(L::t(L"Save Tiling"), L::t(tiling_file_types), parent);
+         path = ask_save(L::t(L"Save Tiling"), L::t(tiling_file_types), parent, get_user_tilings_folder().c_str());
          if (path.empty())
             return false;
 
@@ -70,7 +85,7 @@ namespace dak
       std::vector<std::shared_ptr<styled_mosaic_t>> ask_open_layered_mosaic(const known_tilings_t& knowns, std::filesystem::path& path, QWidget* parent)
       {
          // TODO: make try/catch optional.
-         path = ask_open(L::t(L"Load Mosaic"), L::t(layered_mosaic_file_types), parent);
+         path = ask_open(L::t(L"Load Mosaic"), L::t(layered_mosaic_file_types), parent, get_user_mosaics_folder().c_str());
          if (path.empty())
             return {};
          try
@@ -89,7 +104,7 @@ namespace dak
       bool ask_save_layered_mosaic(const std::vector<std::shared_ptr<styled_mosaic_t>>& layers, std::filesystem::path& path, QWidget* parent)
       {
          // TODO: make try/catch optional.
-         path = ask_save(L::t(L"Save Mosaic"), L::t(layered_mosaic_file_types), parent);
+         path = ask_save(L::t(L"Save Mosaic"), L::t(layered_mosaic_file_types), parent, get_user_mosaics_folder().c_str());
          if (path.empty())
             return false;
          try

@@ -25,9 +25,13 @@ namespace dak
       using dak::tiling::tiling_t;
       using dak::tiling::known_tilings_t;
 
+      // Default location for user-writable tilings and mosaics.
+      std::filesystem::path get_user_tilings_folder();
+      std::filesystem::path get_user_mosaics_folder();
+
       // Show a dialog to open or save something.
-      std::filesystem::path ask_open(const wchar_t* title, const wchar_t* file_types, QWidget* parent);
-      std::filesystem::path ask_save(const wchar_t* title, const wchar_t* file_types, QWidget* parent);
+      std::filesystem::path ask_open(const wchar_t* title, const wchar_t* file_types, QWidget* parent, const wchar_t* initial_path = L"");
+      std::filesystem::path ask_save(const wchar_t* title, const wchar_t* file_types, QWidget* parent, const wchar_t* initial_path = L"");
 
       // Show a dialog to open or save a tiling.
       // The given path is updated with the selected one, if any.

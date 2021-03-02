@@ -5,6 +5,7 @@
 
 #include <dak/tiling/tiling_selection.h>
 #include <dak/tiling/translation_tiling.h>
+#include <dak/tiling/inflation_tiling.h>
 
 #include <dak/geometry/utility.h>
 
@@ -37,6 +38,9 @@ namespace dak
       typedef dak::ui::mouse::buttons_t mouse_buttons_t;
       typedef dak::ui::mouse::event_t mouse_event_t;
 
+      using dak::tiling::translation_tiling_t;
+      using dak::tiling::inflation_tiling_t;
+
       namespace
       {
          ////////////////////////////////////////////////////////////////////////////
@@ -55,6 +59,7 @@ namespace dak
             pan_view          = 7,
             rotate_view       = 8,
             zoom_view         = 9,
+            draw_inflation    = 10,
          };
 
          ////////////////////////////////////////////////////////////////////////////
@@ -96,9 +101,6 @@ namespace dak
          void exclude_all();
          bool is_included(const std::shared_ptr<placed_tile_t>& placed) const;
 
-         // Tiling translation vector.
-         void add_to_translation(const point_t& wpt, bool ending);
-
          // Polygon management.
          std::shared_ptr<placed_tile_t> add_placed_tile(const placed_tile_t&);
          void remove_placed_tile(const std::shared_ptr<placed_tile_t>& placed);
@@ -114,7 +116,12 @@ namespace dak
          bool is_overlapping(const std::shared_ptr<placed_tile_t>& placed) const;
 
          // Tiling translation vector.
+         void add_to_translation(const point_t& wpt, bool ending);
          bool is_translation_invalid();
+
+         // Tiling inflation vector.
+         void add_to_inflation(const point_t& wpt, bool ending);
+         bool is_inflation_invalid();
 
          // Mouse mode handling.
          void update_mouse_mode(QAction* action, mouse_mode_t mode);
@@ -175,7 +182,7 @@ namespace dak
          polygon_t new_polygon;
 
          // Translation vector so that the tiling tiles the plane.
-         bool   drawing_translation = false;
+         bool   translation_is_inflation = false;
          point_t  trans1_start;
          point_t  trans1_end;
          point_t  trans2_start;
@@ -328,6 +335,50 @@ namespace dak
                const point_t pt = tiling_selection::get_point(sel);
                if (!pt.is_invalid())
                   editor.add_to_translation(pt, true);
+
+               mouse_action_t::end_dragging(wpt);
+            }
+         };
+
+         class draw_inflation : public mouse_action_t
+         {
+         public:
+            draw_inflation(tiling_editor_ui_t& editor, const selection_t& sel, const point_t& wpt)
+               : mouse_action_t(editor, sel, wpt)
+            {
+               const point_t pt = tiling_selection::get_point(sel);
+               if (!pt.is_invalid())
+                  editor.add_to_inflation(pt, false);
+            }
+
+            void update_dragging(const point_t& wpt) override
+            {
+               selection_t sel = editor.find_selection(wpt, selection_type_t::point);
+               const point_t pt = tiling_selection::get_point(sel);
+               if (!pt.is_invalid())
+                  editor.trans1_end = pt;
+
+               mouse_action_t::update_dragging(wpt);
+            }
+
+            void draw(drawing_t& drw) override
+            {
+               if (editor.trans1_start.is_invalid() || last_drag.is_invalid())
+                  return;
+
+               const double arrow_length = drw.get_transform().dist_from_inverted_zero(12.0);
+               const double arrow_width = drw.get_transform().dist_from_inverted_zero(6.0);
+               drw.set_color(editor.drag_color);
+               drw.draw_line(editor.trans1_start, last_drag);
+               drw.fill_arrow(editor.trans1_start, last_drag, arrow_length, arrow_width);
+            }
+
+            void end_dragging(const point_t& wpt) override
+            {
+               selection_t sel = editor.find_selection(wpt, selection_type_t::point);
+               const point_t pt = tiling_selection::get_point(sel);
+               if (!pt.is_invalid())
+                  editor.add_to_inflation(pt, true);
 
                mouse_action_t::end_dragging(wpt);
             }
@@ -541,6 +592,10 @@ namespace dak
                      if ((sel = editor.find_selection(wpt, selection_type_t::point)).has_selection())
                         inter.reset(new draw_translation(editor, sel, wpt));
                      break;
+                  case mouse_mode_t::draw_inflation:
+                     if ((sel = editor.find_selection(wpt, selection_type_t::point)).has_selection())
+                        inter.reset(new draw_inflation(editor, sel, wpt));
+                     break;
                   case mouse_mode_t::draw_polygon:
                      if ((sel = editor.find_selection(wpt, selection_type_t::point)).has_selection())
                         inter.reset(new draw_polygon(editor, sel, wpt));
@@ -589,6 +644,7 @@ namespace dak
                   case mouse_mode_t::copy_polygon:
                   case mouse_mode_t::move_polygon:
                   case mouse_mode_t::draw_fill_vectors:
+                  case mouse_mode_t::draw_inflation:
                   case mouse_mode_t::draw_polygon:
                      inter->update_dragging(wpt);
                      break;
@@ -663,7 +719,6 @@ namespace dak
          tiles.clear();
          current_selection = selection_t();
          under_mouse = selection_t();
-         drawing_translation = false;
          trans1_start = trans1_end = trans2_start = trans2_end = point_t();
 
          if (tiling)
@@ -692,6 +747,16 @@ namespace dak
                trans1_end = trans_origin + trans_tiling->t1;
                trans2_start = trans_origin;
                trans2_end = trans_origin + trans_tiling->t2;
+               translation_is_inflation = false;
+            }
+
+            if (auto inflation_tiling = std::dynamic_pointer_cast<const inflation_tiling_t>(tiling))
+            {
+               trans1_start = inflation_tiling->s1.p1;
+               trans1_end = inflation_tiling->s1.p2;
+               trans2_start = inflation_tiling->s2.p1;
+               trans2_end = inflation_tiling->s2.p2;
+               translation_is_inflation = true;
             }
          }
 
@@ -704,13 +769,29 @@ namespace dak
       std::shared_ptr<tiling_t> tiling_editor_ui_t::create_tiling()
       {
          // TODO: name, author, description.
-         translation_tiling_t new_tiling;
-         new_tiling.t1 = get_translation_1();
-         new_tiling.t2 = get_translation_2();
-         for (const auto& placed : tiles)
-            if (is_included(placed))
-               new_tiling.tiles[placed->tile].emplace_back(placed->trf);
-         return std::make_shared<translation_tiling_t>(new_tiling);
+         if (translation_is_inflation)
+         {
+            inflation_tiling_t new_tiling;
+            new_tiling.s1.p1 = trans1_start;
+            new_tiling.s1.p2 = trans1_end;
+            new_tiling.s2.p1 = trans2_start;
+            new_tiling.s2.p2 = trans2_end;
+            new_tiling.factor = 1.618034; // TODO: calculate real factor by using the placed tiles. For now, golden ratio
+            for (const auto& placed : tiles)
+               if (is_included(placed))
+                  new_tiling.tiles[placed->tile].emplace_back(placed->trf);
+            return std::make_shared<inflation_tiling_t>(new_tiling);
+         }
+         else
+         {
+            translation_tiling_t new_tiling;
+            new_tiling.t1 = get_translation_1();
+            new_tiling.t2 = get_translation_2();
+            for (const auto& placed : tiles)
+               if (is_included(placed))
+                  new_tiling.tiles[placed->tile].emplace_back(placed->trf);
+            return std::make_shared<translation_tiling_t>(new_tiling);
+         }
       }
 
       bool tiling_editor_ui_t::verify_tiling(const std::wstring& operation)
@@ -1033,7 +1114,7 @@ namespace dak
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // const tiling& translation vector.
+      // Tiling translation vector.
       //
       // We treat the two vector as a circular buffer so that each one will
       // get over-written in turn, so that both can be alternatively changed
@@ -1041,6 +1122,8 @@ namespace dak
 
       void tiling_editor_ui_t::add_to_translation(const point_t& pt, bool ending)
       {
+         translation_is_inflation = false;
+
          if (trans1_start.is_invalid())
          {
             trans1_start = pt;
@@ -1068,6 +1151,47 @@ namespace dak
       {
          return trans1_start.is_invalid() || trans1_end.is_invalid()
              || trans2_start.is_invalid() || trans2_end.is_invalid();
+      }
+
+      ////////////////////////////////////////////////////////////////////////////
+      //
+      // Tiling inflation vector.
+      //
+      // We treat the two vector as a circular buffer so that each one will
+      // get over-written in turn, so that both can be alternatively changed
+      // by the end-user.
+
+      void tiling_editor_ui_t::add_to_inflation(const point_t& pt, bool ending)
+      {
+         translation_is_inflation = true;
+
+         if (trans1_start.is_invalid())
+         {
+            trans1_start = pt;
+         }
+         else if (trans1_end.is_invalid())
+         {
+            if (ending && pt != trans1_start)
+            {
+               trans1_end = pt;
+            }
+         }
+         else if (!ending)
+         {
+            trans2_start = trans1_start;
+            trans2_end = trans1_end;
+            trans1_start = pt;
+            trans1_end = point_t();
+         }
+
+         update_overlaps();
+         update();
+      }
+
+      bool tiling_editor_ui_t::is_inflation_invalid()
+      {
+         return trans1_start.is_invalid() || trans1_end.is_invalid()
+            || trans2_start.is_invalid() || trans2_end.is_invalid();
       }
 
       ////////////////////////////////////////////////////////////////////////////
@@ -1140,6 +1264,7 @@ namespace dak
                update_selection_under_mouse(find_selection(wpt, selection_type_t::tile));
                break;
             case mouse_mode_t::draw_fill_vectors:
+            case mouse_mode_t::draw_inflation:
                if ((sel = find_selection(wpt, selection_type_t::point)).has_selection())
                   update_selection_under_mouse(sel);
                else
@@ -1433,6 +1558,11 @@ namespace dak
             ui->update_mouse_mode(self->draw_trans_toggle, mouse_mode_t::draw_fill_vectors);
          });
 
+         draw_inflation_toggle = CreateToggle(L::t(L"Draw Inflation"), icons.draw_inflation, {}, L::t(L"Select the two inflation vectors used to tile the plane, using the mouse. (Drag with the mouse.)"), [self=this, ui=ui]()
+         {
+            ui->update_mouse_mode(self->draw_inflation_toggle, mouse_mode_t::draw_inflation);
+         });
+
          draw_poly_toggle = CreateToggle(L::t(L"Draw Polygon"), icons.draw_polygon, {}, L::t(L"Select a series of vertices counter-clockwise to draw a free-form polygon_t. (Click on vertices.)"), [self=this, ui=ui]()
          {
             ui->update_mouse_mode(self->draw_poly_toggle, mouse_mode_t::draw_polygon);
@@ -1505,6 +1635,7 @@ namespace dak
          QActionGroup * modif_group = new QActionGroup(this);
          modif_group->setExclusive(true);
          modif_group->addAction(draw_trans_toggle);
+         modif_group->addAction(draw_inflation_toggle);
          modif_group->addAction(draw_poly_toggle);
          modif_group->addAction(copy_poly_toggle);
          modif_group->addAction(delete_poly_toggle);

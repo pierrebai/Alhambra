@@ -95,6 +95,7 @@ namespace dak
          toolbar->addSeparator();
 
          toolbar->addWidget(CreateToolButton(editor->draw_trans_toggle));
+         toolbar->addWidget(CreateToolButton(editor->draw_inflation_toggle));
          toolbar->addWidget(CreateToolButton(editor->clear_trans_action));
 
          toolbar->addSeparator();
@@ -199,7 +200,7 @@ namespace dak
             return tiling;
 
          // TODO: tiling description.
-         //tiling_desc.fill_tiling_Info(tiling);
+         tiling->description = L::t(L"(Description)");
 
          if (tiling->name.length() <= 0)
             tiling->name = file.filename();

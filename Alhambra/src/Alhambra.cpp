@@ -60,6 +60,7 @@ int main(int argc, char **argv)
 
    icons.clear_translation = IDB_POLYGON_TRANS_CLEAR;
    icons.draw_translation  = IDB_POLYGON_TRANSLATION;
+   icons.draw_inflation    = IDB_POLYGON_TRANSLATION; // TODO: new icon for inflation tiling.
 
    auto mainWindow = new dak::tiling_ui_qt::main_window_t(icons);
 

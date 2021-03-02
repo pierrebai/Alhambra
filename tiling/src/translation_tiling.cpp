@@ -6,10 +6,6 @@ namespace dak
 {
    namespace tiling
    {
-      using geometry::point_t;
-      using geometry::polygon_t;
-      using geometry::transform_t;
-
       translation_tiling_t::translation_tiling_t()
       {
       }

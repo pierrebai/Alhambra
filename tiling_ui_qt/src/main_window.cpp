@@ -15,8 +15,6 @@
 
 #include <dak/QtAdditions/QtUtilities.h>
 
-#include <QtCore/qstandardpaths.h>
-#include <QtCore/qdir.h>
 #include <QtGui/qpainter.h>
 #include <QtGui/qevent.h>
 #include <QtWidgets/qboxlayout.h>
@@ -42,13 +40,11 @@ namespace dak
       : known_tilings()
       , mosaic_gen()
       {
-         QDir documentFolder = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-         
          add_tilings_from(LR"(./tilings)");
-         add_tilings_from(documentFolder.absoluteFilePath("tilings").toStdWString());
+         add_tilings_from(get_user_tilings_folder());
 
          mosaic_gen.add_folder(LR"(./mosaics)");
-         mosaic_gen.add_folder(documentFolder.absoluteFilePath("mosaics").toStdWString());
+         mosaic_gen.add_folder(get_user_mosaics_folder());
 
          build_ui(icons);
          fill_ui();

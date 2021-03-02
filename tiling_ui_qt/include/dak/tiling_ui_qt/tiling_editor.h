@@ -45,6 +45,7 @@ namespace dak
          int tiling_save = 0;
 
          int draw_translation = 0;
+         int draw_inflation = 0;
          int clear_translation = 0;
          int fill_with_translation = 0;
 
@@ -71,6 +72,7 @@ namespace dak
       public:
          // End-user actions.
          QAction*  draw_trans_toggle = nullptr;
+         QAction*  draw_inflation_toggle = nullptr;
          QAction*  clear_trans_action = nullptr;
          QAction*  fill_trans_action = nullptr;
 
