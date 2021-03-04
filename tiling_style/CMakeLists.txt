@@ -10,7 +10,7 @@ add_library(tiling_style
    include/dak/tiling_style/plain.h                   src/plain.cpp
    include/dak/tiling_style/sketch.h                  src/sketch.cpp
    include/dak/tiling_style/style.h                   src/style.cpp
-   include/dak/tiling_style/style_io.h                src/style_io.cpp
+   include/dak/tiling_style/mosaic_io.h               src/mosaic_io.cpp
    include/dak/tiling_style/styled_mosaic.h           src/styled_mosaic.cpp
    include/dak/tiling_style/thick.h                   src/thick.cpp
 )

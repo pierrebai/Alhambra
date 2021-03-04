@@ -3,7 +3,7 @@
 #include <dak/tiling/tiling.h>
 #include <dak/tiling/known_tilings.h>
 #include <dak/tiling/tiling_io.h>
-#include <dak/tiling_style/style_io.h>
+#include <dak/tiling_style/mosaic_io.h>
 
 #include <dak/utility/text.h>
 

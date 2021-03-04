@@ -5,7 +5,7 @@
 
 #include <dak/tiling_style/thick.h>
 #include <dak/tiling_style/styled_mosaic.h>
-#include <dak/tiling_style/style_io.h>
+#include <dak/tiling_style/mosaic_io.h>
 
 #include <dak/ui/drawing.h>
 

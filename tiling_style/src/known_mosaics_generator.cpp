@@ -1,5 +1,5 @@
 #include <dak/tiling_style/known_mosaics_generator.h>
-#include <dak/tiling_style/style_io.h>
+#include <dak/tiling_style/mosaic_io.h>
 
 #include <dak/tiling/known_tilings.h>
 
