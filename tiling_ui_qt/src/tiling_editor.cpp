@@ -120,7 +120,7 @@ namespace dak
          bool is_translation_invalid();
 
          // Tiling inflation vector.
-         void add_to_inflation(const point_t& wpt, bool ending);
+         void add_to_inflation(const point_t& wpt, const placed_tile_t& placed_tile, bool ending);
          bool is_inflation_invalid();
 
          // Mouse mode handling.
@@ -187,6 +187,9 @@ namespace dak
          point_t  trans1_end;
          point_t  trans2_start;
          point_t  trans2_end;
+
+         double inflation_size_1 = 0;
+         double inflation_size_2 = 0;
 
       private:
          // Mouse interaction underway.
@@ -347,8 +350,11 @@ namespace dak
                : mouse_action_t(editor, sel, wpt)
             {
                const point_t pt = tiling_selection::get_point(sel);
-               if (!pt.is_invalid())
-                  editor.add_to_inflation(pt, false);
+               const std::shared_ptr<placed_tile_t> tile = tiling_selection::get_placed_tile(sel);
+               if (!pt.is_invalid() && tile)
+               {
+                  editor.add_to_inflation(pt, *tile, false);
+               }
             }
 
             void update_dragging(const point_t& wpt) override
@@ -377,8 +383,11 @@ namespace dak
             {
                selection_t sel = editor.find_selection(wpt, selection_type_t::point);
                const point_t pt = tiling_selection::get_point(sel);
-               if (!pt.is_invalid())
-                  editor.add_to_inflation(pt, true);
+               const std::shared_ptr<placed_tile_t> tile = tiling_selection::get_placed_tile(sel);
+               if (!pt.is_invalid() && tile)
+               {
+                  editor.add_to_inflation(pt, *tile, true);
+               }
 
                mouse_action_t::end_dragging(wpt);
             }
@@ -776,7 +785,14 @@ namespace dak
             new_tiling.s1.p2 = trans1_end;
             new_tiling.s2.p1 = trans2_start;
             new_tiling.s2.p2 = trans2_end;
-            new_tiling.factor = 1.618034; // TODO: calculate real factor by using the placed tiles. For now, golden ratio
+            if (inflation_size_1 > 0. && inflation_size_2 > 0.)
+            {
+               new_tiling.factor = inflation_size_1 / inflation_size_2;
+               if (new_tiling.factor < 1.)
+                  new_tiling.factor = 1. / new_tiling.factor;
+            }
+            else
+               new_tiling.factor = 1.;
             for (const auto& placed : tiles)
                if (is_included(placed))
                   new_tiling.tiles[placed->tile].emplace_back(placed->trf);
@@ -1124,23 +1140,19 @@ namespace dak
       {
          translation_is_inflation = false;
 
-         if (trans1_start.is_invalid())
-         {
-            trans1_start = pt;
-         }
-         else if (trans1_end.is_invalid())
-         {
-            if (ending && pt != trans1_start)
-            {
-               trans1_end = pt;
-            }
-         }
-         else if (!ending)
+         if (!ending)
          {
             trans2_start = trans1_start;
             trans2_end = trans1_end;
+
             trans1_start = pt;
             trans1_end = point_t();
+
+            trans1_start = pt;
+         }
+         else
+         {
+            trans1_end = pt;
          }
 
          update_overlaps();
@@ -1161,27 +1173,26 @@ namespace dak
       // get over-written in turn, so that both can be alternatively changed
       // by the end-user.
 
-      void tiling_editor_ui_t::add_to_inflation(const point_t& pt, bool ending)
+      void tiling_editor_ui_t::add_to_inflation(const point_t& pt, const placed_tile_t& placed_tile, bool ending)
       {
          translation_is_inflation = true;
+         const double tile_perimeter = placed_tile.tile.apply(placed_tile.trf).perimeter();
 
-         if (trans1_start.is_invalid())
-         {
-            trans1_start = pt;
-         }
-         else if (trans1_end.is_invalid())
-         {
-            if (ending && pt != trans1_start)
-            {
-               trans1_end = pt;
-            }
-         }
-         else if (!ending)
+         if (!ending)
          {
             trans2_start = trans1_start;
             trans2_end = trans1_end;
+
             trans1_start = pt;
             trans1_end = point_t();
+
+            trans1_start = pt;
+            inflation_size_1 = tile_perimeter;
+         }
+         else
+         {
+            trans1_end = pt;
+            inflation_size_2 = tile_perimeter;
          }
 
          update_overlaps();
