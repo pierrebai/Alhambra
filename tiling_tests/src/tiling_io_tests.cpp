@@ -28,8 +28,9 @@ namespace tiling_tests
 		{
          std::vector<std::wstring> errors;
          known_tilings_t tilings = read_tilings(KNOWN_TILINGS_DIR, errors);
-         for (const auto& tiling : tilings)
+         for (const auto& name_and_tiling : tilings)
          {
+            const auto tiling = name_and_tiling.second;
             Assert::IsFalse(tiling->name.empty(), (tiling->name + std::wstring(L" has an empty name")).c_str());
             Assert::IsFalse(tiling->description.empty(), (tiling->name + std::wstring(L" has an empty description")).c_str());
             Assert::IsFalse(tiling->author.empty(), (tiling->name + std::wstring(L" has an empty author")).c_str());
@@ -48,8 +49,10 @@ namespace tiling_tests
 
          std::vector<std::wstring> errors;
          known_tilings_t tilings = read_tilings(KNOWN_TILINGS_DIR, errors);
-         for (const auto& tiling : tilings)
+         for (const auto& name_and_tiling : tilings)
          {
+            const auto tiling = name_and_tiling.second;
+
             // Create a mosaic with the tiling.
             auto mo = std::make_shared<mosaic_t>(tiling);
 
@@ -116,8 +119,10 @@ namespace tiling_tests
 
          std::vector<std::wstring> errors;
          known_tilings_t tilings = read_tilings(KNOWN_TILINGS_DIR, errors);
-         for (const auto& tiling : tilings)
+         for (const auto& name_and_tiling : tilings)
          {
+            const auto tiling = name_and_tiling.second;
+
             if (counter++ % 10 != 0)
                continue;
 
@@ -187,8 +192,10 @@ namespace tiling_tests
 
          std::vector<std::wstring> errors;
          known_tilings_t tilings = read_tilings(KNOWN_TILINGS_DIR, errors);
-         for (const auto& tiling : tilings)
+         for (const auto& name_and_tiling : tilings)
          {
+            const auto tiling = name_and_tiling.second;
+
             // Create a mosaic with the tiling.
             auto mo = std::make_shared<mosaic_t>(tiling);
 
@@ -259,8 +266,10 @@ namespace tiling_tests
 
          std::vector<std::wstring> errors;
          known_tilings_t tilings = read_tilings(KNOWN_TILINGS_DIR, errors);
-         for (const auto& tiling : tilings)
+         for (const auto& name_and_tiling : tilings)
          {
+            const auto tiling = name_and_tiling.second;
+
             if (counter++ % 10 != 0)
                continue;
 

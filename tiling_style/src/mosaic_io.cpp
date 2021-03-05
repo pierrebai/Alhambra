@@ -248,7 +248,7 @@ namespace dak
             }
          }
 
-         std::shared_ptr<mosaic_t> read_mosaic(std::wistream& file, const known_tilings_t& knowns)
+         std::shared_ptr<mosaic_t> read_mosaic(std::wistream& file, const known_tilings_t& known_tilings)
          {
             auto new_mosaic = std::make_shared<mosaic_t>();
 
@@ -257,9 +257,7 @@ namespace dak
             int figure_count = 0;
             file >> dummy >> std::quoted(tiling_name) >> figure_count;
 
-            for (const auto& tiling : knowns)
-               if (tiling->name == tiling_name)
-                  new_mosaic->tiling = tiling;
+            new_mosaic->tiling = tiling::find_tiling(known_tilings, tiling_name);
 
             for (int i = 0; i < figure_count; ++i)
             {
@@ -371,7 +369,7 @@ namespace dak
       //
       // Functions for reading and writing a layered mosaic.
 
-      std::vector<std::shared_ptr<styled_mosaic_t>> read_layered_mosaic(std::wistream& file, const known_tilings_t& knowns)
+      std::vector<std::shared_ptr<styled_mosaic_t>> read_layered_mosaic(std::wistream& file, const known_tilings_t& known_tilings)
       {
          file.imbue(std::locale("C"));
 
@@ -437,7 +435,7 @@ namespace dak
             }
 
             // TODO: shared identical mosaic between layers? That would speed-up map updates.
-            new_mosaic_layer->mosaic = read_mosaic(file, knowns);
+            new_mosaic_layer->mosaic = read_mosaic(file, known_tilings);
 
             new_layers.emplace_back(new_mosaic_layer);
          }

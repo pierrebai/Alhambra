@@ -16,6 +16,22 @@ namespace dak
 {
    namespace tiling
    {
+      std::wstring add_tiling(known_tilings_t& tilings, const std::shared_ptr<tiling_t>& tiling, const std::filesystem::path& path)
+      {
+         const std::wstring name = tiling->name.length() > 0 ? tiling->name : path.stem().c_str();
+         tilings[name] = tiling;
+         return name;
+      }
+
+      std::shared_ptr<tiling_t> find_tiling(const known_tilings_t& known_tilings, const std::wstring& name)
+      {
+         const auto pos = known_tilings.find(name);
+         if (pos == known_tilings.end())
+            return {};
+
+         return pos->second;
+      }
+
       known_tilings_t read_tilings(const std::wstring& folder, std::vector<std::wstring>& errors)
       {
          known_tilings_t tilings;
@@ -23,12 +39,14 @@ namespace dak
          try
          {
             std::filesystem::directory_iterator dir(folder);
-            for (const auto& entry : dir)
+            for (const std::filesystem::directory_entry& entry : dir)
             {
                try
                {
-                  std::wifstream file(entry.path());
-                  tilings.emplace_back(read_tiling(file));
+                  const std::filesystem::path path = entry.path();
+                  std::wifstream file(path);
+                  auto tiling = read_tiling(file);
+                  add_tiling(tilings, tiling, path);
                }
                catch (const std::exception& ex)
                {

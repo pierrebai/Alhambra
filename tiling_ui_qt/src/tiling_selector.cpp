@@ -145,9 +145,9 @@ namespace dak
 
             tiling_list->clear();
 
-            for (auto& tiling : tilings)
+            for (auto& name_and_tiling : tilings)
             {
-               tiling_list->addItem(QString::fromWCharArray(tiling->name.c_str()));
+               tiling_list->addItem(QString::fromWCharArray(name_and_tiling.second->name.c_str()));
             }
 
             set_selected_index(selected);
@@ -163,8 +163,8 @@ namespace dak
             disable_feedback++;
             tiling_list->blockSignals(disable_feedback > 0);
 
-            tilings.push_back(tiling);
-            tiling_list->addItem(QString::fromWCharArray(tiling->name.c_str()));
+            auto name = add_tiling(tilings, tiling, path);
+            tiling_list->addItem(QString::fromWCharArray(name.c_str()));
 
             set_selected_index(int(tilings.size() - 1));
 
@@ -190,7 +190,9 @@ namespace dak
             const int selected = get_selected_index();
             if (selected >= 0 && selected < tilings.size())
             {
-               const auto& tiling = tilings[selected];
+               auto iter = tilings.begin();
+               std::advance(iter, selected);
+               const auto& tiling = iter->second;
 
                example_canvas->mosaic = dak::tiling::generate_mosaic(tiling);
                example_canvas->repaint();

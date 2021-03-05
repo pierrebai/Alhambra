@@ -251,8 +251,7 @@ namespace dak
                return false;
             original_file = path;
             original_tiling = tiling;
-            if (known_tilings.end() == std::find(known_tilings.begin(), known_tilings.end(), tiling))
-               known_tilings.push_back(tiling);
+            tiling::add_tiling(known_tilings, tiling, path);
             return true;
          }
          catch (const std::exception& e)

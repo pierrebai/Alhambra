@@ -54,7 +54,7 @@ namespace dak
       void main_window_t::add_tilings_from(const std::wstring& folder)
       {
          const auto new_tilings = read_tilings(folder, errors);
-         known_tilings.insert(known_tilings.end(), new_tilings.begin(), new_tilings.end());
+         known_tilings.insert(new_tilings.begin(), new_tilings.end());
       }
 
       // Create the UI elements.
