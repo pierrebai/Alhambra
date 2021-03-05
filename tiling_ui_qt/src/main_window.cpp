@@ -41,9 +41,11 @@ namespace dak
       , mosaic_gen()
       {
          add_tilings_from(LR"(./tilings)");
+         add_tilings_from(get_user_tilings_old_folder());
          add_tilings_from(get_user_tilings_folder());
 
          mosaic_gen.add_folder(LR"(./mosaics)");
+         mosaic_gen.add_folder(get_user_mosaics_old_folder());
          mosaic_gen.add_folder(get_user_mosaics_folder());
 
          build_ui(icons);

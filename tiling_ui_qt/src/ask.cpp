@@ -38,6 +38,18 @@ namespace dak
       std::filesystem::path get_user_mosaics_folder()
       {
          QDir documentFolder = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+         return documentFolder.absoluteFilePath("mosaics").toStdWString();
+      }
+
+      std::filesystem::path get_user_tilings_old_folder()
+      {
+         QDir documentFolder = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+         return documentFolder.absoluteFilePath("tilings").toStdWString();
+      }
+
+      std::filesystem::path get_user_mosaics_old_folder()
+      {
+         QDir documentFolder = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
          return documentFolder.absoluteFilePath("Alhambra/mosaics").toStdWString();
       }
 

@@ -29,6 +29,10 @@ namespace dak
       std::filesystem::path get_user_tilings_folder();
       std::filesystem::path get_user_mosaics_folder();
 
+      // Previous, obsolete location for user-writable tilings and mosaics.
+      std::filesystem::path get_user_tilings_old_folder();
+      std::filesystem::path get_user_mosaics_old_folder();
+
       // Show a dialog to open or save something.
       std::filesystem::path ask_open(const wchar_t* title, const wchar_t* file_types, QWidget* parent, const wchar_t* initial_path = L"");
       std::filesystem::path ask_save(const wchar_t* title, const wchar_t* file_types, QWidget* parent, const wchar_t* initial_path = L"");
