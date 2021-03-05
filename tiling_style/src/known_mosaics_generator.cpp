@@ -21,9 +21,16 @@ namespace dak
 
       void known_mosaics_generator_t::add_folder(const std::wstring& folder)
       {
-         for (const auto entry : std::filesystem::directory_iterator(folder))
-            filenames.emplace_back(entry.path());
-         iter = filenames.end();
+         try
+         {
+            for (const auto entry : std::filesystem::directory_iterator(folder))
+               filenames.emplace_back(entry.path());
+            iter = filenames.end();
+         }
+         catch (const std::exception& ex)
+         {
+            // Ignore: folder does not exists.
+         }
       }
 
       known_mosaics_generator_t& known_mosaics_generator_t::next()
