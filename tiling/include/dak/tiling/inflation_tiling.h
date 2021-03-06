@@ -26,13 +26,13 @@ namespace dak
          // Translations to tile the plane by scaling.
          edge_t s1;
          edge_t s2;
-         double factor = 1.;
+         transform_t inflation;
 
          // Empty tiling.
          inflation_tiling_t();
 
          // Tiling with a name.
-         inflation_tiling_t(const std::wstring& name, const edge_t& s1, const edge_t& s2, double factor);
+         inflation_tiling_t(const std::wstring& name, const edge_t& s1, const edge_t& s2, const transform_t& inflation);
 
          // Swap two tilings.
          void swap(inflation_tiling_t& other);
@@ -54,6 +54,10 @@ namespace dak
          // Fill a region around one copy of the tiling,
          // calling the callback for each transform that place a copy of the tiling.
          void surround(std::function<void(const tiling_t& tiling, const transform_t& placement)> fill_callback) const override;
+
+         // Fill the given region with copies of the tiling,
+         // calling the callback for each transform that place a copy of the tiling.
+         void fill_rings(int rings_count, std::function<void(const tiling_t& tiling, const transform_t& placement)> fill_callback) const;
       };
    }
 }

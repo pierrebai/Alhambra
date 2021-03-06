@@ -5,6 +5,8 @@
 
 #include <dak/utility/text.h>
 
+#include <dak/geometry/geometry_io.h>
+
 #include <iomanip>
 #include <map>
 
@@ -13,6 +15,10 @@ namespace dak
    namespace tiling
    {
       using utility::L;
+
+      static const wchar_t translation_tiling_sentry[] = L"tiling";
+      static const wchar_t inflation_tiling_sentry[] = L"inflation-tiling-2";
+      static const wchar_t inflation_old_tiling_sentry[] = L"inflation-tiling";
 
       ////////////////////////////////////////////////////////////////////////////
       //
@@ -71,10 +77,11 @@ namespace dak
 
          std::wstring sentry;
          file >> sentry;
-         if (sentry != L"tiling" && sentry != L"inflation-tiling")
+         if (sentry != translation_tiling_sentry && sentry != inflation_tiling_sentry && sentry != inflation_old_tiling_sentry)
             throw std::exception(L::t("This isn't a tiling file."));
 
-         const bool is_inflation = (sentry == L"inflation-tiling");
+         const bool is_inflation = (sentry == inflation_tiling_sentry);
+         const bool is_old_inflation = (sentry == inflation_old_tiling_sentry);
 
          std::wstring name;
          file >> std::quoted(name);
@@ -90,13 +97,29 @@ namespace dak
          {
             edge_t s1;
             edge_t s2;
-            double factor = 1.;
+            transform_t inflation;
 
             file >> s1.p1.x >> s1.p1.y >> s1.p2.x >> s1.p2.y;
             file >> s2.p1.x >> s2.p1.y >> s2.p2.x >> s2.p2.y;
+
+            file >> inflation;
+
+            new_tiling = std::make_shared<inflation_tiling_t>(name, s1, s2, inflation);
+         }
+         else if (is_old_inflation)
+         {
+            edge_t s1;
+            edge_t s2;
+            double factor;
+
+            file >> s1.p1.x >> s1.p1.y >> s1.p2.x >> s1.p2.y;
+            file >> s2.p1.x >> s2.p1.y >> s2.p2.x >> s2.p2.y;
+
             file >> factor;
 
-            new_tiling = std::make_shared<inflation_tiling_t>(name, s1, s2, factor);
+            transform_t inflation = transform_t::scale(factor);
+
+            new_tiling = std::make_shared<inflation_tiling_t>(name, s1, s2, inflation);
          }
          else
          {
@@ -120,7 +143,7 @@ namespace dak
 
          if (auto trans_tiling = std::dynamic_pointer_cast<const translation_tiling_t>(tiling))
          {
-            file << L"tiling " << std::quoted(trans_tiling->name) << L" " << trans_tiling->tiles.size() << std::endl;
+            file << translation_tiling_sentry << L" " << std::quoted(trans_tiling->name) << L" " << trans_tiling->tiles.size() << std::endl;
             file << L"    " << trans_tiling->t1.x << L" " << trans_tiling->t1.y << std::endl;
             file << L"    " << trans_tiling->t2.x << L" " << trans_tiling->t2.y << std::endl;
             file << std::endl;
@@ -128,12 +151,12 @@ namespace dak
          }
          else if (auto inflation_tiling = std::dynamic_pointer_cast<const inflation_tiling_t>(tiling))
          {
-            file << L"inflation-tiling " << std::quoted(inflation_tiling->name) << L" " << inflation_tiling->tiles.size() << std::endl;
+            file << inflation_tiling_sentry << L" " << std::quoted(inflation_tiling->name) << L" " << inflation_tiling->tiles.size() << std::endl;
             file << L"    " << inflation_tiling->s1.p1.x << L" " << inflation_tiling->s1.p1.y << std::endl;
             file << L"    " << inflation_tiling->s1.p2.x << L" " << inflation_tiling->s1.p2.y << std::endl;
             file << L"    " << inflation_tiling->s2.p1.x << L" " << inflation_tiling->s2.p1.y << std::endl;
             file << L"    " << inflation_tiling->s2.p2.x << L" " << inflation_tiling->s2.p2.y << std::endl;
-            file << L"    " << inflation_tiling->factor  << std::endl;
+            file << L"    " << inflation_tiling->inflation  << std::endl;
             file << std::endl;
          }
 

@@ -77,6 +77,7 @@ namespace dak
          toolbar->addWidget(select_action);
          toolbar->addWidget(save_action);
 
+         // TODO: editor should add the action itself.
          toolbar->addSeparator();
 
          toolbar->addWidget(CreateToolButton(editor->add_poly_action));
@@ -245,7 +246,7 @@ namespace dak
 
          try
          {
-            file_path_t path;
+            file_path_t path = original_file;
             auto tiling = create_tiling_from_data(path);
             if (!ask_save_tiling(tiling, path, this))
                return false;

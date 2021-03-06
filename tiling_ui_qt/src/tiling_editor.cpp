@@ -188,8 +188,8 @@ namespace dak
          point_t  trans2_start;
          point_t  trans2_end;
 
-         double inflation_size_1 = 0;
-         double inflation_size_2 = 0;
+         placed_tile_t tile_start;
+         placed_tile_t tile_end;
 
       private:
          // Mouse interaction underway.
@@ -729,6 +729,7 @@ namespace dak
          current_selection = selection_t();
          under_mouse = selection_t();
          trans1_start = trans1_end = trans2_start = trans2_end = point_t();
+         tile_start = tile_end = placed_tile_t();
 
          if (tiling)
          {
@@ -761,6 +762,7 @@ namespace dak
 
             if (auto inflation_tiling = std::dynamic_pointer_cast<const inflation_tiling_t>(tiling))
             {
+               // TODO: restore tile_start and tile_end when loading an inflation tiling.
                trans1_start = inflation_tiling->s1.p1;
                trans1_end = inflation_tiling->s1.p2;
                trans2_start = inflation_tiling->s2.p1;
@@ -775,6 +777,17 @@ namespace dak
          update();
       }
 
+      static edge_t find_top_most_edge(const polygon_t& polygon)
+      {
+         std::vector<std::pair<point_t, size_t>> points;
+         for (size_t i = 0; i < polygon.points.size(); ++i)
+            points.emplace_back(polygon.points[i], i);
+         std::sort(points.begin(), points.end());
+         const size_t first_index = points[0].second;
+         const size_t second_index = (first_index + 1) % points.size();
+         return edge_t(polygon.points[first_index], polygon.points[second_index]);
+      }
+
       std::shared_ptr<tiling_t> tiling_editor_ui_t::create_tiling()
       {
          // TODO: name, author, description.
@@ -785,14 +798,22 @@ namespace dak
             new_tiling.s1.p2 = trans1_end;
             new_tiling.s2.p1 = trans2_start;
             new_tiling.s2.p2 = trans2_end;
-            if (inflation_size_1 > 0. && inflation_size_2 > 0.)
+
+            if (tile_start.tile == tile_end.tile && tile_start.tile.points.size() >= 2)
             {
-               new_tiling.factor = inflation_size_1 / inflation_size_2;
-               if (new_tiling.factor < 1.)
-                  new_tiling.factor = 1. / new_tiling.factor;
+               const polygon_t poly_1 = tile_start.tile.apply(tile_start.trf);
+               const polygon_t poly_2 = tile_end.tile.apply(tile_end.trf);
+
+               const edge_t edge_1 = find_top_most_edge(poly_1);
+               const edge_t edge_2 = find_top_most_edge(poly_2);
+
+               new_tiling.inflation = transform_t::match_lines(edge_1.p1, edge_1.p2, edge_2.p1, edge_2.p2);
             }
             else
-               new_tiling.factor = 1.;
+            {
+               new_tiling.inflation = transform_t::identity();
+            }
+
             for (const auto& placed : tiles)
                if (is_included(placed))
                   new_tiling.tiles[placed->tile].emplace_back(placed->trf);
@@ -1036,34 +1057,29 @@ namespace dak
 
       void tiling_editor_ui_t::create_polygon_copies()
       {
+         // TODO: use tiling::surround instead of this hard-coded stuff...
          if (is_translation_invalid())
             return;
 
-         const point_t t1 = get_translation_1();
-         const point_t t2 = get_translation_2();
+         std::shared_ptr<tiling_t> temp_tiling = create_tiling();
+         if (!temp_tiling)
+            return;
 
          // Note: make a copy because we are going to add new tiles which can reallocate the vector.
          std::vector<std::shared_ptr<placed_tile_t>> copy_tiles = tiles;
-         for (const auto& placed : copy_tiles)
+         temp_tiling->surround([self=this, &copy_tiles, &tiles=tiles](const tiling_t&, const transform_t& placement)
          {
-            if (!is_included(placed))
-               continue;
-
-            const polygon_t& tile = placed->tile;
-            const transform_t& trf = placed->trf;
-
-            for (int y = -1; y <= 1; ++y)
+            for (const auto& placed : copy_tiles)
             {
-               for (int x = -1; x <= 1; ++x)
-               {
-                  if (y == 0 && x == 0)
-                     continue;
+               if (!self->is_included(placed))
+                  continue;
 
-                  const transform_t& placement = transform_t::translate(t1.scale(x) + t2.scale(y)).compose(trf);
-                  tiles.push_back(std::make_shared<placed_tile_t>(placed_tile_t{tile, placement}));
-               }
+               const polygon_t& tile = placed->tile;
+               const transform_t& trf = placed->trf;
+
+               tiles.push_back(std::make_shared<placed_tile_t>(placed_tile_t{ tile, placement }));
             }
-         }
+         });
 
          update_overlaps();
          update();
@@ -1187,12 +1203,12 @@ namespace dak
             trans1_end = point_t();
 
             trans1_start = pt;
-            inflation_size_1 = tile_perimeter;
+            tile_start = placed_tile;
          }
          else
          {
             trans1_end = pt;
-            inflation_size_2 = tile_perimeter;
+            tile_end = placed_tile;
          }
 
          update_overlaps();
@@ -1322,6 +1338,7 @@ namespace dak
       {
          trans1_start = trans1_end = point_t();
          trans2_start = trans2_end = point_t();
+         tile_start = tile_end = placed_tile_t();
          update_overlaps();
          update();
       }

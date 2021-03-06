@@ -96,7 +96,7 @@ namespace dak
       // Show a dialog to open or save a layered mosaic.
       std::vector<std::shared_ptr<styled_mosaic_t>> ask_open_layered_mosaic(const known_tilings_t& knowns, std::filesystem::path& path, QWidget* parent)
       {
-         // TODO: make try/catch optional.
+         // TODO: make try/catch optional during ask_open_layered_mosaic.
          path = ask_open(L::t(L"Load Mosaic"), L::t(layered_mosaic_file_types), parent, get_user_mosaics_folder().c_str());
          if (path.empty())
             return {};
@@ -115,7 +115,7 @@ namespace dak
 
       bool ask_save_layered_mosaic(const std::vector<std::shared_ptr<styled_mosaic_t>>& layers, std::filesystem::path& path, QWidget* parent)
       {
-         // TODO: make try/catch optional.
+         // TODO: make try/catch optional during ask_save_layered_mosaic
          path = ask_save(L::t(L"Save Mosaic"), L::t(layered_mosaic_file_types), parent, get_user_mosaics_folder().c_str());
          if (path.empty())
             return false;
