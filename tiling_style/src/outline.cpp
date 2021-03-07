@@ -110,7 +110,7 @@ namespace dak
             if (!all_edges && !edge.is_canonical())
                continue;
             const size_t edge_index = &edge - first_edge;
-            fat_lines.emplace_back(generate_fat_line(edge, edge_index, get_width_at(edge.p2, width)));
+            fat_lines.emplace_back(generate_fat_line(edge, edge_index, width));
          }
 
          return fat_lines;
@@ -175,8 +175,8 @@ namespace dak
       {
          const point_t dir = (an_edge.p2 - an_edge.p1).normalize();
          const point_t perp = dir.perp();
-         const point_t below = an_edge.p2 - perp.scale(width);
-         const point_t above = an_edge.p2 + perp.scale(width);
+         const point_t below = an_edge.p2 - perp.scale(get_width_at(an_edge.p2, width));
+         const point_t above = an_edge.p2 + perp.scale(get_width_at(an_edge.p2, width));
          return std::pair<point_t, point_t>(below, above);
       }
 
@@ -219,11 +219,11 @@ namespace dak
 
          point_t below = get_join(an_edge.p2, an_edge.p1, before_after.second.p2, width, other_edges_width);
          if (below.is_invalid())
-            below = an_edge.p2 - perp.scale(width);
+            below = an_edge.p2 - perp.scale(get_width_at(an_edge.p2, width));
 
          point_t above = get_join(an_edge.p2, before_after.first.p2, an_edge.p1, other_edges_width, width);
          if (above.is_invalid())
-            above = an_edge.p2 + perp.scale(width);
+            above = an_edge.p2 + perp.scale(get_width_at(an_edge.p2, width));
 
          return std::pair<point_t, point_t>(below, above);
       }
@@ -243,6 +243,9 @@ namespace dak
          {
             const point_t da = (joint - a).normalize();
             const point_t db = (joint - b).normalize();
+
+            width_a = get_width_at(a, width_a);
+            width_b = get_width_at(b, width_b);
 
             const double la = width_b / std::sin(th);
             const double lb = width_a / std::sin(th);

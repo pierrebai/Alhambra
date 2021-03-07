@@ -27,7 +27,7 @@ namespace dak
                filenames.emplace_back(entry.path());
             iter = filenames.end();
          }
-         catch (const std::exception& ex)
+         catch (const std::exception&)
          {
             // Ignore: folder does not exists.
          }

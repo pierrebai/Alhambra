@@ -56,6 +56,13 @@ Bridges proceedings.
 ![Alhambra User Interface](https://github.com/pierrebai/Alhambra/blob/master/App.png "Alhambra User Interface")
 
 
+A new mode of tiling based on concentric rings of tiles has been added.
+I call this style of repeating patterns an inflation tiling, as the tiles are
+metaphorically inflated in each outer ring. Here is an example of such a tiling:
+
+![Inflation Tiling Example](https://github.com/pierrebai/Alhambra/blob/master/Inflation.png "Inflation Tiling Example")
+
+
 # Authors
 
 - Original author: Craig S. Kaplan

@@ -96,7 +96,7 @@ namespace dak
 
          // Calculate the position of a point to draw the junction properly
          // given the angle between and b at the joint.
-         static point_t get_join(const point_t& joint, const point_t& a, const point_t& b, double width, double other_edges_width);
+         point_t get_join(const point_t& joint, const point_t& a, const point_t& b, double width, double other_edges_width);
       };
    }
 }

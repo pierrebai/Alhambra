@@ -19,6 +19,7 @@ layers 4
     irregular "Girih" 0 1.4199999999999999 1
     regular 5
     star 5 1.6666666666666667 3
+  outline
   thick 0.11 0
   color 0 0 0 255
   mosaic "zoom 2" 3
