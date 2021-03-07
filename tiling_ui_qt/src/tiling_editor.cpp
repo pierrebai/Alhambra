@@ -190,6 +190,7 @@ namespace dak
 
          placed_tile_t tile_start;
          placed_tile_t tile_end;
+         transform_t inflation;
 
       private:
          // Mouse interaction underway.
@@ -728,8 +729,10 @@ namespace dak
          tiles.clear();
          current_selection = selection_t();
          under_mouse = selection_t();
+
          trans1_start = trans1_end = trans2_start = trans2_end = point_t();
          tile_start = tile_end = placed_tile_t();
+         inflation = transform_t();
 
          if (tiling)
          {
@@ -770,6 +773,7 @@ namespace dak
                trans1_end = inflation_tiling->s1.p2;
                trans2_start = inflation_tiling->s2.p1;
                trans2_end = inflation_tiling->s2.p2;
+               inflation = inflation_tiling->inflation;
                translation_is_inflation = true;
             }
          }
@@ -797,10 +801,8 @@ namespace dak
          if (translation_is_inflation)
          {
             inflation_tiling_t new_tiling;
-            new_tiling.s1.p1 = trans1_start;
-            new_tiling.s1.p2 = trans1_end;
-            new_tiling.s2.p1 = trans2_start;
-            new_tiling.s2.p2 = trans2_end;
+            new_tiling.s1 = edge_t(trans1_start, trans1_end);
+            new_tiling.s2 = edge_t(trans2_start, trans2_end);
 
             if (tile_start.tile == tile_end.tile && tile_start.tile.points.size() >= 2)
             {
@@ -811,6 +813,10 @@ namespace dak
                const edge_t edge_2 = find_top_most_edge(poly_2);
 
                new_tiling.inflation = transform_t::match_lines(edge_1.p1, edge_1.p2, edge_2.p1, edge_2.p2);
+            }
+            else if (!inflation.is_invalid())
+            {
+               new_tiling.inflation = inflation;
             }
             else
             {
@@ -1060,7 +1066,6 @@ namespace dak
 
       void tiling_editor_ui_t::create_polygon_copies()
       {
-         // TODO: use tiling::surround instead of this hard-coded stuff...
          if (is_translation_invalid())
             return;
 
@@ -1345,6 +1350,7 @@ namespace dak
          trans1_start = trans1_end = point_t();
          trans2_start = trans2_end = point_t();
          tile_start = tile_end = placed_tile_t();
+         inflation = transform_t();
          update_overlaps();
          update();
       }
