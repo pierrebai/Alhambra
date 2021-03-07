@@ -50,6 +50,7 @@ namespace dak
          void internal_draw(ui::drawing_t& drw) override;
 
          ui::stroke_t get_stroke(ui::drawing_t& drw, double width) const;
+         void draw_edges(ui::drawing_t& drw, double width) const;
       };
    }
 }

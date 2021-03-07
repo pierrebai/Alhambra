@@ -41,10 +41,12 @@ namespace dak
             join);
       }
 
-      static void draw_edges(ui::drawing_t& drw, const geometry::edges_map_t& map, const geometry::edges_map_t::edges_t& edges)
+      void thick_t::draw_edges(ui::drawing_t& drw, double width) const
       {
+         const geometry::edges_map_t::edges_t& edges = map.all();
          for (const auto &e : edges)
          {
+            drw.set_stroke(get_stroke(drw, get_width_at(e.p2, width)));
             const auto e2 = map.continuation(e);
             if (e2.is_invalid())
             {
@@ -67,12 +69,10 @@ namespace dak
          if (!utility::near_zero(outline_width))
          {
             drw.set_color(outline_color);
-            drw.set_stroke(get_stroke(drw, outline_width + width * 2.));
-            draw_edges(drw, map, map.all());
+            draw_edges(drw, outline_width + width * 2.);
          }
          drw.set_color(color);
-         drw.set_stroke(get_stroke(drw, width * 2));
-         draw_edges(drw, map, map.all());
+         draw_edges(drw, width * 2);
       }
    }
 }
