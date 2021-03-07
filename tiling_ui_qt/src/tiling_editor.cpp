@@ -737,8 +737,11 @@ namespace dak
             if (tiling->tiles.size() > 0)
             {
                const auto& tile = tiling->tiles.begin()->first;
-               const transform_t& trf = tiling->tiles.begin()->second.front();
-               trans_origin = tile.center().apply(trf);
+               if (tiling->tiles.begin()->second.size() > 0)
+               {
+                  const transform_t& trf = tiling->tiles.begin()->second.front();
+                  trans_origin = tile.center().apply(trf);
+               }
             }
 
             for (const auto& placed : tiling->tiles)
@@ -1069,6 +1072,9 @@ namespace dak
          std::vector<std::shared_ptr<placed_tile_t>> copy_tiles = tiles;
          temp_tiling->surround([self=this, &copy_tiles, &tiles=tiles](const tiling_t&, const transform_t& placement)
          {
+            if (placement == transform_t::identity())
+               return;
+
             for (const auto& placed : copy_tiles)
             {
                if (!self->is_included(placed))
@@ -1077,7 +1083,7 @@ namespace dak
                const polygon_t& tile = placed->tile;
                const transform_t& trf = placed->trf;
 
-               tiles.push_back(std::make_shared<placed_tile_t>(placed_tile_t{ tile, placement }));
+               tiles.push_back(std::make_shared<placed_tile_t>(placed_tile_t{ tile, placement.compose(trf) }));
             }
          });
 

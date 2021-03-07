@@ -102,6 +102,9 @@ namespace dak
             file >> s1.p1.x >> s1.p1.y >> s1.p2.x >> s1.p2.y;
             file >> s2.p1.x >> s2.p1.y >> s2.p2.x >> s2.p2.y;
 
+            s1.order = s1.angle();
+            s2.order = s2.angle();
+
             file >> inflation;
 
             new_tiling = std::make_shared<inflation_tiling_t>(name, s1, s2, inflation);
@@ -114,6 +117,9 @@ namespace dak
 
             file >> s1.p1.x >> s1.p1.y >> s1.p2.x >> s1.p2.y;
             file >> s2.p1.x >> s2.p1.y >> s2.p2.x >> s2.p2.y;
+
+            s1.order = s1.angle();
+            s2.order = s2.angle();
 
             file >> factor;
 

@@ -32,30 +32,30 @@ namespace dak
       std::filesystem::path get_user_tilings_folder()
       {
          QDir documentFolder = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-         return documentFolder.absoluteFilePath("Alhambra/tilings").toStdWString();
+         return documentFolder.absoluteFilePath("Alhambra/tilings/").toStdWString();
       }
 
       std::filesystem::path get_user_mosaics_folder()
       {
          QDir documentFolder = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-         return documentFolder.absoluteFilePath("mosaics").toStdWString();
+         return documentFolder.absoluteFilePath("Alhambra/mosaics/").toStdWString();
       }
 
       std::filesystem::path get_user_tilings_old_folder()
       {
          QDir documentFolder = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-         return documentFolder.absoluteFilePath("tilings").toStdWString();
+         return documentFolder.absoluteFilePath("tilings/").toStdWString();
       }
 
       std::filesystem::path get_user_mosaics_old_folder()
       {
          QDir documentFolder = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-         return documentFolder.absoluteFilePath("Alhambra/mosaics").toStdWString();
+         return documentFolder.absoluteFilePath("mosaics/").toStdWString();
       }
 
-      std::filesystem::path ask_open(const wchar_t* title, const wchar_t* file_types, QWidget* parent, const wchar_t* /*initial_path*/ )
+      std::filesystem::path ask_open(const wchar_t* title, const wchar_t* file_types, QWidget* parent, const wchar_t* initial_path )
       {
-         return QtAdditions::AskOpen(QString::fromWCharArray(title), QString::fromWCharArray(file_types), parent);
+         return QtAdditions::AskOpen(QString::fromWCharArray(title), QString::fromWCharArray(file_types), QString::fromWCharArray(initial_path), parent);
       }
 
       std::filesystem::path ask_save(const wchar_t* title, const wchar_t* file_types, QWidget* parent, const wchar_t* initial_path)
