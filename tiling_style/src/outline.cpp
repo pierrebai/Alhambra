@@ -30,10 +30,10 @@ namespace dak
          return L::t(L"Outlined");
       }
 
-      void outline_t::set_map(const geometry::edges_map_t& m)
+      void outline_t::set_map(const geometry::edges_map_t& m, const std::shared_ptr<const tiling_t>& t)
       {
          clear_cache();
-         thick_t::set_map(m);
+         thick_t::set_map(m, t);
       }
 
       void outline_t::internal_draw(ui::drawing_t& drw)
@@ -105,26 +105,26 @@ namespace dak
 
          const edge_t* const first_edge = &*(map.all().begin());
 
-         for (const auto& edge_t : map.all())
+         for (const auto& edge : map.all())
          {
-            if (!all_edges && !edge_t.is_canonical())
+            if (!all_edges && !edge.is_canonical())
                continue;
-            const size_t edge_index = &edge_t - first_edge;
-            fat_lines.emplace_back(generate_fat_line(edge_t, edge_index, width));
+            const size_t edge_index = &edge - first_edge;
+            fat_lines.emplace_back(generate_fat_line(edge, edge_index, get_width_at(edge.p2, width)));
          }
 
          return fat_lines;
       }
 
-      outline_t::fat_line_t outline_t::generate_fat_line(const edge_t& edge_t, const size_t edge_index, double width)
+      outline_t::fat_line_t outline_t::generate_fat_line(const edge_t& edge, const size_t edge_index, double width)
       {
          fat_line_t fat_line;
 
-         const auto tops = get_points(edge_t,        edge_index, width, fat_line.p2_is_line_end);
-         const auto bots = get_points(edge_t.twin(), edge_index, width, fat_line.p1_is_line_end);
+         const auto tops = get_points(edge,        edge_index, width, fat_line.p2_is_line_end);
+         const auto bots = get_points(edge.twin(), edge_index, width, fat_line.p1_is_line_end);
 
-         fat_line.hexagon = polygon_t({ bots.first, edge_t.p1, bots.second,
-                                        tops.first, edge_t.p2, tops.second, });
+         fat_line.hexagon = polygon_t({ bots.first, edge.p1, bots.second,
+                                        tops.first, edge.p2, tops.second, });
 
          return fat_line;
       }

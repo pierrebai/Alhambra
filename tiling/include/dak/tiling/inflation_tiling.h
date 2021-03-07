@@ -44,6 +44,9 @@ namespace dak
          // Verify if the tiling is invalid.
          bool is_invalid() const override;
 
+         // Calculate the tiling center fro the translation edges.
+         point_t get_center() const;
+
          // Fill the given region with copies of the tiling,
          // calling the callback for each transform that place a copy of the tiling.
          void fill(const rectangle_t& region, std::function<void(const tiling_t& tiling, const transform_t& placement)> fill_callback) const override;

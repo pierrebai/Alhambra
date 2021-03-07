@@ -49,7 +49,7 @@ namespace dak
          if (!mosaic)
             return;
 
-         style->set_map(mosaic->construct(region));
+         style->set_map(mosaic->construct(region), mosaic->tiling);
       }
 
       void styled_mosaic_t::internal_draw(ui::drawing_t& drw)

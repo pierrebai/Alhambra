@@ -518,7 +518,7 @@ namespace dak
             if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
             {
                const auto& calc_map = find_calculated_mosaic(calc_mos, mo_layer->mosaic);
-               mo_layer->style->set_map(calc_map);
+               mo_layer->style->set_map(calc_map, mo_layer->mosaic->tiling);
             }
          }
          canvas->update();
@@ -654,7 +654,7 @@ namespace dak
          {
             if (auto style = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
             {
-               style->style->set_map(edges_map_t());
+               style->style->set_map(edges_map_t(), nullptr);
             }
          }
       }
@@ -672,7 +672,7 @@ namespace dak
          {
             if (auto style = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
             {
-               style->style->set_map(style->mosaic->construct(window_filling_region()));
+               style->style->set_map(style->mosaic->construct(window_filling_region()), style->mosaic->tiling);
             }
          }
 

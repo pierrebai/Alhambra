@@ -31,12 +31,12 @@ namespace dak
          return L::t(L"Filled");
       }
 
-      void filled_t::set_map(const geometry::edges_map_t& m)
+      void filled_t::set_map(const geometry::edges_map_t& m, const std::shared_ptr<const tiling_t>& t)
       {
          cached_inside.clear();
          cached_outside.clear();
          cached_odd.clear();
-         colored_t::set_map(m);
+         colored_t::set_map(m, t);
       }
 
       // The internal draw is called with the layer transform already applied.

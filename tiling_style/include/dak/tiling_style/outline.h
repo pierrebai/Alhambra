@@ -42,7 +42,7 @@ namespace dak
          std::wstring describe() const override;
 
          // Set the map used as the basis to build the style.
-         void set_map(const geometry::edges_map_t& m) override;
+         void set_map(const geometry::edges_map_t& m, const std::shared_ptr<const tiling_t>& t) override;
 
       protected:
          // The internal draw is called with the layer transform already applied.

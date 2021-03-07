@@ -39,6 +39,12 @@ namespace dak
          return false;
       }
 
+      point_t inflation_tiling_t::get_center() const
+      {
+         const point_t center = geometry::intersect::intersect_anywhere(s1.p1, s1.p2, s2.p1, s2.p2);
+         return center;
+      }
+
       void inflation_tiling_t::fill_rings(int rings_count, std::function<void(const tiling_t& tiling, const transform_t& placement)> fill_callback) const
       {
          // Get smallest angle betwen the edges. (That is why we limit it to be below PI.)
@@ -62,7 +68,7 @@ namespace dak
          // Find where the edges meet.
          //
          // Again, due to the checks above, this should succeed, but better safe than sorry.
-         const point_t center = geometry::intersect::intersect_anywhere(s1.p1, s1.p2, s2.p1, s2.p2);
+         const point_t center = get_center();
          if (center.is_invalid())
             return;
 
