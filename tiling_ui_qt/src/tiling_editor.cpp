@@ -1444,8 +1444,6 @@ namespace dak
       selection_t tiling_editor_ui_t::find_selection(const point_t& wpt, const selection_t& excluded, selection_type_t sel_types)
       {
          double sel_dist = painter_trf_drawing.get_transform().dist_from_inverted_zero(selection_distance);
-         if (is_selection_single_type(sel_types))
-            sel_dist *= 4;
          return tiling_selection::find_selection(tiles, wpt, sel_dist, excluded, sel_types);
       }
 

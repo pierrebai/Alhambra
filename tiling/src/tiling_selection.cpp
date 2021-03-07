@@ -20,6 +20,10 @@ namespace dak
 
          selection_t find_selection(std::vector<std::shared_ptr<placed_tile_t>>& tiles, const point_t& wpt, double sel_dist, const selection_t& excluded_sel, selection_type_t sel_types)
          {
+            const bool is_single_type = is_selection_single_type(sel_types);
+            if (is_single_type)
+               sel_dist *= 4;
+
             const double sel_dist_2 = sel_dist * sel_dist;
             const std::shared_ptr<placed_tile_t> other_than = get_placed_tile(excluded_sel);
             for (auto iter = tiles.rbegin(); iter != tiles.rend(); ++iter)
@@ -43,14 +47,14 @@ namespace dak
                // When selecting anything, don't select points or edges if the tile is too small.
                // Here we define too small as 4 times the area, which is 16 when squared.
                const bool small_tile = (placed_tile.area() < sel_dist_2 * 16);
-               if (small_tile && sel_types == selection_type_t::all)
+               if (small_tile && !is_single_type)
                   goto check_sel;
 
                if ((sel_types & selection_type_t::point) == selection_type_t::point)
                   if (geometry::near(wpt, placed_tile.center(), sel_dist_2))
-                  new_sel.add(point_selection_t(placed));
+                     new_sel.add(point_selection_t(placed));
 
-               if (small_tile)
+               if (small_tile && !is_single_type)
                   goto check_sel;
 
                {
@@ -63,14 +67,14 @@ namespace dak
 
                      // Don't allow selecting end-points of the edge when the edge is too short.
                      // Here we define too short as 4 times the selection distance, which is 16 when squared.
-                     if (pt.distance_2(prev_pt) > sel_dist_2 * 16)
+                     if (is_single_type || pt.distance_2(prev_pt) > sel_dist_2 * 16)
                         if ((sel_types & selection_type_t::point) == selection_type_t::point)
                            if (geometry::near(wpt, pt, sel_dist_2))
                               new_sel.add(point_selection_t(placed, i));
 
                      // Don't allow selecting the middle of the edge when the edge is too short.
                      // Here we define too short as 6 times the selection distance, which is 36 when squared.
-                     if (pt.distance_2(prev_pt) > sel_dist_2 * 36)
+                     if (is_single_type || pt.distance_2(prev_pt) > sel_dist_2 * 36)
                         if ((sel_types & selection_type_t::point) == selection_type_t::point)
                            if (geometry::near(wpt, prev_pt.convex_sum(pt, 0.5), sel_dist_2))
                               new_sel.add(point_selection_t(placed, prev_i, i));
