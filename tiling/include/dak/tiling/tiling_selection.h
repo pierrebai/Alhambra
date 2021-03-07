@@ -153,14 +153,28 @@ namespace dak
          all      = point | edge | tile,
       };
 
-      inline selection_type_t operator|(selection_type_t s1, selection_type_t s2)
+      inline selection_type_t operator|(const selection_type_t s1, const selection_type_t s2)
       {
          return selection_type_t((int)s1 | (int)s2);
       }
 
-      inline selection_type_t operator&(selection_type_t s1, selection_type_t s2)
+      inline selection_type_t operator&(const selection_type_t s1, const selection_type_t s2)
       {
          return selection_type_t((int)s1 & (int)s2);
+      }
+
+      inline bool is_selection_single_type(const selection_type_t sel_type)
+      {
+         switch (sel_type)
+         {
+         case selection_type_t::none:
+         case selection_type_t::point:
+         case selection_type_t::edge:
+         case selection_type_t::tile:
+            return true;
+         default:
+            return false;
+         }
       }
 
       namespace tiling_selection
