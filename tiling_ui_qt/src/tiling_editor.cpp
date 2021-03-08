@@ -117,11 +117,15 @@ namespace dak
 
          // Tiling translation vector.
          void add_to_translation(const point_t& wpt, bool ending);
-         bool is_translation_invalid();
+         bool is_translation_invalid() const;
 
          // Tiling inflation vector.
          void add_to_inflation(const point_t& wpt, const std::shared_ptr<placed_tile_t>& placed_tile, bool ending);
-         bool is_inflation_invalid();
+         bool is_inflation_invalid() const;
+         std::pair<edge_t, edge_t> find_inflation_edges() const;
+         std::pair<edge_t, edge_t> find_matching_edges(
+            const std::shared_ptr<placed_tile_t>& start_tile,
+            const std::shared_ptr<placed_tile_t>& end_tile) const;
 
          // Mouse mode handling.
          void update_mouse_mode(QAction* action, mouse_mode_t mode);
@@ -840,16 +844,39 @@ namespace dak
          return edge_t(polygon.points[first_index], polygon.points[second_index]);
       }
 
-      static transform_t calculate_inflation(const placed_tile_t& start_tile, const placed_tile_t& end_tile)
+      std::pair<edge_t, edge_t> tiling_editor_ui_t::find_matching_edges(
+         const std::shared_ptr<placed_tile_t>& start_tile,
+         const std::shared_ptr<placed_tile_t>& end_tile) const
       {
-         const polygon_t poly_1 = start_tile.tile.apply(start_tile.trf);
-         const polygon_t poly_2 = end_tile.tile.apply(end_tile.trf);
+         if (!start_tile || !end_tile)
+            return {};
+
+         if (!is_included(start_tile))
+            return {};
+
+         if (start_tile->tile != end_tile->tile)
+            return {};
+
+         if (start_tile->tile.points.size() < 2)
+            return {};
+
+         const polygon_t poly_1 = start_tile->tile.apply(start_tile->trf);
+         const polygon_t poly_2 = end_tile->tile.apply(end_tile->trf);
 
          const edge_t edge_1 = find_top_most_edge(poly_1);
          const edge_t edge_2 = find_top_most_edge(poly_2);
 
-         return transform_t::match_lines(edge_1.p1, edge_1.p2, edge_2.p1, edge_2.p2);
+         return std::make_pair(edge_1, edge_2);
       }
+
+      std::pair<edge_t, edge_t> tiling_editor_ui_t::find_inflation_edges() const
+      {
+         const auto edges1 = find_matching_edges(trans1_start_tile, trans1_end_tile);
+         if (!edges1.first.is_invalid())
+            return edges1;
+
+         return find_matching_edges(trans2_start_tile, trans2_end_tile);
+     }
 
       std::shared_ptr<tiling_t> tiling_editor_ui_t::create_tiling()
       {
@@ -860,13 +887,12 @@ namespace dak
             new_tiling.s1 = edge_t(trans1_start, trans1_end);
             new_tiling.s2 = edge_t(trans2_start, trans2_end);
 
-            if (is_included(trans1_start_tile) && trans1_start_tile->tile == trans1_end_tile->tile && trans1_start_tile->tile.points.size() >= 2)
+            const auto matching_edges = find_inflation_edges();
+            if (!matching_edges.first.is_invalid())
             {
-               new_tiling.inflation = calculate_inflation(*trans1_start_tile, *trans1_end_tile);
-            }
-            else if (is_included(trans2_start_tile) && trans2_start_tile->tile == trans1_end_tile->tile && trans2_start_tile->tile.points.size() >= 2)
-            {
-               new_tiling.inflation = calculate_inflation(*trans1_start_tile, *trans1_end_tile);
+               new_tiling.inflation = transform_t::match_lines(
+                  matching_edges.first.p1,  matching_edges.first.p2,
+                  matching_edges.second.p1, matching_edges.second.p2);
             }
             else if (!inflation.is_invalid())
             {
@@ -1019,6 +1045,21 @@ namespace dak
                drw.draw_line(prev, pt);
                prev = pt;
             }
+         }
+
+         const auto matching_edges = find_inflation_edges();
+         if (!matching_edges.first.is_invalid())
+         {
+            drw.set_color(construction_color);
+            drw.set_stroke(3.);
+            drw.draw_line(matching_edges.first.p1, matching_edges.first.p2);
+            drw.draw_line(matching_edges.second.p1, matching_edges.second.p2);
+
+            drw.set_stroke(2.);
+            drw.draw_line(matching_edges.first.p1, matching_edges.second.p1);
+            drw.draw_line(matching_edges.first.p2, matching_edges.second.p2);
+            drw.fill_arrow(matching_edges.first.p1, matching_edges.second.p1, arrow_length, arrow_width);
+            drw.fill_arrow(matching_edges.first.p2, matching_edges.second.p2, arrow_length, arrow_width);
          }
       }
 
@@ -1240,7 +1281,7 @@ namespace dak
          update();
       }
 
-      bool tiling_editor_ui_t::is_translation_invalid()
+      bool tiling_editor_ui_t::is_translation_invalid() const
       {
          return trans1_start.is_invalid() || trans1_end.is_invalid()
              || trans2_start.is_invalid() || trans2_end.is_invalid();
@@ -1283,10 +1324,10 @@ namespace dak
          update();
       }
 
-      bool tiling_editor_ui_t::is_inflation_invalid()
+      bool tiling_editor_ui_t::is_inflation_invalid() const
       {
          return trans1_start.is_invalid() || trans1_end.is_invalid()
-            || trans2_start.is_invalid() || trans2_end.is_invalid();
+             || trans2_start.is_invalid() || trans2_end.is_invalid();
       }
 
       ////////////////////////////////////////////////////////////////////////////
