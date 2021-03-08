@@ -120,7 +120,7 @@ namespace dak
          bool is_translation_invalid();
 
          // Tiling inflation vector.
-         void add_to_inflation(const point_t& wpt, const placed_tile_t& placed_tile, bool ending);
+         void add_to_inflation(const point_t& wpt, const std::shared_ptr<placed_tile_t>& placed_tile, bool ending);
          bool is_inflation_invalid();
 
          // Mouse mode handling.
@@ -185,11 +185,16 @@ namespace dak
          bool   translation_is_inflation = false;
          point_t  trans1_start;
          point_t  trans1_end;
+
          point_t  trans2_start;
          point_t  trans2_end;
 
-         placed_tile_t tile_start;
-         placed_tile_t tile_end;
+         std::shared_ptr<placed_tile_t> trans1_start_tile;
+         std::shared_ptr<placed_tile_t> trans1_end_tile;
+
+         std::shared_ptr<placed_tile_t> trans2_start_tile;
+         std::shared_ptr<placed_tile_t> trans2_end_tile;
+
          transform_t inflation;
 
       private:
@@ -221,6 +226,16 @@ namespace dak
             }
 
             virtual void update_dragging(const point_t& wpt)
+            {
+               last_drag = wpt;
+               editor.update();
+            }
+
+            virtual void mouse_pressed(const point_t& wpt)
+            {
+            }
+
+            virtual void mouse_moved(const point_t& wpt)
             {
                last_drag = wpt;
                editor.update();
@@ -354,7 +369,7 @@ namespace dak
                const std::shared_ptr<placed_tile_t> tile = tiling_selection::get_placed_tile(sel);
                if (!pt.is_invalid() && tile)
                {
-                  editor.add_to_inflation(pt, *tile, false);
+                  editor.add_to_inflation(pt, tile, false);
                }
             }
 
@@ -387,7 +402,7 @@ namespace dak
                const std::shared_ptr<placed_tile_t> tile = tiling_selection::get_placed_tile(sel);
                if (!pt.is_invalid() && tile)
                {
-                  editor.add_to_inflation(pt, *tile, true);
+                  editor.add_to_inflation(pt, tile, true);
                }
 
                mouse_action_t::end_dragging(wpt);
@@ -537,7 +552,7 @@ namespace dak
                {
                   if (!last_drag.is_invalid())
                   {
-                     double radius = drw.get_transform().dist_from_inverted_zero(selection_distance);
+                     double radius = drw.get_transform().dist_from_inverted_zero(selection_distance / 2);
                      drw.set_color(editor.drag_color);
                      drw.set_stroke(3.);
                      drw.draw_line(editor.new_polygon.points.back(), last_drag);
@@ -547,6 +562,12 @@ namespace dak
             }
 
             void end_dragging(const point_t& wpt) override
+            {
+               // Note: do *not* call mouse_action_t::end_dragging() to allow chaining
+               //       drawing polygon sides.
+            }
+
+            void mouse_pressed(const point_t& wpt) override
             {
                add_vertex(editor.find_selection(wpt, selection_type_t::point));
                // Note: do *not* call mouse_action_t::end_dragging() to allow chaining
@@ -667,6 +688,26 @@ namespace dak
             void mouse_moved(const mouse_event_t& e) override
             {
                const point_t wpt = editor.screen_to_world(e.position);
+
+               // Note: the interaction can clear editor.mouse_interaction,
+               //       so keep a copy of the shared pointer during the call.
+               auto inter = editor.get_mouse_interaction();
+               if (!inter)
+                  return editor.update_selection_from_point(wpt);
+
+               switch (editor.current_mouse_mode)
+               {
+               case mouse_mode_t::normal:
+               case mouse_mode_t::copy_polygon:
+               case mouse_mode_t::move_polygon:
+               case mouse_mode_t::draw_fill_vectors:
+               case mouse_mode_t::draw_inflation:
+               case mouse_mode_t::draw_polygon:
+                  inter->mouse_moved(wpt);
+                  break;
+               default:
+                  break;
+               }
                editor.update_selection_from_point(wpt);
             }
 
@@ -730,8 +771,12 @@ namespace dak
          current_selection = selection_t();
          under_mouse = selection_t();
 
-         trans1_start = trans1_end = trans2_start = trans2_end = point_t();
-         tile_start = tile_end = placed_tile_t();
+         trans1_start = trans1_end = point_t();
+         trans2_start = trans2_end = point_t();
+
+         trans1_start_tile = trans1_end_tile = nullptr;
+         trans2_start_tile = trans2_end_tile = nullptr;
+
          inflation = transform_t();
 
          if (tiling)
@@ -768,7 +813,7 @@ namespace dak
 
             if (auto inflation_tiling = std::dynamic_pointer_cast<const inflation_tiling_t>(tiling))
             {
-               // TODO: restore tile_start and tile_end when loading an inflation tiling.
+               // TODO: restore trans1_start_tile and trans1_start_tile, etc when loading an inflation tiling.
                trans1_start = inflation_tiling->s1.p1;
                trans1_end = inflation_tiling->s1.p2;
                trans2_start = inflation_tiling->s2.p1;
@@ -795,6 +840,17 @@ namespace dak
          return edge_t(polygon.points[first_index], polygon.points[second_index]);
       }
 
+      static transform_t calculate_inflation(const placed_tile_t& start_tile, const placed_tile_t& end_tile)
+      {
+         const polygon_t poly_1 = start_tile.tile.apply(start_tile.trf);
+         const polygon_t poly_2 = end_tile.tile.apply(end_tile.trf);
+
+         const edge_t edge_1 = find_top_most_edge(poly_1);
+         const edge_t edge_2 = find_top_most_edge(poly_2);
+
+         return transform_t::match_lines(edge_1.p1, edge_1.p2, edge_2.p1, edge_2.p2);
+      }
+
       std::shared_ptr<tiling_t> tiling_editor_ui_t::create_tiling()
       {
          // TODO: name, author, description.
@@ -804,15 +860,13 @@ namespace dak
             new_tiling.s1 = edge_t(trans1_start, trans1_end);
             new_tiling.s2 = edge_t(trans2_start, trans2_end);
 
-            if (tile_start.tile == tile_end.tile && tile_start.tile.points.size() >= 2)
+            if (is_included(trans1_start_tile) && trans1_start_tile->tile == trans1_end_tile->tile && trans1_start_tile->tile.points.size() >= 2)
             {
-               const polygon_t poly_1 = tile_start.tile.apply(tile_start.trf);
-               const polygon_t poly_2 = tile_end.tile.apply(tile_end.trf);
-
-               const edge_t edge_1 = find_top_most_edge(poly_1);
-               const edge_t edge_2 = find_top_most_edge(poly_2);
-
-               new_tiling.inflation = transform_t::match_lines(edge_1.p1, edge_1.p2, edge_2.p1, edge_2.p2);
+               new_tiling.inflation = calculate_inflation(*trans1_start_tile, *trans1_end_tile);
+            }
+            else if (is_included(trans2_start_tile) && trans2_start_tile->tile == trans1_end_tile->tile && trans2_start_tile->tile.points.size() >= 2)
+            {
+               new_tiling.inflation = calculate_inflation(*trans1_start_tile, *trans1_end_tile);
             }
             else if (!inflation.is_invalid())
             {
@@ -904,8 +958,8 @@ namespace dak
          for (const auto& tile : tiles)
          {
             const color_t& co = is_overlapping(tile) ? overlapping_color
-                            : is_included(tile)    ? in_tiling_color
-                            : normal_color;
+               : is_included(tile) ? in_tiling_color
+               : normal_color;
             draw_placed_tile(drw, *tile, co);
          }
 
@@ -952,7 +1006,7 @@ namespace dak
 
          if (mouse_interaction)
             mouse_interaction->draw(drw);
-         
+
          if (new_polygon.points.size() > 0)
          {
             drw.set_color(construction_color);
@@ -1200,26 +1254,29 @@ namespace dak
       // get over-written in turn, so that both can be alternatively changed
       // by the end-user.
 
-      void tiling_editor_ui_t::add_to_inflation(const point_t& pt, const placed_tile_t& placed_tile, bool ending)
+      void tiling_editor_ui_t::add_to_inflation(const point_t& pt, const std::shared_ptr<placed_tile_t>& placed_tile, bool ending)
       {
          translation_is_inflation = true;
-         const double tile_perimeter = placed_tile.tile.apply(placed_tile.trf).perimeter();
 
          if (!ending)
          {
             trans2_start = trans1_start;
             trans2_end = trans1_end;
 
+            trans2_start_tile = trans1_start_tile;
+            trans2_end_tile = trans1_end_tile;
+
             trans1_start = pt;
             trans1_end = point_t();
 
             trans1_start = pt;
-            tile_start = placed_tile;
+            trans1_start_tile = placed_tile;
+            trans1_end_tile = nullptr;
          }
          else
          {
             trans1_end = pt;
-            tile_end = placed_tile;
+            trans1_end_tile = placed_tile;
          }
 
          update_overlaps();
@@ -1349,8 +1406,12 @@ namespace dak
       {
          trans1_start = trans1_end = point_t();
          trans2_start = trans2_end = point_t();
-         tile_start = tile_end = placed_tile_t();
+
+         trans1_start_tile = trans1_end_tile = nullptr;
+         trans2_start_tile = trans2_end_tile = nullptr;
+
          inflation = transform_t();
+
          update_overlaps();
          update();
       }
@@ -1456,6 +1517,10 @@ namespace dak
          const selection_t& sel = find_selection(wpt, selection_type_t::all);
          if (sel.has_selection())
          {
+            // Note: the interaction can clear editor.mouse_interaction,
+            //       so keep a copy of the shared pointer during the call.
+            auto inter = mouse_interaction;
+
             switch (mouseButton)
             {
                case mouse_buttons_t::one:
@@ -1465,7 +1530,7 @@ namespace dak
                   // less specific (edge, then tile).
                   if (std::dynamic_pointer_cast<draw_polygon>(mouse_interaction))
                   {
-                     mouse_interaction->update_dragging(wpt);
+                     mouse_interaction->mouse_pressed(wpt);
                      return;
                   }
                   else if (tiling_selection::get_point(sel))

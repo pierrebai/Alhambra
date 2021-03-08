@@ -61,7 +61,7 @@ namespace dak
          // While it seems impossible to have less than one since we limited
          // the angle to be between PI/100 and PI, so this should never be less than 1,
          // the vagaries of code changes being what they are, it costs little to verify.
-         const int circle_fraction = int(std::ceil(2 * geometry::PI / angle));
+         const int circle_fraction = int(std::round(2 * geometry::PI / angle));
          if (circle_fraction < 1)
             return;
 

@@ -321,9 +321,9 @@ namespace dak
                {
                   // This vertex lies on the edge.  Add all its edges
                   // to the contact list.
-                  for (const auto& edge_t : edges_map_t.outbounds(pos))
+                  for (const auto& edge : edges_map_t.outbounds(pos))
                   {
-                     contacts.emplace_back(contact_t(pos, edge_t.p2));
+                     contacts.emplace_back(contact_t(pos, edge.p2));
                   }
                }
             }

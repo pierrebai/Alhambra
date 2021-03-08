@@ -73,14 +73,14 @@ namespace dak
          virtual fat_lines_t generate_fat_lines(bool all_edges);
 
          // Generate one fat line of the edge and width.
-         fat_line_t generate_fat_line(const edge_t& edge_t, const size_t edge_index, double width);
+         fat_line_t generate_fat_line(const edge_t& edge, const size_t edge_index, double width);
 
          // Draw the fat lines. Override in-sub-class to change the rendering.
          virtual void internal_draw_fat_lines(ui::drawing_t& drw, const fat_lines_t& fat_lines);
 
          // Get the two points at the left and right needed to draw the p2 junction
          // of the given edge at the given width.
-         std::pair<point_t, point_t> get_points(const edge_t& edge_t, size_t index, double width, bool& is_line_end);
+         std::pair<point_t, point_t> get_points(const edge_t& edge, size_t index, double width, bool& is_line_end);
 
          // Get the two before/after points needed to draw the p2 junction
          // of the given edge given the number of connections.
