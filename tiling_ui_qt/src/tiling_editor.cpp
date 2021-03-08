@@ -595,8 +595,8 @@ namespace dak
                const point_t wpt = editor.screen_to_world(e.position);
                selection_t sel;
 
-               // Note: the interaction can clear editor.mouse_interaction,
-               //       so keep a copy of the shared pointer during the call.
+               // Note: we will be setting the interaction on the editor,
+               //       so this variable must be a reference.
                auto& inter = editor.get_mouse_interaction();
 
                switch (editor.current_mouse_mode)
