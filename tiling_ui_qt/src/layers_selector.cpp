@@ -1,4 +1,5 @@
 #include <dak/tiling_ui_qt/layers_selector.h>
+#include <dak/tiling_ui_qt/layers_selector.h>
 #include <dak/tiling_ui_qt/drawing.h>
 
 #include <dak/QtAdditions/QTableWidgetWithComboBox.h>
@@ -283,7 +284,7 @@ namespace dak
                button_layout->addWidget(copy_position_button.get(), 0, 3);
                move_layers_up_button = make_button(icons.layer_move_up, L::t(L"Move Up"));
                button_layout->addWidget(move_layers_up_button.get(), 0, 4);
-               move_layers_down_button = make_button(icons.layer_move_up, L::t(L"Move Down"));
+               move_layers_down_button = make_button(icons.layer_move_down, L::t(L"Move Down"));
                button_layout->addWidget(move_layers_down_button.get(), 0, 5);
             layout->addWidget(button_panel);
 
