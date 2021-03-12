@@ -485,15 +485,31 @@ namespace dak
          return layered.get_layers();
       }
 
-      void main_window_t::update_layered_transform(const geometry::rectangle_t& bounds)
+      void main_window_t::update_layered_transform()
       {
+         geometry::rectangle_t bounds;
+         for (const auto& mo_layer : get_avail_mosaics())
+         {
+            geometry::rectangle_t new_bounds = mo_layer->mosaic->tiling->bounds();
+            if (new_bounds.is_invalid())
+               continue;
+            const auto& trf = mo_layer->get_transform();
+            if (!trf.is_invalid())
+               new_bounds = new_bounds.apply(trf);
+            
+            if (bounds.is_invalid())
+               bounds = new_bounds;
+            else
+               bounds = bounds.combine(new_bounds);
+         }
+
          if (bounds.is_invalid())
             return;
 
          geometry::rectangle_t region = convert(canvas->geometry());
          double ratio = std::max(region.width / bounds.width, region.height / bounds.height);
          // Make it so we can see 9 instances (3x3) of the tiling or mosaic.
-         layered.set_transform(transform_t::scale(ratio / 3.));
+         layered.compose(transform_t::scale(ratio / 3.));
       }
 
       const geometry::edges_map_t& main_window_t::find_calculated_mosaic(calculated_mosaics& calc_mos, const std::shared_ptr<mosaic_t>& mosaic)
@@ -741,7 +757,7 @@ namespace dak
 
          if (was_empty)
          {
-            update_layered_transform(mo_layer->mosaic->tiling->bounds());
+            update_layered_transform();
             clear_undo_stack();
             // Note: when adding layers, allow undoing back to an empty canvas.
             undo_stack.simple_commit({ 0, nullptr, [self=this](const std::any&) { self->awaken_to_empty_canvas(); } });
@@ -769,7 +785,7 @@ namespace dak
          layered.set_layers(layers);
          if (layers.size() > 0)
             if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layered.get_layers()[0]))
-               update_layered_transform(mo_layer->mosaic->tiling->bounds());
+               update_layered_transform();
 
          fill_layer_list();
          commit_to_undo();

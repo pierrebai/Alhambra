@@ -1,4 +1,4 @@
-layers 3
+movable-layers  3
   plain 
   color 255 255 255 255
   mosaic "9.6" 3
@@ -13,6 +13,7 @@ layers 3
     rosette 9 0 3
     regular 6
     rosette 6 0 3
+  position 48.778444420087283 0 -1.0000000000000027 0 48.778444420087283 -2.0000000000000058
   filled false true
   color 0 102 255 255
   mosaic "9.6" 3
@@ -27,6 +28,7 @@ layers 3
     rosette 9 0 3
     regular 6
     rosette 6 0 3
+  position 48.778444420087283 0 -1.0000000000000027 0 48.778444420087283 -2.0000000000000058
   thick 0.050000000000000003 0
   color 0 51 102 255
   mosaic "9.6" 3
@@ -41,3 +43,4 @@ layers 3
     rosette 9 0 3
     regular 6
     rosette 6 0 3
+  position 48.778444420087283 0 0 0 48.778444420087283 0

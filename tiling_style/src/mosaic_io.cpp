@@ -19,6 +19,8 @@
 
 #include <dak/utility/text.h>
 
+#include <dak/geometry/geometry_io.h>
+
 #include <iomanip>
 #include <string>
 
@@ -29,6 +31,7 @@ namespace dak
       using utility::L;
       using tiling::infer_mode_from_name;
       using tiling::mosaic_t;
+      using geometry::transform_t;
 
       namespace
       {
@@ -40,6 +43,9 @@ namespace dak
          const wchar_t* outline_name   = L"outline";
          const wchar_t* interlace_name = L"interlace";
          const wchar_t* emboss_name    = L"emboss";
+
+         const wchar_t* old_layer_sentry = L"layers";
+         const wchar_t* movable_layer_sentry = L"movable-layers";
 
          ////////////////////////////////////////////////////////////////////////////
          //
@@ -363,6 +369,20 @@ namespace dak
                write_figure(file, *fig);
             }
          }
+
+
+         transform_t read_transform(std::wistream& file)
+         {
+            transform_t trf;
+            std::wstring dummy;
+            file >> dummy >> trf;
+            return trf;
+         }
+
+         void write_transform(std::wostream& file, const transform_t& trf)
+         {
+            file << L"  position " << trf << L"\n";
+         }
       }
 
       ////////////////////////////////////////////////////////////////////////////
@@ -375,9 +395,11 @@ namespace dak
 
          std::vector<std::shared_ptr<styled_mosaic_t>> new_layers;
 
-         std::wstring dummy;
+         std::wstring sentry;
          size_t count = 0;
-         file >> dummy >> count;
+         file >> sentry >> count;
+
+         const bool is_movable = (sentry == movable_layer_sentry);
 
          for (size_t i = 0; i < count; ++i)
          {
@@ -437,6 +459,9 @@ namespace dak
             // TODO: shared identical mosaic between layers? That would speed-up map updates.
             new_mosaic_layer->mosaic = read_mosaic(file, known_tilings);
 
+            if (is_movable)
+               new_mosaic_layer->set_transform(read_transform(file));
+
             new_layers.emplace_back(new_mosaic_layer);
          }
 
@@ -448,12 +473,13 @@ namespace dak
          file.precision(17);
          file.imbue(std::locale("C"));
 
-         file << L"layers " << layers.size() << "\n";
+         file << movable_layer_sentry << L"  " << layers.size() << "\n";
 
          for (const auto& styled_mosaic : layers)
          {
             write_style(file, *styled_mosaic->style);
             write_mosaic(file, *styled_mosaic->mosaic);
+            write_transform(file, styled_mosaic->get_transform());
          }
       }
    }

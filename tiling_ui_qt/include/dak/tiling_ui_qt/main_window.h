@@ -85,7 +85,7 @@ namespace dak
          geometry::rectangle_t window_filling_region();
          std::vector<std::shared_ptr<styled_mosaic_t>> get_avail_mosaics();
          std::vector<std::shared_ptr<layer_t>> get_avail_layers();
-         void update_layered_transform(const geometry::rectangle_t& bounds);
+         void update_layered_transform();
          const geometry::edges_map_t& find_calculated_mosaic(calculated_mosaics& calc_mos, const std::shared_ptr<mosaic_t>& mosaic);
          void update_canvas_layers(const std::vector<std::shared_ptr<layer_t>>& layers);
 
