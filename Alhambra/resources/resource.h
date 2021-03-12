@@ -8,6 +8,7 @@
 #define IDB_CANVAS_TRANSLATE            117
 #define IDB_CANVAS_ZOOM                 118
 #define IDB_LAYER_ADD                   119
+#define IDB_LAYER_RESET_TRF             115
 #define IDB_LAYER_COPY                  120
 #define IDB_LAYER_DELETE                121
 #define IDB_LAYER_MOVE_DOWN             122

@@ -40,7 +40,7 @@ namespace dak
       //
       // Main window icon IDs.
 
-      struct main_window_icons_t : tiling_editor_icons_t
+      struct main_window_icons_t : tiling_editor_icons_t, layers_selector_icons_t
       {
          int mosaic_previous = 0;
          int mosaic_next = 0;
@@ -52,12 +52,6 @@ namespace dak
          int export_svg = 0;
 
          int canvas_redraw = 0;
-
-         int layer_copy = 0;
-         int layer_add = 0;
-         int layer_delete = 0;
-         int layer_move_up = 0;
-         int layer_move_down = 0;
 
          int tiling_editor = 0;
       };

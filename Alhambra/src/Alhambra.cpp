@@ -38,6 +38,7 @@ int main(int argc, char **argv)
    icons.layer_copy        = IDB_LAYER_COPY;
    icons.layer_add         = IDB_LAYER_ADD;
    icons.layer_delete      = IDB_LAYER_DELETE;
+   icons.layer_copy_position = IDB_LAYER_RESET_TRF;
    icons.layer_move_up     = IDB_LAYER_MOVE_UP;
    icons.layer_move_down   = IDB_LAYER_MOVE_DOWN;
 

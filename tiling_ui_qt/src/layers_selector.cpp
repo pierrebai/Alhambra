@@ -47,7 +47,10 @@ namespace dak
 
       using utility::L;
       typedef std::vector<std::shared_ptr<layer_t>> layers_t;
-      typedef std::function<void(const layers_t& )> selection_changed_callback_t;
+
+      ////////////////////////////////////////////////////////////////////////////
+      //
+      // Create an icon from a mosaic.
 
       QIcon get_icon(const std::shared_ptr<styled_mosaic_t>& sm, int w, int h)
       {
@@ -152,10 +155,10 @@ namespace dak
       class layers_selector_ui_t
       {
       public:
-         layers_selector_ui_t(layers_selector_t& parent, int copy_icon, int add_icon, int remove_icon, int move_up_icon, int move_down_icon)
+         layers_selector_ui_t(layers_selector_t& parent, const layers_selector_icons_t& icons)
          : editor(parent)
          {
-            build_ui(parent, copy_icon, add_icon, remove_icon, move_up_icon, move_down_icon);
+            build_ui(parent, icons);
          }
 
          const layers_t& get_edited() const
@@ -213,10 +216,13 @@ namespace dak
                   if (row >= layer_list->rowCount())
                      layer_list->setRowCount(row + 1);
 
-                  const auto state = mo_layer->hide ? Qt::CheckState::Unchecked : Qt::CheckState::Checked;
-                  auto draw_item = new QTableWidgetItem();
-                  draw_item->setCheckState(state);
-                  layer_list->setItem(row, draw_column, draw_item);
+                  auto is_drawn_item = new QTableWidgetItem();
+                  is_drawn_item->setCheckState(mo_layer->is_drawn ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+                  layer_list->setItem(row, is_drawn_column, is_drawn_item);
+
+                  auto is_moving_item = new QTableWidgetItem();
+                  is_moving_item->setCheckState(mo_layer->is_moving ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+                  layer_list->setItem(row, is_moving_column, is_moving_item);
 
                   // Note: make icon larger than what was set in the table view
                   //       so that it gets scaled down with some smoothing.
@@ -259,7 +265,7 @@ namespace dak
             return std::move(button);
          }
 
-         void build_ui(layers_selector_t& parent, int copy_icon, int add_icon, int remove_icon, int move_up_icon, int move_down_icon)
+         void build_ui(layers_selector_t& parent, const layers_selector_icons_t& icons)
          {
             QVBoxLayout* layout = new QVBoxLayout(&parent);
             layout->setContentsMargins(0, 0, 0, 0);
@@ -267,16 +273,18 @@ namespace dak
             QWidget* button_panel = new QWidget(&parent);
                QGridLayout* button_layout = new QGridLayout(button_panel);
                button_layout->setContentsMargins(0, 0, 0, 0);
-               clone_layer_button = make_button(copy_icon, L::t(L"Copy"));
+               clone_layer_button = make_button(icons.layer_copy, L::t(L"Copy"));
                button_layout->addWidget(clone_layer_button.get(), 0, 0);
-               add_layer_button = make_button(add_icon, L::t(L"Add"));
+               add_layer_button = make_button(icons.layer_add, L::t(L"Add"));
                button_layout->addWidget(add_layer_button.get(), 0, 1);
-               remove_layers_button = make_button(remove_icon, L::t(L"Remove"));
+               remove_layers_button = make_button(icons.layer_delete, L::t(L"Remove"));
                button_layout->addWidget(remove_layers_button.get(), 0, 2);
-               move_layers_up_button = make_button(move_up_icon, L::t(L"Move Up"));
-               button_layout->addWidget(move_layers_up_button.get(), 0, 3);
-               move_layers_down_button = make_button(move_down_icon, L::t(L"Move Down"));
-               button_layout->addWidget(move_layers_down_button.get(), 0, 4);
+               copy_position_button = make_button(icons.layer_copy_position, L::t(L"Copy Position"));
+               button_layout->addWidget(copy_position_button.get(), 0, 3);
+               move_layers_up_button = make_button(icons.layer_move_up, L::t(L"Move Up"));
+               button_layout->addWidget(move_layers_up_button.get(), 0, 4);
+               move_layers_down_button = make_button(icons.layer_move_up, L::t(L"Move Down"));
+               button_layout->addWidget(move_layers_down_button.get(), 0, 5);
             layout->addWidget(button_panel);
 
             QStringList combo_items;
@@ -285,10 +293,11 @@ namespace dak
 
             layer_list = std::make_unique<QTableWidgetWithComboBox>(style_column, combo_items, &parent);
             layer_list->setIconSize(QSize(64, 32));
-            layer_list->setColumnCount(3);
+            layer_list->setColumnCount(4);
             layer_list->setHorizontalHeaderLabels(QStringList(
                {
                   QString::fromWCharArray(L::t(L"Drawn")),
+                  QString::fromWCharArray(L::t(L"Moving")),
                   QString::fromWCharArray(L::t(L"Mosaic")),
                   QString::fromWCharArray(L::t(L"Style"))
                }));
@@ -300,6 +309,7 @@ namespace dak
             clone_layer_button->setEnabled(false);
             add_layer_button->setEnabled(true);
             remove_layers_button->setEnabled(false);
+            copy_position_button->setEnabled(false);
             move_layers_up_button->setEnabled(false);
             move_layers_down_button->setEnabled(false);
 
@@ -309,6 +319,7 @@ namespace dak
             clone_layer_button->connect(clone_layer_button.get(), &QPushButton::clicked, [&]() { clone_layer(); });
             add_layer_button->connect(add_layer_button.get(), &QPushButton::clicked, [&]() { add_layer(); });
             remove_layers_button->connect(remove_layers_button.get(), &QPushButton::clicked, [&]() { remove_layers(); });
+            copy_position_button->connect(copy_position_button.get(), &QPushButton::clicked, [&]() { copy_position(); });
             move_layers_up_button->connect(move_layers_up_button.get(), &QPushButton::clicked, [&]() { move_layers_up(); });
             move_layers_down_button->connect(move_layers_down_button.get(), &QPushButton::clicked, [&]() { move_layers_down(); });
          }
@@ -340,6 +351,7 @@ namespace dak
             clone_layer_button->setEnabled(selected.size() > 0);
             add_layer_button->setEnabled(true);
             remove_layers_button->setEnabled(selected.size() > 0);
+            copy_position_button->setEnabled(selected.size() > 1);
             move_layers_up_button->setEnabled(edited.size() > 1 && selected.size() > 0);
             move_layers_down_button->setEnabled(edited.size() > 1 && selected.size() > 0);
          }
@@ -362,8 +374,9 @@ namespace dak
 
             switch (item->column())
             {
-               case draw_column:    return update_drawn(item);
-               case style_column:   return update_style(item);
+               case is_drawn_column:   return update_drawn(item);
+               case is_moving_column:  return update_moving(item);
+               case style_column:      return update_style(item);
             }
          }
 
@@ -376,7 +389,21 @@ namespace dak
             if (row < 0 || row >= edited.size())
                return;
 
-            edited[row]->hide = (item->checkState() == Qt::CheckState::Unchecked);
+            edited[row]->is_drawn = (item->checkState() == Qt::CheckState::Checked);
+
+            update_layers();
+         }
+
+         void update_moving(QTableWidgetItem* item)
+         {
+            if (!item)
+               return;
+
+            const int row = item->row();
+            if (row < 0 || row >= edited.size())
+               return;
+
+            edited[row]->is_moving = (item->checkState() == Qt::CheckState::Checked);
 
             update_layers();
          }
@@ -479,6 +506,23 @@ namespace dak
             update_layers();
          }
 
+         void copy_position()
+         {
+            auto selected = get_selected_indexes();
+            if (selected.size() < 2)
+               return;
+
+            const auto trf = edited[selected[0]]->get_transform();
+            for (int index : selected)
+            {
+               const bool was_moving = edited[index]->is_moving;
+               edited[index]->is_moving = true;
+               edited[index]->set_transform(trf);
+               edited[index]->is_moving = was_moving;
+            }
+            update_layers();
+         }
+
          void move_layers_up()
          {
             // Treat each target index in order: find if it must receive the layer from below moving up.
@@ -520,9 +564,10 @@ namespace dak
             update_layers();
          }
 
-         static constexpr int draw_column = 0;
-         static constexpr int tiling_column = 1;
-         static constexpr int style_column = 2;
+         static constexpr int is_drawn_column = 0;
+         static constexpr int is_moving_column = 1;
+         static constexpr int tiling_column = 2;
+         static constexpr int style_column = 3;
 
          layers_selector_t& editor;
          layers_t edited;
@@ -531,6 +576,7 @@ namespace dak
          std::unique_ptr<QPushButton> clone_layer_button;
          std::unique_ptr<QPushButton> add_layer_button;
          std::unique_ptr<QPushButton> remove_layers_button;
+         std::unique_ptr<QPushButton> copy_position_button;
          std::unique_ptr<QPushButton> move_layers_up_button;
          std::unique_ptr<QPushButton> move_layers_down_button;
 
@@ -541,8 +587,8 @@ namespace dak
       //
       // A QWidget to select and order layers.
 
-      layers_selector_t::layers_selector_t(QWidget* parent, int copy_icon, int add_icon, int remove_icon, int move_up_icon, int move_down_icon)
-      : QWidget(parent), ui(std::make_unique<layers_selector_ui_t>(*this, copy_icon, add_icon, remove_icon, move_up_icon, move_down_icon))
+      layers_selector_t::layers_selector_t(QWidget* parent, const layers_selector_icons_t& icons)
+      : QWidget(parent), ui(std::make_unique<layers_selector_ui_t>(*this, icons))
       {
       }
 

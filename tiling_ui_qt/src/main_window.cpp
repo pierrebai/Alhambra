@@ -133,7 +133,7 @@ namespace dak
             QWidget* layers_container = new QWidget();
             QVBoxLayout* layers_layout = new QVBoxLayout(layers_container);
 
-            layer_list = new layers_selector_t(layers_container, icons.layer_copy, icons.layer_add, icons.layer_delete, icons.layer_move_up, icons.layer_move_down);
+            layer_list = new layers_selector_t(layers_container, icons);
             layers_layout->addWidget(layer_list);
 
             styles_editor = new dak::tiling_ui_qt::styles_editor_t(layers_container);

@@ -27,9 +27,25 @@ namespace dak
 
       class layers_selector_ui_t;
 
+      ////////////////////////////////////////////////////////////////////////////
+      //
       // Create an icon for the given mosaic.
       QIcon get_icon(const std::shared_ptr<styled_mosaic_t>& sm, int w, int h);
       QIcon get_icon(const std::shared_ptr<mosaic_t>& mosaic, const ui::color_t& co, int w, int h);
+
+      ////////////////////////////////////////////////////////////////////////////
+      //
+      // Layers selector icon IDs.
+
+      struct layers_selector_icons_t
+      {
+         int layer_copy = 0;
+         int layer_add = 0;
+         int layer_delete = 0;
+         int layer_copy_position = 0;
+         int layer_move_up = 0;
+         int layer_move_down = 0;
+      };
 
       ////////////////////////////////////////////////////////////////////////////
       //
@@ -55,7 +71,7 @@ namespace dak
          new_layer_requested_callback new_layer_requested;
 
          // Create a layer selector with the given parent widget and layers.
-         layers_selector_t(QWidget* parent, int copy_icon, int add_icon, int remove_icon, int move_up_icon, int move_down_icon);
+         layers_selector_t(QWidget* parent, const layers_selector_icons_t& icons);
 
          // Set the layers being edited.
          void set_edited(const layers& edited);
