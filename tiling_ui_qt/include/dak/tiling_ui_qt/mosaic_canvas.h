@@ -15,7 +15,8 @@ namespace dak
    {
       ////////////////////////////////////////////////////////////////////////////
       //
-      // A widget drawing_canvas working with a mosaic.
+      // A drawing canvas widget (knows how to paint and move the painting using
+      // the mouse) that draws a mosaic.
 
       class mosaic_canvas_t : public ui::qt::drawing_canvas_t
       {
