@@ -927,7 +927,7 @@ namespace dak
             if (operation.length())
                report_error(std::wstring(L::t(L"Cannot ")) + operation + L::t(L" the tiling without polygons!\n") +
                             L::t(L"Please add some polygons to the tiling.\n") +
-                            L::t(L"(Enter a number and press <Enter> to create a regular polygon_t.)"));
+                            L::t(L"(Enter a number and press <Enter> to create a regular polygon.)"));
             return false;
          }
 
@@ -937,7 +937,7 @@ namespace dak
             if (operation.length())
                report_error(std::wstring(L::t(L"Cannot ")) + operation + L::t(L" the tiling without selected tiles!\n") +
                             L::t(L"Please select some tiles for inclusion.\n") +
-                            L::t(L"(Press the T key while the mouse is over a polygon_t.)"));
+                            L::t(L"(Press the T key while the mouse is over a polygon.)"));
             return false;
          }
 
@@ -946,7 +946,7 @@ namespace dak
             if (operation.length())
                report_error(std::wstring(L::t(L"Cannot ")) + operation + L::t(L" the tiling without translation vectors!\n") +
                             L::t(L"Please define the two translation vectors.\n") +
-                            L::t(L"(Middle mouse button on polygon_t vertex or center and drag to another.)"));
+                            L::t(L"(Middle mouse button on polygon vertex or center and drag to another.)"));
             return false;
          }
 
@@ -1500,8 +1500,8 @@ namespace dak
          }
          else
          {
-            report_error(std::wstring(L::t(L"Cannot create a polygon_t with too few sides!\n")) +
-                         std::wstring(L::t(L"Please enter a number of side on the keyboard before adding the polygon_t.\n")) +
+            report_error(std::wstring(L::t(L"Cannot create a polygon with too few sides!\n")) +
+                         std::wstring(L::t(L"Please enter a number of side on the keyboard before adding the polygon.\n")) +
                          std::wstring(L::t(L"(Enter a number and then press <Enter>.)")));
          }
          poly_side_count = 0;
@@ -1694,7 +1694,7 @@ namespace dak
             ui->exclude_all();
          });
 
-         add_poly_action = CreateAction(L::t(L"Add Polygon"), icons.add_polygon, QKeySequence(Qt::Key_Return), L::t(L"Add a regular polygon_t with X side, where X is a number you entered with the keyboard. (Shortcut: <Return>)"), [ui=ui]()
+         add_poly_action = CreateAction(L::t(L"Add Polygon"), icons.add_polygon, QKeySequence(Qt::Key_Return), L::t(L"Add a regular polygon with X side, where X is a number you entered with the keyboard. (Shortcut: <Return>)"), [ui=ui]()
          {
             ui->add_regular_polygon();
          });
@@ -1709,24 +1709,24 @@ namespace dak
             ui->update_mouse_mode(self->draw_inflation_toggle, mouse_mode_t::draw_inflation);
          });
 
-         draw_poly_toggle = CreateToggle(L::t(L"Draw Polygon"), icons.draw_polygon, {}, L::t(L"Select a series of vertices counter-clockwise to draw a free-form polygon_t. (Click on vertices.)"), [self=this, ui=ui]()
+         draw_poly_toggle = CreateToggle(L::t(L"Draw Polygon"), icons.draw_polygon, {}, L::t(L"Select a series of vertices counter-clockwise to draw a free-form polygon. (Click on vertices.)"), [self=this, ui=ui]()
          {
             ui->update_mouse_mode(self->draw_poly_toggle, mouse_mode_t::draw_polygon);
          });
 
-         copy_poly_action = CreateAction(L::t(L"Copy Polygon"), icons.copy_polygon, 'C', L::t(L"Copy a polygon_t by drag-and-drop with the mouse. (Press C or drag with the mouse.)"), [self = this, ui = ui]()
+         copy_poly_action = CreateAction(L::t(L"Copy Polygon"), icons.copy_polygon, 'C', L::t(L"Copy a polygon by drag-and-drop with the mouse. (Press C or drag with the mouse.)"), [self = this, ui = ui]()
          {
             selection_t sel = ui->find_selection_under_mouse(selection_type_t::tile);
             ui->copy_polygon(sel);
          });
 
-         copy_poly_toggle = CreateToggle(L::t(L"Copy Polygon"), icons.copy_polygon, {}, L::t(L"Copy a polygon_t by drag-and-drop with the mouse. (Press C or drag with the mouse.)"), [self = this, ui = ui]()
+         copy_poly_toggle = CreateToggle(L::t(L"Copy Polygon"), icons.copy_polygon, {}, L::t(L"Copy a polygon by drag-and-drop with the mouse. (Press C or drag with the mouse.)"), [self = this, ui = ui]()
          {
             selection_t sel = ui->find_selection_under_mouse(selection_type_t::tile);
             ui->update_mouse_mode(self->copy_poly_toggle, mouse_mode_t::copy_polygon);
          });
 
-         move_poly_toggle = CreateToggle(L::t(L"Move Polygon"), icons.move_polygon, {}, L::t(L"Move a polygon_t by drag-and-drop with the mouse. (Drag with the mouse.)"), [self=this, ui=ui]()
+         move_poly_toggle = CreateToggle(L::t(L"Move Polygon"), icons.move_polygon, {}, L::t(L"Move a polygon by drag-and-drop with the mouse. (Drag with the mouse.)"), [self=this, ui=ui]()
          {
             ui->update_mouse_mode(self->move_poly_toggle, mouse_mode_t::move_polygon);
          });

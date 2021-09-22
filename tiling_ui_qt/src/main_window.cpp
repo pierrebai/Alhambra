@@ -748,11 +748,19 @@ namespace dak
          auto mo_layer = std::make_shared<styled_mosaic_t>();
          mo_layer->mosaic = new_mosaic;
          mo_layer->style = std::make_shared<thick_t>(ui::color_t(20, 140, 220, 255));
-         mo_layer->update_style(window_filling_region());
          auto layers = layered.get_layers();
          const bool was_empty = (layers.size() <= 0);
          layers.emplace_back(mo_layer);
          layered.set_layers(layers);
+
+         while (new_mosaic->tiling->count_fill_copies(window_filling_region()) > 20)
+         {
+            const point_t center = window_filling_region().center();
+            canvas->layered->compose(transform_t::scale(2.));
+         }
+
+         mo_layer->update_style(window_filling_region());
+
          fill_layer_list();
 
          if (was_empty)
