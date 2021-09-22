@@ -157,22 +157,22 @@ namespace dak
       {
       public:
          layers_selector_ui_t(layers_selector_t& parent, const layers_selector_icons_t& icons)
-         : editor(parent)
+         : my_layer_selector(parent)
          {
             build_ui(parent, icons);
          }
 
          const layers_t& get_edited() const
          {
-            return edited;
+            return my_edited_layers;
          }
 
          void set_edited(const layers_t& ed)
          {
-            if (ed == edited)
+            if (ed == my_edited_layers)
                return;
 
-            edited = ed;
+            my_edited_layers = ed;
 
             std::vector<int> selected = get_selected_indexes();
             if (selected.size() == 0 && ed.size() == 1)
@@ -186,7 +186,7 @@ namespace dak
             std::vector<std::shared_ptr<layer_t>> selected;
             for (int index : get_selected_indexes())
             {
-               selected.emplace_back(edited[index]);
+               selected.emplace_back(my_edited_layers[index]);
             }
             return selected;
          };
@@ -210,7 +210,7 @@ namespace dak
             layer_list->blockSignals(disable_feedback > 0);
 
             int row = 0;
-            for (auto& layer : edited)
+            for (auto& layer : my_edited_layers)
             {
                if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
                {
@@ -348,13 +348,13 @@ namespace dak
          {
             auto selected = get_selected_indexes();
 
-            layer_list->setEnabled(edited.size() > 0);
+            layer_list->setEnabled(my_edited_layers.size() > 0);
             clone_layer_button->setEnabled(selected.size() > 0);
             add_layer_button->setEnabled(true);
             remove_layers_button->setEnabled(selected.size() > 0);
             copy_position_button->setEnabled(selected.size() > 1);
-            move_layers_up_button->setEnabled(edited.size() > 1 && selected.size() > 0);
-            move_layers_down_button->setEnabled(edited.size() > 1 && selected.size() > 0);
+            move_layers_up_button->setEnabled(my_edited_layers.size() > 1 && selected.size() > 0);
+            move_layers_down_button->setEnabled(my_edited_layers.size() > 1 && selected.size() > 0);
          }
 
          void update_selection()
@@ -364,8 +364,8 @@ namespace dak
             if (disable_feedback)
                return;
 
-            if (editor.selection_changed)
-               editor.selection_changed(edited);
+            if (my_layer_selector.selection_changed)
+               my_layer_selector.selection_changed(my_edited_layers);
          }
 
          void update_layer(QTableWidgetItem * item)
@@ -387,10 +387,10 @@ namespace dak
                return;
 
             const int row = item->row();
-            if (row < 0 || row >= edited.size())
+            if (row < 0 || row >= my_edited_layers.size())
                return;
 
-            edited[row]->is_drawn = (item->checkState() == Qt::CheckState::Checked);
+            my_edited_layers[row]->is_drawn = (item->checkState() == Qt::CheckState::Checked);
 
             update_layers();
          }
@@ -401,10 +401,10 @@ namespace dak
                return;
 
             const int row = item->row();
-            if (row < 0 || row >= edited.size())
+            if (row < 0 || row >= my_edited_layers.size())
                return;
 
-            edited[row]->is_moving = (item->checkState() == Qt::CheckState::Checked);
+            my_edited_layers[row]->is_moving = (item->checkState() == Qt::CheckState::Checked);
 
             update_layers();
          }
@@ -415,19 +415,19 @@ namespace dak
                return;
 
             const int row = item->row();
-            if (row < 0 || row >= edited.size())
+            if (row < 0 || row >= my_edited_layers.size())
                return;
 
-            const auto old_style = extract_style(edited[row]);
+            const auto old_style = extract_style(my_edited_layers[row]);
             auto new_style = make_style(item->text());
             if (new_style)
             {
                if (old_style)
                   new_style->make_similar(*old_style);
-               if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(edited[row]))
+               if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(my_edited_layers[row]))
                   mo_layer->style = new_style;
                else
-                  edited[row] = new_style;
+                  my_edited_layers[row] = new_style;
             }
             update_layers();
          }
@@ -440,8 +440,8 @@ namespace dak
             if (disable_feedback)
                return;
 
-            if (editor.layers_changed)
-               editor.layers_changed(edited);
+            if (my_layer_selector.layers_changed)
+               my_layer_selector.layers_changed(my_edited_layers);
          }
 
          void set_selected_indexes(const std::vector<int>& indexes)
@@ -460,7 +460,7 @@ namespace dak
          std::vector<int> get_selected_indexes() const
          {
             std::vector<int> selected;
-            for (int row = 0; row < layer_list->rowCount() && row < edited.size(); ++row)
+            for (int row = 0; row < layer_list->rowCount() && row < my_edited_layers.size(); ++row)
             {
                for (int col = 0; col < layer_list->columnCount(); ++col)
                {
@@ -482,7 +482,7 @@ namespace dak
             std::reverse(selected.begin(), selected.end());
             for (int index : selected)
             {
-               edited.emplace(edited.begin() + index, edited[index]->clone());
+               my_edited_layers.emplace(my_edited_layers.begin() + index, my_edited_layers[index]->clone());
             }
             fill_ui({});
             update_layers();
@@ -490,8 +490,8 @@ namespace dak
 
          void add_layer()
          {
-            if (editor.new_layer_requested)
-               editor.new_layer_requested();
+            if (my_layer_selector.new_layer_requested)
+               my_layer_selector.new_layer_requested();
          }
 
          void remove_layers()
@@ -501,7 +501,7 @@ namespace dak
             std::reverse(selected.begin(), selected.end());
             for (int index : selected)
             {
-               edited.erase(edited.begin() + index);
+               my_edited_layers.erase(my_edited_layers.begin() + index);
             }
             fill_ui({});
             update_layers();
@@ -513,13 +513,13 @@ namespace dak
             if (selected.size() < 2)
                return;
 
-            const auto trf = edited[selected[0]]->get_transform();
+            const auto trf = my_edited_layers[selected[0]]->get_transform();
             for (int index : selected)
             {
-               const bool was_moving = edited[index]->is_moving;
-               edited[index]->is_moving = true;
-               edited[index]->set_transform(trf);
-               edited[index]->is_moving = was_moving;
+               const bool was_moving = my_edited_layers[index]->is_moving;
+               my_edited_layers[index]->is_moving = true;
+               my_edited_layers[index]->set_transform(trf);
+               my_edited_layers[index]->is_moving = was_moving;
             }
             update_layers();
          }
@@ -535,7 +535,7 @@ namespace dak
                   target++;
                if (target < index)
                {
-                  std::swap(edited[target], edited[index]);
+                  std::swap(my_edited_layers[target], my_edited_layers[index]);
                   index--;
                }
                target++;
@@ -549,14 +549,14 @@ namespace dak
             // Treat each target index in reverse order: find if it must receive the layer from up moving down.
             auto selected = get_selected_indexes();
             std::reverse(selected.begin(), selected.end());
-            int target = int(edited.size()) - 1;
+            int target = int(my_edited_layers.size()) - 1;
             for (int& index : selected)
             {
                while (target > index + 1)
                   target--;
                if (target > index)
                {
-                  std::swap(edited[target], edited[index]);
+                  std::swap(my_edited_layers[target], my_edited_layers[index]);
                   index++;
                }
                target--;
@@ -570,8 +570,8 @@ namespace dak
          static constexpr int tiling_column = 2;
          static constexpr int style_column = 3;
 
-         layers_selector_t& editor;
-         layers_t edited;
+         layers_selector_t& my_layer_selector;
+         layers_t my_edited_layers;
 
          std::unique_ptr<QTableWidgetWithComboBox> layer_list;
          std::unique_ptr<QPushButton> clone_layer_button;
