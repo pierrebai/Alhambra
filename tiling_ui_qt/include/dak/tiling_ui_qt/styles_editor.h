@@ -43,7 +43,7 @@ namespace dak
          const styles_t& get_edited() const;
 
       protected:
-         std::unique_ptr<styles_editor_ui_t> ui;
+         std::unique_ptr<styles_editor_ui_t> my_ui;
       };
    }
 }

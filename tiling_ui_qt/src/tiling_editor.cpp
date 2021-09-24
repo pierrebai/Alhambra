@@ -1485,7 +1485,7 @@ namespace dak
             }
          }
          if (tiling_editor_t* editor = dynamic_cast<tiling_editor_t *>(parent()))
-            editor->add_poly_action->setText(QString::fromStdWString(name));
+            editor->my_add_poly_action->setText(QString::fromStdWString(name));
       }
 
       void tiling_editor_ui_t::add_regular_polygon()
@@ -1634,7 +1634,7 @@ namespace dak
 
       // Creation.
       tiling_editor_t::tiling_editor_t(const tiling_editor_icons_t& icons, QWidget* parent)
-      : QWidget(parent), ui(std::shared_ptr<tiling_editor_ui_t>(new tiling_editor_ui_t(this)))
+      : QWidget(parent), my_ui(std::shared_ptr<tiling_editor_ui_t>(new tiling_editor_ui_t(this)))
       {
          build_actions(icons);
          build_ui();
@@ -1642,22 +1642,22 @@ namespace dak
 
       void tiling_editor_t::set_tiling(const std::shared_ptr<tiling_t>& tiling)
       {
-         ui->set_tiling(tiling);
+         my_ui->set_tiling(tiling);
       }
       
       std::shared_ptr<tiling_t> tiling_editor_t::create_tiling()
       {
-         return ui->create_tiling();
+         return my_ui->create_tiling();
       }
 
       bool tiling_editor_t::verify_tiling(const std::wstring& operation)
       {
-         return ui->verify_tiling(operation);
+         return my_ui->verify_tiling(operation);
       }
 
       void tiling_editor_t::report_error(const std::wstring& text, message_reporter_t::category_t cat)
       {
-         ui->report_error(text, cat);
+         my_ui->report_error(text, cat);
       }
 
       ////////////////////////////////////////////////////////////////////////////
@@ -1667,112 +1667,112 @@ namespace dak
       void tiling_editor_t::build_ui()
       {
          auto layout = new QVBoxLayout(this);
-         layout->addWidget(ui.get());
+         layout->addWidget(my_ui.get());
          layout->setMargin(0);
          setContentsMargins(0, 0, 0, 0);
       }
 
       void tiling_editor_t::build_actions(const tiling_editor_icons_t& icons)
       {
-         clear_trans_action = CreateAction(L::t(L"Clear Vectors"), icons.clear_translation, 'U', L::t(L"Clear the translation vectors used to tile the plane. (Shortcut: U.)"), [ui=ui]()
+         my_clear_trans_action = CreateAction(L::t(L"Clear Vectors"), icons.clear_translation, 'U', L::t(L"Clear the translation vectors used to tile the plane. (Shortcut: U.)"), [my_ui=my_ui]()
          {
-            ui->clear_translation();
+            my_ui->clear_translation();
          });
 
-         fill_trans_action = CreateAction(L::t(L"Fill Tiling"), icons.fill_with_translation, 'F', L::t(L"Surround the design with copies using the translation vectors. (Shortcut: F.)"), [ui=ui]()
+         my_fill_trans_action = CreateAction(L::t(L"Fill Tiling"), icons.fill_with_translation, 'F', L::t(L"Surround the design with copies using the translation vectors. (Shortcut: F.)"), [my_ui=my_ui]()
          {
-            ui->fill_using_translations();
+            my_ui->fill_using_translations();
          });
 
-         remove_excluded_action = CreateAction(L::t(L"Clean Tiling"), icons.remove_excluded, 'R', L::t(L"Remove all polygons that are not included in the tiling. (Shortcut: R)"), [ui=ui]()
+         my_remove_excluded_action = CreateAction(L::t(L"Clean Tiling"), icons.remove_excluded, 'R', L::t(L"Remove all polygons that are not included in the tiling. (Shortcut: R)"), [my_ui=my_ui]()
          {
-            ui->remove_excluded();
+            my_ui->remove_excluded();
          });
 
-         exclude_all_action = CreateAction(L::t(L"Exclude All"), icons.exclude_all, 'E', L::t(L"Exclude all polygons from the tiling. (Shortcut: E)"), [ui=ui]()
+         my_exclude_all_action = CreateAction(L::t(L"Exclude All"), icons.exclude_all, 'E', L::t(L"Exclude all polygons from the tiling. (Shortcut: E)"), [my_ui=my_ui]()
          {
-            ui->exclude_all();
+            my_ui->exclude_all();
          });
 
-         add_poly_action = CreateAction(L::t(L"Add Polygon"), icons.add_polygon, QKeySequence(Qt::Key_Return), L::t(L"Add a regular polygon with X side, where X is a number you entered with the keyboard. (Shortcut: <Return>)"), [ui=ui]()
+         my_add_poly_action = CreateAction(L::t(L"Add Polygon"), icons.add_polygon, QKeySequence(Qt::Key_Return), L::t(L"Add a regular polygon with X side, where X is a number you entered with the keyboard. (Shortcut: <Return>)"), [my_ui=my_ui]()
          {
-            ui->add_regular_polygon();
+            my_ui->add_regular_polygon();
          });
 
-         draw_trans_toggle = CreateToggle(L::t(L"Draw Vectors"), icons.draw_translation, {}, L::t(L"Select the two translation vectors used to tile the plane, using the mouse. (Drag with the mouse.)"), [self=this, ui=ui]()
+         my_draw_trans_toggle = CreateToggle(L::t(L"Draw Vectors"), icons.draw_translation, {}, L::t(L"Select the two translation vectors used to tile the plane, using the mouse. (Drag with the mouse.)"), [self=this, my_ui=my_ui]()
          {
-            ui->update_mouse_mode(self->draw_trans_toggle, mouse_mode_t::draw_fill_vectors);
+            my_ui->update_mouse_mode(self->my_draw_trans_toggle, mouse_mode_t::draw_fill_vectors);
          });
 
-         draw_inflation_toggle = CreateToggle(L::t(L"Draw Inflation"), icons.draw_inflation, {}, L::t(L"Select the two inflation vectors used to tile the plane, using the mouse. (Drag with the mouse.)"), [self=this, ui=ui]()
+         my_draw_inflation_toggle = CreateToggle(L::t(L"Draw Inflation"), icons.draw_inflation, {}, L::t(L"Select the two inflation vectors used to tile the plane, using the mouse. (Drag with the mouse.)"), [self=this, my_ui=my_ui]()
          {
-            ui->update_mouse_mode(self->draw_inflation_toggle, mouse_mode_t::draw_inflation);
+            my_ui->update_mouse_mode(self->my_draw_inflation_toggle, mouse_mode_t::draw_inflation);
          });
 
-         draw_poly_toggle = CreateToggle(L::t(L"Draw Polygon"), icons.draw_polygon, {}, L::t(L"Select a series of vertices counter-clockwise to draw a free-form polygon. (Click on vertices.)"), [self=this, ui=ui]()
+         my_draw_poly_toggle = CreateToggle(L::t(L"Draw Polygon"), icons.draw_polygon, {}, L::t(L"Select a series of vertices counter-clockwise to draw a free-form polygon. (Click on vertices.)"), [self=this, my_ui=my_ui]()
          {
-            ui->update_mouse_mode(self->draw_poly_toggle, mouse_mode_t::draw_polygon);
+            my_ui->update_mouse_mode(self->my_draw_poly_toggle, mouse_mode_t::draw_polygon);
          });
 
-         copy_poly_action = CreateAction(L::t(L"Copy Polygon"), icons.copy_polygon, 'C', L::t(L"Copy a polygon by drag-and-drop with the mouse. (Press C or drag with the mouse.)"), [self = this, ui = ui]()
+         my_copy_poly_action = CreateAction(L::t(L"Copy Polygon"), icons.copy_polygon, 'C', L::t(L"Copy a polygon by drag-and-drop with the mouse. (Press C or drag with the mouse.)"), [self = this, my_ui = my_ui]()
          {
-            selection_t sel = ui->find_selection_under_mouse(selection_type_t::tile);
-            ui->copy_polygon(sel);
+            selection_t sel = my_ui->find_selection_under_mouse(selection_type_t::tile);
+            my_ui->copy_polygon(sel);
          });
 
-         copy_poly_toggle = CreateToggle(L::t(L"Copy Polygon"), icons.copy_polygon, {}, L::t(L"Copy a polygon by drag-and-drop with the mouse. (Press C or drag with the mouse.)"), [self = this, ui = ui]()
+         my_copy_poly_toggle = CreateToggle(L::t(L"Copy Polygon"), icons.copy_polygon, {}, L::t(L"Copy a polygon by drag-and-drop with the mouse. (Press C or drag with the mouse.)"), [self = this, my_ui = my_ui]()
          {
-            selection_t sel = ui->find_selection_under_mouse(selection_type_t::tile);
-            ui->update_mouse_mode(self->copy_poly_toggle, mouse_mode_t::copy_polygon);
+            selection_t sel = my_ui->find_selection_under_mouse(selection_type_t::tile);
+            my_ui->update_mouse_mode(self->my_copy_poly_toggle, mouse_mode_t::copy_polygon);
          });
 
-         move_poly_toggle = CreateToggle(L::t(L"Move Polygon"), icons.move_polygon, {}, L::t(L"Move a polygon by drag-and-drop with the mouse. (Drag with the mouse.)"), [self=this, ui=ui]()
+         my_move_poly_toggle = CreateToggle(L::t(L"Move Polygon"), icons.move_polygon, {}, L::t(L"Move a polygon by drag-and-drop with the mouse. (Drag with the mouse.)"), [self=this, my_ui=my_ui]()
          {
-            ui->update_mouse_mode(self->move_poly_toggle, mouse_mode_t::move_polygon);
+            my_ui->update_mouse_mode(self->my_move_poly_toggle, mouse_mode_t::move_polygon);
          });
 
-         delete_poly_action = CreateAction(L::t(L"Delete Polygon"), icons.delete_polygon, 'D', L::t(L"Delete polygons by clicking on them with the mouse. (Shortcut: D)"), [self=this, ui=ui]()
+         my_delete_poly_action = CreateAction(L::t(L"Delete Polygon"), icons.delete_polygon, 'D', L::t(L"Delete polygons by clicking on them with the mouse. (Shortcut: D)"), [self=this, my_ui=my_ui]()
          {
-            selection_t sel = ui->find_selection_under_mouse(selection_type_t::tile);
-            ui->delete_polygon(sel);
+            selection_t sel = my_ui->find_selection_under_mouse(selection_type_t::tile);
+            my_ui->delete_polygon(sel);
          });
 
-         delete_poly_toggle = CreateToggle(L::t(L"Delete Polygon"), icons.delete_polygon, {}, L::t(L"Delete polygons by clicking on them with the mouse. (Shortcut: D)"), [self = this, ui = ui]()
+         my_delete_poly_toggle = CreateToggle(L::t(L"Delete Polygon"), icons.delete_polygon, {}, L::t(L"Delete polygons by clicking on them with the mouse. (Shortcut: D)"), [self = this, my_ui = my_ui]()
          {
-            ui->update_mouse_mode(self->delete_poly_toggle, mouse_mode_t::delete_polygon);
+            my_ui->update_mouse_mode(self->my_delete_poly_toggle, mouse_mode_t::delete_polygon);
          });
 
-         toggle_inclusion_action = CreateAction(L::t(L"Include Polygon"), icons.toggle_inclusion, 'T', L::t(L"Toggle the inclusion of polygons in the tiling by clicking on them with the mouse. (Shortcut: T)"), [self=this, ui=ui]()
+         my_toggle_inclusion_action = CreateAction(L::t(L"Include Polygon"), icons.toggle_inclusion, 'T', L::t(L"Toggle the inclusion of polygons in the tiling by clicking on them with the mouse. (Shortcut: T)"), [self=this, my_ui=my_ui]()
          {
-            selection_t sel = ui->find_selection_under_mouse(selection_type_t::tile);
-            ui->toggle_inclusion(sel);
+            selection_t sel = my_ui->find_selection_under_mouse(selection_type_t::tile);
+            my_ui->toggle_inclusion(sel);
          });
 
-         toggle_inclusion_toggle = CreateToggle(L::t(L"Include Polygon"), icons.toggle_inclusion, {}, L::t(L"Toggle the inclusion of polygons in the tiling by clicking on them with the mouse. (Shortcut: T)"), [self = this, ui = ui]()
+         my_toggle_inclusion_toggle = CreateToggle(L::t(L"Include Polygon"), icons.toggle_inclusion, {}, L::t(L"Toggle the inclusion of polygons in the tiling by clicking on them with the mouse. (Shortcut: T)"), [self = this, my_ui = my_ui]()
          {
-            ui->update_mouse_mode(self->toggle_inclusion_toggle, mouse_mode_t::include_polygon);
+            my_ui->update_mouse_mode(self->my_toggle_inclusion_toggle, mouse_mode_t::include_polygon);
          });
 
-         pan_toggle = CreateToggle(L::t(L"Pan"), icons.canvas_translate, {}, L::t(L"Pan the view by drag-and-drop with the mouse. (<Shift> + left mouse button.)"), [self=this, ui=ui]()
+         my_pan_toggle = CreateToggle(L::t(L"Pan"), icons.canvas_translate, {}, L::t(L"Pan the view by drag-and-drop with the mouse. (<Shift> + left mouse button.)"), [self=this, my_ui=my_ui]()
          {
-            ui->update_mouse_mode(self->pan_toggle, mouse_mode_t::pan_view);
+            my_ui->update_mouse_mode(self->my_pan_toggle, mouse_mode_t::pan_view);
          });
 
-         rotate_toggle = CreateToggle(L::t(L"Rotate"), icons.canvas_rotate, {}, L::t(L"Rotate the view by drag-and-drop with the mouse. (<Shift> + middle mouse button.)"), [self=this, ui=ui]()
+         my_rotate_toggle = CreateToggle(L::t(L"Rotate"), icons.canvas_rotate, {}, L::t(L"Rotate the view by drag-and-drop with the mouse. (<Shift> + middle mouse button.)"), [self=this, my_ui=my_ui]()
          {
-            ui->update_mouse_mode(self->rotate_toggle, mouse_mode_t::rotate_view);
+            my_ui->update_mouse_mode(self->my_rotate_toggle, mouse_mode_t::rotate_view);
          });
 
-         zoom_toggle = CreateToggle(L::t(L"Zoom"), icons.canvas_zoom, {}, L::t(L"Zoom the view by drag-and-drop with the mouse. (<Shift> + right mouse button.)"), [self=this, ui=ui]()
+         my_zoom_toggle = CreateToggle(L::t(L"Zoom"), icons.canvas_zoom, {}, L::t(L"Zoom the view by drag-and-drop with the mouse. (<Shift> + right mouse button.)"), [self=this, my_ui=my_ui]()
          {
-            ui->update_mouse_mode(self->zoom_toggle, mouse_mode_t::zoom_view);
+            my_ui->update_mouse_mode(self->my_zoom_toggle, mouse_mode_t::zoom_view);
          });
 
          for (int i = 0; i < 10; ++i)
          {
-            number_actions[i] = CreateAction(QString::asprintf("%d", i), 0, '0' + i, nullptr, [ui=ui, i=i]()
+            number_actions[i] = CreateAction(QString::asprintf("%d", i), 0, '0' + i, nullptr, [my_ui=my_ui, i=i]()
             {
-               ui->update_polygon_sides(i);
+               my_ui->update_polygon_sides(i);
             });
             number_actions[i]->setShortcutContext(Qt::ShortcutContext::WindowShortcut);
             addAction(number_actions[i]);
@@ -1780,19 +1780,19 @@ namespace dak
 
          QActionGroup * modif_group = new QActionGroup(this);
          modif_group->setExclusive(true);
-         modif_group->addAction(draw_trans_toggle);
-         modif_group->addAction(draw_inflation_toggle);
-         modif_group->addAction(draw_poly_toggle);
-         modif_group->addAction(copy_poly_toggle);
-         modif_group->addAction(delete_poly_toggle);
-         modif_group->addAction(move_poly_toggle);
-         modif_group->addAction(toggle_inclusion_toggle);
+         modif_group->addAction(my_draw_trans_toggle);
+         modif_group->addAction(my_draw_inflation_toggle);
+         modif_group->addAction(my_draw_poly_toggle);
+         modif_group->addAction(my_copy_poly_toggle);
+         modif_group->addAction(my_delete_poly_toggle);
+         modif_group->addAction(my_move_poly_toggle);
+         modif_group->addAction(my_toggle_inclusion_toggle);
 
          QActionGroup * mouse_group = new QActionGroup(this);
          mouse_group->setExclusive(true);
-         mouse_group->addAction(pan_toggle);
-         mouse_group->addAction(rotate_toggle);
-         mouse_group->addAction(zoom_toggle);
+         mouse_group->addAction(my_pan_toggle);
+         mouse_group->addAction(my_rotate_toggle);
+         mouse_group->addAction(my_zoom_toggle);
       }
 
    }

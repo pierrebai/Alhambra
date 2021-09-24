@@ -697,50 +697,50 @@ namespace dak
       // A QWidget to select and order layers.
 
       layers_selector_t::layers_selector_t(QWidget* parent, const layers_selector_icons_t& icons)
-      : QWidget(parent), ui(std::make_unique<layers_selector_ui_t>(*this, icons))
+      : QWidget(parent), my_ui(std::make_unique<layers_selector_ui_t>(*this, icons))
       {
       }
 
       void layers_selector_t::set_edited(const layers_t& edited)
       {
-         if (!ui)
+         if (!my_ui)
             return;
 
-         ui->set_edited(edited);
+         my_ui->set_edited(edited);
       }
 
       const layers_t& layers_selector_t::get_edited() const
       {
          static const layers_t empty;
-         if (!ui)
+         if (!my_ui)
             return empty;
 
-         return ui->get_edited();
+         return my_ui->get_edited();
       }
 
       void layers_selector_t::update_list_content()
       {
-         if (!ui)
+         if (!my_ui)
             return;
 
-         return ui->update_list_content();
+         return my_ui->update_list_content();
       }
 
 
       layers_t layers_selector_t::get_selected_layers() const
       {
-         if (!ui)
+         if (!my_ui)
             return {};
 
-         return ui->get_selected_layers();
+         return my_ui->get_selected_layers();
       }
 
       layers_selector_t::styles layers_selector_t::get_selected_styles() const
       {
-         if (!ui)
+         if (!my_ui)
             return {};
 
-         return ui->get_selected_styles();
+         return my_ui->get_selected_styles();
       }
    }
 }

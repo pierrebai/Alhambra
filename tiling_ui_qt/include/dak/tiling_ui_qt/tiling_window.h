@@ -37,7 +37,7 @@ namespace dak
       {
       public:
          // Creation.
-         tiling_window_t(known_tilings_t& known_tilings, const tiling_editor_icons_t& icons, QWidget *parent);
+         tiling_window_t(known_tilings_t& my_known_tilings, const tiling_editor_icons_t& icons, QWidget *parent);
 
       private:
          void build_actions(const tiling_editor_icons_t& icons);
@@ -57,17 +57,17 @@ namespace dak
          bool save_if_required(const std::wstring& action, const std::wstring& actioning);
 
          // Tiling being designed: all features and those actually in the tiling.
-         file_path_t               original_file;
-         std::shared_ptr<tiling_t> original_tiling;
+         file_path_t               my_original_file;
+         std::shared_ptr<tiling_t> my_original_tiling;
 
-         tiling_editor_t* editor = nullptr;
+         tiling_editor_t* my_tiling_editor = nullptr;
 
-         known_tilings_t& known_tilings;
+         known_tilings_t& my_known_tilings;
 
-         QToolButton* new_action = nullptr;
-         QToolButton* open_action = nullptr;
-         QToolButton* select_action = nullptr;
-         QToolButton* save_action = nullptr;
+         QToolButton* my_new_action = nullptr;
+         QToolButton* my_open_action = nullptr;
+         QToolButton* my_select_action = nullptr;
+         QToolButton* my_save_action = nullptr;
       };
    }
 }

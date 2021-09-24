@@ -445,22 +445,22 @@ namespace dak
       }
 
       styles_editor_t::styles_editor_t(QWidget* parent, const styles_t& edited_styles, styles_changed_callback fc)
-      : QWidget(parent), ui(std::make_unique<styles_editor_ui_t>(*this, edited_styles)), styles_changed(fc)
+      : QWidget(parent), my_ui(std::make_unique<styles_editor_ui_t>(*this, edited_styles)), styles_changed(fc)
       {
       }
 
       void styles_editor_t::set_edited(const styles_t& edited_styles)
       {
-         ui->set_edited(edited_styles);
+         my_ui->set_edited(edited_styles);
       }
 
       const styles_t& styles_editor_t::get_edited() const
       {
          static const styles_t empty;
-         if (!ui)
+         if (!my_ui)
             return empty;
 
-         return ui->get_edited();
+         return my_ui->get_edited();
       }
    }
 }

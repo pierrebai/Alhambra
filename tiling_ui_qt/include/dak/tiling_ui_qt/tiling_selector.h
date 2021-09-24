@@ -39,7 +39,7 @@ namespace dak
          std::shared_ptr<tiling_t> get_selected() const;
 
       protected:
-         std::unique_ptr<tiling_selector_ui_t> ui;
+         std::unique_ptr<tiling_selector_ui_t> my_ui;
       };
    }
 }

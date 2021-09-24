@@ -71,30 +71,30 @@ namespace dak
       {
       public:
          // End-user actions.
-         QAction*  draw_trans_toggle = nullptr;
-         QAction*  draw_inflation_toggle = nullptr;
-         QAction*  clear_trans_action = nullptr;
-         QAction*  fill_trans_action = nullptr;
+         QAction*  my_draw_trans_toggle = nullptr;
+         QAction*  my_draw_inflation_toggle = nullptr;
+         QAction*  my_clear_trans_action = nullptr;
+         QAction*  my_fill_trans_action = nullptr;
 
-         QAction*  add_poly_action = nullptr;
-         QAction*  draw_poly_toggle = nullptr;
-         QAction*  copy_poly_toggle = nullptr;
-         QAction*  move_poly_toggle = nullptr;
-         QAction*  delete_poly_toggle = nullptr;
+         QAction*  my_add_poly_action = nullptr;
+         QAction*  my_draw_poly_toggle = nullptr;
+         QAction*  my_copy_poly_toggle = nullptr;
+         QAction*  my_move_poly_toggle = nullptr;
+         QAction*  my_delete_poly_toggle = nullptr;
 
-         QAction*  toggle_inclusion_toggle = nullptr;
-         QAction*  remove_excluded_action = nullptr;
-         QAction*  exclude_all_action = nullptr;
+         QAction*  my_toggle_inclusion_toggle = nullptr;
+         QAction*  my_remove_excluded_action = nullptr;
+         QAction*  my_exclude_all_action = nullptr;
 
-         QAction*  pan_toggle = nullptr;
-         QAction*  rotate_toggle = nullptr;
-         QAction*  zoom_toggle = nullptr;
+         QAction*  my_pan_toggle = nullptr;
+         QAction*  my_rotate_toggle = nullptr;
+         QAction*  my_zoom_toggle = nullptr;
 
          QAction*  number_actions[10] = { };
 
-         QAction*  copy_poly_action = nullptr;
-         QAction*  delete_poly_action = nullptr;
-         QAction*  toggle_inclusion_action = nullptr;
+         QAction*  my_copy_poly_action = nullptr;
+         QAction*  my_delete_poly_action = nullptr;
+         QAction*  my_toggle_inclusion_action = nullptr;
 
          // Creation.
          tiling_editor_t(const tiling_editor_icons_t& icons, QWidget* parent);
@@ -112,7 +112,7 @@ namespace dak
          void build_actions(const tiling_editor_icons_t& icons);
          void build_ui();
 
-         std::shared_ptr<tiling_editor_ui_t> ui;
+         std::shared_ptr<tiling_editor_ui_t> my_ui;
       };
    }
 }

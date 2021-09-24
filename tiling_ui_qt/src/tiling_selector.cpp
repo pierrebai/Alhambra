@@ -290,16 +290,16 @@ namespace dak
       }
 
       tiling_selector_t::tiling_selector_t(known_tilings_t& known_tilings, const tiling_editor_icons_t& icons, QWidget* parent, tiling_chosen_callback tc)
-      : QDialog(parent), ui(std::make_unique<tiling_selector_ui_t>(known_tilings, icons, *this)), tiling_chosen(tc)
+      : QDialog(parent), my_ui(std::make_unique<tiling_selector_ui_t>(known_tilings, icons, *this)), tiling_chosen(tc)
       {
       }
 
       std::shared_ptr<tiling_t> tiling_selector_t::get_selected() const
       {
-         if (!ui)
+         if (!my_ui)
             return nullptr;
 
-         return ui->get_selected();
+         return my_ui->get_selected();
       }
 
    }

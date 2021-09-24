@@ -329,33 +329,33 @@ namespace dak
       // A QWidget to select and order figures.
 
       figure_selector_t::figure_selector_t(QWidget* parent)
-      : QWidget(parent), ui(std::make_unique<figure_selector_ui_t>(*this))
+      : QWidget(parent), my_ui(std::make_unique<figure_selector_ui_t>(*this))
       {
       }
 
       void figure_selector_t::set_edited(const figures& edited_figures)
       {
-         if (!ui)
+         if (!my_ui)
             return;
 
-         ui->set_edited(edited_figures);
+         my_ui->set_edited(edited_figures);
       }
 
       const figures& figure_selector_t::get_edited() const
       {
          static const figures empty;
-         if (!ui)
+         if (!my_ui)
             return empty;
 
-         return ui->get_edited();
+         return my_ui->get_edited();
       }
 
       std::shared_ptr<figure_t> figure_selector_t::get_selected_figure() const
       {
-         if (!ui)
+         if (!my_ui)
             return {};
 
-         return ui->get_selected_figure();
+         return my_ui->get_selected_figure();
       }
 
    }

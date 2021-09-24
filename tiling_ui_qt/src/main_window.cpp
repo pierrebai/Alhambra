@@ -37,16 +37,16 @@ namespace dak
       using dak::utility::L;
 
       main_window_t::main_window_t(const main_window_icons_t& icons)
-      : known_tilings()
-      , mosaic_gen()
+      : my_known_tilings()
+      , my_mosaic_gen()
       {
          add_tilings_from(LR"(./tilings)");
          add_tilings_from(get_user_tilings_old_folder());
          add_tilings_from(get_user_tilings_folder());
 
-         mosaic_gen.add_folder(LR"(./mosaics)");
-         mosaic_gen.add_folder(get_user_mosaics_old_folder());
-         mosaic_gen.add_folder(get_user_mosaics_folder());
+         my_mosaic_gen.add_folder(LR"(./mosaics)");
+         my_mosaic_gen.add_folder(get_user_mosaics_old_folder());
+         my_mosaic_gen.add_folder(get_user_mosaics_folder());
 
          build_ui(icons);
          fill_ui();
@@ -55,8 +55,8 @@ namespace dak
 
       void main_window_t::add_tilings_from(const std::wstring& folder)
       {
-         const auto new_tilings = read_tilings(folder, errors);
-         known_tilings.insert(new_tilings.begin(), new_tilings.end());
+         const auto new_tilings = read_tilings(folder, my_errors);
+         my_known_tilings.insert(new_tilings.begin(), new_tilings.end());
       }
 
       // Create the UI elements.
@@ -65,81 +65,81 @@ namespace dak
          QToolBar* toolbar = new QToolBar();
             toolbar->setIconSize(QSize(32, 32));
 
-            previous_mosaic_action = CreateAction(L::t(L"Previous Mosaic"), icons.mosaic_previous, QKeySequence(QKeySequence::StandardKey::Back));
-            previous_mosaic_button = CreateToolButton(previous_mosaic_action);
-            toolbar->addWidget(previous_mosaic_button);
+            my_previous_mosaic_action = CreateAction(L::t(L"Previous Mosaic"), icons.mosaic_previous, QKeySequence(QKeySequence::StandardKey::Back));
+            my_previous_mosaic_button = CreateToolButton(my_previous_mosaic_action);
+            toolbar->addWidget(my_previous_mosaic_button);
 
-            next_mosaic_action = CreateAction(L::t(L"Next Mosaic"), icons.mosaic_next, QKeySequence(QKeySequence::StandardKey::Forward));
-            next_mosaic_button = CreateToolButton(next_mosaic_action);
-            toolbar->addWidget(next_mosaic_button);
-
-            toolbar->addSeparator();
-
-            undo_action = CreateAction(L::t(L"Undo"), icons.undo, QKeySequence(QKeySequence::StandardKey::Undo));
-            undo_button = CreateToolButton(undo_action);
-            undo_action->setEnabled(false);
-            toolbar->addWidget(undo_button);
-
-            redo_action = CreateAction(L::t(L"Redo"), icons.redo, QKeySequence(QKeySequence::StandardKey::Redo));
-            redo_button = CreateToolButton(redo_action);
-            redo_action->setEnabled(false);
-            toolbar->addWidget(redo_button);
+            my_next_mosaic_action = CreateAction(L::t(L"Next Mosaic"), icons.mosaic_next, QKeySequence(QKeySequence::StandardKey::Forward));
+            my_next_mosaic_button = CreateToolButton(my_next_mosaic_action);
+            toolbar->addWidget(my_next_mosaic_button);
 
             toolbar->addSeparator();
 
-            load_mosaic_action = CreateAction(L::t(L"Load Mosaic"), icons.mosaic_open, QKeySequence(QKeySequence::StandardKey::Open));
-            load_mosaic_button = CreateToolButton(load_mosaic_action);
-            toolbar->addWidget(load_mosaic_button);
+            my_undo_action = CreateAction(L::t(L"Undo"), icons.undo, QKeySequence(QKeySequence::StandardKey::Undo));
+            my_undo_button = CreateToolButton(my_undo_action);
+            my_undo_action->setEnabled(false);
+            toolbar->addWidget(my_undo_button);
 
-            save_mosaic_action = CreateAction(L::t(L"Save Mosaic"), icons.mosaic_save, QKeySequence(QKeySequence::StandardKey::Save));
-            save_mosaic_button = CreateToolButton(save_mosaic_action);
-            toolbar->addWidget(save_mosaic_button);
-
-            tiling_editor_action = CreateAction(L::t(L"Tiling Editor"), icons.tiling_editor);
-            tiling_editor_button = CreateToolButton(tiling_editor_action);
-            toolbar->addWidget(tiling_editor_button);
-
-            export_image_action = CreateAction(L::t(L"Export Image"), icons.export_img);
-            export_image_button = CreateToolButton(export_image_action);
-            toolbar->addWidget(export_image_button);
-
-            export_svg_action = CreateAction(L::t(L"Export SVG"), icons.export_svg);
-            export_svg_button = CreateToolButton(export_svg_action);
-            toolbar->addWidget(export_svg_button);
+            my_redo_action = CreateAction(L::t(L"Redo"), icons.redo, QKeySequence(QKeySequence::StandardKey::Redo));
+            my_redo_button = CreateToolButton(my_redo_action);
+            my_redo_action->setEnabled(false);
+            toolbar->addWidget(my_redo_button);
 
             toolbar->addSeparator();
 
-            translate_action = CreateAction(L::t(L"Pan"), icons.canvas_translate);
-            translate_button = CreateToolButton(translate_action);
-            translate_action->setCheckable(true);
-            toolbar->addWidget(translate_button);
+            my_load_mosaic_action = CreateAction(L::t(L"Load Mosaic"), icons.mosaic_open, QKeySequence(QKeySequence::StandardKey::Open));
+            my_load_mosaic_button = CreateToolButton(my_load_mosaic_action);
+            toolbar->addWidget(my_load_mosaic_button);
 
-            rotate_action = CreateAction(L::t(L"Rotate"), icons.canvas_rotate);
-            rotate_button = CreateToolButton(rotate_action);
-            rotate_action->setCheckable(true);
-            toolbar->addWidget(rotate_button);
+            my_save_mosaic_action = CreateAction(L::t(L"Save Mosaic"), icons.mosaic_save, QKeySequence(QKeySequence::StandardKey::Save));
+            my_save_mosaic_button = CreateToolButton(my_save_mosaic_action);
+            toolbar->addWidget(my_save_mosaic_button);
 
-            scale_action = CreateAction(L::t(L"Zoom"), icons.canvas_zoom);
-            scale_button = CreateToolButton(scale_action);
-            scale_action->setCheckable(true);
-            toolbar->addWidget(scale_button);
+            my_tiling_editor_action = CreateAction(L::t(L"Tiling Editor"), icons.tiling_editor);
+            my_tiling_editor_button = CreateToolButton(my_tiling_editor_action);
+            toolbar->addWidget(my_tiling_editor_button);
 
-            redraw_action = CreateAction(L::t(L"Redraw"), icons.canvas_redraw, QKeySequence(QKeySequence::StandardKey::Refresh));
-            redraw_button = CreateToolButton(redraw_action);
-            toolbar->addWidget(redraw_button);
+            my_export_image_action = CreateAction(L::t(L"Export Image"), icons.export_img);
+            my_export_image_button = CreateToolButton(my_export_image_action);
+            toolbar->addWidget(my_export_image_button);
 
-         layers_dock = new QDockWidget(QString::fromWCharArray(L::t(L"Layers")));
-         layers_dock->setFeatures(QDockWidget::DockWidgetFeature::DockWidgetFloatable | QDockWidget::DockWidgetFeature::DockWidgetMovable);
+            my_export_svg_action = CreateAction(L::t(L"Export SVG"), icons.export_svg);
+            my_export_svg_button = CreateToolButton(my_export_svg_action);
+            toolbar->addWidget(my_export_svg_button);
+
+            toolbar->addSeparator();
+
+            my_translate_action = CreateAction(L::t(L"Pan"), icons.canvas_translate);
+            my_translate_button = CreateToolButton(my_translate_action);
+            my_translate_action->setCheckable(true);
+            toolbar->addWidget(my_translate_button);
+
+            my_rotate_action = CreateAction(L::t(L"Rotate"), icons.canvas_rotate);
+            my_rotate_button = CreateToolButton(my_rotate_action);
+            my_rotate_action->setCheckable(true);
+            toolbar->addWidget(my_rotate_button);
+
+            my_scale_action = CreateAction(L::t(L"Zoom"), icons.canvas_zoom);
+            my_scale_button = CreateToolButton(my_scale_action);
+            my_scale_action->setCheckable(true);
+            toolbar->addWidget(my_scale_button);
+
+            my_redraw_action = CreateAction(L::t(L"Redraw"), icons.canvas_redraw, QKeySequence(QKeySequence::StandardKey::Refresh));
+            my_redraw_button = CreateToolButton(my_redraw_action);
+            toolbar->addWidget(my_redraw_button);
+
+         my_layers_dock = new QDockWidget(QString::fromWCharArray(L::t(L"Layers")));
+         my_layers_dock->setFeatures(QDockWidget::DockWidgetFeature::DockWidgetFloatable | QDockWidget::DockWidgetFeature::DockWidgetMovable);
             QWidget* layers_container = new QWidget();
             QVBoxLayout* layers_layout = new QVBoxLayout(layers_container);
 
             my_layer_list = new layers_selector_t(layers_container, icons);
             layers_layout->addWidget(my_layer_list);
 
-            styles_editor = new dak::tiling_ui_qt::styles_editor_t(layers_container);
-            layers_layout->addWidget(styles_editor);
+            my_styles_editor = new dak::tiling_ui_qt::styles_editor_t(layers_container);
+            layers_layout->addWidget(my_styles_editor);
 
-            layers_dock->setWidget(layers_container);
+            my_layers_dock->setWidget(layers_container);
 
          QDockWidget* figures_dock = new QDockWidget(QString::fromWCharArray(L::t(L"Figures")));
          figures_dock->setFeatures(QDockWidget::DockWidgetFeature::DockWidgetFloatable | QDockWidget::DockWidgetFeature::DockWidgetMovable);
@@ -149,20 +149,20 @@ namespace dak
             my_figure_list = new dak::tiling_ui_qt::figure_selector_t(figures_container);
             figures_layout->addWidget(my_figure_list);
 
-            figure_editor = new dak::tiling_ui_qt::figure_editor_t(figures_container);
-            figures_layout->addWidget(figure_editor);
+            my_figure_editor = new dak::tiling_ui_qt::figure_editor_t(figures_container);
+            figures_layout->addWidget(my_figure_editor);
 
             figures_dock->setWidget(figures_container);
 
-         canvas = new layered_canvas_t(nullptr);
-         canvas->transformer.mouse_interaction_modifier = ui::modifiers_t::none;
+         my_layered_canvas = new layered_canvas_t(nullptr);
+         my_layered_canvas->transformer.mouse_interaction_modifier = ui::modifiers_t::none;
 
-         setCentralWidget(canvas);
+         setCentralWidget(my_layered_canvas);
          addToolBar(toolbar);
-         addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, layers_dock);
+         addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, my_layers_dock);
          addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, figures_dock);
          setWindowIcon(QIcon(QtWin::fromHICON((HICON)::LoadImage(GetModuleHandle(0), MAKEINTRESOURCE(icons.app_icon), IMAGE_ICON, 256, 256, 0))));
-         resizeDocks({ layers_dock , figures_dock }, { 400, 400 }, Qt::Horizontal);
+         resizeDocks({ my_layers_dock , figures_dock }, { 400, 400 }, Qt::Horizontal);
       }
 
       // Connect the signals of the UI elements.
@@ -172,15 +172,15 @@ namespace dak
          //
          // Undo / redo actions.
 
-         undo_action->connect(undo_action, &QAction::triggered, [&]()
+         my_undo_action->connect(my_undo_action, &QAction::triggered, [&]()
          {
-            undo_stack.undo();
+            my_undo_stack.undo();
             update_undo_redo_actions();
          });
 
-         redo_action->connect(redo_action, &QAction::triggered, [&]()
+         my_redo_action->connect(my_redo_action, &QAction::triggered, [&]()
          {
-            undo_stack.redo();
+            my_undo_stack.redo();
             update_undo_redo_actions();
          });
 
@@ -188,47 +188,47 @@ namespace dak
          //
          // Load / save actions.
 
-         previous_mosaic_action->connect(previous_mosaic_action, &QAction::triggered, [self=this]()
+         my_previous_mosaic_action->connect(my_previous_mosaic_action, &QAction::triggered, [self=this]()
          {
             if (!self->save_if_required(L::t(L"load a mosaic"), L::t(L"loading a mosaic")))
                return;
 
-            self->mosaic_gen.previous();
+            self->my_mosaic_gen.previous();
             self->clear_undo_stack();
-            self->update_mosaic_map(self->mosaic_gen.generate_current(self->known_tilings, self->errors), self->mosaic_gen.current_name());
+            self->update_mosaic_map(self->my_mosaic_gen.generate_current(self->my_known_tilings, self->my_errors), self->my_mosaic_gen.current_name());
          });
 
-         next_mosaic_action->connect(next_mosaic_action, &QAction::triggered, [self=this]()
+         my_next_mosaic_action->connect(my_next_mosaic_action, &QAction::triggered, [self=this]()
          {
             if (!self->save_if_required(L::t(L"load a mosaic"), L::t(L"loading a mosaic")))
                return;
 
-            self->mosaic_gen.next();
+            self->my_mosaic_gen.next();
             self->clear_undo_stack();
-            self->update_mosaic_map(self->mosaic_gen.generate_current(self->known_tilings, self->errors), self->mosaic_gen.current_name());
+            self->update_mosaic_map(self->my_mosaic_gen.generate_current(self->my_known_tilings, self->my_errors), self->my_mosaic_gen.current_name());
          });
 
-         load_mosaic_action->connect(load_mosaic_action, &QAction::triggered, [self=this]()
+         my_load_mosaic_action->connect(my_load_mosaic_action, &QAction::triggered, [self=this]()
          {
             if (!self->save_if_required(L::t(L"load a mosaic"), L::t(L"loading a mosaic")))
                return;
 
             std::filesystem::path path;
-            auto layers = ask_open_layered_mosaic(self->known_tilings, path, self);
+            auto layers = ask_open_layered_mosaic(self->my_known_tilings, path, self);
             if (layers.size() == 0)
                return;
             self->clear_undo_stack();
             self->update_mosaic_map(layers, path.filename());
          });
 
-         save_mosaic_action->connect(save_mosaic_action, &QAction::triggered, [self=this]()
+         my_save_mosaic_action->connect(my_save_mosaic_action, &QAction::triggered, [self=this]()
          {
             self->save_mosaic();
          });
 
-         tiling_editor_action->connect(tiling_editor_action, &QAction::triggered, [self=this,&icons=icons, &known_tilings=known_tilings]()
+         my_tiling_editor_action->connect(my_tiling_editor_action, &QAction::triggered, [self=this,&icons=icons, &my_known_tilings=my_known_tilings]()
          {
-            auto window = new tiling_window_t(known_tilings, icons, self);
+            auto window = new tiling_window_t(my_known_tilings, icons, self);
             window->resize(1200, 900);
             window->show();
          });
@@ -237,16 +237,16 @@ namespace dak
          //
          // The export tool-bar actions.
 
-         export_image_action->connect(export_image_action, &QAction::triggered, [self=this]()
+         my_export_image_action->connect(my_export_image_action, &QAction::triggered, [self=this]()
          {
             auto fileName = ask_save(L::t(L"Export Mosaic to an Image"), L::t(L"Image Files (*.png *.jpg *.bmp)"), self);
             if (fileName.empty())
                return;
 
-            self->canvas->grab().save(QString::fromWCharArray(fileName.c_str()));
+            self->my_layered_canvas->grab().save(QString::fromWCharArray(fileName.c_str()));
          });
 
-         export_svg_action->connect(export_svg_action, &QAction::triggered, [self=this]()
+         my_export_svg_action->connect(my_export_svg_action, &QAction::triggered, [self=this]()
          {
             auto fileName = ask_save(L::t(L"Export Mosaic to a Scalable Vector Graphics File"), L::t(L"SVG Files (*.svg)"), self);
             if (fileName.empty())
@@ -254,18 +254,18 @@ namespace dak
 
             QSvgGenerator svg_gen;
             svg_gen.setFileName(QString::fromWCharArray(fileName.c_str()));
-            svg_gen.setSize(self->canvas->size());
-            svg_gen.setViewBox(QRect(QPoint(0,0), self->canvas->size()));
+            svg_gen.setSize(self->my_layered_canvas->size());
+            svg_gen.setViewBox(QRect(QPoint(0,0), self->my_layered_canvas->size()));
             QPainter painter(&svg_gen);
             painter_drawing_t drw(painter);
-            draw_layered(drw, &self->layered);
+            draw_layered(drw, &self->my_layered);
          });
 
          /////////////////////////////////////////////////////////////////////////
          //
          // The style editor UI call-backs.
 
-         styles_editor->styles_changed = [self=this](const styles_editor_t::styles_t& styles, bool interacting)
+         my_styles_editor->styles_changed = [self=this](const styles_editor_t::styles_t& styles, bool interacting)
          {
             self->update_layer_list();
 
@@ -282,23 +282,23 @@ namespace dak
          my_layer_list->layers_changed = [self=this](const layers_selector_t::layers& layers)
          {
             self->update_layer_list();
-            self->styles_editor->set_edited(self->get_selected_styles());
+            self->my_styles_editor->set_edited(self->get_selected_styles());
             self->commit_to_undo();
-            self->layered.set_layers(layers);
+            self->my_layered.set_layers(layers);
             self->update_canvas_layers(layers);
          };
 
          my_layer_list->selection_changed = [self=this](const layers_selector_t::layers& layers)
          {
-            self->layered.set_layers(layers);
-            self->styles_editor->set_edited(self->get_selected_styles());
+            self->my_layered.set_layers(layers);
+            self->my_styles_editor->set_edited(self->get_selected_styles());
             self->fill_figure_list();
-            self->canvas->update();
+            self->my_layered_canvas->update();
          };
 
-         my_layer_list->new_layer_requested = [&known_tilings=this->known_tilings, &icons, self=this]()
+         my_layer_list->new_layer_requested = [&my_known_tilings=this->my_known_tilings, &icons, self=this]()
          {
-            auto selector = new tiling_selector_t(known_tilings, icons, nullptr, [self=self](const std::shared_ptr<tiling_t>& tiling)
+            auto selector = new tiling_selector_t(my_known_tilings, icons, nullptr, [self=self](const std::shared_ptr<tiling_t>& tiling)
             {
                auto mosaic = generate_mosaic(tiling);
                if (!mosaic)
@@ -345,7 +345,7 @@ namespace dak
                }
             }
 
-            self->figure_editor->set_edited(after);
+            self->my_figure_editor->set_edited(after);
             self->fill_figure_list();
             self->commit_to_undo();
 
@@ -361,7 +361,7 @@ namespace dak
          //
          // The figure editor UI call-backs.
 
-         figure_editor->figure_changed = [self=this](std::shared_ptr<figure_t> modified, bool interacting)
+         my_figure_editor->figure_changed = [self=this](std::shared_ptr<figure_t> modified, bool interacting)
          {
             for (auto fig : self->get_all_avail_figures())
             {
@@ -383,48 +383,48 @@ namespace dak
          //
          // Canvas mode actions.
 
-         translate_action->connect(translate_action, &QAction::triggered, [&]()
+         my_translate_action->connect(my_translate_action, &QAction::triggered, [&]()
          {
-            if (translate_action->isChecked())
+            if (my_translate_action->isChecked())
             {
-               rotate_action->setChecked(false);
-               scale_action->setChecked(false);
+               my_rotate_action->setChecked(false);
+               my_scale_action->setChecked(false);
             }
             update_canvas_mode();
          });
 
-         rotate_action->connect(rotate_action, &QAction::triggered, [&]()
+         my_rotate_action->connect(my_rotate_action, &QAction::triggered, [&]()
          {
-            if (rotate_action->isChecked())
+            if (my_rotate_action->isChecked())
             {
-               translate_action->setChecked(false);
-               scale_action->setChecked(false);
+               my_translate_action->setChecked(false);
+               my_scale_action->setChecked(false);
             }
             update_canvas_mode();
          });
 
-         scale_action->connect(scale_action, &QAction::triggered, [&]()
+         my_scale_action->connect(my_scale_action, &QAction::triggered, [&]()
          {
-            if (scale_action->isChecked())
+            if (my_scale_action->isChecked())
             {
-               translate_action->setChecked(false);
-               rotate_action->setChecked(false);
+               my_translate_action->setChecked(false);
+               my_rotate_action->setChecked(false);
             }
             update_canvas_mode();
          });
 
-         redraw_action->connect(redraw_action, &QAction::triggered, [&]()
+         my_redraw_action->connect(my_redraw_action, &QAction::triggered, [&]()
          {
-            update_canvas_layers(layered.get_layers());
+            update_canvas_layers(my_layered.get_layers());
          });
       }
 
       // Fill the UI with the intial data.
       void main_window_t::fill_ui()
       {
-         canvas->layered = &layered;
-         canvas->transformer.manipulated = &layered;
-         layered.set_transform(transform_t::scale(30));
+         my_layered_canvas->layered = &my_layered;
+         my_layered_canvas->transformer.manipulated = &my_layered;
+         my_layered.set_transform(transform_t::scale(30));
       }
 
       void main_window_t::closeEvent(QCloseEvent* ev)
@@ -437,7 +437,7 @@ namespace dak
 
       bool main_window_t::save_if_required(const std::wstring& action, const std::wstring& actioning)
       {
-         if (undo_stack.has_undo())
+         if (my_undo_stack.has_undo())
          {
             yes_no_cancel_t answer = ask_yes_no_cancel(
                L::t(L"Unsaved Mosaic Warning"),
@@ -466,9 +466,9 @@ namespace dak
       // This will calculate the region based on the window size and current transform.
       geometry::rectangle_t main_window_t::window_filling_region()
       {
-         geometry::rectangle_t region = convert(canvas->geometry());
+         geometry::rectangle_t region = convert(my_layered_canvas->geometry());
          region.x = region.y = 0;
-         return region.apply(canvas->layered->get_transform().invert());
+         return region.apply(my_layered_canvas->layered->get_transform().invert());
       }
 
       std::vector<std::shared_ptr<styled_mosaic_t>> main_window_t::get_avail_mosaics()
@@ -483,7 +483,7 @@ namespace dak
 
       std::vector<std::shared_ptr<layer_t>> main_window_t::get_avail_layers()
       {
-         return layered.get_layers();
+         return my_layered.get_layers();
       }
 
       void main_window_t::update_layered_transform()
@@ -507,10 +507,10 @@ namespace dak
          if (bounds.is_invalid())
             return;
 
-         geometry::rectangle_t region = convert(canvas->geometry());
+         geometry::rectangle_t region = convert(my_layered_canvas->geometry());
          double ratio = std::max(region.width / bounds.width, region.height / bounds.height);
          // Make it so we can see 9 instances (3x3) of the tiling or mosaic.
-         layered.compose(transform_t::scale(ratio / 3.));
+         my_layered.compose(transform_t::scale(ratio / 3.));
       }
 
       const geometry::edges_map_t& main_window_t::find_calculated_mosaic(calculated_mosaics& calc_mos, const std::shared_ptr<mosaic_t>& mosaic)
@@ -538,7 +538,7 @@ namespace dak
                mo_layer->style->set_map(calc_map, mo_layer->mosaic->tiling);
             }
          }
-         canvas->update();
+         my_layered_canvas->update();
       }
 
       /////////////////////////////////////////////////////////////////////////
@@ -597,8 +597,8 @@ namespace dak
 
       void main_window_t::fill_layer_list()
       {
-         my_layer_list->set_edited(layered.get_layers());
-         styles_editor->set_edited(get_selected_styles());
+         my_layer_list->set_edited(my_layered.get_layers());
+         my_styles_editor->set_edited(get_selected_styles());
          fill_figure_list();
       }
 
@@ -656,7 +656,7 @@ namespace dak
       {
          if (const auto& figure = get_selected_figure())
          {
-            figure_editor->set_edited(figure, force_update);
+            my_figure_editor->set_edited(figure, force_update);
          }
       }
 
@@ -678,8 +678,8 @@ namespace dak
 
       void main_window_t::update_undo_redo_actions()
       {
-         undo_action->setEnabled(undo_stack.has_undo());
-         redo_action->setEnabled(undo_stack.has_redo());
+         my_undo_action->setEnabled(my_undo_stack.has_undo());
+         my_redo_action->setEnabled(my_undo_stack.has_redo());
       }
 
       void main_window_t::awaken_styled_mosaic(const std::any& data)
@@ -693,37 +693,37 @@ namespace dak
             }
          }
 
-         layered.set_layers(layers);
+         my_layered.set_layers(layers);
 
          fill_layer_list();
 
          const bool force_update = true;
          fill_figure_editor(force_update);
 
-         update_canvas_layers(layered.get_layers());
+         update_canvas_layers(my_layered.get_layers());
       }
 
       void main_window_t::awaken_to_empty_canvas()
       {
-         layered.set_layers({});
+         my_layered.set_layers({});
 
          fill_layer_list();
 
          const bool force_update = true;
          fill_figure_editor(force_update);
 
-         update_canvas_layers(layered.get_layers());
+         update_canvas_layers(my_layered.get_layers());
       }
 
       void main_window_t::clear_undo_stack()
       {
-         undo_stack.clear();
+         my_undo_stack.clear();
       }
 
       void main_window_t::commit_to_undo()
       {
-         const dak::ui::layered_t::layers_t& layers = layered.get_layers();
-         undo_stack.simple_commit(
+         const dak::ui::layered_t::layers_t& layers = my_layered.get_layers();
+         my_undo_stack.simple_commit(
          {
             clone_layers(layers),
             [self=this](std::any& data) { self->deaden_styled_mosaic(data); },
@@ -749,15 +749,15 @@ namespace dak
          auto mo_layer = std::make_shared<styled_mosaic_t>();
          mo_layer->mosaic = new_mosaic;
          mo_layer->style = std::make_shared<thick_t>(ui::color_t(20, 140, 220, 255));
-         auto layers = layered.get_layers();
+         auto layers = my_layered.get_layers();
          const bool was_empty = (layers.size() <= 0);
          layers.emplace_back(mo_layer);
-         layered.set_layers(layers);
+         my_layered.set_layers(layers);
 
          while (new_mosaic->tiling->count_fill_copies(window_filling_region()) > 20)
          {
             const point_t center = window_filling_region().center();
-            canvas->layered->compose(transform_t::scale(2.));
+            my_layered_canvas->layered->compose(transform_t::scale(2.));
          }
 
          mo_layer->update_style(window_filling_region());
@@ -768,13 +768,13 @@ namespace dak
          {
             update_layered_transform();
             clear_undo_stack();
-            // Note: when adding layers, allow undoing back to an empty canvas.
-            undo_stack.simple_commit({ 0, nullptr, [self=this](const std::any&) { self->awaken_to_empty_canvas(); } });
+            // Note: when adding layers, allow undoing back to an empty my_layered_canvas.
+            my_undo_stack.simple_commit({ 0, nullptr, [self=this](const std::any&) { self->awaken_to_empty_canvas(); } });
          }
 
          commit_to_undo();
 
-         canvas->update();
+         my_layered_canvas->update();
       }
 
       /////////////////////////////////////////////////////////////////////////
@@ -789,11 +789,11 @@ namespace dak
 
       void main_window_t::update_mosaic_map(const std::vector<std::shared_ptr<layer_t>>& layers, const std::wstring& name)
       {
-         layers_dock->setWindowTitle(QString::fromWCharArray(L::t(L"Layers for Mosaic: ")) + QString::fromWCharArray(name.c_str()));
+         my_layers_dock->setWindowTitle(QString::fromWCharArray(L::t(L"Layers for Mosaic: ")) + QString::fromWCharArray(name.c_str()));
 
-         layered.set_layers(layers);
+         my_layered.set_layers(layers);
          if (layers.size() > 0)
-            if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layered.get_layers()[0]))
+            if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(my_layered.get_layers()[0]))
                update_layered_transform();
 
          fill_layer_list();
@@ -804,18 +804,18 @@ namespace dak
 
       /////////////////////////////////////////////////////////////////////////
       //
-      // The canvas manipulation tool-bar buttons.
+      // The my_layered_canvas manipulation tool-bar buttons.
 
       void main_window_t::update_canvas_mode()
       {
          auto forced_mode = dak::ui::transformer_t::interaction_mode_t::normal;
-         if (translate_button->isChecked())
+         if (my_translate_button->isChecked())
             forced_mode = dak::ui::transformer_t::interaction_mode_t::moving;
-         else if (rotate_button->isChecked())
+         else if (my_rotate_button->isChecked())
             forced_mode = dak::ui::transformer_t::interaction_mode_t::rotating;
-         else if (scale_button->isChecked())
+         else if (my_scale_button->isChecked())
             forced_mode = dak::ui::transformer_t::interaction_mode_t::scaling;
-         canvas->transformer.forced_interaction_mode = forced_mode;
+         my_layered_canvas->transformer.forced_interaction_mode = forced_mode;
       }
 
    }

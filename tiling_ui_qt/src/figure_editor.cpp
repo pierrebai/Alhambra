@@ -26,13 +26,13 @@ namespace dak
 
       namespace
       {
-         star_t* get_star(std::shared_ptr<figure_t>& edited)
+         star_t* get_star(std::shared_ptr<figure_t>& my_edited_figure)
          {
-            if (star_t* edited_star = dynamic_cast<star_t *>(edited.get()))
+            if (star_t* edited_star = dynamic_cast<star_t *>(my_edited_figure.get()))
             {
                return edited_star;
             }
-            else if (extended_figure_t* edited_extended = dynamic_cast<extended_figure_t *>(edited.get()))
+            else if (extended_figure_t* edited_extended = dynamic_cast<extended_figure_t *>(my_edited_figure.get()))
             {
                if (star_t* edited_star = dynamic_cast<star_t *>(edited_extended->child.get()))
                   return edited_star;
@@ -41,13 +41,13 @@ namespace dak
             return nullptr;
          }
 
-         rosette_t* get_rosette(std::shared_ptr<figure_t>& edited)
+         rosette_t* get_rosette(std::shared_ptr<figure_t>& my_edited_figure)
          {
-            if (rosette_t* edited_rosette = dynamic_cast<rosette_t *>(edited.get()))
+            if (rosette_t* edited_rosette = dynamic_cast<rosette_t *>(my_edited_figure.get()))
             {
                return edited_rosette;
             }
-            else if (extended_figure_t* edited_extended = dynamic_cast<extended_figure_t *>(edited.get()))
+            else if (extended_figure_t* edited_extended = dynamic_cast<extended_figure_t *>(my_edited_figure.get()))
             {
                if (rosette_t* edited_rosette = dynamic_cast<rosette_t *>(edited_extended->child.get()))
                   return edited_rosette;
@@ -56,13 +56,13 @@ namespace dak
             return nullptr;
          }
 
-         irregular_figure_t* get_irregular_figure(std::shared_ptr<figure_t>& edited)
+         irregular_figure_t* get_irregular_figure(std::shared_ptr<figure_t>& my_edited_figure)
          {
-            if (irregular_figure_t* edited_irregular_figure = dynamic_cast<irregular_figure_t *>(edited.get()))
+            if (irregular_figure_t* edited_irregular_figure = dynamic_cast<irregular_figure_t *>(my_edited_figure.get()))
             {
                return edited_irregular_figure;
             }
-            else if (extended_figure_t* edited_extended = dynamic_cast<extended_figure_t *>(edited.get()))
+            else if (extended_figure_t* edited_extended = dynamic_cast<extended_figure_t *>(my_edited_figure.get()))
             {
                if (irregular_figure_t* edited_irregular_figure = dynamic_cast<irregular_figure_t *>(edited_extended->child.get()))
                   return edited_irregular_figure;
@@ -80,7 +80,7 @@ namespace dak
       {
       public:
          figure_editor_ui_t(figure_editor_t& parent, std::shared_ptr<figure_t> ed)
-         : editor(parent), edited(nullptr)
+         : my_figure_editor(parent), my_edited_figure(nullptr)
          {
             build_ui(parent);
             set_edited(ed, false);
@@ -88,15 +88,15 @@ namespace dak
 
          std::shared_ptr<figure_t> get_edited() const
          {
-            return edited;
+            return my_edited_figure;
          }
 
          void set_edited(std::shared_ptr<figure_t> ed, bool force_ui_update)
          {
-            if (!force_ui_update && ed == edited)
+            if (!force_ui_update && ed == my_edited_figure)
                return;
 
-            edited = ed;
+            my_edited_figure = ed;
             fill_ui();
          }
 
@@ -106,50 +106,50 @@ namespace dak
             QVBoxLayout* layout = new QVBoxLayout(&parent);
             layout->setContentsMargins(0, 0, 0, 0);
 
-            d_editor = std::make_unique<ui::qt::double_editor_t>(&parent, L::t(L"Branch Sharpness"), 0, [self=this](double new_value, bool interacting){ self->update_d(new_value, interacting); });
-            q_editor = std::make_unique<ui::qt::double_editor_t>(&parent, L::t(L"Flatness"), 0, [self=this](double new_value, bool interacting){ self->update_q(new_value, interacting); });
-            s_editor = std::make_unique<ui::qt::int_editor_t>(&parent, L::t(L"Intersections"), 0, [self=this](int new_value, bool interacting){ self->update_s(new_value, interacting); });
+            my_d_editor = std::make_unique<ui::qt::double_editor_t>(&parent, L::t(L"Branch Sharpness"), 0, [self=this](double new_value, bool interacting){ self->update_d(new_value, interacting); });
+            my_q_editor = std::make_unique<ui::qt::double_editor_t>(&parent, L::t(L"Flatness"), 0, [self=this](double new_value, bool interacting){ self->update_q(new_value, interacting); });
+            my_s_editor = std::make_unique<ui::qt::int_editor_t>(&parent, L::t(L"Intersections"), 0, [self=this](int new_value, bool interacting){ self->update_s(new_value, interacting); });
 
-            d_editor->set_limits(-5., 5., 0.05);
-            q_editor->set_limits(-1., 1., 0.01);
-            s_editor->set_limits(1, 6);
+            my_d_editor->set_limits(-5., 5., 0.05);
+            my_q_editor->set_limits(-1., 1., 0.01);
+            my_s_editor->set_limits(1, 6);
 
-            d_editor->setEnabled(false);
-            s_editor->setEnabled(false);
-            q_editor->setEnabled(false);
+            my_d_editor->setEnabled(false);
+            my_s_editor->setEnabled(false);
+            my_q_editor->setEnabled(false);
 
-            layout->addWidget(d_editor.get());
-            layout->addWidget(q_editor.get());
-            layout->addWidget(s_editor.get());
+            layout->addWidget(my_d_editor.get());
+            layout->addWidget(my_q_editor.get());
+            layout->addWidget(my_s_editor.get());
          }
 
          void fill_ui()
          {
             my_disable_feedback++;
 
-            if (star_t* edited_star = get_star(edited))
+            if (star_t* edited_star = get_star(my_edited_figure))
             {
                const int sides = edited_star->n;
-               d_editor->set_value(edited_star->d);
-               d_editor->set_limits(-sides / 2., sides / 2, 0.05);
-               s_editor->set_value(edited_star->s);
-               s_editor->set_limits(1, sides / 2);
+               my_d_editor->set_value(edited_star->d);
+               my_d_editor->set_limits(-sides / 2., sides / 2, 0.05);
+               my_s_editor->set_value(edited_star->s);
+               my_s_editor->set_limits(1, sides / 2);
             }
-            else if (rosette_t* edited_rosette = get_rosette(edited))
+            else if (rosette_t* edited_rosette = get_rosette(my_edited_figure))
             {
                const int sides = edited_rosette->n;
-               q_editor->set_value(edited_rosette->q);
-               s_editor->set_value(edited_rosette->s);
-               s_editor->set_limits(1, sides / 2);
+               my_q_editor->set_value(edited_rosette->q);
+               my_s_editor->set_value(edited_rosette->s);
+               my_s_editor->set_limits(1, sides / 2);
             }
-            else if (irregular_figure_t* edited_irregular = get_irregular_figure(edited))
+            else if (irregular_figure_t* edited_irregular = get_irregular_figure(my_edited_figure))
             {
                const int sides = int(edited_irregular->poly.points.size());
-               d_editor->set_value(edited_irregular->d);
-               d_editor->set_limits(-sides / 2., sides / 2, 0.05);
-               q_editor->set_value(edited_irregular->q);
-               s_editor->set_value(edited_irregular->s);
-               s_editor->set_limits(1, sides / 2);
+               my_d_editor->set_value(edited_irregular->d);
+               my_d_editor->set_limits(-sides / 2., sides / 2, 0.05);
+               my_q_editor->set_value(edited_irregular->q);
+               my_s_editor->set_value(edited_irregular->s);
+               my_s_editor->set_limits(1, sides / 2);
             }
 
             update_enabled();
@@ -159,65 +159,65 @@ namespace dak
 
          void update_enabled()
          {
-            if (star_t* edited_star = get_star(edited))
+            if (star_t* edited_star = get_star(my_edited_figure))
             {
-               d_editor->setEnabled(true);
-               s_editor->setEnabled(true);
-               q_editor->setEnabled(false);
+               my_d_editor->setEnabled(true);
+               my_s_editor->setEnabled(true);
+               my_q_editor->setEnabled(false);
             }
-            else if (rosette_t* edited_rosette = get_rosette(edited))
+            else if (rosette_t* edited_rosette = get_rosette(my_edited_figure))
             {
-               d_editor->setEnabled(false);
-               s_editor->setEnabled(true);
-               q_editor->setEnabled(true);
+               my_d_editor->setEnabled(false);
+               my_s_editor->setEnabled(true);
+               my_q_editor->setEnabled(true);
             }
-            else if (irregular_figure_t* edited_irregular = get_irregular_figure(edited))
+            else if (irregular_figure_t* edited_irregular = get_irregular_figure(my_edited_figure))
             {
                switch (edited_irregular->infer)
                {
                   case tiling::infer_mode_t::star:
-                     d_editor->setEnabled(true);
-                     s_editor->setEnabled(true);
-                     q_editor->setEnabled(false);
+                     my_d_editor->setEnabled(true);
+                     my_s_editor->setEnabled(true);
+                     my_q_editor->setEnabled(false);
                      break;
                   case tiling::infer_mode_t::girih:
-                     d_editor->setEnabled(true);
-                     s_editor->setEnabled(false);
-                     q_editor->setEnabled(false);
+                     my_d_editor->setEnabled(true);
+                     my_s_editor->setEnabled(false);
+                     my_q_editor->setEnabled(false);
                      break;
                   case tiling::infer_mode_t::intersect:
-                     d_editor->setEnabled(true);
-                     s_editor->setEnabled(true);
-                     q_editor->setEnabled(false);
+                     my_d_editor->setEnabled(true);
+                     my_s_editor->setEnabled(true);
+                     my_q_editor->setEnabled(false);
                      break;
                   case tiling::infer_mode_t::progressive:
-                     d_editor->setEnabled(true);
-                     s_editor->setEnabled(true);
-                     q_editor->setEnabled(false);
+                     my_d_editor->setEnabled(true);
+                     my_s_editor->setEnabled(true);
+                     my_q_editor->setEnabled(false);
                      break;
                   case tiling::infer_mode_t::hourglass:
-                     d_editor->setEnabled(true);
-                     s_editor->setEnabled(true);
-                     q_editor->setEnabled(false);
+                     my_d_editor->setEnabled(true);
+                     my_s_editor->setEnabled(true);
+                     my_q_editor->setEnabled(false);
                      break;
                   case tiling::infer_mode_t::rosette:
                   case tiling::infer_mode_t::extended_rosette:
-                     d_editor->setEnabled(true);
-                     s_editor->setEnabled(true);
-                     q_editor->setEnabled(true);
+                     my_d_editor->setEnabled(true);
+                     my_s_editor->setEnabled(true);
+                     my_q_editor->setEnabled(true);
                      break;
                   case tiling::infer_mode_t::simple:
-                     d_editor->setEnabled(false);
-                     s_editor->setEnabled(false);
-                     q_editor->setEnabled(false);
+                     my_d_editor->setEnabled(false);
+                     my_s_editor->setEnabled(false);
+                     my_q_editor->setEnabled(false);
                      break;
                }
             }
             else
             {
-               d_editor->setEnabled(false);
-               s_editor->setEnabled(false);
-               q_editor->setEnabled(false);
+               my_d_editor->setEnabled(false);
+               my_s_editor->setEnabled(false);
+               my_q_editor->setEnabled(false);
             }
          }
 
@@ -226,7 +226,7 @@ namespace dak
             if (my_disable_feedback)
                return;
 
-            if (star_t* edited_star = dynamic_cast<star_t *>(edited.get()))
+            if (star_t* edited_star = dynamic_cast<star_t *>(my_edited_figure.get()))
             {
                if (interacting && utility::near(new_value, edited_star->d))
                   return;
@@ -234,7 +234,7 @@ namespace dak
                edited_star->d = new_value;
                update(interacting);
             }
-           else if (irregular_figure_t* edited_irregular_figure = dynamic_cast<irregular_figure_t *>(edited.get()))
+           else if (irregular_figure_t* edited_irregular_figure = dynamic_cast<irregular_figure_t *>(my_edited_figure.get()))
             {
                if (interacting && utility::near(new_value, edited_irregular_figure->d))
                   return;
@@ -249,7 +249,7 @@ namespace dak
             if (my_disable_feedback)
                return;
 
-            if (rosette_t* edited_rosette = get_rosette(edited))
+            if (rosette_t* edited_rosette = get_rosette(my_edited_figure))
             {
                if (interacting && utility::near(new_value, edited_rosette->q))
                   return;
@@ -257,7 +257,7 @@ namespace dak
                edited_rosette->q = new_value;
                update(interacting);
             }
-            else if (irregular_figure_t* edited_irregular_figure = dynamic_cast<irregular_figure_t *>(edited.get()))
+            else if (irregular_figure_t* edited_irregular_figure = dynamic_cast<irregular_figure_t *>(my_edited_figure.get()))
             {
                if (interacting && utility::near(new_value, edited_irregular_figure->q))
                   return;
@@ -272,7 +272,7 @@ namespace dak
             if (my_disable_feedback)
                return;
 
-            if (star_t* edited_star = get_star(edited))
+            if (star_t* edited_star = get_star(my_edited_figure))
             {
                if (interacting && new_value == edited_star->s)
                   return;
@@ -280,7 +280,7 @@ namespace dak
                edited_star->s = new_value;
                update(interacting);
             }
-            else if (rosette_t* edited_rosette = get_rosette(edited))
+            else if (rosette_t* edited_rosette = get_rosette(my_edited_figure))
             {
                if (interacting && new_value == edited_rosette->s)
                   return;
@@ -288,7 +288,7 @@ namespace dak
                edited_rosette->s = new_value;
                update(interacting);
             }
-            else if (irregular_figure_t* edited_irregular_figure = get_irregular_figure(edited))
+            else if (irregular_figure_t* edited_irregular_figure = get_irregular_figure(my_edited_figure))
             {
                if (interacting && new_value == edited_irregular_figure->s)
                   return;
@@ -300,23 +300,23 @@ namespace dak
 
          void update(bool interacting)
          {
-            if (!edited)
+            if (!my_edited_figure)
                return;
 
             // Note: used to avoid re-calculating the figure when just setting its value in the UI.
             if (my_disable_feedback)
                return;
 
-            if (editor.figure_changed)
-               editor.figure_changed(edited, interacting);
+            if (my_figure_editor.figure_changed)
+               my_figure_editor.figure_changed(my_edited_figure, interacting);
          }
 
-         figure_editor_t& editor;
-         std::shared_ptr<figure_t> edited;
+         figure_editor_t& my_figure_editor;
+         std::shared_ptr<figure_t> my_edited_figure;
 
-         std::unique_ptr<ui::qt::double_editor_t> d_editor;
-         std::unique_ptr<ui::qt::int_editor_t> s_editor;
-         std::unique_ptr<ui::qt::double_editor_t> q_editor;
+         std::unique_ptr<ui::qt::double_editor_t> my_d_editor;
+         std::unique_ptr<ui::qt::int_editor_t> my_s_editor;
+         std::unique_ptr<ui::qt::double_editor_t> my_q_editor;
 
          int my_disable_feedback = 0;
       };
@@ -335,22 +335,22 @@ namespace dak
       {
       }
 
-      figure_editor_t::figure_editor_t(QWidget* parent, std::shared_ptr<figure_t> edited, figure_changed_callback fc)
-      : QWidget(parent), ui(std::make_unique<figure_editor_ui_t>(*this, edited)), figure_changed(fc)
+      figure_editor_t::figure_editor_t(QWidget* parent, std::shared_ptr<figure_t> my_edited_figure, figure_changed_callback fc)
+      : QWidget(parent), my_ui(std::make_unique<figure_editor_ui_t>(*this, my_edited_figure)), figure_changed(fc)
       {
       }
 
-      void figure_editor_t::set_edited(std::shared_ptr<figure_t> edited, bool force_ui_update)
+      void figure_editor_t::set_edited(std::shared_ptr<figure_t> my_edited_figure, bool force_ui_update)
       {
-         ui->set_edited(edited, force_ui_update);
+         my_ui->set_edited(my_edited_figure, force_ui_update);
       }
 
       std::shared_ptr<figure_t> figure_editor_t::get_edited() const
       {
-         if (!ui)
+         if (!my_ui)
             return nullptr;
 
-         return ui->get_edited();
+         return my_ui->get_edited();
       }
    }
 }

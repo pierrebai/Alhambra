@@ -129,61 +129,61 @@ namespace dak
          bool save_mosaic();
 
          // Data.
-         std::vector<std::wstring> errors;
-         dak::tiling::known_tilings_t known_tilings;
-         dak::tiling_style::known_mosaics_generator_t mosaic_gen;
-         dak::utility::undo_stack_t undo_stack;
-         dak::ui::layered_t layered;
+         std::vector<std::wstring> my_errors;
+         dak::tiling::known_tilings_t my_known_tilings;
+         dak::tiling_style::known_mosaics_generator_t my_mosaic_gen;
+         dak::utility::undo_stack_t my_undo_stack;
+         dak::ui::layered_t my_layered;
 
          // UI elements.
-         QAction* previous_mosaic_action = nullptr;
-         QToolButton* previous_mosaic_button = nullptr;
+         QAction* my_previous_mosaic_action = nullptr;
+         QToolButton* my_previous_mosaic_button = nullptr;
 
-         QAction* next_mosaic_action = nullptr;
-         QToolButton* next_mosaic_button = nullptr;
+         QAction* my_next_mosaic_action = nullptr;
+         QToolButton* my_next_mosaic_button = nullptr;
 
-         QAction* undo_action = nullptr;
-         QToolButton* undo_button = nullptr;
+         QAction* my_undo_action = nullptr;
+         QToolButton* my_undo_button = nullptr;
 
-         QAction* redo_action = nullptr;
-         QToolButton* redo_button = nullptr;
+         QAction* my_redo_action = nullptr;
+         QToolButton* my_redo_button = nullptr;
 
-         QAction* load_mosaic_action = nullptr;
-         QToolButton* load_mosaic_button = nullptr;
+         QAction* my_load_mosaic_action = nullptr;
+         QToolButton* my_load_mosaic_button = nullptr;
 
-         QAction* save_mosaic_action = nullptr;
-         QToolButton* save_mosaic_button = nullptr;
+         QAction* my_save_mosaic_action = nullptr;
+         QToolButton* my_save_mosaic_button = nullptr;
 
-         QAction* tiling_editor_action = nullptr;
-         QToolButton* tiling_editor_button = nullptr;
+         QAction* my_tiling_editor_action = nullptr;
+         QToolButton* my_tiling_editor_button = nullptr;
 
-         QAction* export_image_action = nullptr;
-         QToolButton* export_image_button = nullptr;
+         QAction* my_export_image_action = nullptr;
+         QToolButton* my_export_image_button = nullptr;
 
-         QAction* export_svg_action = nullptr;
-         QToolButton* export_svg_button = nullptr;
+         QAction* my_export_svg_action = nullptr;
+         QToolButton* my_export_svg_button = nullptr;
 
-         QAction* translate_action = nullptr;
-         QToolButton* translate_button = nullptr;
+         QAction* my_translate_action = nullptr;
+         QToolButton* my_translate_button = nullptr;
 
-         QAction* rotate_action = nullptr;
-         QToolButton* rotate_button = nullptr;
+         QAction* my_rotate_action = nullptr;
+         QToolButton* my_rotate_button = nullptr;
 
-         QAction* scale_action = nullptr;
-         QToolButton* scale_button = nullptr;
+         QAction* my_scale_action = nullptr;
+         QToolButton* my_scale_button = nullptr;
 
-         QAction* redraw_action = nullptr;
-         QToolButton* redraw_button = nullptr;
+         QAction* my_redraw_action = nullptr;
+         QToolButton* my_redraw_button = nullptr;
 
-         QDockWidget* layers_dock = nullptr;
+         QDockWidget* my_layers_dock = nullptr;
          layers_selector_t* my_layer_list = nullptr;
 
-         styles_editor_t* styles_editor = nullptr;
+         styles_editor_t* my_styles_editor = nullptr;
 
          dak::tiling_ui_qt::figure_selector_t* my_figure_list = nullptr;
-         figure_editor_t* figure_editor = nullptr;
+         figure_editor_t* my_figure_editor = nullptr;
 
-         dak::ui::qt::layered_canvas_t* canvas = nullptr;
+         dak::ui::qt::layered_canvas_t* my_layered_canvas = nullptr;
       };
    }
 }

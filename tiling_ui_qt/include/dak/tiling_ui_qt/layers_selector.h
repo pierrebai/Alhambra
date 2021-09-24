@@ -85,7 +85,7 @@ namespace dak
          styles get_selected_styles() const;
 
       protected:
-         std::unique_ptr<layers_selector_ui_t> ui;
+         std::unique_ptr<layers_selector_ui_t> my_ui;
       };
    }
 }
