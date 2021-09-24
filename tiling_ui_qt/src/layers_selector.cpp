@@ -237,7 +237,6 @@ namespace dak
 
                   const QString style_name = QString::fromWCharArray(get_style_name(mo_layer->style));
                   auto style_item = new QTableWidgetItem(style_name);
-                  style_item->setFlags(Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemNeverHasChildren);
                   my_layer_list->setItem(row, style_column, style_item);
 
                   row++;
@@ -413,7 +412,7 @@ namespace dak
                Qt::CheckState state = my_edited_layers[row]->is_drawn ? Qt::CheckState::Checked : Qt::CheckState::Unchecked;
                if (state != all_state)
                {
-                  all_state = Qt::CheckState::Unchecked;
+                  all_state = Qt::CheckState::PartiallyChecked;
                   break;
                }
             }
@@ -430,10 +429,9 @@ namespace dak
             if (!my_all_drawn_check)
                return;
 
-            if (my_all_drawn_check->checkState() == Qt::CheckState::PartiallyChecked)
-               return;
+            const bool is_drawn = (my_all_drawn_check->checkState() != Qt::CheckState::Unchecked);
+            my_all_drawn_check->setTristate(false);
 
-            const bool is_drawn = (my_all_drawn_check->checkState() == Qt::CheckState::Checked);
             for (int row = 0; row < my_edited_layers.size(); ++row)
             {
                my_edited_layers[row]->is_drawn = is_drawn;
@@ -471,7 +469,7 @@ namespace dak
                Qt::CheckState state = my_edited_layers[row]->is_moving ? Qt::CheckState::Checked : Qt::CheckState::Unchecked;
                if (state != all_state)
                {
-                  all_state = Qt::CheckState::Unchecked;
+                  all_state = Qt::CheckState::PartiallyChecked;
                   break;
                }
             }
@@ -480,7 +478,7 @@ namespace dak
             my_all_moving_check->blockSignals(true);
             my_all_moving_check->setCheckState(all_state);
             my_disable_feedback--;
-            my_all_moving_check->blockSignals(true);
+            my_all_moving_check->blockSignals(false);
          }
 
          void update_all_moving()
@@ -488,10 +486,9 @@ namespace dak
             if (!my_all_moving_check)
                return;
 
-            if (my_all_moving_check->checkState() == Qt::CheckState::PartiallyChecked)
-               return;
+            const bool is_moving = (my_all_moving_check->checkState() != Qt::CheckState::Unchecked);
+            my_all_moving_check->setTristate(false);
 
-            const bool is_moving = (my_all_moving_check->checkState() == Qt::CheckState::Checked);
             for (int row = 0; row < my_edited_layers.size(); ++row)
             {
                my_edited_layers[row]->is_moving = is_moving;
