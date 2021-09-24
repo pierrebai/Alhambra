@@ -2,6 +2,7 @@
 #include <dak/tiling_ui_qt/layers_selector.h>
 #include <dak/tiling_ui_qt/drawing.h>
 
+#include <dak/QtAdditions/QHeaderViewWithWidgets.h>
 #include <dak/QtAdditions/QTableWidgetWithComboBox.h>
 #include <dak/QtAdditions/QtUtilities.h>
 
@@ -20,6 +21,7 @@
 
 #include <QtWidgets/qboxlayout.h>
 #include <QtWidgets/qgridlayout.h>
+#include <QtWidgets/qcheckbox.h>
 #include <QtWidgets/qcombobox.h>
 #include <QtWidgets/qlabel.h>
 #include <QtWidgets/qpushbutton.h>
@@ -72,7 +74,7 @@ namespace dak
          QPixmap pixmap(w, h);
          QPainter painter(&pixmap);
          ui::qt::painter_drawing_t drw(painter);
-         draw_tiling(drw, mosaic, co, 1);
+         draw_tiling(drw, mosaic, co, 2);
 
          return QIcon(pixmap);
       }
@@ -206,43 +208,44 @@ namespace dak
 
          void update_list_content()
          {
-            disable_feedback++;
-            layer_list->blockSignals(disable_feedback > 0);
+            my_disable_feedback++;
+            my_layer_list->blockSignals(my_disable_feedback > 0);
 
             int row = 0;
             for (auto& layer : my_edited_layers)
             {
                if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
                {
-                  if (row >= layer_list->rowCount())
-                     layer_list->setRowCount(row + 1);
+                  if (row >= my_layer_list->rowCount())
+                     my_layer_list->setRowCount(row + 1);
 
                   auto is_drawn_item = new QTableWidgetItem();
                   is_drawn_item->setCheckState(mo_layer->is_drawn ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
-                  layer_list->setItem(row, is_drawn_column, is_drawn_item);
+                  my_layer_list->setItem(row, is_drawn_column, is_drawn_item);
 
                   auto is_moving_item = new QTableWidgetItem();
                   is_moving_item->setCheckState(mo_layer->is_moving ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
-                  layer_list->setItem(row, is_moving_column, is_moving_item);
+                  my_layer_list->setItem(row, is_moving_column, is_moving_item);
 
                   // Note: make icon larger than what was set in the table view
                   //       so that it gets scaled down with some smoothing.
                   const QIcon qicon = get_icon(mo_layer, 128, 64);
                   const QString tiling_name = QString::fromWCharArray(mo_layer->mosaic->tiling->name.c_str());
                   auto tiling_item = new QTableWidgetItem(qicon, tiling_name);
-                  tiling_item->setFlags(Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsSelectable);
-                  layer_list->setItem(row, tiling_column, tiling_item);
+                  tiling_item->setFlags(Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemNeverHasChildren);
+                  my_layer_list->setItem(row, tiling_column, tiling_item);
 
                   const QString style_name = QString::fromWCharArray(get_style_name(mo_layer->style));
                   auto style_item = new QTableWidgetItem(style_name);
-                  layer_list->setItem(row, style_column, style_item);
+                  style_item->setFlags(Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemNeverHasChildren);
+                  my_layer_list->setItem(row, style_column, style_item);
 
                   row++;
                }
             }
 
-            disable_feedback--;
-            layer_list->blockSignals(disable_feedback > 0);
+            my_disable_feedback--;
+            my_layer_list->blockSignals(my_disable_feedback > 0);
          }
 
       private:
@@ -274,94 +277,109 @@ namespace dak
             QWidget* button_panel = new QWidget(&parent);
                QGridLayout* button_layout = new QGridLayout(button_panel);
                button_layout->setContentsMargins(0, 0, 0, 0);
-               clone_layer_button = make_button(icons.layer_copy, L::t(L"Copy"));
-               button_layout->addWidget(clone_layer_button.get(), 0, 0);
-               add_layer_button = make_button(icons.layer_add, L::t(L"Add"));
-               button_layout->addWidget(add_layer_button.get(), 0, 1);
-               remove_layers_button = make_button(icons.layer_delete, L::t(L"Remove"));
-               button_layout->addWidget(remove_layers_button.get(), 0, 2);
-               copy_position_button = make_button(icons.layer_copy_position, L::t(L"Copy Position"));
-               button_layout->addWidget(copy_position_button.get(), 0, 3);
-               move_layers_up_button = make_button(icons.layer_move_up, L::t(L"Move Up"));
-               button_layout->addWidget(move_layers_up_button.get(), 0, 4);
-               move_layers_down_button = make_button(icons.layer_move_down, L::t(L"Move Down"));
-               button_layout->addWidget(move_layers_down_button.get(), 0, 5);
+               my_clone_layer_button = make_button(icons.layer_copy, L::t(L"Copy"));
+               button_layout->addWidget(my_clone_layer_button.get(), 0, 0);
+               my_add_layer_button = make_button(icons.layer_add, L::t(L"Add"));
+               button_layout->addWidget(my_add_layer_button.get(), 0, 1);
+               my_remove_layers_button = make_button(icons.layer_delete, L::t(L"Remove"));
+               button_layout->addWidget(my_remove_layers_button.get(), 0, 2);
+               my_copy_position_button = make_button(icons.layer_copy_position, L::t(L"Copy Position"));
+               button_layout->addWidget(my_copy_position_button.get(), 0, 3);
+               my_move_layers_up_button = make_button(icons.layer_move_up, L::t(L"Move Up"));
+               button_layout->addWidget(my_move_layers_up_button.get(), 0, 4);
+               my_move_layers_down_button = make_button(icons.layer_move_down, L::t(L"Move Down"));
+               button_layout->addWidget(my_move_layers_down_button.get(), 0, 5);
             layout->addWidget(button_panel);
 
             QStringList combo_items;
             for (const auto& item : style_names)
                combo_items.append(QString::fromWCharArray(L::t(item.name)));
 
-            layer_list = std::make_unique<QTableWidgetWithComboBox>(style_column, combo_items, &parent);
-            layer_list->setIconSize(QSize(64, 32));
-            layer_list->setColumnCount(4);
-            layer_list->setHorizontalHeaderLabels(QStringList(
+            my_all_drawn_check = new QCheckBox(QString::fromWCharArray(L::t(L"Drawn")));
+            my_all_moving_check = new QCheckBox(QString::fromWCharArray(L::t(L"Moving")));
+
+            auto header = new QHeaderViewWithWidgets(Qt::Orientation::Horizontal);
+            header->addSectionWidget(is_moving_column, my_all_moving_check);
+            header->addSectionWidget(is_drawn_column, my_all_drawn_check);
+            header->setMinimumSectionSize(70);
+
+            my_layer_list = std::make_unique<QTableWidgetWithComboBox>(style_column, combo_items, &parent);
+            my_layer_list->setHorizontalHeader(header);
+            my_layer_list->setIconSize(QSize(64, 32));
+            my_layer_list->setColumnCount(4);
+            my_layer_list->setHorizontalHeaderLabels(QStringList(
                {
-                  QString::fromWCharArray(L::t(L"Drawn")),
-                  QString::fromWCharArray(L::t(L"Moving")),
+                  QString::fromWCharArray(L::t(L"")),
+                  QString::fromWCharArray(L::t(L"")),
                   QString::fromWCharArray(L::t(L"Mosaic")),
                   QString::fromWCharArray(L::t(L"Style"))
                }));
-            layer_list->setShowGrid(false);
-            layer_list->horizontalHeader()->setSectionResizeMode(tiling_column, QHeaderView::ResizeMode::Stretch);
-            layout->addWidget(layer_list.get());
+            my_layer_list->horizontalHeader()->setSectionResizeMode(tiling_column, QHeaderView::ResizeMode::Stretch);
+            my_layer_list->setShowGrid(false);
+            layout->addWidget(my_layer_list.get());
 
-            layer_list->setEnabled(false);
-            clone_layer_button->setEnabled(false);
-            add_layer_button->setEnabled(true);
-            remove_layers_button->setEnabled(false);
-            copy_position_button->setEnabled(false);
-            move_layers_up_button->setEnabled(false);
-            move_layers_down_button->setEnabled(false);
+            my_layer_list->setEnabled(false);
+            my_clone_layer_button->setEnabled(false);
+            my_add_layer_button->setEnabled(true);
+            my_remove_layers_button->setEnabled(false);
+            my_copy_position_button->setEnabled(false);
+            my_move_layers_up_button->setEnabled(false);
+            my_move_layers_down_button->setEnabled(false);
 
-            layer_list->connect(layer_list.get(), &QTableWidget::itemSelectionChanged, [&]() { update_selection(); });
-            layer_list->connect(layer_list.get(), &QTableWidget::itemChanged, [&](QTableWidgetItem * item) { update_layer(item); });
+            my_layer_list->connect(my_layer_list.get(), &QTableWidget::itemSelectionChanged, [self = this]() { self->update_selection(); });
+            my_layer_list->connect(my_layer_list.get(), &QTableWidget::itemChanged, [self=this](QTableWidgetItem * item) { self->update_layer(item); });
 
-            clone_layer_button->connect(clone_layer_button.get(), &QPushButton::clicked, [&]() { clone_layer(); });
-            add_layer_button->connect(add_layer_button.get(), &QPushButton::clicked, [&]() { add_layer(); });
-            remove_layers_button->connect(remove_layers_button.get(), &QPushButton::clicked, [&]() { remove_layers(); });
-            copy_position_button->connect(copy_position_button.get(), &QPushButton::clicked, [&]() { copy_position(); });
-            move_layers_up_button->connect(move_layers_up_button.get(), &QPushButton::clicked, [&]() { move_layers_up(); });
-            move_layers_down_button->connect(move_layers_down_button.get(), &QPushButton::clicked, [&]() { move_layers_down(); });
+            my_clone_layer_button->connect(my_clone_layer_button.get(), &QPushButton::clicked, [self = this]() { self->clone_layer(); });
+            my_add_layer_button->connect(my_add_layer_button.get(), &QPushButton::clicked, [self = this]() { self->add_layer(); });
+            my_remove_layers_button->connect(my_remove_layers_button.get(), &QPushButton::clicked, [self = this]() { self->remove_layers(); });
+            my_copy_position_button->connect(my_copy_position_button.get(), &QPushButton::clicked, [self = this]() { self->copy_position(); });
+            my_move_layers_up_button->connect(my_move_layers_up_button.get(), &QPushButton::clicked, [self = this]() { self->move_layers_up(); });
+            my_move_layers_down_button->connect(my_move_layers_down_button.get(), &QPushButton::clicked, [self = this]() { self->move_layers_down(); });
+
+            my_all_drawn_check->connect(my_all_drawn_check, &QCheckBox::stateChanged, [self = this]() { self->update_all_drawn(); });
+            my_all_moving_check->connect(my_all_moving_check, &QCheckBox::stateChanged, [self = this]() { self->update_all_moving(); });
          }
 
          void fill_ui(const std::vector<int>& selected)
          {
-            disable_feedback++;
-            layer_list->blockSignals(disable_feedback > 0);
+            my_disable_feedback++;
+            my_layer_list->blockSignals(my_disable_feedback > 0);
 
-            layer_list->setRowCount(0);
+            my_layer_list->setRowCount(0);
             update_list_content();
 
-            layer_list->resizeColumnsToContents();
-            layer_list->horizontalHeader()->setSectionResizeMode(tiling_column, QHeaderView::ResizeMode::Stretch);
+            my_layer_list->resizeColumnsToContents();
+            my_layer_list->horizontalHeader()->setSectionResizeMode(tiling_column, QHeaderView::ResizeMode::Stretch);
 
             set_selected_indexes(selected);
 
             update_enabled();
 
-            disable_feedback--;
-            layer_list->blockSignals(disable_feedback > 0);
+            fill_all_moving();
+            fill_all_drawn();
+
+            my_disable_feedback--;
+            my_layer_list->blockSignals(my_disable_feedback > 0);
          }
 
          void update_enabled()
          {
             auto selected = get_selected_indexes();
 
-            layer_list->setEnabled(my_edited_layers.size() > 0);
-            clone_layer_button->setEnabled(selected.size() > 0);
-            add_layer_button->setEnabled(true);
-            remove_layers_button->setEnabled(selected.size() > 0);
-            copy_position_button->setEnabled(selected.size() > 1);
-            move_layers_up_button->setEnabled(my_edited_layers.size() > 1 && selected.size() > 0);
-            move_layers_down_button->setEnabled(my_edited_layers.size() > 1 && selected.size() > 0);
+            my_layer_list->setEnabled(my_edited_layers.size() > 0);
+            my_clone_layer_button->setEnabled(selected.size() > 0);
+            my_add_layer_button->setEnabled(true);
+            my_remove_layers_button->setEnabled(selected.size() > 0);
+            my_copy_position_button->setEnabled(selected.size() > 1);
+            my_move_layers_up_button->setEnabled(my_edited_layers.size() > 1 && selected.size() > 0);
+            my_move_layers_down_button->setEnabled(my_edited_layers.size() > 1 && selected.size() > 0);
          }
 
          void update_selection()
          {
             update_enabled();
 
-            if (disable_feedback)
+            if (my_disable_feedback)
                return;
 
             if (my_layer_selector.selection_changed)
@@ -381,6 +399,49 @@ namespace dak
             }
          }
 
+         void fill_all_drawn()
+         {
+            if (!my_all_drawn_check)
+               return;
+
+            if (my_edited_layers.size() <= 0)
+               return;
+
+            Qt::CheckState all_state = my_edited_layers[0]->is_drawn ? Qt::CheckState::Checked : Qt::CheckState::Unchecked;
+            for (int row = 1; row < my_edited_layers.size(); ++row)
+            {
+               Qt::CheckState state = my_edited_layers[row]->is_drawn ? Qt::CheckState::Checked : Qt::CheckState::Unchecked;
+               if (state != all_state)
+               {
+                  all_state = Qt::CheckState::Unchecked;
+                  break;
+               }
+            }
+
+            my_disable_feedback++;
+            my_all_drawn_check->blockSignals(true);
+            my_all_drawn_check->setCheckState(all_state);
+            my_disable_feedback--;
+            my_all_drawn_check->blockSignals(false);
+         }
+
+         void update_all_drawn()
+         {
+            if (!my_all_drawn_check)
+               return;
+
+            if (my_all_drawn_check->checkState() == Qt::CheckState::PartiallyChecked)
+               return;
+
+            const bool is_drawn = (my_all_drawn_check->checkState() == Qt::CheckState::Checked);
+            for (int row = 0; row < my_edited_layers.size(); ++row)
+            {
+               my_edited_layers[row]->is_drawn = is_drawn;
+            }
+
+            update_layers();
+         }
+
          void update_drawn(QTableWidgetItem * item)
          {
             if (!item)
@@ -391,6 +452,50 @@ namespace dak
                return;
 
             my_edited_layers[row]->is_drawn = (item->checkState() == Qt::CheckState::Checked);
+
+            fill_all_drawn();
+            update_layers();
+         }
+
+         void fill_all_moving()
+         {
+            if (!my_all_moving_check)
+               return;
+
+            if (my_edited_layers.size() <= 0)
+               return;
+
+            Qt::CheckState all_state = my_edited_layers[0]->is_moving ? Qt::CheckState::Checked : Qt::CheckState::Unchecked;
+            for (int row = 1; row < my_edited_layers.size(); ++row)
+            {
+               Qt::CheckState state = my_edited_layers[row]->is_moving ? Qt::CheckState::Checked : Qt::CheckState::Unchecked;
+               if (state != all_state)
+               {
+                  all_state = Qt::CheckState::Unchecked;
+                  break;
+               }
+            }
+
+            my_disable_feedback++;
+            my_all_moving_check->blockSignals(true);
+            my_all_moving_check->setCheckState(all_state);
+            my_disable_feedback--;
+            my_all_moving_check->blockSignals(true);
+         }
+
+         void update_all_moving()
+         {
+            if (!my_all_moving_check)
+               return;
+
+            if (my_all_moving_check->checkState() == Qt::CheckState::PartiallyChecked)
+               return;
+
+            const bool is_moving = (my_all_moving_check->checkState() == Qt::CheckState::Checked);
+            for (int row = 0; row < my_edited_layers.size(); ++row)
+            {
+               my_edited_layers[row]->is_moving = is_moving;
+            }
 
             update_layers();
          }
@@ -406,6 +511,7 @@ namespace dak
 
             my_edited_layers[row]->is_moving = (item->checkState() == Qt::CheckState::Checked);
 
+            fill_all_moving();
             update_layers();
          }
 
@@ -437,7 +543,7 @@ namespace dak
             update_enabled();
 
             // Note: used to avoid re-calculating the layer when just setting its value in the UI.
-            if (disable_feedback)
+            if (my_disable_feedback)
                return;
 
             if (my_layer_selector.layers_changed)
@@ -446,12 +552,12 @@ namespace dak
 
          void set_selected_indexes(const std::vector<int>& indexes)
          {
-            layer_list->clearSelection();
+            my_layer_list->clearSelection();
             for (const int row : indexes)
             {
-               for (int col = 0; col < layer_list->columnCount(); ++col)
+               for (int col = 0; col < my_layer_list->columnCount(); ++col)
                {
-                  const auto item = layer_list->item(row, col);
+                  const auto item = my_layer_list->item(row, col);
                   item->setSelected(true);
                }
             }
@@ -460,11 +566,11 @@ namespace dak
          std::vector<int> get_selected_indexes() const
          {
             std::vector<int> selected;
-            for (int row = 0; row < layer_list->rowCount() && row < my_edited_layers.size(); ++row)
+            for (int row = 0; row < my_layer_list->rowCount() && row < my_edited_layers.size(); ++row)
             {
-               for (int col = 0; col < layer_list->columnCount(); ++col)
+               for (int col = 0; col < my_layer_list->columnCount(); ++col)
                {
-                  const auto item = layer_list->item(row, col);
+                  const auto item = my_layer_list->item(row, col);
                   if (item->isSelected())
                   {
                      selected.emplace_back(row);
@@ -573,15 +679,17 @@ namespace dak
          layers_selector_t& my_layer_selector;
          layers_t my_edited_layers;
 
-         std::unique_ptr<QTableWidgetWithComboBox> layer_list;
-         std::unique_ptr<QPushButton> clone_layer_button;
-         std::unique_ptr<QPushButton> add_layer_button;
-         std::unique_ptr<QPushButton> remove_layers_button;
-         std::unique_ptr<QPushButton> copy_position_button;
-         std::unique_ptr<QPushButton> move_layers_up_button;
-         std::unique_ptr<QPushButton> move_layers_down_button;
+         std::unique_ptr<QTableWidgetWithComboBox> my_layer_list;
+         std::unique_ptr<QPushButton> my_clone_layer_button;
+         std::unique_ptr<QPushButton> my_add_layer_button;
+         std::unique_ptr<QPushButton> my_remove_layers_button;
+         std::unique_ptr<QPushButton> my_copy_position_button;
+         std::unique_ptr<QPushButton> my_move_layers_up_button;
+         std::unique_ptr<QPushButton> my_move_layers_down_button;
+         QCheckBox* my_all_drawn_check;
+         QCheckBox* my_all_moving_check;
 
-         int disable_feedback = 0;
+         int my_disable_feedback = 0;
       };
 
       ////////////////////////////////////////////////////////////////////////////

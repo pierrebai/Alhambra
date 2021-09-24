@@ -176,11 +176,11 @@ namespace dak
          QToolButton* redraw_button = nullptr;
 
          QDockWidget* layers_dock = nullptr;
-         layers_selector_t* layer_list = nullptr;
+         layers_selector_t* my_layer_list = nullptr;
 
          styles_editor_t* styles_editor = nullptr;
 
-         dak::tiling_ui_qt::figure_selector_t* figure_list = nullptr;
+         dak::tiling_ui_qt::figure_selector_t* my_figure_list = nullptr;
          figure_editor_t* figure_editor = nullptr;
 
          dak::ui::qt::layered_canvas_t* canvas = nullptr;

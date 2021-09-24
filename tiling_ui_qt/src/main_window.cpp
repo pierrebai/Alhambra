@@ -128,13 +128,13 @@ namespace dak
             redraw_button = CreateToolButton(redraw_action);
             toolbar->addWidget(redraw_button);
 
-            layers_dock = new QDockWidget(QString::fromWCharArray(L::t(L"Layers")));
-            layers_dock->setFeatures(QDockWidget::DockWidgetFeature::DockWidgetFloatable | QDockWidget::DockWidgetFeature::DockWidgetMovable);
+         layers_dock = new QDockWidget(QString::fromWCharArray(L::t(L"Layers")));
+         layers_dock->setFeatures(QDockWidget::DockWidgetFeature::DockWidgetFloatable | QDockWidget::DockWidgetFeature::DockWidgetMovable);
             QWidget* layers_container = new QWidget();
             QVBoxLayout* layers_layout = new QVBoxLayout(layers_container);
 
-            layer_list = new layers_selector_t(layers_container, icons);
-            layers_layout->addWidget(layer_list);
+            my_layer_list = new layers_selector_t(layers_container, icons);
+            layers_layout->addWidget(my_layer_list);
 
             styles_editor = new dak::tiling_ui_qt::styles_editor_t(layers_container);
             layers_layout->addWidget(styles_editor);
@@ -146,8 +146,8 @@ namespace dak
             QWidget* figures_container = new QWidget();
             QVBoxLayout* figures_layout = new QVBoxLayout(figures_container);
 
-            figure_list = new dak::tiling_ui_qt::figure_selector_t(figures_container);
-            figures_layout->addWidget(figure_list);
+            my_figure_list = new dak::tiling_ui_qt::figure_selector_t(figures_container);
+            figures_layout->addWidget(my_figure_list);
 
             figure_editor = new dak::tiling_ui_qt::figure_editor_t(figures_container);
             figures_layout->addWidget(figure_editor);
@@ -162,6 +162,7 @@ namespace dak
          addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, layers_dock);
          addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, figures_dock);
          setWindowIcon(QIcon(QtWin::fromHICON((HICON)::LoadImage(GetModuleHandle(0), MAKEINTRESOURCE(icons.app_icon), IMAGE_ICON, 256, 256, 0))));
+         resizeDocks({ layers_dock , figures_dock }, { 400, 400 }, Qt::Horizontal);
       }
 
       // Connect the signals of the UI elements.
@@ -278,7 +279,7 @@ namespace dak
          //
          // The layer list UI call-backs.
 
-         layer_list->layers_changed = [self=this](const layers_selector_t::layers& layers)
+         my_layer_list->layers_changed = [self=this](const layers_selector_t::layers& layers)
          {
             self->update_layer_list();
             self->styles_editor->set_edited(self->get_selected_styles());
@@ -287,7 +288,7 @@ namespace dak
             self->update_canvas_layers(layers);
          };
 
-         layer_list->selection_changed = [self=this](const layers_selector_t::layers& layers)
+         my_layer_list->selection_changed = [self=this](const layers_selector_t::layers& layers)
          {
             self->layered.set_layers(layers);
             self->styles_editor->set_edited(self->get_selected_styles());
@@ -295,7 +296,7 @@ namespace dak
             self->canvas->update();
          };
 
-         layer_list->new_layer_requested = [&known_tilings=this->known_tilings, &icons, self=this]()
+         my_layer_list->new_layer_requested = [&known_tilings=this->known_tilings, &icons, self=this]()
          {
             auto selector = new tiling_selector_t(known_tilings, icons, nullptr, [self=self](const std::shared_ptr<tiling_t>& tiling)
             {
@@ -311,7 +312,7 @@ namespace dak
          //
          // The figures list UI call-backs.
 
-         figure_list->figure_changed = [self=this](std::shared_ptr<figure_t> modified)
+         my_figure_list->figure_changed = [self=this](std::shared_ptr<figure_t> modified)
          {
             for (auto fig : self->get_all_avail_figures())
             {
@@ -330,7 +331,7 @@ namespace dak
             self->update_canvas_layers(self->get_selected_layers());
          };
 
-         figure_list->figure_swapped = [self=this](std::shared_ptr<figure_t> before, std::shared_ptr<figure_t> after)
+         my_figure_list->figure_swapped = [self=this](std::shared_ptr<figure_t> before, std::shared_ptr<figure_t> after)
          {
             for (auto mosaic : self->get_selected_mosaics())
             {
@@ -351,7 +352,7 @@ namespace dak
             self->update_canvas_layers(self->get_selected_layers());
          };
 
-         figure_list->selection_changed = [self=this](const std::shared_ptr<figure_t>& figure)
+         my_figure_list->selection_changed = [self=this](const std::shared_ptr<figure_t>& figure)
          {
             self->fill_figure_editor();
          };
@@ -546,13 +547,13 @@ namespace dak
 
       std::vector<std::shared_ptr<layer_t>> main_window_t::get_selected_layers()
       {
-         return layer_list->get_selected_layers();
+         return my_layer_list->get_selected_layers();
       }
 
       std::vector<std::shared_ptr<style_t>> main_window_t::get_selected_styles()
       {
          std::vector<std::shared_ptr<tiling_style::style_t>> selected;
-         for (auto layer : layer_list->get_selected_layers())
+         for (auto layer : my_layer_list->get_selected_layers())
          {
             if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
             {
@@ -565,7 +566,7 @@ namespace dak
       std::vector<std::shared_ptr<mosaic_t>> main_window_t::get_selected_mosaics()
       {
          std::vector<std::shared_ptr<mosaic_t>> selected;
-         for (auto layer : layer_list->get_selected_layers())
+         for (auto layer : my_layer_list->get_selected_layers())
          {
             if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
             {
@@ -591,12 +592,12 @@ namespace dak
 
       void main_window_t::update_layer_list()
       {
-         layer_list->update_list_content();
+         my_layer_list->update_list_content();
       }
 
       void main_window_t::fill_layer_list()
       {
-         layer_list->set_edited(layered.get_layers());
+         my_layer_list->set_edited(layered.get_layers());
          styles_editor->set_edited(get_selected_styles());
          fill_figure_list();
       }
@@ -643,12 +644,12 @@ namespace dak
 
       void main_window_t::fill_figure_list()
       {
-         figure_list->set_edited(get_merged_avail_figures());
+         my_figure_list->set_edited(get_merged_avail_figures());
       }
 
       std::shared_ptr<figure_t> main_window_t::get_selected_figure()
       {
-         return figure_list->get_selected_figure();
+         return my_figure_list->get_selected_figure();
       }
 
       void main_window_t::fill_figure_editor(bool force_update)

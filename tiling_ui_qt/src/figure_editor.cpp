@@ -125,7 +125,7 @@ namespace dak
 
          void fill_ui()
          {
-            disable_feedback++;
+            my_disable_feedback++;
 
             if (star_t* edited_star = get_star(edited))
             {
@@ -154,7 +154,7 @@ namespace dak
 
             update_enabled();
 
-            disable_feedback--;
+            my_disable_feedback--;
          }
 
          void update_enabled()
@@ -223,7 +223,7 @@ namespace dak
 
          void update_d(double new_value, bool interacting)
          {
-            if (disable_feedback)
+            if (my_disable_feedback)
                return;
 
             if (star_t* edited_star = dynamic_cast<star_t *>(edited.get()))
@@ -246,7 +246,7 @@ namespace dak
 
          void update_q(double new_value, bool interacting)
          {
-            if (disable_feedback)
+            if (my_disable_feedback)
                return;
 
             if (rosette_t* edited_rosette = get_rosette(edited))
@@ -269,7 +269,7 @@ namespace dak
 
          void update_s(int new_value, bool interacting)
          {
-            if (disable_feedback)
+            if (my_disable_feedback)
                return;
 
             if (star_t* edited_star = get_star(edited))
@@ -304,7 +304,7 @@ namespace dak
                return;
 
             // Note: used to avoid re-calculating the figure when just setting its value in the UI.
-            if (disable_feedback)
+            if (my_disable_feedback)
                return;
 
             if (editor.figure_changed)
@@ -318,7 +318,7 @@ namespace dak
          std::unique_ptr<ui::qt::int_editor_t> s_editor;
          std::unique_ptr<ui::qt::double_editor_t> q_editor;
 
-         int disable_feedback = 0;
+         int my_disable_feedback = 0;
       };
 
       ////////////////////////////////////////////////////////////////////////////
