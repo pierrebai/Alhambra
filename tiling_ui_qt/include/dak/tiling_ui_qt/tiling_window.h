@@ -27,6 +27,7 @@ namespace dak
       using dak::tiling::tiling_t;
       using dak::tiling::known_tilings_t;
       typedef std::filesystem::path file_path_t;
+      class tiling_description_editor_t;
 
       ////////////////////////////////////////////////////////////////////////////
       //
@@ -61,6 +62,8 @@ namespace dak
          std::shared_ptr<tiling_t> my_original_tiling;
 
          tiling_editor_t* my_tiling_editor = nullptr;
+         tiling_description_editor_t* my_tiling_desc = nullptr;
+
 
          known_tilings_t& my_known_tilings;
 

@@ -1,15 +1,19 @@
 #include <dak/tiling/tiling.h>
 
+#include <dak/utility/text.h>
+
 namespace dak
 {
    namespace tiling
    {
+      using namespace dak::utility;
+
       tiling_t::tiling_t()
       {
       }
 
       tiling_t::tiling_t(const std::wstring& name)
-         : name(name)
+         : name(name), description(L::t(L"(Description)")), author(L::t(L"(Author)"))
       {
       }
 

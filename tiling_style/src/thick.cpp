@@ -25,6 +25,7 @@ namespace dak
             width         = other_thick->width;
             outline_width = other_thick->outline_width;
             outline_color = other_thick->outline_color;
+            join          = other_thick->join;
          }
       }
 

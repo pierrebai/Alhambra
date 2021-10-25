@@ -62,10 +62,8 @@ namespace dak
 
       ////////////////////////////////////////////////////////////////////////////
       //
-      // It's used to design the tilings that are used as skeletons for the Islamic
-      // construction process.  It's fairly featureful, much more rapid and accurate
-      // than expressing the tilings directly as code, which is what I did in a
-      // previous version.
+      // It's used to design the tilings that are used as skeletons for the
+      // mosaics.
 
       class tiling_editor_t : public QWidget
       {

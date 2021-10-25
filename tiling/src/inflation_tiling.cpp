@@ -94,7 +94,7 @@ namespace dak
       size_t inflation_tiling_t::count_fill_copies(const rectangle_t& region) const
       {
          // TODO: real number of inflation copies needed to fill a region.
-         return 32;
+         return 12;
       }
 
       void inflation_tiling_t::surround(std::function<void(const tiling_t& tiling, const transform_t&)> fill_callback) const

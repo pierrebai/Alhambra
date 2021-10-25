@@ -46,6 +46,41 @@ namespace dak
 
          const wchar_t* old_layer_sentry = L"layers";
          const wchar_t* movable_layer_sentry = L"movable-layers";
+         const wchar_t* movable_join_layer_sentry = L"movable-join-layers";
+
+         ////////////////////////////////////////////////////////////////////////////
+         //
+         // join-style streamer operator.
+
+         std::wostream& operator<<(std::wostream& file, const stroke_t::join_style_t join_style)
+         {
+            const wchar_t* join_text = L"";
+            switch (join_style)
+            {
+               case stroke_t::join_style_t::bevel: join_text = L"bevel"; break;
+               case stroke_t::join_style_t::miter: join_text = L"miter"; break;
+               case stroke_t::join_style_t::round: join_text = L"round"; break;
+               default:                            join_text = L"round"; break;
+            }
+
+            file << join_text;
+            return file;
+         }
+         
+         std::wistream& operator>>(std::wistream& file, stroke_t::join_style_t& join_style)
+         {
+            std::wstring join_text;
+            file >> join_text;
+
+            if (join_text == L"miter")
+               join_style = stroke_t::join_style_t::bevel;
+            else if (join_text == L"bevel")
+               join_style = stroke_t::join_style_t::miter;
+            else
+               join_style = stroke_t::join_style_t::round;
+
+            return file;
+         }
 
          ////////////////////////////////////////////////////////////////////////////
          //
@@ -107,24 +142,26 @@ namespace dak
             write_colored(file, style);
          }
 
-         void read_thick(std::wistream& file, thick_t& new_style)
+         void read_thick(std::wistream& file, thick_t& new_style, bool has_join)
          {
             std::wstring dummy;
             file >> dummy >> new_style.width >> new_style.outline_width;
+            if (has_join)
+               file >> new_style.join;
             read_colored(file, new_style);
          }
 
          void write_thick(std::wostream& file, const thick_t& style)
          {
-            file << L"  " << thick_name << " " << style.width << " " << style.outline_width << L"\n";
+            file << L"  " << thick_name << " " << style.width << " " << style.outline_width << " " << style.join << L"\n";
             write_colored(file, style);
          }
 
-         void read_outline(std::wistream& file, outline_t& new_style)
+         void read_outline(std::wistream& file, outline_t& new_style, bool has_join)
          {
             std::wstring dummy;
             file >> dummy;
-            read_thick(file, new_style);
+            read_thick(file, new_style, has_join);
          }
 
          void write_outline(std::wostream& file, const outline_t& style)
@@ -133,11 +170,11 @@ namespace dak
             write_thick(file, style);
          }
 
-         void read_emboss(std::wistream& file, emboss_t& new_style)
+         void read_emboss(std::wistream& file, emboss_t& new_style, bool has_join)
          {
             std::wstring dummy;
             file >> dummy >> new_style.angle;
-            read_outline(file, new_style);
+            read_outline(file, new_style, has_join);
          }
 
          void write_emboss(std::wostream& file, const emboss_t& style)
@@ -146,12 +183,12 @@ namespace dak
             write_outline(file, style);
          }
 
-         void read_interlace(std::wistream& file, interlace_t& new_style)
+         void read_interlace(std::wistream& file, interlace_t& new_style, bool has_join)
          {
             std::wstring dummy;
             file >> dummy >> new_style.gap_width >> new_style.shadow_width;
             // In the text format, interlace derives from thick, not outline.
-            read_thick(file, new_style);
+            read_thick(file, new_style, has_join);
          }
 
          void write_interlace(std::wostream& file, const interlace_t& style)
@@ -399,7 +436,8 @@ namespace dak
          size_t count = 0;
          file >> sentry >> count;
 
-         const bool is_movable = (sentry == movable_layer_sentry);
+         const bool is_movable_join = (sentry == movable_join_layer_sentry);
+         const bool is_movable = (is_movable_join || sentry == movable_layer_sentry);
 
          for (size_t i = 0; i < count; ++i)
          {
@@ -412,7 +450,7 @@ namespace dak
             if (style_type == emboss_name)
             {
                std::shared_ptr<emboss_t> new_emboss(new emboss_t);
-               read_emboss(file, *new_emboss);
+               read_emboss(file, *new_emboss, is_movable_join);
                new_mosaic_layer->style = new_emboss;
             }
             else if (style_type == filled_name)
@@ -424,13 +462,13 @@ namespace dak
             else if (style_type == interlace_name)
             {
                std::shared_ptr<interlace_t> new_interlace(new interlace_t);
-               read_interlace(file, *new_interlace);
+               read_interlace(file, *new_interlace, is_movable_join);
                new_mosaic_layer->style = new_interlace;
             }
             else if (style_type == outline_name)
             {
                std::shared_ptr<outline_t> new_outline(new outline_t);
-               read_outline(file, *new_outline);
+               read_outline(file, *new_outline, is_movable_join);
                new_mosaic_layer->style = new_outline;
             }
             else if (style_type == plain_name)
@@ -448,7 +486,7 @@ namespace dak
             else if (style_type == thick_name)
             {
                std::shared_ptr<thick_t> new_thick(new thick_t);
-               read_thick(file, *new_thick);
+               read_thick(file, *new_thick, is_movable_join);
                new_mosaic_layer->style = new_thick;
             }
             else
@@ -473,7 +511,7 @@ namespace dak
          file.precision(17);
          file.imbue(std::locale("C"));
 
-         file << movable_layer_sentry << L"  " << layers.size() << "\n";
+         file << movable_join_layer_sentry << L"  " << layers.size() << "\n";
 
          for (const auto& styled_mosaic : layers)
          {

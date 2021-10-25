@@ -20,6 +20,7 @@ add_library(tiling_ui_qt
    include/dak/tiling_ui_qt/main_window.h          src/main_window.cpp
    include/dak/tiling_ui_qt/styles_editor.h        src/styles_editor.cpp
    include/dak/tiling_ui_qt/tiling_editor.h        src/tiling_editor.cpp
+   include/dak/tiling_ui_qt/tiling_description_editor.h src/tiling_description_editor.cpp
    include/dak/tiling_ui_qt/tiling_selector.h      src/tiling_selector.cpp
    include/dak/tiling_ui_qt/tiling_window.h        src/tiling_window.cpp
 )

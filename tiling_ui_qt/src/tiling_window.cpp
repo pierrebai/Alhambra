@@ -1,5 +1,6 @@
 #include <dak/tiling_ui_qt/tiling_window.h>
 #include <dak/tiling_ui_qt/tiling_selector.h>
+#include <dak/tiling_ui_qt/tiling_description_editor.h>
 #include <dak/tiling_ui_qt/ask.h>
 
 #include <dak/QtAdditions/QtUtilities.h>
@@ -111,9 +112,11 @@ namespace dak
          addAction(my_tiling_editor->my_delete_poly_action);
          addAction(my_tiling_editor->my_toggle_inclusion_action);
 
-         // Add panel to edit the name, description and author. TODO
-         //tiling_desc = new tiling_description_editor();
-         //addDockWidget( tiling_desc );
+         QDockWidget* desc_dock = new QDockWidget(QString::fromWCharArray(L::t(L"Tiling")));
+         desc_dock->setFeatures(QDockWidget::DockWidgetFeature::DockWidgetFloatable | QDockWidget::DockWidgetFeature::DockWidgetMovable);
+            my_tiling_desc = new tiling_description_editor_t(this);
+            desc_dock->setWidget(my_tiling_desc);
+            addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, desc_dock);
 
          setAttribute(Qt::WA_DeleteOnClose);
       }
@@ -134,7 +137,7 @@ namespace dak
       {
          my_original_tiling = tiling;
          my_original_file = file;
-         //tiling_desc.set_tiling( tiling );
+         my_tiling_desc->set_tiling(tiling);
          my_tiling_editor->set_tiling(tiling);
       }
 
@@ -200,8 +203,8 @@ namespace dak
          if (!tiling || tiling->is_invalid())
             return tiling;
 
-         // TODO: tiling description.
-         tiling->description = L::t(L"(Description)");
+         tiling->description = my_tiling_desc->get_description();
+         tiling->author = my_tiling_desc->get_author();
 
          if (tiling->name.length() <= 0)
             tiling->name = file.filename();
