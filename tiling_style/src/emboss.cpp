@@ -27,6 +27,19 @@ namespace dak
          }
       }
 
+      bool emboss_t::operator==(const layer_t& other) const
+      {
+         if (!outline_t::operator==(other))
+            return false;
+
+         if (const emboss_t* other_emboss = dynamic_cast<const emboss_t*>(&other))
+         {
+            return dak::utility::near(angle, other_emboss->angle);
+         }
+
+         return false;
+      }
+
       std::wstring emboss_t::describe() const
       {
          return L::t(L"Embossed");

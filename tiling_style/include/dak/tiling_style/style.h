@@ -47,6 +47,9 @@ namespace dak
          // Copy a layer.
          void make_similar(const layer_t& other) override;
 
+         // Comparison.
+         virtual bool operator==(const layer_t& other) const { return layer_t::operator==(other); }
+
       protected:
          double get_width_at(const point_t& pt, double width) const;
 

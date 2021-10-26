@@ -527,7 +527,7 @@ namespace dak
                }
                else if (pts.size() > 2 && pt.distance_2(pts[0]) < geometry::TOLERANCE_2)
                {
-                  editor.add_placed_tile(placed_tile_t{ editor.new_polygon, transform_t::identity() });
+                  editor.add_placed_tile(placed_tile_t{ editor.new_polygon.make_clockwise(), transform_t::identity() });
                   pts.clear();
                   cur_sel = selection_t();
                   editor.clear_mouse_interaction();

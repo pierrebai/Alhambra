@@ -29,6 +29,22 @@ namespace dak
          }
       }
 
+      bool thick_t::operator==(const layer_t& other) const
+      {
+         if (!colored_t::operator==(other))
+            return false;
+
+         if (const thick_t* other_thick = dynamic_cast<const thick_t*>(&other))
+         {
+            return dak::utility::near(width, other_thick->width)
+                && dak::utility::near(outline_width, other_thick->outline_width)
+                && outline_color == other_thick->outline_color
+                && join == other_thick->join;
+         }
+
+         return false;
+      }
+
       std::wstring thick_t::describe() const
       {
          return L::t(L"Thick");

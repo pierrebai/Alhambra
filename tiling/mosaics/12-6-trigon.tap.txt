@@ -1,6 +1,6 @@
-layers 5
+movable-join-layers  5
   interlace 0 0.050000000000000003
-  thick 0.12 0.024
+  thick 0.12 0.024 miter
   color 255 204 51 255
   mosaic "12-6-Trigon" 3
     polygon 9
@@ -18,8 +18,9 @@ layers 5
     star 12 4 2
     regular 6
     star 6 2 2
+  position 35.030654291011899 0 0 0 35.030654291011899 0
   interlace 0 0.050000000000000003
-  thick 0.12 0.024
+  thick 0.12 0.024 miter
   color 255 204 51 255
   mosaic "12-6-Trigon" 3
     polygon 9
@@ -37,7 +38,8 @@ layers 5
     star 12 4 2
     regular 6
     star 6 2 2
-  thick 0.22796 0
+  position 35.030654291011899 0 0 0 35.030654291011899 0
+  thick 0.22796 0 miter
   color 0 0 0 255
   mosaic "12-6-Trigon" 3
     polygon 9
@@ -55,6 +57,7 @@ layers 5
     star 12 4 2
     regular 6
     star 6 2 2
+  position 35.030654291011899 0 0 0 35.030654291011899 0
   filled true false
   color 0 0 0 255
   mosaic "12-6-Trigon" 3
@@ -73,6 +76,7 @@ layers 5
     star 12 4 2
     regular 6
     star 6 2 2
+  position 35.030654291011899 0 0 0 35.030654291011899 0
   filled false true
   color 153 51 0 255
   mosaic "12-6-Trigon" 3
@@ -91,3 +95,4 @@ layers 5
     star 12 4 2
     regular 6
     star 6 2 2
+  position 35.030654291011899 0 0 0 35.030654291011899 0

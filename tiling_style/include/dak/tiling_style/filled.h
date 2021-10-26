@@ -41,6 +41,9 @@ namespace dak
          // Retrieve a description of this style.
          std::wstring describe() const override;
 
+         // Comparison.
+         bool operator==(const layer_t& other) const override;
+
          // Set the map used as the basis to build the style.
          void set_map(const geometry::edges_map_t& m, const std::shared_ptr<const tiling_t>& t) override;
 

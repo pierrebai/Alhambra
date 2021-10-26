@@ -134,6 +134,8 @@ namespace dak
          dak::tiling_style::known_mosaics_generator_t my_mosaic_gen;
          dak::utility::undo_stack_t my_undo_stack;
          dak::ui::layered_t my_layered;
+         dak::ui::layered_t my_original_mosaic;
+
 
          // UI elements.
          QAction* my_previous_mosaic_action = nullptr;

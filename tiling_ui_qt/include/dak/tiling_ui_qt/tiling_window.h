@@ -9,16 +9,14 @@
 #include <dak/tiling/known_tilings.h>
 
 #include <QtWidgets/qwidget>
-#include <QtWidgets/qboxlayout.h>
-#include <QtWidgets/qfiledialog.h>
 #include <QtWidgets/qmainwindow.h>
-#include <QtWidgets/qtoolbar.h>
-#include <QtWidgets/qtoolbutton.h>
-#include <QtWidgets/qdockwidget.h>
 
 #include <memory>
 #include <functional>
 #include <filesystem>
+
+class QTooButton;
+class QDockWidget;
 
 namespace dak
 {
@@ -63,7 +61,7 @@ namespace dak
 
          tiling_editor_t* my_tiling_editor = nullptr;
          tiling_description_editor_t* my_tiling_desc = nullptr;
-
+         QDockWidget* my_tiling_desc_dock = nullptr;
 
          known_tilings_t& my_known_tilings;
 

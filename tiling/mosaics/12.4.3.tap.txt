@@ -1,5 +1,5 @@
-layers 4
-  thick 0.014999999999999999 0
+movable-join-layers  4
+  thick 0.014999999999999999 0 miter
   color 153 51 0 255
   mosaic "Square 12.4.3" 3
     regular 12
@@ -8,7 +8,8 @@ layers 4
     irregular "Girih" 0 1.22 1
     regular 3
     irregular "Girih" 0 0.55000000000000004 1
-  thick 0.029999999999999999 0
+  position 123.33333333333333 0 0 0 123.33333333333333 0
+  thick 0.029999999999999999 0 miter
   color 255 255 255 255
   mosaic "Square 12.4.3" 3
     regular 12
@@ -17,7 +18,8 @@ layers 4
     irregular "Girih" 0 1.22 1
     regular 3
     irregular "Girih" 0 0.55000000000000004 1
-  thick 0.074999999999999997 0
+  position 123.33333333333333 0 0 0 123.33333333333333 0
+  thick 0.074999999999999997 0 miter
   color 0 0 0 255
   mosaic "Square 12.4.3" 3
     regular 12
@@ -26,6 +28,7 @@ layers 4
     irregular "Girih" 0 1.22 1
     regular 3
     irregular "Girih" 0 0.55000000000000004 1
+  position 123.33333333333333 0 0 0 123.33333333333333 0
   filled false true
   color 0 0 0 255
   mosaic "Square 12.4.3" 3
@@ -35,3 +38,4 @@ layers 4
     irregular "Girih" 0 1.22 1
     regular 3
     irregular "Girih" 0 0.55000000000000004 1
+  position 123.33333333333333 0 0 0 123.33333333333333 0

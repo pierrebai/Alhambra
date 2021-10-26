@@ -33,6 +33,20 @@ namespace dak
          }
       }
 
+      bool interlace_t::operator==(const layer_t& other) const
+      {
+         if (!outline_t::operator==(other))
+            return false;
+
+         if (const interlace_t* other_interlace = dynamic_cast<const interlace_t*>(&other))
+         {
+            return dak::utility::near(shadow_width, other_interlace->shadow_width)
+                && dak::utility::near(gap_width, other_interlace->gap_width);
+         }
+
+         return false;
+      }
+
       std::wstring interlace_t::describe() const
       {
          return L::t(L"Interlaced");

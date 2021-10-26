@@ -25,6 +25,7 @@ namespace dak
          translation_tiling_t();
 
          // Tiling with a name and translation vectors.
+         translation_tiling_t(const std::wstring& name) : translation_tiling_t(name, point_t::invalid, point_t::invalid) {}
          translation_tiling_t(const std::wstring& name, const point_t& t1, const point_t& t2);
 
          // Swap two tilings.

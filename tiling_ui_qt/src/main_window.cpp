@@ -423,8 +423,8 @@ namespace dak
       void main_window_t::fill_ui()
       {
          my_layered_canvas->layered = &my_layered;
-         my_layered_canvas->transformer.manipulated = &my_layered;
-         my_layered.set_transform(transform_t::scale(30));
+         my_layered_canvas->transformer.manipulated = my_layered_canvas;
+         my_layered.set_transform(transform_t::identity());
       }
 
       void main_window_t::closeEvent(QCloseEvent* ev)
@@ -437,7 +437,7 @@ namespace dak
 
       bool main_window_t::save_if_required(const std::wstring& action, const std::wstring& actioning)
       {
-         if (my_undo_stack.has_undo())
+         if (my_layered.get_layers().size() > 0 && my_layered != my_original_mosaic)
          {
             yes_no_cancel_t answer = ask_yes_no_cancel(
                L::t(L"Unsaved Mosaic Warning"),
@@ -456,7 +456,11 @@ namespace dak
       bool main_window_t::save_mosaic()
       {
          std::filesystem::path path;
-         return ask_save_layered_mosaic(get_avail_mosaics(), path, this);
+         if (!ask_save_layered_mosaic(get_avail_mosaics(), path, this))
+            return false;
+
+         my_original_mosaic.make_similar(my_layered);
+         return true;
       }
 
       /////////////////////////////////////////////////////////////////////////
@@ -792,6 +796,7 @@ namespace dak
          my_layers_dock->setWindowTitle(QString::fromWCharArray(L::t(L"Layers for Mosaic: ")) + QString::fromWCharArray(name.c_str()));
 
          my_layered.set_layers(layers);
+         my_original_mosaic.make_similar(my_layered);
          if (layers.size() > 0)
             if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(my_layered.get_layers()[0]))
                update_layered_transform();

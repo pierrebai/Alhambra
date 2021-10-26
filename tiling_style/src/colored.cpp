@@ -15,6 +15,19 @@ namespace dak
             color = other_colored->color;
          }
       }
+
+      bool colored_t::operator==(const layer_t& other) const
+      {
+         if (!style_t::operator==(other))
+            return false;
+
+         if (const colored_t* other_colored = dynamic_cast<const colored_t*>(&other))
+         {
+            return color == other_colored->color;
+         }
+
+         return false;
+      }
    }
 }
 

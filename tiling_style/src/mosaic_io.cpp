@@ -73,9 +73,9 @@ namespace dak
             file >> join_text;
 
             if (join_text == L"miter")
-               join_style = stroke_t::join_style_t::bevel;
-            else if (join_text == L"bevel")
                join_style = stroke_t::join_style_t::miter;
+            else if (join_text == L"bevel")
+               join_style = stroke_t::join_style_t::bevel;
             else
                join_style = stroke_t::join_style_t::round;
 

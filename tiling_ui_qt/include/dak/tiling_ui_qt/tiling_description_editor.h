@@ -36,6 +36,7 @@ namespace dak
          // Tiling management.
          void set_tiling(const std::shared_ptr<tiling_t>& tiling);
 
+         std::wstring get_name() const;
          std::wstring get_description() const;
          std::wstring get_author() const;
 

@@ -29,6 +29,7 @@ namespace dak
          // Tiling management.
          void set_tiling(const std::shared_ptr<tiling_t>& tiling);
 
+         std::wstring get_name() const;
          std::wstring get_description() const;
          std::wstring get_author() const;
 
@@ -36,6 +37,7 @@ namespace dak
          void build_ui();
          void fill_ui(const std::shared_ptr<tiling_t>& tiling);
 
+         QLineEdit* my_name_text = nullptr;
          QLineEdit* my_author_text = nullptr;
          QTextEdit* my_description_text = nullptr;
       };
@@ -62,6 +64,12 @@ namespace dak
       void tiling_description_editor_ui_t::build_ui()
       {
          QVBoxLayout* layout = new QVBoxLayout(this);
+            QLabel* name_label = new QLabel(QString::fromWCharArray(L::t(L"Tiling Name")));
+            layout->addWidget(name_label);
+
+            my_name_text = new QLineEdit(this);
+            layout->addWidget(my_name_text);
+
             QLabel* author_label = new QLabel(QString::fromWCharArray(L::t(L"Author")));
             layout->addWidget(author_label);
 
@@ -83,6 +91,16 @@ namespace dak
 
          my_description_text->setText(QString::fromWCharArray(tiling->description.c_str()));
          my_author_text->setText(QString::fromWCharArray(tiling->author.c_str()));
+         my_name_text->setText(QString::fromWCharArray(tiling->name.c_str()));
+      }
+
+      std::wstring tiling_description_editor_ui_t::get_name() const
+      {
+         if (!my_name_text)
+            return {};
+
+         return my_name_text->text().toStdWString();
+
       }
 
       std::wstring tiling_description_editor_ui_t::get_description() const
@@ -128,6 +146,10 @@ namespace dak
          return my_ui->get_author();
       }
 
+      std::wstring tiling_description_editor_t::get_name() const
+      {
+         return my_ui->get_name();
+      }
 
       ////////////////////////////////////////////////////////////////////////////
       //

@@ -26,6 +26,21 @@ namespace dak
          }
       }
 
+      bool filled_t::operator==(const layer_t& other) const
+      {
+         if (!colored_t::operator==(other))
+            return false;
+
+
+         if (const filled_t* other_filled = dynamic_cast<const filled_t*>(&other))
+         {
+            return draw_inside == other_filled->draw_inside &&
+                   draw_outside == other_filled->draw_outside;
+         }
+
+         return false;
+      }
+
       std::wstring filled_t::describe() const
       {
          return L::t(L"Filled");

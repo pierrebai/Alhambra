@@ -10,9 +10,12 @@
 
 #include <dak/utility/text.h>
 
+#include <QtWidgets/qboxlayout.h>
+#include <QtWidgets/qdockwidget.h>
+#include <QtWidgets/qfiledialog.h>
+#include <QtWidgets/qlabel.h>
 #include <QtWidgets/qtoolbar.h>
 #include <QtWidgets/qtoolbutton.h>
-#include <QtWidgets/qlabel.h>
 
 #include <QtGui/qevent.h>
 
@@ -72,53 +75,55 @@ namespace dak
          // Create a toolbar for end-user actions.
          QToolBar* toolbar = new QToolBar;
 
-         // Add direct actions.
-         toolbar->addWidget(my_new_action);
-         toolbar->addWidget(my_open_action);
-         toolbar->addWidget(my_select_action);
-         toolbar->addWidget(my_save_action);
+            // Add direct actions.
+            toolbar->addWidget(my_new_action);
+            toolbar->addWidget(my_open_action);
+            toolbar->addWidget(my_select_action);
+            toolbar->addWidget(my_save_action);
 
-         // TODO: my_tiling_editor should add the action itself.
-         toolbar->addSeparator();
+            // TODO: my_tiling_editor should add the action itself.
+            toolbar->addSeparator();
 
-         toolbar->addWidget(CreateToolButton(my_tiling_editor->my_add_poly_action));
-         toolbar->addWidget(CreateToolButton(my_tiling_editor->my_draw_poly_toggle));
-         toolbar->addWidget(CreateToolButton(my_tiling_editor->my_copy_poly_toggle));
-         toolbar->addWidget(CreateToolButton(my_tiling_editor->my_delete_poly_toggle));
-         toolbar->addWidget(CreateToolButton(my_tiling_editor->my_move_poly_toggle));
+            toolbar->addWidget(CreateToolButton(my_tiling_editor->my_add_poly_action));
+            toolbar->addWidget(CreateToolButton(my_tiling_editor->my_draw_poly_toggle));
+            toolbar->addWidget(CreateToolButton(my_tiling_editor->my_copy_poly_toggle));
+            toolbar->addWidget(CreateToolButton(my_tiling_editor->my_delete_poly_toggle));
+            toolbar->addWidget(CreateToolButton(my_tiling_editor->my_move_poly_toggle));
 
-         toolbar->addSeparator();
+            toolbar->addSeparator();
 
-         toolbar->addWidget(CreateToolButton(my_tiling_editor->my_toggle_inclusion_toggle));
-         toolbar->addWidget(CreateToolButton(my_tiling_editor->my_exclude_all_action));
-         toolbar->addWidget(CreateToolButton(my_tiling_editor->my_fill_trans_action));
-         toolbar->addWidget(CreateToolButton(my_tiling_editor->my_remove_excluded_action));
+            toolbar->addWidget(CreateToolButton(my_tiling_editor->my_toggle_inclusion_toggle));
+            toolbar->addWidget(CreateToolButton(my_tiling_editor->my_exclude_all_action));
+            toolbar->addWidget(CreateToolButton(my_tiling_editor->my_fill_trans_action));
+            toolbar->addWidget(CreateToolButton(my_tiling_editor->my_remove_excluded_action));
 
-         toolbar->addSeparator();
+            toolbar->addSeparator();
 
-         toolbar->addWidget(CreateToolButton(my_tiling_editor->my_draw_trans_toggle));
-         toolbar->addWidget(CreateToolButton(my_tiling_editor->my_draw_inflation_toggle));
-         toolbar->addWidget(CreateToolButton(my_tiling_editor->my_clear_trans_action));
+            toolbar->addWidget(CreateToolButton(my_tiling_editor->my_draw_trans_toggle));
+            toolbar->addWidget(CreateToolButton(my_tiling_editor->my_draw_inflation_toggle));
+            toolbar->addWidget(CreateToolButton(my_tiling_editor->my_clear_trans_action));
 
-         toolbar->addSeparator();
+            toolbar->addSeparator();
 
-         toolbar->addWidget(CreateToolButton(my_tiling_editor->my_pan_toggle));
-         toolbar->addWidget(CreateToolButton(my_tiling_editor->my_rotate_toggle));
-         toolbar->addWidget(CreateToolButton(my_tiling_editor->my_zoom_toggle));
+            toolbar->addWidget(CreateToolButton(my_tiling_editor->my_pan_toggle));
+            toolbar->addWidget(CreateToolButton(my_tiling_editor->my_rotate_toggle));
+            toolbar->addWidget(CreateToolButton(my_tiling_editor->my_zoom_toggle));
 
-         addToolBar(Qt::ToolBarArea::TopToolBarArea, toolbar);
+            addToolBar(Qt::ToolBarArea::TopToolBarArea, toolbar);
 
          addAction(my_tiling_editor->my_copy_poly_action);
          addAction(my_tiling_editor->my_delete_poly_action);
          addAction(my_tiling_editor->my_toggle_inclusion_action);
 
-         QDockWidget* desc_dock = new QDockWidget(QString::fromWCharArray(L::t(L"Tiling")));
-         desc_dock->setFeatures(QDockWidget::DockWidgetFeature::DockWidgetFloatable | QDockWidget::DockWidgetFeature::DockWidgetMovable);
+         my_tiling_desc_dock = new QDockWidget(QString::fromWCharArray(L::t(L"Tiling")));
+            my_tiling_desc_dock->setFeatures(QDockWidget::DockWidgetFeature::DockWidgetFloatable | QDockWidget::DockWidgetFeature::DockWidgetMovable);
             my_tiling_desc = new tiling_description_editor_t(this);
-            desc_dock->setWidget(my_tiling_desc);
-            addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, desc_dock);
+            my_tiling_desc_dock->setWidget(my_tiling_desc);
+            addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, my_tiling_desc_dock);
 
          setAttribute(Qt::WA_DeleteOnClose);
+
+         new_tiling();
       }
 
       void tiling_window_t::closeEvent(QCloseEvent* ev)
@@ -139,6 +144,8 @@ namespace dak
          my_original_file = file;
          my_tiling_desc->set_tiling(tiling);
          my_tiling_editor->set_tiling(tiling);
+         const std::wstring name = tiling ? tiling->name : std::wstring(L::t(L"New tiling"));
+         my_tiling_desc_dock->setWindowTitle(QString::fromWCharArray(L::t(L"Tiling: ")) + QString::fromWCharArray(name.c_str()));
       }
 
       void tiling_window_t::new_tiling()
@@ -146,7 +153,7 @@ namespace dak
          if (!save_if_required(L::t(L"start a new tiling"), L::t(L"starting a new tiling")))
             return;
 
-         set_tiling(std::make_shared<translation_tiling_t>(), file_path_t());
+         set_tiling(std::make_shared<translation_tiling_t>(L::t(L"New tiling")), file_path_t());
          return;
       }
 

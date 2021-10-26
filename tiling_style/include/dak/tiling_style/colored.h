@@ -30,6 +30,9 @@ namespace dak
 
          // Copy a layer.
          void make_similar(const layer_t& other) override;
+
+         // Comparison.
+         bool operator==(const layer_t& other) const override;
       };
    }
 }

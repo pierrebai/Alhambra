@@ -27,6 +27,35 @@ namespace dak
             }
          }
       }
+      bool styled_mosaic_t::operator==(const layer_t& other) const
+      {
+         if (!layer_t::operator==(other))
+            return false;
+
+         if (const styled_mosaic_t* other_mosaic = dynamic_cast<const styled_mosaic_t*>(&other))
+         {
+            if (!style)
+               if (other_mosaic->style)
+                  return false;
+
+            if (!other_mosaic->style)
+               return false;
+
+            if (*style != *other_mosaic->style)
+               return false;
+
+            if (!mosaic)
+               if (other_mosaic->mosaic)
+                  return false;
+
+            if (!other_mosaic->mosaic)
+               return false;
+
+            return *mosaic == *other_mosaic->mosaic;
+         }
+
+         return false;
+      }
 
       styled_mosaic_t& styled_mosaic_t::operator=(const styled_mosaic_t& other)
       {

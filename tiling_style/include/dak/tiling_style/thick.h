@@ -42,6 +42,9 @@ namespace dak
          std::shared_ptr<layer_t> clone() const override;
          void make_similar(const layer_t& other) override;
 
+         // Comparison.
+         bool operator==(const layer_t& other) const override;
+
          // Retrieve a description of this style.
          std::wstring describe() const override;
 
