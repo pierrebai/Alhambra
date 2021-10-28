@@ -39,6 +39,8 @@ namespace dak
       main_window_t::main_window_t(const main_window_icons_t& icons)
       : my_known_tilings()
       , my_mosaic_gen()
+      , my_layered(new ui::layered_t)
+      , my_original_mosaic(new ui::layered_t)
       {
          add_tilings_from(LR"(./tilings)");
          add_tilings_from(get_user_tilings_old_folder());
@@ -258,7 +260,7 @@ namespace dak
             svg_gen.setViewBox(QRect(QPoint(0,0), self->my_layered_canvas->size()));
             QPainter painter(&svg_gen);
             painter_drawing_t drw(painter);
-            draw_layered(drw, &self->my_layered);
+            draw_layered(drw, self->my_layered);
          });
 
          /////////////////////////////////////////////////////////////////////////
@@ -284,13 +286,13 @@ namespace dak
             self->update_layer_list();
             self->my_styles_editor->set_edited(self->get_selected_styles());
             self->commit_to_undo();
-            self->my_layered.set_layers(layers);
+            self->my_layered->set_layers(layers);
             self->update_canvas_layers(layers);
          };
 
          my_layer_list->selection_changed = [self=this](const layers_selector_t::layers& layers)
          {
-            self->my_layered.set_layers(layers);
+            self->my_layered->set_layers(layers);
             self->my_styles_editor->set_edited(self->get_selected_styles());
             self->fill_figure_list();
             self->my_layered_canvas->update();
@@ -415,16 +417,16 @@ namespace dak
 
          my_redraw_action->connect(my_redraw_action, &QAction::triggered, [&]()
          {
-            update_canvas_layers(my_layered.get_layers());
+            update_canvas_layers(my_layered->get_layers());
          });
       }
 
       // Fill the UI with the intial data.
       void main_window_t::fill_ui()
       {
-         my_layered_canvas->layered = &my_layered;
+         my_layered_canvas->layered = my_layered;
          my_layered_canvas->transformer.manipulated = my_layered_canvas;
-         my_layered.set_transform(transform_t::identity());
+         my_layered->set_transform(transform_t::identity());
       }
 
       void main_window_t::closeEvent(QCloseEvent* ev)
@@ -437,7 +439,7 @@ namespace dak
 
       bool main_window_t::save_if_required(const std::wstring& action, const std::wstring& actioning)
       {
-         if (my_layered.get_layers().size() > 0 && my_layered != my_original_mosaic)
+         if (my_layered->get_layers().size() > 0 && *my_layered != *my_original_mosaic)
          {
             yes_no_cancel_t answer = ask_yes_no_cancel(
                L::t(L"Unsaved Mosaic Warning"),
@@ -459,7 +461,7 @@ namespace dak
          if (!ask_save_layered_mosaic(get_avail_mosaics(), path, this))
             return false;
 
-         my_original_mosaic.make_similar(my_layered);
+         my_original_mosaic->make_similar(*my_layered);
          return true;
       }
 
@@ -487,7 +489,7 @@ namespace dak
 
       std::vector<std::shared_ptr<layer_t>> main_window_t::get_avail_layers()
       {
-         return my_layered.get_layers();
+         return my_layered->get_layers();
       }
 
       void main_window_t::update_layered_transform()
@@ -514,7 +516,7 @@ namespace dak
          geometry::rectangle_t region = convert(my_layered_canvas->geometry());
          double ratio = std::max(region.width / bounds.width, region.height / bounds.height);
          // Make it so we can see 9 instances (3x3) of the tiling or mosaic.
-         my_layered.compose(transform_t::scale(ratio / 3.));
+         my_layered->compose(transform_t::scale(ratio / 3.));
       }
 
       const geometry::edges_map_t& main_window_t::find_calculated_mosaic(calculated_mosaics& calc_mos, const std::shared_ptr<mosaic_t>& mosaic)
@@ -601,7 +603,7 @@ namespace dak
 
       void main_window_t::fill_layer_list()
       {
-         my_layer_list->set_edited(my_layered.get_layers());
+         my_layer_list->set_edited(my_layered->get_layers());
          my_styles_editor->set_edited(get_selected_styles());
          fill_figure_list();
       }
@@ -697,26 +699,26 @@ namespace dak
             }
          }
 
-         my_layered.set_layers(layers);
+         my_layered->set_layers(layers);
 
          fill_layer_list();
 
          const bool force_update = true;
          fill_figure_editor(force_update);
 
-         update_canvas_layers(my_layered.get_layers());
+         update_canvas_layers(my_layered->get_layers());
       }
 
       void main_window_t::awaken_to_empty_canvas()
       {
-         my_layered.set_layers({});
+         my_layered->set_layers({});
 
          fill_layer_list();
 
          const bool force_update = true;
          fill_figure_editor(force_update);
 
-         update_canvas_layers(my_layered.get_layers());
+         update_canvas_layers(my_layered->get_layers());
       }
 
       void main_window_t::clear_undo_stack()
@@ -726,7 +728,7 @@ namespace dak
 
       void main_window_t::commit_to_undo()
       {
-         const dak::ui::layered_t::layers_t& layers = my_layered.get_layers();
+         const dak::ui::layered_t::layers_t& layers = my_layered->get_layers();
          my_undo_stack.simple_commit(
          {
             clone_layers(layers),
@@ -753,15 +755,15 @@ namespace dak
          auto mo_layer = std::make_shared<styled_mosaic_t>();
          mo_layer->mosaic = new_mosaic;
          mo_layer->style = std::make_shared<thick_t>(ui::color_t(20, 140, 220, 255));
-         auto layers = my_layered.get_layers();
+         auto layers = my_layered->get_layers();
          const bool was_empty = (layers.size() <= 0);
          layers.emplace_back(mo_layer);
-         my_layered.set_layers(layers);
+         my_layered->set_layers(layers);
 
          while (new_mosaic->tiling->count_fill_copies(window_filling_region()) > 20)
          {
             const point_t center = window_filling_region().center();
-            my_layered_canvas->layered->compose(transform_t::scale(2.));
+            my_layered->compose(transform_t::scale(2.));
          }
 
          mo_layer->update_style(window_filling_region());
@@ -795,16 +797,17 @@ namespace dak
       {
          my_layers_dock->setWindowTitle(QString::fromWCharArray(L::t(L"Layers for Mosaic: ")) + QString::fromWCharArray(name.c_str()));
 
-         my_layered.set_layers(layers);
-         my_original_mosaic.make_similar(my_layered);
+         my_layered->set_layers(layers);
          if (layers.size() > 0)
-            if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(my_layered.get_layers()[0]))
+            if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(my_layered->get_layers()[0]))
                update_layered_transform();
 
          fill_layer_list();
          commit_to_undo();
 
          update_canvas_layers(get_avail_layers());
+
+         my_original_mosaic->make_similar(*my_layered);
       }
 
       /////////////////////////////////////////////////////////////////////////
