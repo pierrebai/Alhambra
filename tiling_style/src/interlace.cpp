@@ -180,9 +180,9 @@ namespace dak
                const size_t before_index = std::lower_bound(edges.begin(), edges.end(), before) - edges.begin();
                const auto end1 = get_points_continuation(before.twin(), before_index, total_width(), map.outbounds(edge.p1));
                const double proj_on_line = end1.first.parameterization_on_line(fat_line.hexagon.points[0], fat_line.hexagon.points[2]);
-               //if (utility::near_greater_or_equal(proj_on_line, 0.) && utility::near_less_or_equal(proj_on_line, 1.))
-               //   fat_line.hexagon.points[1] = end1.first;
-               //else
+               if (utility::near_greater_or_equal(proj_on_line, 0.) && utility::near_less_or_equal(proj_on_line, 1.))
+                  fat_line.hexagon.points[1] = end1.first;
+               else
                   fat_line.hexagon.points[1] = fat_line.hexagon.points[0].convex_sum(fat_line.hexagon.points[2], 0.5);
             }
 
@@ -192,9 +192,9 @@ namespace dak
                const size_t after_index = std::lower_bound(edges.begin(), edges.end(), after) - edges.begin();
                const auto end4 = get_points_continuation(after.twin(), after_index, total_width(), map.outbounds(edge.p2));
                const double proj_on_line = end4.second.parameterization_on_line(fat_line.hexagon.points[3], fat_line.hexagon.points[5]);
-               //if (utility::near_greater_or_equal(proj_on_line, 0.) && utility::near_less_or_equal(proj_on_line, 1.))
-               //   fat_line.hexagon.points[4] = end4.second;
-               //else
+               if (utility::near_greater_or_equal(proj_on_line, 0.) && utility::near_less_or_equal(proj_on_line, 1.))
+                  fat_line.hexagon.points[4] = end4.second;
+               else
                   fat_line.hexagon.points[4] = fat_line.hexagon.points[3].convex_sum(fat_line.hexagon.points[5], 0.5);
             }
          }
