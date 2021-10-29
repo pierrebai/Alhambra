@@ -52,7 +52,7 @@ namespace dak
          return L::t(L"Interlaced");
       }
 
-      void interlace_t::propagate_over_under_at_edge_p1(const edge_t& cur_edge, size_t index, context& ctx)
+      void interlace_t::propagate_over_under_at_edge_p1(const edge_t& cur_edge, size_t index, over_under_context_t& ctx)
       {
          const geometry::edges_map_t::range_t connections = map.outbounds(cur_edge.p1);
          const size_t connection_count = connections.size();
@@ -61,7 +61,7 @@ namespace dak
          const auto todo_iter = std::lower_bound(connections.begin(), connections.end(), cur_edge);
          const size_t cur_index_in_conns = todo_iter - connections.begin();
 
-         const bool is_crossing_over = is_p1_over[index];
+         const bool is_crossing_over = my_is_p1_over[index];
 
          const bool is_not_a_crossing = (connection_count == 2);
 
@@ -72,7 +72,7 @@ namespace dak
          const size_t twin_index = twin_iter - ctx.edges.begin();
          if (!ctx.done_lines[twin_index])
          {
-            is_p1_over[twin_index] = twin_is_over;
+            my_is_p1_over[twin_index] = twin_is_over;
             ctx.todos.push_back(twin_index);
          }
 
@@ -88,14 +88,14 @@ namespace dak
             const size_t next_index = next_iter - ctx.edges.begin();
             if (!ctx.done_lines[next_index])
             {
-               is_p1_over[next_index] = next_is_over;
+               my_is_p1_over[next_index] = next_is_over;
                ctx.todos.push_back(next_index);
             }
             next_is_over = !next_is_over;
          }
       }
 
-      void interlace_t::propagate_over_under(context& ctx)
+      void interlace_t::propagate_over_under(over_under_context_t& ctx)
       {
          // Propagate over/under weaving at the intersection of the given edge p1.
 
@@ -134,9 +134,9 @@ namespace dak
          cached_gap_width = gap_width;
 
          // Recalculate the over/under propagation.
-         context ctx({ map.all() });
+         over_under_context_t ctx({ map.all() });
          ctx.done_lines.resize(ctx.edges.size(), false);
-         is_p1_over.resize(ctx.edges.size(), false);
+         my_is_p1_over.resize(ctx.edges.size(), false);
          propagate_over_under(ctx);
 
          all_edges = true;
@@ -174,27 +174,27 @@ namespace dak
 
             // Adjust mid-points to be properly placed.
 
-            if (!is_p1_over[edge_index] && map.outbounds(edge.p1).size() > 2)
+            if (!my_is_p1_over[edge_index] && map.outbounds(edge.p1).size() > 2)
             {
                const auto& before = map.before(twin);
                const size_t before_index = std::lower_bound(edges.begin(), edges.end(), before) - edges.begin();
                const auto end1 = get_points_continuation(before.twin(), before_index, total_width(), map.outbounds(edge.p1));
                const double proj_on_line = end1.first.parameterization_on_line(fat_line.hexagon.points[0], fat_line.hexagon.points[2]);
-               if (utility::near_greater_or_equal(proj_on_line, 0.) && utility::near_less_or_equal(proj_on_line, 1.))
-                  fat_line.hexagon.points[1] = end1.first;
-               else
+               //if (utility::near_greater_or_equal(proj_on_line, 0.) && utility::near_less_or_equal(proj_on_line, 1.))
+               //   fat_line.hexagon.points[1] = end1.first;
+               //else
                   fat_line.hexagon.points[1] = fat_line.hexagon.points[0].convex_sum(fat_line.hexagon.points[2], 0.5);
             }
 
-            if (!is_p1_over[twin_index] && map.outbounds(edge.p2).size() > 2)
+            if (!my_is_p1_over[twin_index] && map.outbounds(edge.p2).size() > 2)
             {
                const auto& after = map.after(edge);
                const size_t after_index = std::lower_bound(edges.begin(), edges.end(), after) - edges.begin();
                const auto end4 = get_points_continuation(after.twin(), after_index, total_width(), map.outbounds(edge.p2));
                const double proj_on_line = end4.second.parameterization_on_line(fat_line.hexagon.points[3], fat_line.hexagon.points[5]);
-               if (utility::near_greater_or_equal(proj_on_line, 0.) && utility::near_less_or_equal(proj_on_line, 1.))
-                  fat_line.hexagon.points[4] = end4.second;
-               else
+               //if (utility::near_greater_or_equal(proj_on_line, 0.) && utility::near_less_or_equal(proj_on_line, 1.))
+               //   fat_line.hexagon.points[4] = end4.second;
+               //else
                   fat_line.hexagon.points[4] = fat_line.hexagon.points[3].convex_sum(fat_line.hexagon.points[5], 0.5);
             }
          }
@@ -204,7 +204,7 @@ namespace dak
 
       std::pair<point_t, point_t> interlace_t::get_points_many_connections(const edge_t& an_edge, size_t index, double width, const geometry::edges_map_t::range_t& connections)
       {
-         if (is_p1_over[index])
+         if (my_is_p1_over[index])
             return get_points_continuation(an_edge, index, width, connections);
          else
             // TODO: sometimes this moves the line outside the normal path (outward widening when meeting a corner).

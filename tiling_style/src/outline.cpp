@@ -69,7 +69,7 @@ namespace dak
             ui::random_colors rnd_color;
          #endif
 
-         const ui::stroke_t outline_stroke = get_stroke(drw, outline_width * 0.5);
+         const ui::stroke_t outline_stroke = get_stroke(drw, outline_width);
 
          for (const auto& fat_line : fat_lines)
          {
@@ -214,8 +214,13 @@ namespace dak
          // TODO: the code below is bad when the width is large and multiple
          //       intersections are nearer to each other than the width.
          //       It results in inversion of polygon points.
-         const point_t dir = (an_edge.p2 - an_edge.p1).normalize();
+         point_t dir = (an_edge.p2 - an_edge.p1);
+         const double dist = dir.mag();
+         dir = dir.scale(1.0 / dist);
          const point_t perp = dir.perp();
+
+         width = std::min(width, dist);
+         other_edges_width = std::min(other_edges_width, dist);
 
          point_t below = get_join(an_edge.p2, an_edge.p1, before_after.second.p2, width, other_edges_width);
          if (below.is_invalid())
@@ -247,8 +252,9 @@ namespace dak
             width_a = get_width_at(a, width_a);
             width_b = get_width_at(b, width_b);
 
-            const double la = width_b / std::sin(th);
-            const double lb = width_a / std::sin(th);
+            const double sth = std::sin(th);
+            const double la = width_b / sth;
+            const double lb = width_a / sth;
             const double isx = joint.x - (da.x * la + db.x * lb);
             const double isy = joint.y - (da.y * la + db.y * lb);
             return point_t(isx, isy);

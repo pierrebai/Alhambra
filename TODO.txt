@@ -4,4 +4,3 @@
 - Use the same draw technique in interlace as in thick.
 - Gesture input.
 - Copying a polygon by dragging its edge sometimes fails.
-- styled_mosaic_t should derive from layer_t.

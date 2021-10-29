@@ -56,7 +56,7 @@ namespace dak
 
       protected:
          // The total width including outline and gap.
-         double total_width() const { return width + outline_width * 0.5 + gap_width; }
+         double total_width() const { return width + outline_width * 0.45 + gap_width; }
 
          // Generate the fat lines.
          fat_lines_t generate_fat_lines(bool all_edges) override;
@@ -81,7 +81,7 @@ namespace dak
          //
          // This permits us to easily find the edge associated with each
          // fat line and track which edge have already been processed.
-         struct context
+         struct over_under_context_t
          {
             const geometry::edges_map_t::edges_t& edges;
             std::vector<size_t> todos;
@@ -89,15 +89,15 @@ namespace dak
          };
 
          // Propagate over/under weaving.
-         void propagate_over_under(context& ctx);
+         void propagate_over_under(over_under_context_t& ctx);
 
          // Propagate over/under weaving at the intersection at the p1 point of the given edge.
-         void propagate_over_under_at_edge_p1(const edge_t& cur_edge, size_t index, context& ctx);
+         void propagate_over_under_at_edge_p1(const edge_t& cur_edge, size_t index, over_under_context_t& ctx);
 
          // Keep a copy of the parameters when the cache was generated to detect when it goes stale.
          double cached_shadow_width = NAN;
          double cached_gap_width = NAN;
-         std::vector<bool> is_p1_over;
+         std::vector<bool> my_is_p1_over;
       };
    }
 }
