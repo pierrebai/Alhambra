@@ -256,8 +256,8 @@ namespace dak
          }
          else
          {
-            width_a = get_width_at(a, width_a);
-            width_b = get_width_at(b, width_b);
+            width_a = get_width_at(joint, width_a);
+            width_b = get_width_at(joint, width_b);
 
             const double la = width_b / sth;
             const double lb = width_a / sth;
