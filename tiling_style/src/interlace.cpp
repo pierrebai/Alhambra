@@ -173,27 +173,34 @@ namespace dak
             fat_line.hexagon.points[5] = fat_lines[twin_index].hexagon.points[2];
 
             // Adjust mid-points to be properly placed.
+            //
+            // We find the outer point of the intersecting edge and if it falls between the other two points
+            // we consider its position valid. Otherwise we use the mid-point of the other two-points.
+            //
+            // Do this for each end of the hexagon.
+
+            const double max_width = std::min(total_width(), edge.p1.distance(edge.p2));
 
             if (!my_is_p1_over[edge_index] && map.outbounds(edge.p1).size() > 2)
             {
-               const auto& before = map.before(twin);
-               const size_t before_index = std::lower_bound(edges.begin(), edges.end(), before) - edges.begin();
-               const auto end1 = get_points_continuation(before.twin(), before_index, total_width(), map.outbounds(edge.p1));
-               const double proj_on_line = end1.first.parameterization_on_line(fat_line.hexagon.points[0], fat_line.hexagon.points[2]);
+               const auto& intersecting_edge = map.before(twin);
+               const size_t intersecting_edge_index = std::lower_bound(edges.begin(), edges.end(), intersecting_edge) - edges.begin();
+               const auto intersecting_edge_outer_points = get_points_continuation(intersecting_edge.twin(), intersecting_edge_index, max_width, map.outbounds(edge.p1));
+               const double proj_on_line = intersecting_edge_outer_points.first.parameterization_on_line(fat_line.hexagon.points[0], fat_line.hexagon.points[2]);
                if (utility::near_greater_or_equal(proj_on_line, 0.) && utility::near_less_or_equal(proj_on_line, 1.))
-                  fat_line.hexagon.points[1] = end1.first;
+                  fat_line.hexagon.points[1] = intersecting_edge_outer_points.first;
                else
                   fat_line.hexagon.points[1] = fat_line.hexagon.points[0].convex_sum(fat_line.hexagon.points[2], 0.5);
             }
 
             if (!my_is_p1_over[twin_index] && map.outbounds(edge.p2).size() > 2)
             {
-               const auto& after = map.after(edge);
-               const size_t after_index = std::lower_bound(edges.begin(), edges.end(), after) - edges.begin();
-               const auto end4 = get_points_continuation(after.twin(), after_index, total_width(), map.outbounds(edge.p2));
-               const double proj_on_line = end4.second.parameterization_on_line(fat_line.hexagon.points[3], fat_line.hexagon.points[5]);
+               const auto& intersecting_edge = map.after(edge);
+               const size_t intersecting_edge_index = std::lower_bound(edges.begin(), edges.end(), intersecting_edge) - edges.begin();
+               const auto intersecting_edge_outer_points = get_points_continuation(intersecting_edge.twin(), intersecting_edge_index, max_width, map.outbounds(edge.p2));
+               const double proj_on_line = intersecting_edge_outer_points.second.parameterization_on_line(fat_line.hexagon.points[3], fat_line.hexagon.points[5]);
                if (utility::near_greater_or_equal(proj_on_line, 0.) && utility::near_less_or_equal(proj_on_line, 1.))
-                  fat_line.hexagon.points[4] = end4.second;
+                  fat_line.hexagon.points[4] = intersecting_edge_outer_points.second;
                else
                   fat_line.hexagon.points[4] = fat_line.hexagon.points[3].convex_sum(fat_line.hexagon.points[5], 0.5);
             }

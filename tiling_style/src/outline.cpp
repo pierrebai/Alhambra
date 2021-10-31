@@ -74,7 +74,9 @@ namespace dak
          for (const auto& fat_line : fat_lines)
          {
             #ifdef DAK_TILING_STYLE_OUTLINE_RANDOM_COLOR
-               drw.set_color(rnd_color.any());
+               auto c = rnd_color.any();
+               c.a = 120;
+               drw.set_color(c);
             #else
                drw.set_color(color);
             #endif

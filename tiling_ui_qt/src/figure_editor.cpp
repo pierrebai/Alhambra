@@ -110,7 +110,7 @@ namespace dak
             my_q_editor = std::make_unique<ui::qt::double_editor_t>(&parent, L::t(L"Flatness"), 0, [self=this](double new_value, bool interacting){ self->update_q(new_value, interacting); });
             my_s_editor = std::make_unique<ui::qt::int_editor_t>(&parent, L::t(L"Intersections"), 0, [self=this](int new_value, bool interacting){ self->update_s(new_value, interacting); });
 
-            my_d_editor->set_limits(-5., 5., 0.05);
+            my_d_editor->set_limits(-5., 5., 0.01);
             my_q_editor->set_limits(-1., 1., 0.01);
             my_s_editor->set_limits(1, 6);
 
@@ -131,7 +131,7 @@ namespace dak
             {
                const int sides = edited_star->n;
                my_d_editor->set_value(edited_star->d);
-               my_d_editor->set_limits(-sides / 2., sides / 2, 0.05);
+               my_d_editor->set_limits(-sides / 2., sides / 2, 0.01);
                my_s_editor->set_value(edited_star->s);
                my_s_editor->set_limits(1, sides / 2);
             }
@@ -146,7 +146,7 @@ namespace dak
             {
                const int sides = int(edited_irregular->poly.points.size());
                my_d_editor->set_value(edited_irregular->d);
-               my_d_editor->set_limits(-sides / 2., sides / 2, 0.05);
+               my_d_editor->set_limits(-sides / 2., sides / 2, 0.01);
                my_q_editor->set_value(edited_irregular->q);
                my_s_editor->set_value(edited_irregular->s);
                my_s_editor->set_limits(1, sides / 2);
