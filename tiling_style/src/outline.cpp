@@ -221,14 +221,14 @@ namespace dak
          dir = dir.scale(1.0 / dist);
          const point_t perp = dir.perp();
 
-         width = std::min(width, dist);
-         other_edges_width = std::min(other_edges_width, dist);
+         const double limited_width = std::min(width, dist);
+         const double limited_other_edges_width = std::min(other_edges_width, dist);
 
-         point_t below = get_join(an_edge.p2, an_edge.p1, before_after.second.p2, width, other_edges_width);
+         point_t below = get_join(an_edge.p2, an_edge.p1, before_after.second.p2, limited_width, limited_other_edges_width);
          if (below.is_invalid())
             below = an_edge.p2 - perp.scale(get_width_at(an_edge.p2, width));
 
-         point_t above = get_join(an_edge.p2, before_after.first.p2, an_edge.p1, other_edges_width, width);
+         point_t above = get_join(an_edge.p2, before_after.first.p2, an_edge.p1, limited_other_edges_width, limited_width);
          if (above.is_invalid())
             above = an_edge.p2 + perp.scale(get_width_at(an_edge.p2, width));
 
@@ -240,21 +240,25 @@ namespace dak
       // reflecting the point returned by this function through the joint.
       point_t outline_t::get_join(const point_t& joint, const point_t& a, const point_t& b, double width_a, double width_b)
       {
-         double th = joint.sweep(a, b);
+         // Using the sine dot porudct to compute the equivalent of:
+         // 
+         //double th = joint.sweep(a, b);
+         //const double sth = std::sin(th);
+         //
+         // But without calling atan and sin, which saves time.
+         const point_t da = (joint - a).normalize();
+         const point_t db = (joint - b).normalize();
+         const double sth = db.sin_dot(da);
 
-         if (utility::near(th, 0, 0.01) || utility::near(th, PI, 0.01) || utility::near(th, 2 * PI, 0.01))
+         if (utility::near(sth, 0, 0.01))
          {
             return point_t();
          }
          else
          {
-            const point_t da = (joint - a).normalize();
-            const point_t db = (joint - b).normalize();
-
             width_a = get_width_at(a, width_a);
             width_b = get_width_at(b, width_b);
 
-            const double sth = std::sin(th);
             const double la = width_b / sth;
             const double lb = width_a / sth;
             const double isx = joint.x - (da.x * la + db.x * lb);
