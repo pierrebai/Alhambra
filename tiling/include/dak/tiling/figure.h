@@ -54,7 +54,7 @@ namespace dak
          // Build the cached map.
          virtual void build_map() const = 0;
 
-         mutable edges_map_t cached_map;
+         mutable edges_map_t my_cached_map;
       };
    }
 }

@@ -48,29 +48,29 @@ namespace dak
 
       void filled_t::set_map(const geometry::edges_map_t& m, const std::shared_ptr<const tiling_t>& t)
       {
-         cached_inside.clear();
-         cached_outside.clear();
-         cached_odd.clear();
+         my_cached_inside.clear();
+         my_cached_outside.clear();
+         my_cached_odd.clear();
          colored_t::set_map(m, t);
       }
 
       // The internal draw is called with the layer transform already applied.
       void filled_t::internal_draw(ui::drawing_t& drw)
       {
-         if (cached_inside.empty())
+         if (my_cached_inside.empty())
          {
-            cached_outside.clear();
-            cached_odd.clear();
+            my_cached_outside.clear();
+            my_cached_odd.clear();
             geometry::face_t::faces_t exteriors;
-            geometry::face_t::make_faces(map, cached_inside, cached_outside, cached_odd, exteriors);
+            geometry::face_t::make_faces(my_map, my_cached_inside, my_cached_outside, my_cached_odd, exteriors);
          }
 
          drw.set_color(color);
          if (draw_inside)
-            for (const auto& f : cached_inside)
+            for (const auto& f : my_cached_inside)
                drw.fill_polygon(f);
          if (draw_outside)
-            for (const auto& f : cached_outside)
+            for (const auto& f : my_cached_outside)
                drw.fill_polygon(f);
       }
    }

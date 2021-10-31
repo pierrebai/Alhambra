@@ -7,20 +7,20 @@ namespace dak
       const edges_map_t& figure_t::get_map() const
       {
          if (is_cache_valid())
-            return cached_map;
+            return my_cached_map;
 
-         cached_map = edges_map_t();
+         my_cached_map = edges_map_t();
 
          build_map();
 
          update_cached_values();
 
-         return cached_map;
+         return my_cached_map;
       }
 
       bool figure_t::is_cache_valid() const
       {
-         return cached_map.all().size() > 0;
+         return my_cached_map.all().size() > 0;
       }
    }
 }

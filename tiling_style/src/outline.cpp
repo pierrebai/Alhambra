@@ -40,25 +40,25 @@ namespace dak
       {
          if (is_cache_invalid())
          {
-            cached_width = width;
-            cached_outline_width  = outline_width;
-            cached_fat_lines = generate_fat_lines(false);
+            my_cached_width = width;
+            my_cached_outline_width  = outline_width;
+            my_cached_fat_lines = generate_fat_lines(false);
          }
-         internal_draw_fat_lines(drw, cached_fat_lines);
+         internal_draw_fat_lines(drw, my_cached_fat_lines);
       }
 
       void outline_t::clear_cache()
       {
-         cached_fat_lines.clear();
-         cached_width = NAN;
-         cached_outline_width = NAN;
+         my_cached_fat_lines.clear();
+         my_cached_width = NAN;
+         my_cached_outline_width = NAN;
       }
 
       bool outline_t::is_cache_invalid() const
       {
-         return cached_fat_lines.size() <= 0
-            || cached_width != width
-            || cached_outline_width != outline_width;
+         return my_cached_fat_lines.size() <= 0
+            || my_cached_width != width
+            || my_cached_outline_width != outline_width;
       }
 
       void outline_t::internal_draw_fat_lines(ui::drawing_t& drw, const fat_lines_t& fat_lines)
@@ -103,11 +103,11 @@ namespace dak
       outline_t::fat_lines_t outline_t::generate_fat_lines(bool all_edges)
       {
          fat_lines_t fat_lines;
-         fat_lines.reserve(map.all().size() / (all_edges ? 1 : 2));
+         fat_lines.reserve(my_map.all().size() / (all_edges ? 1 : 2));
 
-         const edge_t* const first_edge = &*(map.all().begin());
+         const edge_t* const first_edge = &*(my_map.all().begin());
 
-         for (const auto& edge : map.all())
+         for (const auto& edge : my_map.all())
          {
             if (!all_edges && !edge.is_canonical())
                continue;
@@ -136,7 +136,7 @@ namespace dak
       // complete outline of the hexagon to draw for this edge.
       std::pair<point_t, point_t> outline_t::get_points(const edge_t& an_edge, size_t index, double width, bool& is_line_end)
       {
-         const geometry::edges_map_t::range_t connections = map.outbounds(an_edge.p2);
+         const geometry::edges_map_t::range_t connections = my_map.outbounds(an_edge.p2);
          const size_t connection_count = connections.size();
 
          if (connection_count == 1)

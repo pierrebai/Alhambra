@@ -53,7 +53,7 @@ namespace dak
 
       void extended_figure_t::child_changed()
       {
-         cached_s_last_build_unit = NAN;
+         my_cached_s_last_build_unit = NAN;
       }
 
       bool extended_figure_t::operator==(const figure_t& other) const
@@ -108,13 +108,13 @@ namespace dak
       {
          return scale_figure_t::is_cache_valid()
              && (!child || child->is_cache_valid())
-             && cached_s_last_build_unit == compute_scale();
+             && my_cached_s_last_build_unit == compute_scale();
       }
 
       void extended_figure_t::update_cached_values() const
       {
          scale_figure_t::update_cached_values();
-         cached_s_last_build_unit = compute_scale();
+         my_cached_s_last_build_unit = compute_scale();
       }
 
       const radial_figure_t* extended_figure_t::get_child() const 

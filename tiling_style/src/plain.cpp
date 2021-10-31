@@ -26,7 +26,7 @@ namespace dak
       {
          drw.set_color(color);
          drw.set_stroke(stroke_t(1., stroke_t::cap_style_t::round, stroke_t::join_style_t::round));
-         for (const auto& e : map.all())
+         for (const auto& e : my_map.all())
             if (e.is_canonical())
                drw.draw_line(e.p1, e.p2);
       }

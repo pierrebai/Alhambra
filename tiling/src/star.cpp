@@ -88,15 +88,15 @@ namespace dak
       bool star_t::is_cache_valid() const
       {
          return radial_figure_t::is_cache_valid()
-            && cached_d_last_build_unit == d
-            && cached_s_last_build_unit == s;
+            && my_cached_d_last_build_unit == d
+            && my_cached_s_last_build_unit == s;
       }
 
       void star_t::update_cached_values() const
       {
          radial_figure_t::update_cached_values();
-         cached_d_last_build_unit = d;
-         cached_s_last_build_unit = s;
+         my_cached_d_last_build_unit = d;
+         my_cached_s_last_build_unit = s;
       }
 
       edges_map_t star_t::build_unit() const

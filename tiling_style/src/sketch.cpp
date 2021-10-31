@@ -33,7 +33,7 @@ namespace dak
          const double val = drw.get_transform().dist_from_inverted_zero(15.0);
          const point_t jitter(val, val);
          const point_t halfjit(val / 2, val / 2);
-         for (const auto& e : map.all())
+         for (const auto& e : my_map.all())
          {
             if (!e.is_canonical())
                continue;

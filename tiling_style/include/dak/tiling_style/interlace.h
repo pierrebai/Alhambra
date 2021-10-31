@@ -95,8 +95,8 @@ namespace dak
          void propagate_over_under_at_edge_p1(const edge_t& cur_edge, size_t index, over_under_context_t& ctx);
 
          // Keep a copy of the parameters when the cache was generated to detect when it goes stale.
-         double cached_shadow_width = NAN;
-         double cached_gap_width = NAN;
+         double my_cached_shadow_width = NAN;
+         double my_cached_gap_width = NAN;
          std::vector<bool> my_is_p1_over;
       };
    }

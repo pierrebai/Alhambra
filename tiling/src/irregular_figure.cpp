@@ -79,21 +79,21 @@ namespace dak
 
       bool irregular_figure_t::is_cache_valid() const
       {
-         return cached_infer == infer
-             && cached_q == q
-             && cached_d == d
-             && cached_s == s
-             && cached_poly == poly
+         return my_cached_infer == infer
+             && my_cached_q == q
+             && my_cached_d == d
+             && my_cached_s == s
+             && my_cached_poly == poly
              && figure_t::is_cache_valid();
       }
 
       void irregular_figure_t::update_cached_values() const
       {
-         cached_poly = poly;
-         cached_infer = infer;
-         cached_q = q;
-         cached_d = d;
-         cached_s = s;
+         my_cached_poly = poly;
+         my_cached_infer = infer;
+         my_cached_q = q;
+         my_cached_d = d;
+         my_cached_s = s;
       }
 
       void irregular_figure_t::build_map() const
@@ -106,26 +106,26 @@ namespace dak
          switch (infer)
          {
             case infer_mode_t::star:
-               cached_map = inf.inferStar(poly, d, s);
+               my_cached_map = inf.inferStar(poly, d, s);
                break;
             case infer_mode_t::girih:
-               cached_map = inf.inferGirih(poly, int(poly.points.size()), d);
+               my_cached_map = inf.inferGirih(poly, int(poly.points.size()), d);
                break;
             case infer_mode_t::intersect:
-               cached_map = inf.inferIntersect(poly, int(poly.points.size()), d, s);
+               my_cached_map = inf.inferIntersect(poly, int(poly.points.size()), d, s);
                break;
             case infer_mode_t::progressive:
-               cached_map = inf.inferIntersectProgressive(poly, int(poly.points.size()), d, s);
+               my_cached_map = inf.inferIntersectProgressive(poly, int(poly.points.size()), d, s);
                break;
             case infer_mode_t::hourglass:
-               cached_map = inf.inferHourglass(poly, d, s);
+               my_cached_map = inf.inferHourglass(poly, d, s);
                break;
             case infer_mode_t::rosette:
             case infer_mode_t::extended_rosette:
-               cached_map = inf.inferRosette(poly, q, s, d);
+               my_cached_map = inf.inferRosette(poly, q, s, d);
                break;
             case infer_mode_t::simple:
-               cached_map = inf.simple_infer(poly);
+               my_cached_map = inf.simple_infer(poly);
                break;
          }
       }

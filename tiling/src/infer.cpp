@@ -145,7 +145,7 @@ namespace dak
             {
                // We have to use the cached maps for irregulr to avoid infinite recursion.
                if (auto irregular = std::dynamic_pointer_cast<irregular_figure_t>(tf.second))
-                  maps[tf.first] = irregular->cached_map;
+                  maps[tf.first] = irregular->my_cached_map;
                else
                   maps[tf.first] = tf.second->get_map();
             }

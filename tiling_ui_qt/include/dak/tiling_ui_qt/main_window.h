@@ -32,9 +32,10 @@ namespace dak
 {
    namespace tiling_ui_qt
    {
-      typedef dak::tiling::mosaic_t mosaic_t;
-      typedef dak::tiling_style::styled_mosaic_t styled_mosaic_t;
-      typedef dak::ui::layer_t layer_t;
+      using mosaic_t = dak::tiling::mosaic_t;
+      using styled_mosaic_t = dak::tiling_style::styled_mosaic_t;
+      using layer_t = dak::ui::layer_t;
+      using transform_t = geometry::transform_t;
 
       ////////////////////////////////////////////////////////////////////////////
       //
@@ -67,7 +68,13 @@ namespace dak
          main_window_t(const main_window_icons_t& icons);
 
       protected:
-         typedef std::map<std::shared_ptr<mosaic_t>, dak::geometry::edges_map_t> calculated_mosaics;
+         struct calculated_mosaic_t
+         {
+            std::shared_ptr<mosaic_t> mosaic;
+            transform_t trf;
+            dak::geometry::edges_map_t edges_map;
+         };
+         typedef std::vector<calculated_mosaic_t> mosaic_edges_map_cache_t;
 
          // Add the tiling found in the given folder.
          void add_tilings_from(const std::wstring& folder);
@@ -82,11 +89,11 @@ namespace dak
          void fill_ui();
 
          // The redraw UI call-backs.
-         geometry::rectangle_t window_filling_region();
+         geometry::rectangle_t window_filling_region(const std::shared_ptr<layer_t>& layer);
          std::vector<std::shared_ptr<styled_mosaic_t>> get_avail_mosaics();
          std::vector<std::shared_ptr<layer_t>> get_avail_layers();
          void update_layered_transform();
-         const geometry::edges_map_t& find_calculated_mosaic(calculated_mosaics& calc_mos, const std::shared_ptr<mosaic_t>& mosaic);
+         const geometry::edges_map_t& find_calculated_mosaic(mosaic_edges_map_cache_t& calc_mos, const std::shared_ptr<styled_mosaic_t>& styled_mosaic);
          void update_canvas_layers(const std::vector<std::shared_ptr<layer_t>>& layers);
 
          // The layers UI call-backs.

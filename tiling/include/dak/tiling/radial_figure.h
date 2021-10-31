@@ -40,7 +40,7 @@ namespace dak
          void build_map() const override;
 
       private:
-         mutable int cached_n_last_build_unit = -1;
+         mutable int my_cached_n_last_build_unit = -1;
 
          friend class extended_figure_t;
       };

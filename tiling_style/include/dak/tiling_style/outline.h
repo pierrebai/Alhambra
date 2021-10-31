@@ -58,9 +58,9 @@ namespace dak
          typedef std::vector<fat_line_t> fat_lines_t;
 
          // Keep a copy of the parameters when the cache was generated to detect when it goes stale.
-         fat_lines_t cached_fat_lines;
-         double cached_width = NAN;
-         double cached_outline_width = NAN;
+         fat_lines_t my_cached_fat_lines;
+         double my_cached_width = NAN;
+         double my_cached_outline_width = NAN;
 
          // Clear the cache when the map, transform or parameters changes.
          virtual void clear_cache();

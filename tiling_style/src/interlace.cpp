@@ -54,7 +54,7 @@ namespace dak
 
       void interlace_t::propagate_over_under_at_edge_p1(const edge_t& cur_edge, size_t index, over_under_context_t& ctx)
       {
-         const geometry::edges_map_t::range_t connections = map.outbounds(cur_edge.p1);
+         const geometry::edges_map_t::range_t connections = my_map.outbounds(cur_edge.p1);
          const size_t connection_count = connections.size();
          const edge_t* conn_edges = &*(connections.begin());
 
@@ -130,11 +130,11 @@ namespace dak
 
       interlace_t::fat_lines_t interlace_t::generate_fat_lines(bool all_edges)
       {
-         cached_shadow_width = shadow_width;
-         cached_gap_width = gap_width;
+         my_cached_shadow_width = shadow_width;
+         my_cached_gap_width = gap_width;
 
          // Recalculate the over/under propagation.
-         over_under_context_t ctx({ map.all() });
+         over_under_context_t ctx({ my_map.all() });
          ctx.done_lines.resize(ctx.edges.size(), false);
          my_is_p1_over.resize(ctx.edges.size(), false);
          propagate_over_under(ctx);
@@ -153,7 +153,7 @@ namespace dak
       {
          interlace_t::fat_lines_t combined;
 
-         const auto& edges = map.all();
+         const auto& edges = my_map.all();
          for (size_t edge_index = 0; edge_index < edges.size(); ++edge_index)
          {
             const auto& edge = edges[edge_index];
@@ -181,11 +181,11 @@ namespace dak
 
             const double max_width = std::min(total_width(), edge.p1.distance(edge.p2));
 
-            if (!my_is_p1_over[edge_index] && map.outbounds(edge.p1).size() > 2)
+            if (!my_is_p1_over[edge_index] && my_map.outbounds(edge.p1).size() > 2)
             {
-               const auto& intersecting_edge = map.before(twin);
+               const auto& intersecting_edge = my_map.before(twin);
                const size_t intersecting_edge_index = std::lower_bound(edges.begin(), edges.end(), intersecting_edge) - edges.begin();
-               const auto intersecting_edge_outer_points = get_points_continuation(intersecting_edge.twin(), intersecting_edge_index, max_width, map.outbounds(edge.p1));
+               const auto intersecting_edge_outer_points = get_points_continuation(intersecting_edge.twin(), intersecting_edge_index, max_width, my_map.outbounds(edge.p1));
                const double proj_on_line = intersecting_edge_outer_points.first.parameterization_on_line(fat_line.hexagon.points[0], fat_line.hexagon.points[2]);
                if (utility::near_greater_or_equal(proj_on_line, 0.) && utility::near_less_or_equal(proj_on_line, 1.))
                   fat_line.hexagon.points[1] = intersecting_edge_outer_points.first;
@@ -193,11 +193,11 @@ namespace dak
                   fat_line.hexagon.points[1] = fat_line.hexagon.points[0].convex_sum(fat_line.hexagon.points[2], 0.5);
             }
 
-            if (!my_is_p1_over[twin_index] && map.outbounds(edge.p2).size() > 2)
+            if (!my_is_p1_over[twin_index] && my_map.outbounds(edge.p2).size() > 2)
             {
-               const auto& intersecting_edge = map.after(edge);
+               const auto& intersecting_edge = my_map.after(edge);
                const size_t intersecting_edge_index = std::lower_bound(edges.begin(), edges.end(), intersecting_edge) - edges.begin();
-               const auto intersecting_edge_outer_points = get_points_continuation(intersecting_edge.twin(), intersecting_edge_index, max_width, map.outbounds(edge.p2));
+               const auto intersecting_edge_outer_points = get_points_continuation(intersecting_edge.twin(), intersecting_edge_index, max_width, my_map.outbounds(edge.p2));
                const double proj_on_line = intersecting_edge_outer_points.second.parameterization_on_line(fat_line.hexagon.points[3], fat_line.hexagon.points[5]);
                if (utility::near_greater_or_equal(proj_on_line, 0.) && utility::near_less_or_equal(proj_on_line, 1.))
                   fat_line.hexagon.points[4] = intersecting_edge_outer_points.second;
@@ -221,14 +221,14 @@ namespace dak
       void interlace_t::clear_cache()
       {
          outline_t::clear_cache();
-         cached_shadow_width = NAN;
-         cached_gap_width = NAN;
+         my_cached_shadow_width = NAN;
+         my_cached_gap_width = NAN;
       }
       bool interlace_t::is_cache_invalid() const
       {
          return outline_t::is_cache_invalid()
-             || cached_shadow_width != shadow_width
-             || cached_gap_width != gap_width;
+             || my_cached_shadow_width != shadow_width
+             || my_cached_gap_width != gap_width;
       }
    }
 }

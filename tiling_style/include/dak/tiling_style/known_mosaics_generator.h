@@ -46,9 +46,9 @@ namespace dak
          layered_mosaic_t generate_current(const tiling::known_tilings_t& known_tilings, std::vector<std::wstring>& errors) const;
 
       private:
-         typedef std::vector< std::filesystem::path> filename_container;
-         filename_container filenames;
-         filename_container::iterator iter;
+         using filename_container_t = std::vector<std::filesystem::path>;
+         filename_container_t my_filenames;
+         filename_container_t::iterator my_iter;
       };
    }
 }

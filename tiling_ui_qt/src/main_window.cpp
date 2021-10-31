@@ -469,12 +469,13 @@ namespace dak
       //
       // The redraw UI call-backs.
 
-      // This will calculate the region based on the window size and current transform.
-      geometry::rectangle_t main_window_t::window_filling_region()
+      // This will calculate the region needed to fill the window for a given
+      // mosaic based on the window size and current transform.
+      geometry::rectangle_t main_window_t::window_filling_region(const std::shared_ptr<layer_t>& layer)
       {
          geometry::rectangle_t region = convert(my_layered_canvas->geometry());
          region.x = region.y = 0;
-         return region.apply(my_layered_canvas->layered->get_transform().invert());
+         return region.apply(my_layered_canvas->get_local_transform().compose(layer->get_transform()).invert());
       }
 
       std::vector<std::shared_ptr<styled_mosaic_t>> main_window_t::get_avail_mosaics()
@@ -519,28 +520,32 @@ namespace dak
          my_layered->compose(transform_t::scale(ratio / 3.));
       }
 
-      const geometry::edges_map_t& main_window_t::find_calculated_mosaic(calculated_mosaics& calc_mos, const std::shared_ptr<mosaic_t>& mosaic)
+      const geometry::edges_map_t& main_window_t::find_calculated_mosaic(mosaic_edges_map_cache_t& calc_mos, const std::shared_ptr<styled_mosaic_t>& styled_mosaic)
       {
+         const auto& mosaic = styled_mosaic->mosaic;
+         const auto& trf = styled_mosaic->get_transform();
          for (const auto& calculated : calc_mos)
          {
-            if (*(calculated.first) == *mosaic)
+            if (calculated.trf == trf && *(calculated.mosaic) == *mosaic)
             {
-               return calculated.second;
+               return calculated.edges_map;
             }
          }
-         return calc_mos[mosaic] = mosaic->construct(window_filling_region());
+         const auto edges_map = mosaic->construct(window_filling_region(styled_mosaic));
+         calc_mos.emplace_back(mosaic, trf, std::move(edges_map));
+         return calc_mos.back().edges_map;
       }
 
       void main_window_t::update_canvas_layers(const std::vector<std::shared_ptr<layer_t>>& layers)
       {
          // Optimize updating the layers by only calculating the map of a mosaic once
          // if multiple layers have identical mosaics.
-         calculated_mosaics calc_mos;
+         mosaic_edges_map_cache_t calc_mos;
          for (auto& layer : layers)
          {
             if (auto mo_layer = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
             {
-               const auto& calc_map = find_calculated_mosaic(calc_mos, mo_layer->mosaic);
+               const auto& calc_map = find_calculated_mosaic(calc_mos, mo_layer);
                mo_layer->style->set_map(calc_map, mo_layer->mosaic->tiling);
             }
          }
@@ -693,9 +698,11 @@ namespace dak
          dak::ui::layered_t::layers_t layers = clone_layers(std::any_cast<const dak::ui::layered_t::layers_t&>(data));
          for (auto& layer : layers)
          {
-            if (auto style = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
+            if (auto style_mosaic = std::dynamic_pointer_cast<styled_mosaic_t>(layer))
             {
-               style->style->set_map(style->mosaic->construct(window_filling_region()), style->mosaic->tiling);
+               const auto& mosaic = style_mosaic->mosaic;
+               const auto& style = style_mosaic->style;
+               style->set_map(mosaic->construct(window_filling_region(style_mosaic)), mosaic->tiling);
             }
          }
 
@@ -760,13 +767,13 @@ namespace dak
          layers.emplace_back(mo_layer);
          my_layered->set_layers(layers);
 
-         while (new_mosaic->tiling->count_fill_copies(window_filling_region()) > 20)
+         while (new_mosaic->tiling->count_fill_copies(window_filling_region(mo_layer)) > 20)
          {
-            const point_t center = window_filling_region().center();
+            const point_t center = window_filling_region(mo_layer).center();
             my_layered->compose(transform_t::scale(2.));
          }
 
-         mo_layer->update_style(window_filling_region());
+         mo_layer->update_style(window_filling_region(mo_layer));
 
          fill_layer_list();
 

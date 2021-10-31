@@ -60,7 +60,7 @@ namespace dak
          static double compute_scale(std::shared_ptr<radial_figure_t> child);
          static void scale_to_unit(edges_map_t& cunit);
 
-         mutable double cached_s_last_build_unit = NAN;
+         mutable double my_cached_s_last_build_unit = NAN;
       };
    }
 }

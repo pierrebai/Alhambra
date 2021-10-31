@@ -58,12 +58,12 @@ namespace dak
          void build_map() const;
 
       private:
-         mutable polygon_t cached_poly;
-         mutable infer_mode_t cached_infer = infer_mode_t::girih;
+         mutable polygon_t my_cached_poly;
+         mutable infer_mode_t my_cached_infer = infer_mode_t::girih;
 
-         mutable double cached_q = NAN;
-         mutable double cached_d = NAN;
-         mutable int    cached_s = -1;
+         mutable double my_cached_q = NAN;
+         mutable double my_cached_d = NAN;
+         mutable int    my_cached_s = -1;
 
          friend class infer_t;
       };

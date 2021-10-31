@@ -51,8 +51,8 @@ namespace dak
          void update_cached_values() const override;
 
       private:
-         mutable double cached_q_last_build_unit = NAN;
-         mutable int cached_s_last_build_unit = -1;
+         mutable double my_cached_q_last_build_unit = NAN;
+         mutable int my_cached_s_last_build_unit = -1;
       };
    }
 }

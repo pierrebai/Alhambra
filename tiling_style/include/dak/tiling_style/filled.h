@@ -51,9 +51,9 @@ namespace dak
          // The internal draw is called with the layer transform already applied.
          void internal_draw(ui::drawing_t& drw) override;
 
-         std::vector<polygon_t> cached_inside;
-         std::vector<polygon_t> cached_outside;
-         std::vector<polygon_t> cached_odd;
+         std::vector<polygon_t> my_cached_inside;
+         std::vector<polygon_t> my_cached_outside;
+         std::vector<polygon_t> my_cached_odd;
       };
    }
 }

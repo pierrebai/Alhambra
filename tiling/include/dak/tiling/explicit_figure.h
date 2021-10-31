@@ -18,13 +18,13 @@ namespace dak
       {
       public:
          explicit_figure_t() { }
-         explicit_figure_t(const edges_map_t& m) { cached_map = m; }
+         explicit_figure_t(const edges_map_t& m) { my_cached_map = m; }
 
          // Copy a figure.
          std::shared_ptr<figure_t> clone() const override;
          void make_similar(const figure_t&) override { }
 
-         void set_map(const edges_map_t& m) { cached_map = m; }
+         void set_map(const edges_map_t& m) { my_cached_map = m; }
 
          // Retrieve a description of this style.
          std::wstring describe() const override;

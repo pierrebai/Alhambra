@@ -93,15 +93,15 @@ namespace dak
       bool rosette_t::is_cache_valid() const
       {
          return radial_figure_t::is_cache_valid()
-             && cached_q_last_build_unit == q
-             && cached_s_last_build_unit == s;
+             && my_cached_q_last_build_unit == q
+             && my_cached_s_last_build_unit == s;
       }
 
       void rosette_t::update_cached_values() const
       {
          radial_figure_t::update_cached_values();
-         cached_q_last_build_unit = q;
-         cached_s_last_build_unit = s;
+         my_cached_q_last_build_unit = q;
+         my_cached_s_last_build_unit = s;
       }
 
       edges_map_t rosette_t::build_unit() const

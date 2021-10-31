@@ -60,11 +60,11 @@ namespace dak
 
       void thick_t::draw_edges(ui::drawing_t& drw, double width) const
       {
-         const geometry::edges_map_t::edges_t& edges = map.all();
+         const geometry::edges_map_t::edges_t& edges = my_map.all();
          for (const auto &e : edges)
          {
             drw.set_stroke(get_stroke(drw, get_width_at(e.p2, width)));
-            const auto e2 = map.continuation(e);
+            const auto e2 = my_map.continuation(e);
             if (e2.is_invalid())
             {
                drw.draw_line(e.p1, e.p2);

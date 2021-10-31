@@ -35,13 +35,13 @@ namespace dak
          style_t() { }
 
          // Create a style.
-         style_t(const geometry::edges_map_t& m) : map(m) { }
+         style_t(const geometry::edges_map_t& m) : my_map(m) { }
 
          // Retrieve a description of this style.
          virtual std::wstring describe() const = 0;
 
          // Set or access the map used as the basis to build the style.
-         const geometry::edges_map_t& get_map() const { return map; }
+         const geometry::edges_map_t& get_map() const { return my_map; }
          virtual void set_map(const geometry::edges_map_t& m, const std::shared_ptr<const tiling_t>& t);
 
          // Copy a layer.
@@ -55,11 +55,11 @@ namespace dak
 
          void add_inflation_for_point(const point_t& pt, double inflation);
 
-         edges_map_t map;
+         edges_map_t my_map;
 
-         std::shared_ptr<const inflation_tiling_t> tiling;
-         point_t tiling_center;
-         std::map<double, double> inflation_by_distances;
+         std::shared_ptr<const inflation_tiling_t> my_tiling;
+         point_t my_tiling_center;
+         std::map<double, double> my_inflation_by_distances;
       };
    }
 }
