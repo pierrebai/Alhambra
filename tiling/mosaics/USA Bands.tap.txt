@@ -1,0 +1,44 @@
+movable-join-layers  5
+  interlace 0.050000000000000003 0.029999999999999999
+  thick 0.019999999999999997 0 round
+  color 255 255 255 255
+  mosaic "4.8^2" 2
+    regular 8
+    rosette 8 0 3
+    regular 4
+    irregular "Girih" 0 0.47999999999999998 1
+  position 195.29841778560103 0 0 0 195.29841778560103 0
+  interlace 0.050000000000000003 0.029999999999999999
+  thick 0.050000000000000003 0 round
+  color 240 51 14 255
+  mosaic "4.8^2" 2
+    regular 8
+    rosette 8 0 3
+    regular 4
+    irregular "Girih" 0 0.47999999999999998 1
+  position 195.29841778560103 0 0 0 195.29841778560103 0
+  outline
+  thick 0.10999999999999999 0 round
+  color 255 255 255 255
+  mosaic "4.8^2" 2
+    regular 8
+    rosette 8 0 3
+    regular 4
+    irregular "Girih" 0 0.47999999999999998 1
+  position 195.29841778560103 0 0 0 195.29841778560103 0
+  filled true false
+  color 0 51 153 255
+  mosaic "4.8^2" 2
+    regular 8
+    rosette 8 0 3
+    regular 4
+    irregular "Girih" 0 0.47999999999999998 1
+  position 195.29841778560103 0 0 0 195.29841778560103 0
+  filled false true
+  color 153 0 0 255
+  mosaic "4.8^2" 2
+    regular 8
+    rosette 8 0 3
+    regular 4
+    irregular "Girih" 0 0.47999999999999998 1
+  position 195.29841778560103 0 0 0 195.29841778560103 0
