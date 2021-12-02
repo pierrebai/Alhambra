@@ -736,7 +736,7 @@ namespace dak
       void main_window_t::commit_to_undo()
       {
          const dak::ui::layered_t::layers_t& layers = my_layered->get_layers();
-         my_undo_stack.simple_commit(
+         my_undo_stack.commit(
          {
             clone_layers(layers),
             [self=this](std::any& data) { self->deaden_styled_mosaic(data); },
@@ -782,7 +782,7 @@ namespace dak
             update_layered_transform();
             clear_undo_stack();
             // Note: when adding layers, allow undoing back to an empty my_layered_canvas.
-            my_undo_stack.simple_commit({ 0, nullptr, [self=this](const std::any&) { self->awaken_to_empty_canvas(); } });
+            my_undo_stack.commit({ 0, nullptr, [self=this](const std::any&) { self->awaken_to_empty_canvas(); } });
          }
 
          commit_to_undo();
