@@ -44,10 +44,10 @@ target_include_directories(Alhambra PUBLIC
    "${PROJECT_SOURCE_DIR}/tiling/include"
    "${PROJECT_SOURCE_DIR}/tiling_style/include"
    "${PROJECT_SOURCE_DIR}/tiling_ui_qt/include"
-   "${PROJECT_SOURCE_DIR}/dak_utility/utility/include"
-   "${PROJECT_SOURCE_DIR}/dak_utility/geometry/include"
-   "${PROJECT_SOURCE_DIR}/dak_utility/ui/include"
-   "${PROJECT_SOURCE_DIR}/dak_utility/ui_qt/include"
+   "${PROJECT_SOURCE_DIR}/dak/utility/include"
+   "${PROJECT_SOURCE_DIR}/dak/geometry/include"
+   "${PROJECT_SOURCE_DIR}/dak/ui/include"
+   "${PROJECT_SOURCE_DIR}/dak/ui_qt/include"
    "${PROJECT_SOURCE_DIR}/QtAdditions/include"
 )
 

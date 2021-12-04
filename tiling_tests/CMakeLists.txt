@@ -16,7 +16,7 @@ target_compile_features(tiling_tests PUBLIC
 
 target_include_directories(tiling_tests PUBLIC
    "${PROJECT_SOURCE_DIR}/tiling/include"
-   "${PROJECT_SOURCE_DIR}/dak_utility/utility/include"
-   "${PROJECT_SOURCE_DIR}/dak_utility/geometry/include"
+   "${PROJECT_SOURCE_DIR}/dak/utility/include"
+   "${PROJECT_SOURCE_DIR}/dak/geometry/include"
 )
 

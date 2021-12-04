@@ -9,10 +9,10 @@ add_definitions(-D_UNICODE)
 
 add_subdirectory(QtAdditions)
 
-add_subdirectory(dak_utility/utility)
-add_subdirectory(dak_utility/geometry)
-add_subdirectory(dak_utility/ui)
-add_subdirectory(dak_utility/ui_qt)
+add_subdirectory(dak/utility)
+add_subdirectory(dak/geometry)
+add_subdirectory(dak/ui)
+add_subdirectory(dak/ui_qt)
 
 add_subdirectory(tiling)
 add_subdirectory(tiling_tests)
