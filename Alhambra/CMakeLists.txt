@@ -26,10 +26,10 @@ target_link_libraries(Alhambra PUBLIC
    tiling
    tiling_style
    tiling_ui_qt
-   utility
-   geometry
-   ui
-   ui_qt
+   dak_utility
+   dak_geometry
+   dak_ui
+   dak_ui_qt
    QtAdditions
    Qt5::Widgets Qt5::Gui Qt5::Core Qt5::WinExtras Qt5::Svg
 )

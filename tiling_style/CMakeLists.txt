@@ -17,10 +17,10 @@ add_library(tiling_style
 
 target_include_directories(tiling_style PUBLIC
    include
-   "${PROJECT_SOURCE_DIR}/tiling/include"
-   "${PROJECT_SOURCE_DIR}/dak/utility/include"
-   "${PROJECT_SOURCE_DIR}/dak/geometry/include"
-   "${PROJECT_SOURCE_DIR}/dak/ui/include"
+)
+
+target_link_libraries(tiling_style
+   tiling dak_utility dak_geometry dak_ui
 )
 
 target_compile_features(tiling_style PUBLIC

@@ -27,13 +27,12 @@ add_library(tiling_ui_qt
 
 target_include_directories(tiling_ui_qt PUBLIC
    include
-   "${PROJECT_SOURCE_DIR}/tiling/include"
-   "${PROJECT_SOURCE_DIR}/tiling_style/include"
-   "${PROJECT_SOURCE_DIR}/dak/utility/include"
-   "${PROJECT_SOURCE_DIR}/dak/geometry/include"
-   "${PROJECT_SOURCE_DIR}/dak/ui/include"
-   "${PROJECT_SOURCE_DIR}/dak/ui_qt/include"
-   "${PROJECT_SOURCE_DIR}/QtAdditions/include"
+)
+
+target_link_libraries(tiling_ui_qt
+   tiling tiling_style
+   dak_utility dak_geometry dak_ui dak_ui_qt
+   QtAdditions
 )
 
 target_include_directories(tiling_ui_qt PUBLIC

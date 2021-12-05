@@ -22,8 +22,10 @@ add_library(tiling
 
 target_include_directories(tiling PUBLIC
    include
-   "${PROJECT_SOURCE_DIR}/dak/utility/include"
-   "${PROJECT_SOURCE_DIR}/dak/geometry/include"
+)
+
+target_link_libraries(tiling
+   dak_utility dak_geometry
 )
 
 target_compile_features(tiling PUBLIC
