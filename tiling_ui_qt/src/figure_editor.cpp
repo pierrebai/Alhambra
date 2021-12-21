@@ -106,9 +106,9 @@ namespace dak
             QVBoxLayout* layout = new QVBoxLayout(&parent);
             layout->setContentsMargins(0, 0, 0, 0);
 
-            my_d_editor = std::make_unique<ui::qt::double_editor_t>(&parent, L::t(L"Branch Sharpness"), 0, [self=this](double new_value, bool interacting){ self->update_d(new_value, interacting); });
-            my_q_editor = std::make_unique<ui::qt::double_editor_t>(&parent, L::t(L"Flatness"), 0, [self=this](double new_value, bool interacting){ self->update_q(new_value, interacting); });
-            my_s_editor = std::make_unique<ui::qt::int_editor_t>(&parent, L::t(L"Intersections"), 0, [self=this](int new_value, bool interacting){ self->update_s(new_value, interacting); });
+            my_d_editor = new ui::qt::double_editor_t(&parent, L::t(L"Branch Sharpness"), 0, [self=this](double new_value, bool interacting){ self->update_d(new_value, interacting); });
+            my_q_editor = new ui::qt::double_editor_t(&parent, L::t(L"Flatness"), 0, [self=this](double new_value, bool interacting){ self->update_q(new_value, interacting); });
+            my_s_editor = new ui::qt::int_editor_t(&parent, L::t(L"Intersections"), 0, [self=this](int new_value, bool interacting){ self->update_s(new_value, interacting); });
 
             my_d_editor->set_limits(-5., 5., 0.01);
             my_q_editor->set_limits(-1., 1., 0.01);
@@ -118,9 +118,9 @@ namespace dak
             my_s_editor->setEnabled(false);
             my_q_editor->setEnabled(false);
 
-            layout->addWidget(my_d_editor.get());
-            layout->addWidget(my_q_editor.get());
-            layout->addWidget(my_s_editor.get());
+            layout->addWidget(my_d_editor);
+            layout->addWidget(my_q_editor);
+            layout->addWidget(my_s_editor);
          }
 
          void fill_ui()
@@ -314,9 +314,9 @@ namespace dak
          figure_editor_t& my_figure_editor;
          std::shared_ptr<figure_t> my_edited_figure;
 
-         std::unique_ptr<ui::qt::double_editor_t> my_d_editor;
-         std::unique_ptr<ui::qt::int_editor_t> my_s_editor;
-         std::unique_ptr<ui::qt::double_editor_t> my_q_editor;
+         ui::qt::double_editor_t* my_d_editor;
+         ui::qt::int_editor_t* my_s_editor;
+         ui::qt::double_editor_t* my_q_editor;
 
          int my_disable_feedback = 0;
       };
@@ -336,7 +336,7 @@ namespace dak
       }
 
       figure_editor_t::figure_editor_t(QWidget* parent, std::shared_ptr<figure_t> my_edited_figure, figure_changed_callback fc)
-      : QWidget(parent), my_ui(std::make_unique<figure_editor_ui_t>(*this, my_edited_figure)), figure_changed(fc)
+      : QWidget(parent), my_ui(new figure_editor_ui_t(*this, my_edited_figure)), figure_changed(fc)
       {
       }
 

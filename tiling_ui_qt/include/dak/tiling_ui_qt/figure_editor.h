@@ -7,7 +7,6 @@
 
 #include <QtWidgets/qwidget>
 
-#include <memory>
 #include <functional>
 
 namespace dak
@@ -38,7 +37,7 @@ namespace dak
          std::shared_ptr<figure_t> get_edited() const;
 
       protected:
-         std::unique_ptr<figure_editor_ui_t> my_ui;
+         figure_editor_ui_t* my_ui;
       };
    }
 }

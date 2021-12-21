@@ -7,7 +7,6 @@
 
 #include <QtWidgets/qwidget>
 
-#include <memory>
 #include <functional>
 
 namespace dak
@@ -51,7 +50,7 @@ namespace dak
          std::shared_ptr<figure_t> get_selected_figure() const;
 
       protected:
-         std::unique_ptr<figure_selector_ui_t> my_ui;
+         figure_selector_ui_t* my_ui;
       };
    }
 }

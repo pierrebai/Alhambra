@@ -63,16 +63,16 @@ namespace dak
                header_layout->setSpacing(0);
                header_layout->setContentsMargins(8, 8, 8, 0);
 
-               my_tiling_description = std::make_unique<QLabel>(QString::fromWCharArray(L::t(L"No tiling selected.")), header_panel);
+               my_tiling_description = new QLabel(QString::fromWCharArray(L::t(L"No tiling selected.")), header_panel);
                my_tiling_description->setWordWrap(true);
                my_tiling_description->setMinimumHeight(my_tiling_description->fontMetrics().height() * 5);
                my_tiling_description->setMinimumWidth(my_tiling_description->fontMetrics().averageCharWidth() * 90);
-               header_layout->addWidget(my_tiling_description.get(), 1, Qt::AlignLeft | Qt::AlignTop);
+               header_layout->addWidget(my_tiling_description, 1, Qt::AlignLeft | Qt::AlignTop);
 
-               my_canvas_tab = std::make_unique<QTabBar>(header_panel);
+               my_canvas_tab = new QTabBar(header_panel);
                my_canvas_tab->addTab(QString::fromWCharArray(L::t(L"Mosaic Example")));
                my_canvas_tab->addTab(QString::fromWCharArray(L::t(L"Tile Polygons")));
-               header_layout->addWidget(my_canvas_tab.get(), 0, Qt::AlignRight | Qt::AlignBottom);
+               header_layout->addWidget(my_canvas_tab, 0, Qt::AlignRight | Qt::AlignBottom);
 
             layout->addWidget(header_panel);
 
@@ -96,44 +96,44 @@ namespace dak
 
                   list_layout->addWidget(toolbar);
 
-                  my_tiling_list = std::make_unique<QListWidget>(selection_panel);
+                  my_tiling_list = new QListWidget(selection_panel);
                   my_tiling_list->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
                   my_tiling_list->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
-                  list_layout->addWidget(my_tiling_list.get());
+                  list_layout->addWidget(my_tiling_list);
 
                selection_layout->addWidget(list_panel);
 
-               my_stacked_canvas = std::make_unique<QStackedWidget>(selection_panel);
+               my_stacked_canvas = new QStackedWidget(selection_panel);
                   my_stacked_canvas->setContentsMargins(0, 0, 0, 0);
 
-                  my_example_canvas = std::make_unique<mosaic_canvas_t>(my_stacked_canvas.get());
+                  my_example_canvas = new mosaic_canvas_t(my_stacked_canvas);
                   my_example_canvas->setMinimumSize(400, 400);
-                  my_stacked_canvas->addWidget(my_example_canvas.get());
+                  my_stacked_canvas->addWidget(my_example_canvas);
 
-                  my_raw_tiling_canvas = std::make_unique<tiling_canvas_t>(my_stacked_canvas.get());
+                  my_raw_tiling_canvas = new tiling_canvas_t(my_stacked_canvas);
                   my_raw_tiling_canvas->setMinimumSize(400, 400);
-                  my_stacked_canvas->addWidget(my_raw_tiling_canvas.get());
+                  my_stacked_canvas->addWidget(my_raw_tiling_canvas);
 
-               selection_layout->addWidget(my_stacked_canvas.get());
+               selection_layout->addWidget(my_stacked_canvas);
 
                selection_layout->setStretch(0, 0);
                selection_layout->setStretch(1, 1);
 
             layout->addWidget(selection_panel);
 
-            my_dialog_buttons = std::make_unique<QDialogButtonBox>(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+            my_dialog_buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
             my_dialog_buttons->setContentsMargins(8, 8, 8, 8);
-            layout->addWidget(my_dialog_buttons.get());
+            layout->addWidget(my_dialog_buttons);
 
             my_tiling_list->setEnabled(false);
             my_dialog_buttons->button(QDialogButtonBox::Ok)->setEnabled(false);
             my_dialog_buttons->button(QDialogButtonBox::Cancel)->setEnabled(false);
 
-            my_tiling_list->connect(my_tiling_list.get(), &QListWidget::itemSelectionChanged, [&]() { update_selection(); });
-            my_tiling_list->connect(my_tiling_list.get(), &QListWidget::itemDoubleClicked, &parent, &QDialog::accept);
-            my_dialog_buttons->connect(my_dialog_buttons.get(), &QDialogButtonBox::accepted, &parent, &QDialog::accept);
-            my_dialog_buttons->connect(my_dialog_buttons.get(), &QDialogButtonBox::rejected, &parent, &QDialog::reject);
-            my_canvas_tab->connect(my_canvas_tab.get(), &QTabBar::currentChanged, my_stacked_canvas.get(), &QStackedWidget::setCurrentIndex);
+            my_tiling_list->connect(my_tiling_list, &QListWidget::itemSelectionChanged, [&]() { update_selection(); });
+            my_tiling_list->connect(my_tiling_list, &QListWidget::itemDoubleClicked, &parent, &QDialog::accept);
+            my_dialog_buttons->connect(my_dialog_buttons, &QDialogButtonBox::accepted, &parent, &QDialog::accept);
+            my_dialog_buttons->connect(my_dialog_buttons, &QDialogButtonBox::rejected, &parent, &QDialog::reject);
+            my_canvas_tab->connect(my_canvas_tab, &QTabBar::currentChanged, my_stacked_canvas, &QStackedWidget::setCurrentIndex);
 
             parent.connect(&parent, &QDialog::accepted, [&]() { ok_selection(); });
          }
@@ -263,17 +263,17 @@ namespace dak
          tiling_selector_t& my_tiling_selector;
          known_tilings_t my_known_tilings;
 
-         std::unique_ptr<QLabel> my_tiling_description;
-         std::unique_ptr<QTabBar> my_canvas_tab;
+         QLabel* my_tiling_description;
+         QTabBar* my_canvas_tab;
 
          QToolButton* my_open_action = nullptr;
 
-         std::unique_ptr<QListWidget> my_tiling_list;
-         std::unique_ptr<QStackedWidget> my_stacked_canvas;
-         std::unique_ptr<mosaic_canvas_t> my_example_canvas;
-         std::unique_ptr<tiling_canvas_t> my_raw_tiling_canvas;
+         QListWidget* my_tiling_list;
+         QStackedWidget* my_stacked_canvas;
+         mosaic_canvas_t* my_example_canvas;
+         tiling_canvas_t* my_raw_tiling_canvas;
 
-         std::unique_ptr<QDialogButtonBox> my_dialog_buttons;
+         QDialogButtonBox* my_dialog_buttons;
 
          int my_disable_feedback = 0;
 
@@ -290,7 +290,7 @@ namespace dak
       }
 
       tiling_selector_t::tiling_selector_t(known_tilings_t& known_tilings, const tiling_editor_icons_t& icons, QWidget* parent, tiling_chosen_callback tc)
-      : QDialog(parent), my_ui(std::make_unique<tiling_selector_ui_t>(known_tilings, icons, *this)), tiling_chosen(tc)
+      : QDialog(parent), my_ui(new tiling_selector_ui_t(known_tilings, icons, *this)), tiling_chosen(tc)
       {
       }
 

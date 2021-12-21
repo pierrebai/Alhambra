@@ -130,40 +130,40 @@ namespace dak
                QWidget* style_buttons_panel = new QWidget(&parent);
                QHBoxLayout* style_buttons_layout = new QHBoxLayout(style_buttons_panel);
                   style_buttons_layout->setContentsMargins(0, 0, 0, 0);
-                  my_color_button = std::make_unique<ui::qt::color_editor_t>(style_buttons_panel, L::t(L"Color"));
-                  style_buttons_layout->addWidget(my_color_button.get());
-                  my_outline_color_button = std::make_unique<ui::qt::color_editor_t>(style_buttons_panel, L::t(L"Outline"));
-                  style_buttons_layout->addWidget(my_outline_color_button.get());
-                  my_join_combobox = std::make_unique<QComboBox>(style_buttons_panel);
+                  my_color_button = new ui::qt::color_editor_t(style_buttons_panel, L::t(L"Color"));
+                  style_buttons_layout->addWidget(my_color_button);
+                  my_outline_color_button = new ui::qt::color_editor_t(style_buttons_panel, L::t(L"Outline"));
+                  style_buttons_layout->addWidget(my_outline_color_button);
+                  my_join_combobox = new QComboBox(style_buttons_panel);
                   for (const auto& style : join_style_names)
                      my_join_combobox->addItem(QString::fromWCharArray(L::t(style.name)));
-                  style_buttons_layout->addWidget(my_join_combobox.get());
+                  style_buttons_layout->addWidget(my_join_combobox);
                layout->addWidget(style_buttons_panel);
 
 
                QWidget* fill_panel = new QWidget(&parent);
                QHBoxLayout* fill_layout = new QHBoxLayout(fill_panel);
                   fill_layout->setContentsMargins(0, 0, 0, 0);
-                  my_fill_inside_checkbox = std::make_unique<QCheckBox>(QString::fromWCharArray(L::t(L"Fill Inside")), fill_panel);
-                  fill_layout->addWidget(my_fill_inside_checkbox.get());
-                  my_fill_outside_checkbox = std::make_unique<QCheckBox>(QString::fromWCharArray(L::t(L"Fill Outside")), fill_panel);
-                  fill_layout->addWidget(my_fill_outside_checkbox.get());
+                  my_fill_inside_checkbox = new QCheckBox(QString::fromWCharArray(L::t(L"Fill Inside")), fill_panel);
+                  fill_layout->addWidget(my_fill_inside_checkbox);
+                  my_fill_outside_checkbox = new QCheckBox(QString::fromWCharArray(L::t(L"Fill Outside")), fill_panel);
+                  fill_layout->addWidget(my_fill_outside_checkbox);
                layout->addWidget(fill_panel);
 
                QWidget* style_panel = new QWidget(&parent);
                QVBoxLayout* style_layout = new QVBoxLayout(style_panel);
                   style_layout->setContentsMargins(0, 0, 0, 0);
-                  my_width_editor = std::make_unique<dak::ui::qt::double_editor_t>(style_panel, L::t(L"Width"));
+                  my_width_editor = new dak::ui::qt::double_editor_t(style_panel, L::t(L"Width"));
                   my_width_editor->set_limits(0.001, 40, 0.01);
-                  style_layout->addWidget(my_width_editor.get());
-                  my_outline_width_editor = std::make_unique<dak::ui::qt::double_editor_t>(style_panel, L::t(L"Outline Width"));
+                  style_layout->addWidget(my_width_editor);
+                  my_outline_width_editor = new dak::ui::qt::double_editor_t(style_panel, L::t(L"Outline Width"));
                   my_outline_width_editor->set_limits(0, 20, 0.01);
-                  style_layout->addWidget(my_outline_width_editor.get());
-                  my_gap_width_editor = std::make_unique<dak::ui::qt::double_editor_t>(style_panel, L::t(L"Gap Width"));
+                  style_layout->addWidget(my_outline_width_editor);
+                  my_gap_width_editor = new dak::ui::qt::double_editor_t(style_panel, L::t(L"Gap Width"));
                   my_gap_width_editor->set_limits(0, 20, 0.01);
-                  style_layout->addWidget(my_gap_width_editor.get());
-                  my_angle_editor = std::make_unique<ui::qt::double_editor_t>(style_panel, L::t(L"Angle"));
-                  style_layout->addWidget(my_angle_editor.get());
+                  style_layout->addWidget(my_gap_width_editor);
+                  my_angle_editor = new ui::qt::double_editor_t(style_panel, L::t(L"Angle"));
+                  style_layout->addWidget(my_angle_editor);
                layout->addWidget(style_panel);
 
             my_color_button->setEnabled(false);
@@ -181,10 +181,10 @@ namespace dak
             my_width_editor->value_changed = [self=this](double new_value, bool interacting) { self->update_width(new_value, interacting); };
             my_outline_width_editor->value_changed = [self=this](double new_value, bool interacting) { self->update_outline_width(new_value, interacting); };
             my_gap_width_editor->value_changed = [self=this](double new_value, bool interacting) { self->update_gap_width(new_value, interacting); };
-            my_fill_inside_checkbox->connect(my_fill_inside_checkbox.get(), &QCheckBox::stateChanged, [&](int new_state) { update_fill_inside(new_state); });
-            my_fill_outside_checkbox->connect(my_fill_outside_checkbox.get(), &QCheckBox::stateChanged, [&](int new_state) { update_fill_outside(new_state); });
+            my_fill_inside_checkbox->connect(my_fill_inside_checkbox, &QCheckBox::stateChanged, [&](int new_state) { update_fill_inside(new_state); });
+            my_fill_outside_checkbox->connect(my_fill_outside_checkbox, &QCheckBox::stateChanged, [&](int new_state) { update_fill_outside(new_state); });
             my_angle_editor->value_changed = [self=this](double new_value, bool interacting) { self->update_angle(new_value, interacting); };
-            my_join_combobox->connect(my_join_combobox.get(), &QComboBox::currentTextChanged, [&](const QString& text) { update_join(text); });
+            my_join_combobox->connect(my_join_combobox, &QComboBox::currentTextChanged, [&](const QString& text) { update_join(text); });
          }
 
          void fill_ui()
@@ -417,15 +417,15 @@ namespace dak
          styles_editor_t& my_styles_editor;
          styles_t my_edited_styles;
 
-         std::unique_ptr<ui::qt::color_editor_t> my_color_button;
-         std::unique_ptr<ui::qt::color_editor_t> my_outline_color_button;
-         std::unique_ptr<ui::qt::double_editor_t> my_width_editor;
-         std::unique_ptr<ui::qt::double_editor_t> my_outline_width_editor;
-         std::unique_ptr<ui::qt::double_editor_t> my_gap_width_editor;
-         std::unique_ptr<ui::qt::double_editor_t> my_angle_editor;
-         std::unique_ptr<QCheckBox> my_fill_inside_checkbox;
-         std::unique_ptr<QCheckBox> my_fill_outside_checkbox;
-         std::unique_ptr<QComboBox> my_join_combobox;
+         ui::qt::color_editor_t*  my_color_button;
+         ui::qt::color_editor_t*  my_outline_color_button;
+         ui::qt::double_editor_t* my_width_editor;
+         ui::qt::double_editor_t* my_outline_width_editor;
+         ui::qt::double_editor_t* my_gap_width_editor;
+         ui::qt::double_editor_t* my_angle_editor;
+         QCheckBox* my_fill_inside_checkbox;
+         QCheckBox* my_fill_outside_checkbox;
+         QComboBox* my_join_combobox;
 
          bool my_disable_feedback = false;
       };
@@ -445,7 +445,7 @@ namespace dak
       }
 
       styles_editor_t::styles_editor_t(QWidget* parent, const styles_t& edited_styles, styles_changed_callback fc)
-      : QWidget(parent), my_ui(std::make_unique<styles_editor_ui_t>(*this, edited_styles)), styles_changed(fc)
+      : QWidget(parent), my_ui(new styles_editor_ui_t(*this, edited_styles)), styles_changed(fc)
       {
       }
 

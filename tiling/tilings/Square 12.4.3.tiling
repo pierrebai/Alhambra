@@ -27,7 +27,7 @@ tiling "Square 12.4.3" 3
             1.3877787807814457E-17 -0.15470053837925152 0.9999999999999999
             0.15470053837925152 1.3877787807814457E-17 0.5773502691896256
 
-	"A simplified version of the square tiling of 12-gons, with a subdivided inter-10-gons."
+    "A simplified version of the square tiling of 12-gons, with a subdivided inter-10-gons."
 
     "Pierre Baillargeon"
 

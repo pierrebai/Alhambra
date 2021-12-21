@@ -260,12 +260,12 @@ namespace dak
             }
          }
 
-         static std::unique_ptr<QPushButton> make_button(int icon, const wchar_t* tooltip)
+         static QPushButton* make_button(int icon, const wchar_t* tooltip)
          {
-            std::unique_ptr<QPushButton> button = std::make_unique<QPushButton>();
+            QPushButton* button = new QPushButton();
             button->setIcon(QIcon(CreatePixmapFromResource(icon)));
             button->setToolTip(QString::fromWCharArray(tooltip));
-            return std::move(button);
+            return button;
          }
 
          void build_ui(layers_selector_t& parent, const layers_selector_icons_t& icons)
@@ -277,17 +277,17 @@ namespace dak
                QGridLayout* button_layout = new QGridLayout(button_panel);
                button_layout->setContentsMargins(0, 0, 0, 0);
                my_clone_layer_button = make_button(icons.layer_copy, L::t(L"Copy"));
-               button_layout->addWidget(my_clone_layer_button.get(), 0, 0);
+               button_layout->addWidget(my_clone_layer_button, 0, 0);
                my_add_layer_button = make_button(icons.layer_add, L::t(L"Add"));
-               button_layout->addWidget(my_add_layer_button.get(), 0, 1);
+               button_layout->addWidget(my_add_layer_button, 0, 1);
                my_remove_layers_button = make_button(icons.layer_delete, L::t(L"Remove"));
-               button_layout->addWidget(my_remove_layers_button.get(), 0, 2);
+               button_layout->addWidget(my_remove_layers_button, 0, 2);
                my_copy_position_button = make_button(icons.layer_copy_position, L::t(L"Copy Position"));
-               button_layout->addWidget(my_copy_position_button.get(), 0, 3);
+               button_layout->addWidget(my_copy_position_button, 0, 3);
                my_move_layers_up_button = make_button(icons.layer_move_up, L::t(L"Move Up"));
-               button_layout->addWidget(my_move_layers_up_button.get(), 0, 4);
+               button_layout->addWidget(my_move_layers_up_button, 0, 4);
                my_move_layers_down_button = make_button(icons.layer_move_down, L::t(L"Move Down"));
-               button_layout->addWidget(my_move_layers_down_button.get(), 0, 5);
+               button_layout->addWidget(my_move_layers_down_button, 0, 5);
             layout->addWidget(button_panel);
 
             QStringList combo_items;
@@ -297,13 +297,7 @@ namespace dak
             my_all_drawn_check = new QCheckBox(QString::fromWCharArray(L::t(L"Drawn")));
             my_all_moving_check = new QCheckBox(QString::fromWCharArray(L::t(L"Moving")));
 
-            auto header = new QHeaderViewWithWidgets(Qt::Orientation::Horizontal);
-            header->addSectionWidget(is_moving_column, my_all_moving_check);
-            header->addSectionWidget(is_drawn_column, my_all_drawn_check);
-            header->setMinimumSectionSize(70);
-
-            my_layer_list = std::make_unique<QTableWidgetWithComboBox>(style_column, combo_items, &parent);
-            my_layer_list->setHorizontalHeader(header);
+            my_layer_list = new QTableWidgetWithComboBox(style_column, combo_items, &parent);
             my_layer_list->setIconSize(QSize(64, 32));
             my_layer_list->setColumnCount(4);
             my_layer_list->setHorizontalHeaderLabels(QStringList(
@@ -315,7 +309,12 @@ namespace dak
                }));
             my_layer_list->horizontalHeader()->setSectionResizeMode(tiling_column, QHeaderView::ResizeMode::Stretch);
             my_layer_list->setShowGrid(false);
-            layout->addWidget(my_layer_list.get());
+            layout->addWidget(my_layer_list);
+
+            auto header = new QHeaderViewWithWidgets(Qt::Orientation::Horizontal, my_layer_list);
+            header->addSectionWidget(is_moving_column, my_all_moving_check);
+            header->addSectionWidget(is_drawn_column, my_all_drawn_check);
+            header->setMinimumSectionSize(70);
 
             my_layer_list->setEnabled(false);
             my_clone_layer_button->setEnabled(false);
@@ -325,15 +324,15 @@ namespace dak
             my_move_layers_up_button->setEnabled(false);
             my_move_layers_down_button->setEnabled(false);
 
-            my_layer_list->connect(my_layer_list.get(), &QTableWidget::itemSelectionChanged, [self = this]() { self->update_selection(); });
-            my_layer_list->connect(my_layer_list.get(), &QTableWidget::itemChanged, [self=this](QTableWidgetItem * item) { self->update_layer(item); });
+            my_layer_list->connect(my_layer_list, &QTableWidget::itemSelectionChanged, [self = this]() { self->update_selection(); });
+            my_layer_list->connect(my_layer_list, &QTableWidget::itemChanged, [self=this](QTableWidgetItem * item) { self->update_layer(item); });
 
-            my_clone_layer_button->connect(my_clone_layer_button.get(), &QPushButton::clicked, [self = this]() { self->clone_layer(); });
-            my_add_layer_button->connect(my_add_layer_button.get(), &QPushButton::clicked, [self = this]() { self->add_layer(); });
-            my_remove_layers_button->connect(my_remove_layers_button.get(), &QPushButton::clicked, [self = this]() { self->remove_layers(); });
-            my_copy_position_button->connect(my_copy_position_button.get(), &QPushButton::clicked, [self = this]() { self->copy_position(); });
-            my_move_layers_up_button->connect(my_move_layers_up_button.get(), &QPushButton::clicked, [self = this]() { self->move_layers_up(); });
-            my_move_layers_down_button->connect(my_move_layers_down_button.get(), &QPushButton::clicked, [self = this]() { self->move_layers_down(); });
+            my_clone_layer_button->connect(my_clone_layer_button, &QPushButton::clicked, [self = this]() { self->clone_layer(); });
+            my_add_layer_button->connect(my_add_layer_button, &QPushButton::clicked, [self = this]() { self->add_layer(); });
+            my_remove_layers_button->connect(my_remove_layers_button, &QPushButton::clicked, [self = this]() { self->remove_layers(); });
+            my_copy_position_button->connect(my_copy_position_button, &QPushButton::clicked, [self = this]() { self->copy_position(); });
+            my_move_layers_up_button->connect(my_move_layers_up_button, &QPushButton::clicked, [self = this]() { self->move_layers_up(); });
+            my_move_layers_down_button->connect(my_move_layers_down_button, &QPushButton::clicked, [self = this]() { self->move_layers_down(); });
 
             my_all_drawn_check->connect(my_all_drawn_check, &QCheckBox::stateChanged, [self = this]() { self->update_all_drawn(); });
             my_all_moving_check->connect(my_all_moving_check, &QCheckBox::stateChanged, [self = this]() { self->update_all_moving(); });
@@ -676,13 +675,13 @@ namespace dak
          layers_selector_t& my_layer_selector;
          layers_t my_edited_layers;
 
-         std::unique_ptr<QTableWidgetWithComboBox> my_layer_list;
-         std::unique_ptr<QPushButton> my_clone_layer_button;
-         std::unique_ptr<QPushButton> my_add_layer_button;
-         std::unique_ptr<QPushButton> my_remove_layers_button;
-         std::unique_ptr<QPushButton> my_copy_position_button;
-         std::unique_ptr<QPushButton> my_move_layers_up_button;
-         std::unique_ptr<QPushButton> my_move_layers_down_button;
+         QTableWidgetWithComboBox* my_layer_list;
+         QPushButton* my_clone_layer_button;
+         QPushButton* my_add_layer_button;
+         QPushButton* my_remove_layers_button;
+         QPushButton* my_copy_position_button;
+         QPushButton* my_move_layers_up_button;
+         QPushButton* my_move_layers_down_button;
          QCheckBox* my_all_drawn_check;
          QCheckBox* my_all_moving_check;
 
@@ -694,7 +693,7 @@ namespace dak
       // A QWidget to select and order layers.
 
       layers_selector_t::layers_selector_t(QWidget* parent, const layers_selector_icons_t& icons)
-      : QWidget(parent), my_ui(std::make_unique<layers_selector_ui_t>(*this, icons))
+      : QWidget(parent), my_ui(new layers_selector_ui_t(*this, icons))
       {
       }
 

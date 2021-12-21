@@ -117,7 +117,7 @@ namespace dak
             for (const auto& infer : infer_modes)
                combo_items.append(QString::fromWCharArray(L::t(tiling::infer_mode_name(infer))));
 
-            my_figure_list = std::make_unique<QTableWidgetWithComboBox>(type_column, combo_items, &parent);
+            my_figure_list = new QTableWidgetWithComboBox(type_column, combo_items, &parent);
             my_figure_list->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
             my_figure_list->setIconSize(QSize(64, 32));
             my_figure_list->setColumnCount(2);
@@ -128,12 +128,12 @@ namespace dak
                }));
             my_figure_list->setShowGrid(false);
             my_figure_list->horizontalHeader()->setSectionResizeMode(description_column, QHeaderView::ResizeMode::Stretch);
-            layout->addWidget(my_figure_list.get());
+            layout->addWidget(my_figure_list);
 
             my_figure_list->setEnabled(false);
 
-            my_figure_list->connect(my_figure_list.get(), &QTableWidget::itemSelectionChanged, [&]() { update_selection(); });
-            my_figure_list->connect(my_figure_list.get(), &QTableWidget::itemChanged, [&](QTableWidgetItem * item) { update_infer(item); });
+            my_figure_list->connect(my_figure_list, &QTableWidget::itemSelectionChanged, [&]() { update_selection(); });
+            my_figure_list->connect(my_figure_list, &QTableWidget::itemChanged, [&](QTableWidgetItem * item) { update_infer(item); });
 
             my_disable_feedback--;
          }
@@ -319,7 +319,7 @@ namespace dak
          figure_selector_t& my_figure_selector;
          figures my_edited_figures;
 
-         std::unique_ptr<QTableWidgetWithComboBox> my_figure_list;
+         QTableWidgetWithComboBox* my_figure_list;
 
          int my_disable_feedback = 0;
       };
@@ -329,7 +329,7 @@ namespace dak
       // A QWidget to select and order figures.
 
       figure_selector_t::figure_selector_t(QWidget* parent)
-      : QWidget(parent), my_ui(std::make_unique<figure_selector_ui_t>(*this))
+      : QWidget(parent), my_ui(new figure_selector_ui_t(*this))
       {
       }
 

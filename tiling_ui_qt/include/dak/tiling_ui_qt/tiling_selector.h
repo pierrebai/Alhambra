@@ -8,7 +8,6 @@
 
 #include <QtWidgets/qdialog>
 
-#include <memory>
 #include <functional>
 
 namespace dak
@@ -39,7 +38,7 @@ namespace dak
          std::shared_ptr<tiling_t> get_selected() const;
 
       protected:
-         std::unique_ptr<tiling_selector_ui_t> my_ui;
+         tiling_selector_ui_t* my_ui;
       };
    }
 }

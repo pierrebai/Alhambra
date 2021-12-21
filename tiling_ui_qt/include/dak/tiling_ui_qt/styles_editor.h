@@ -7,7 +7,6 @@
 
 #include <QtWidgets/qwidget>
 
-#include <memory>
 #include <functional>
 
 namespace dak
@@ -43,7 +42,7 @@ namespace dak
          const styles_t& get_edited() const;
 
       protected:
-         std::unique_ptr<styles_editor_ui_t> my_ui;
+         styles_editor_ui_t* my_ui;
       };
    }
 }

@@ -13,7 +13,6 @@
 
 #include <QtWidgets/qwidget>
 
-#include <memory>
 #include <functional>
 
 namespace dak
@@ -85,7 +84,7 @@ namespace dak
          styles get_selected_styles() const;
 
       protected:
-         std::unique_ptr<layers_selector_ui_t> my_ui;
+         layers_selector_ui_t* my_ui;
       };
    }
 }
