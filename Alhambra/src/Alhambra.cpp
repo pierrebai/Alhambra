@@ -24,6 +24,7 @@ int main(int argc, char **argv)
    icons.undo              = IDB_UNDO;
    icons.redo              = IDB_REDO;
 
+   icons.mosaic_new        = IDB_MOSAIC_NEW;
    icons.mosaic_open       = IDB_MOSAIC_OPEN;
    icons.mosaic_save       = IDB_MOSAIC_SAVE;
 

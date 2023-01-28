@@ -89,6 +89,10 @@ namespace dak
 
             toolbar->addSeparator();
 
+            my_new_mosaic_action = CreateAction(L::t(L"New Mosaic"), icons.mosaic_new, QKeySequence(QKeySequence::StandardKey::New));
+            my_new_mosaic_button = CreateToolButton(my_new_mosaic_action);
+            toolbar->addWidget(my_new_mosaic_button);
+
             my_load_mosaic_action = CreateAction(L::t(L"Load Mosaic"), icons.mosaic_open, QKeySequence(QKeySequence::StandardKey::Open));
             my_load_mosaic_button = CreateToolButton(my_load_mosaic_action);
             toolbar->addWidget(my_load_mosaic_button);
@@ -208,6 +212,15 @@ namespace dak
             self->my_mosaic_gen.next();
             self->clear_undo_stack();
             self->update_mosaic_map(self->my_mosaic_gen.generate_current(self->my_known_tilings, self->my_errors), self->my_mosaic_gen.current_name());
+         });
+
+         my_new_mosaic_action->connect(my_new_mosaic_action, &QAction::triggered, [self=this]()
+         {
+            if (!self->save_if_required(L::t(L"create a new mosaic"), L::t(L"creating a new mosaic")))
+               return;
+
+            self->clear_undo_stack();
+            self->update_mosaic_map(std::vector<std::shared_ptr<layer_t>>(), L"");
          });
 
          my_load_mosaic_action->connect(my_load_mosaic_action, &QAction::triggered, [self=this]()

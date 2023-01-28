@@ -1,14 +1,14 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by Resource.rc
+// fichier Include Microsoft Visual C++.
+// Utilisé par Resource.rc
 //
 #define IDI_ICON1                       101
 #define IDI_APP_ICON                    101
+#define IDB_LAYER_RESET_TRF             115
 #define IDB_CANVAS_ROTATE               116
 #define IDB_CANVAS_TRANSLATE            117
 #define IDB_CANVAS_ZOOM                 118
 #define IDB_LAYER_ADD                   119
-#define IDB_LAYER_RESET_TRF             115
 #define IDB_LAYER_COPY                  120
 #define IDB_LAYER_DELETE                121
 #define IDB_LAYER_MOVE_DOWN             122
@@ -38,12 +38,14 @@
 #define IDB_BITMAP4                     148
 #define IDB_POLYGON_TRANS_CLEAR         148
 #define IDB_TILING_NEW                  149
+#define IDB_BITMAP2                     150
+#define IDB_MOSAIC_NEW                  150
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        150
+#define _APS_NEXT_RESOURCE_VALUE        151
 #define _APS_NEXT_COMMAND_VALUE         40001
 #define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           101

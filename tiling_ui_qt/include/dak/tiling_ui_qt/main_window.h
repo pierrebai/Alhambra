@@ -46,6 +46,7 @@ namespace dak
          int mosaic_previous = 0;
          int mosaic_next = 0;
 
+         int mosaic_new = 0;
          int mosaic_open = 0;
          int mosaic_save = 0;
 
@@ -156,6 +157,9 @@ namespace dak
 
          QAction* my_redo_action = nullptr;
          QToolButton* my_redo_button = nullptr;
+
+         QAction* my_new_mosaic_action = nullptr;
+         QToolButton* my_new_mosaic_button = nullptr;
 
          QAction* my_load_mosaic_action = nullptr;
          QToolButton* my_load_mosaic_button = nullptr;

@@ -46,6 +46,13 @@ namespace dak
             tiling::infer_mode_t::simple,
          };
 
+         tiling::infer_mode_t regular_infer_modes[] =
+         {
+            tiling::infer_mode_t::star,
+            tiling::infer_mode_t::rosette,
+            tiling::infer_mode_t::extended_rosette,
+         };
+
          int infer_mode_index(tiling::infer_mode_t inf)
          {
             return std::find(infer_modes, infer_modes + sizeof(infer_modes) / sizeof(infer_modes[0]), inf) - infer_modes;
@@ -117,7 +124,7 @@ namespace dak
             for (const auto& infer : infer_modes)
                combo_items.append(QString::fromWCharArray(L::t(tiling::infer_mode_name(infer))));
 
-            my_figure_list = new QTableWidgetWithComboBox(type_column, combo_items, &parent);
+            my_figure_list = new QTableWidgetWithComboBox(figure_type_column, combo_items, &parent);
             my_figure_list->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
             my_figure_list->setIconSize(QSize(64, 32));
             my_figure_list->setColumnCount(2);
@@ -129,6 +136,21 @@ namespace dak
             my_figure_list->setShowGrid(false);
             my_figure_list->horizontalHeader()->setSectionResizeMode(description_column, QHeaderView::ResizeMode::Stretch);
             layout->addWidget(my_figure_list);
+
+            my_figure_list->combo_filter = [self=this](QTableWidgetWithComboBox* table, const QStringList& combo_items) -> QStringList
+            {
+               auto figure = self->get_selected_figure();
+               if (!figure)
+                  return combo_items;
+
+               if (auto edited_irregular_figure = get_irregular_figure(figure))
+                  return combo_items;
+
+               QStringList regular_combo_items;
+               for (const auto& infer : regular_infer_modes)
+                  regular_combo_items.append(QString::fromWCharArray(L::t(tiling::infer_mode_name(infer))));
+               return regular_combo_items;
+            };
 
             my_figure_list->setEnabled(false);
 
@@ -165,7 +187,7 @@ namespace dak
                const int row = my_figure_list->rowCount();
                my_figure_list->setRowCount(row + 1);
                my_figure_list->setItem(row, description_column, desc_item);
-               my_figure_list->setItem(row, type_column, type_item);
+               my_figure_list->setItem(row, figure_type_column, type_item);
             }
 
             my_figure_list->resizeColumnsToContents();
@@ -314,7 +336,7 @@ namespace dak
          };
 
          static constexpr int description_column = 0;
-         static constexpr int type_column = 1;
+         static constexpr int figure_type_column = 1;
 
          figure_selector_t& my_figure_selector;
          figures my_edited_figures;
