@@ -52,6 +52,7 @@ namespace dak
 
          int export_img = 0;
          int export_svg = 0;
+         int export_dxf = 0;
 
          int canvas_redraw = 0;
 
@@ -175,6 +176,9 @@ namespace dak
 
          QAction* my_export_svg_action = nullptr;
          QToolButton* my_export_svg_button = nullptr;
+
+         QAction* my_export_dxf_action = nullptr;
+         QToolButton* my_export_dxf_button = nullptr;
 
          QAction* my_translate_action = nullptr;
          QToolButton* my_translate_button = nullptr;

@@ -8,6 +8,7 @@
 #include <dak/tiling_style/mosaic_io.h>
 
 #include <dak/ui/drawing.h>
+#include <dak/ui/dxf_drawing.h>
 
 #include <dak/ui/qt/convert.h>
 
@@ -22,6 +23,8 @@
 #include <QtWidgets/qtoolbar.h>
 #include <QtWinExtras/qwinfunctions.h>
 #include <QtSvg/qsvggenerator.h>
+
+#include <fstream>
 
 namespace dak
 {
@@ -112,6 +115,10 @@ namespace dak
             my_export_svg_action = CreateAction(L::t(L"Export SVG"), icons.export_svg);
             my_export_svg_button = CreateToolButton(my_export_svg_action);
             toolbar->addWidget(my_export_svg_button);
+
+            my_export_dxf_action = CreateAction(L::t(L"Export DXF"), icons.export_dxf);
+            my_export_dxf_button = CreateToolButton(my_export_dxf_action);
+            toolbar->addWidget(my_export_dxf_button);
 
             toolbar->addSeparator();
 
@@ -274,6 +281,18 @@ namespace dak
             QPainter painter(&svg_gen);
             painter_drawing_t drw(painter);
             draw_layered(drw, self->my_layered);
+         });
+
+         my_export_dxf_action->connect(my_export_dxf_action, &QAction::triggered, [self=this]()
+         {
+            auto fileName = ask_save(L::t(L"Export Mosaic to an AutoCAD (DXF) File"), L::t(L"DXF Files (*.dxf)"), self);
+            if (fileName.empty())
+               return;
+
+            std::wofstream fstr(fileName);
+            dak::ui::dxf_drawing_t dxf(fstr);
+            draw_layered(dxf, self->my_layered);
+            dxf.finish();
          });
 
          /////////////////////////////////////////////////////////////////////////
