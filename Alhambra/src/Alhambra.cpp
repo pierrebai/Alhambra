@@ -30,6 +30,7 @@ int main(int argc, char **argv)
 
    icons.export_img        = IDB_EXPORT_IMG;
    icons.export_svg        = IDB_EXPORT_SVG;
+   icons.export_dxf        = IDB_EXPORT_DXF;
 
    icons.canvas_translate  = IDB_CANVAS_TRANSLATE;
    icons.canvas_rotate     = IDB_CANVAS_ROTATE;

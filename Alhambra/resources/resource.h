@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// fichier Include Microsoft Visual C++.
-// Utilisé par Resource.rc
+// Microsoft Visual C++ generated include file.
+// Used by Resource.rc
 //
 #define IDI_ICON1                       101
 #define IDI_APP_ICON                    101
@@ -38,14 +38,14 @@
 #define IDB_BITMAP4                     148
 #define IDB_POLYGON_TRANS_CLEAR         148
 #define IDB_TILING_NEW                  149
-#define IDB_BITMAP2                     150
 #define IDB_MOSAIC_NEW                  150
+#define IDB_EXPORT_DXF                  151
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        151
+#define _APS_NEXT_RESOURCE_VALUE        153
 #define _APS_NEXT_COMMAND_VALUE         40001
 #define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           101
