@@ -39,7 +39,8 @@
 #define IDB_POLYGON_TRANS_CLEAR         148
 #define IDB_TILING_NEW                  149
 #define IDB_MOSAIC_NEW                  150
-#define IDB_EXPORT_DXF                  151
+#define IDB_EXPORT_DXF_POLY             151
+#define IDB_EXPORT_DXF_FACE             152
 
 // Next default values for new objects
 // 

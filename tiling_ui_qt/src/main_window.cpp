@@ -116,9 +116,13 @@ namespace dak
             my_export_svg_button = CreateToolButton(my_export_svg_action);
             toolbar->addWidget(my_export_svg_button);
 
-            my_export_dxf_action = CreateAction(L::t(L"Export DXF"), icons.export_dxf);
-            my_export_dxf_button = CreateToolButton(my_export_dxf_action);
-            toolbar->addWidget(my_export_dxf_button);
+            my_export_dxf_poly_action = CreateAction(L::t(L"Export DXF"), icons.export_dxf_poly);
+            my_export_dxf_poly_button = CreateToolButton(my_export_dxf_poly_action);
+            toolbar->addWidget(my_export_dxf_poly_button);
+
+            my_export_dxf_face_action = CreateAction(L::t(L"Export DXF"), icons.export_dxf_face);
+            my_export_dxf_face_button = CreateToolButton(my_export_dxf_face_action);
+            toolbar->addWidget(my_export_dxf_face_button);
 
             toolbar->addSeparator();
 
@@ -283,14 +287,26 @@ namespace dak
             draw_layered(drw, self->my_layered);
          });
 
-         my_export_dxf_action->connect(my_export_dxf_action, &QAction::triggered, [self=this]()
+         my_export_dxf_poly_action->connect(my_export_dxf_poly_action, &QAction::triggered, [self=this]()
          {
-            auto fileName = ask_save(L::t(L"Export Mosaic to an AutoCAD (DXF) File"), L::t(L"DXF Files (*.dxf)"), self);
+            auto fileName = ask_save(L::t(L"Export Mosaic to an AutoCAD (DXF) File with Polygons"), L::t(L"DXF Files (*.dxf)"), self);
             if (fileName.empty())
                return;
 
             std::wofstream fstr(fileName);
-            dak::ui::dxf_drawing_t dxf(fstr);
+            dak::ui::dxf_drawing_t dxf(fstr, dak::ui::dxf_drawing_t::with_polygons);
+            draw_layered(dxf, self->my_layered);
+            dxf.finish();
+         });
+
+         my_export_dxf_face_action->connect(my_export_dxf_face_action, &QAction::triggered, [self=this]()
+         {
+            auto fileName = ask_save(L::t(L"Export Mosaic to an AutoCAD (DXF) File With Faces"), L::t(L"DXF Files (*.dxf)"), self);
+            if (fileName.empty())
+               return;
+
+            std::wofstream fstr(fileName);
+            dak::ui::dxf_drawing_t dxf(fstr, dak::ui::dxf_drawing_t::with_faces);
             draw_layered(dxf, self->my_layered);
             dxf.finish();
          });

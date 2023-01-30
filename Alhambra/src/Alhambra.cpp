@@ -30,7 +30,8 @@ int main(int argc, char **argv)
 
    icons.export_img        = IDB_EXPORT_IMG;
    icons.export_svg        = IDB_EXPORT_SVG;
-   icons.export_dxf        = IDB_EXPORT_DXF;
+   icons.export_dxf_poly   = IDB_EXPORT_DXF_POLY;
+   icons.export_dxf_face   = IDB_EXPORT_DXF_FACE;
 
    icons.canvas_translate  = IDB_CANVAS_TRANSLATE;
    icons.canvas_rotate     = IDB_CANVAS_ROTATE;
@@ -67,7 +68,7 @@ int main(int argc, char **argv)
 
    auto mainWindow = new dak::tiling_ui_qt::main_window_t(icons);
 
-   mainWindow->resize(1000, 800);
+   mainWindow->resize(1080, 800);
    mainWindow->show();
    return app->exec();
 }
