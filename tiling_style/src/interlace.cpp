@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <random>
 #include <cmath>
+#include <set>
 
 namespace dak
 {
@@ -144,24 +145,143 @@ namespace dak
 
          fat_lines = combine_fat_lines(fat_lines);
 
+         fat_lines = combine_continuations(fat_lines);
+
          // TODO: shadow.
 
          return fat_lines;
       }
 
+      interlace_t::fat_lines_t interlace_t::combine_continuations(const interlace_t::fat_lines_t& fat_lines)
+      {
+         interlace_t::fat_lines_t combined;
+         combined.reserve(fat_lines.size() / 2 + 1);
+
+         std::set<edge_t> already_done;
+
+         const auto& edges = my_map.all();
+         for (size_t edge_index = 0; edge_index < edges.size(); ++edge_index)
+         {
+            const edge_t& edge = edges[edge_index];
+            if (!edge.is_canonical())
+               continue;
+
+            if (already_done.count(edge))
+               continue;
+
+            const edge_t twin = edge.twin();
+            const size_t twin_index = std::lower_bound(edges.begin(), edges.end(), twin) - edges.begin();
+
+            if (my_is_p1_over[edge_index])
+            {
+               const edge_t& continuation_edge = my_map.continuation(twin);
+               if (continuation_edge.is_invalid())
+                  continue;
+
+               const edge_t other_edge = continuation_edge.is_canonical()
+                  ? continuation_edge
+                  : continuation_edge.twin();
+               if (already_done.count(other_edge))
+                  continue;
+
+               const double angle = edge.angle(other_edge);
+               if (!utility::near(angle, 0.0) && !utility::near(angle, geometry::PI))
+                  continue;
+
+               // Combine the two edges contour.
+               const size_t other_index = std::lower_bound(edges.begin(), edges.end(), other_edge) - edges.begin();
+
+               // Use the edge fat-line as the basis.
+               combined.emplace_back(fat_lines[edge_index]);
+               auto& fat_line = combined.back();
+
+               if (continuation_edge.is_canonical())
+               {
+                  fat_line.hexagon.points[0] = fat_lines[other_index].hexagon.points[5];
+                  fat_line.hexagon.points[1] = fat_lines[other_index].hexagon.points[4];
+                  fat_line.hexagon.points[2] = fat_lines[other_index].hexagon.points[3];
+               }
+               else
+               {
+                  fat_line.hexagon.points[0] = fat_lines[other_index].hexagon.points[0];
+                  fat_line.hexagon.points[1] = fat_lines[other_index].hexagon.points[1];
+                  fat_line.hexagon.points[2] = fat_lines[other_index].hexagon.points[2];
+               }
+
+               already_done.insert(edge);
+               already_done.insert(other_edge);
+            }
+            else if (my_is_p1_over[twin_index])
+            {
+               const edge_t& continuation_edge = my_map.continuation(edge);
+               if (continuation_edge.is_invalid())
+                  continue;
+
+               const edge_t other_edge = continuation_edge.is_canonical()
+                  ? continuation_edge
+                  : continuation_edge.twin();
+               if (already_done.count(other_edge))
+                  continue;
+
+               const double angle = edge.angle(other_edge);
+               if (!utility::near(angle, 0.0) && !utility::near(angle, geometry::PI))
+                  continue;
+
+               // Combine the two edges contour.
+               const size_t other_index = std::lower_bound(edges.begin(), edges.end(), other_edge) - edges.begin();
+
+               // Use the edge fat-line as the basis.
+               combined.emplace_back(fat_lines[edge_index]);
+               auto& fat_line = combined.back();
+
+               if (continuation_edge.is_canonical())
+               {
+                  fat_line.hexagon.points[3] = fat_lines[other_index].hexagon.points[3];
+                  fat_line.hexagon.points[4] = fat_lines[other_index].hexagon.points[4];
+                  fat_line.hexagon.points[5] = fat_lines[other_index].hexagon.points[5];
+               }
+               else
+               {
+                  fat_line.hexagon.points[3] = fat_lines[other_index].hexagon.points[2];
+                  fat_line.hexagon.points[4] = fat_lines[other_index].hexagon.points[1];
+                  fat_line.hexagon.points[5] = fat_lines[other_index].hexagon.points[0];
+               }
+
+               already_done.insert(edge);
+               already_done.insert(other_edge);
+            }
+         }
+
+         for (size_t edge_index = 0; edge_index < edges.size(); ++edge_index)
+         {
+            const edge_t& edge = edges[edge_index];
+            if (!edge.is_canonical())
+               continue;
+
+            if (already_done.count(edge))
+               continue;
+
+            combined.emplace_back(fat_lines[edge_index]);
+         }
+
+         return combined;
+      }
+
+
       interlace_t::fat_lines_t interlace_t::combine_fat_lines(const interlace_t::fat_lines_t& fat_lines)
       {
          interlace_t::fat_lines_t combined;
+         combined.reserve(fat_lines.size());
 
          const auto& edges = my_map.all();
          for (size_t edge_index = 0; edge_index < edges.size(); ++edge_index)
          {
             const auto& edge = edges[edge_index];
+            combined.emplace_back(fat_lines[edge_index]);
             if (!edge.is_canonical())
                continue;
 
             // Use the edge fat-line as the basis.
-            combined.emplace_back(fat_lines[edge_index]);
             auto& fat_line = combined.back();
 
             // Add the twin contour for the other end.

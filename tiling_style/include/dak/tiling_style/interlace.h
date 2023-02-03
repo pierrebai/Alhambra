@@ -64,6 +64,9 @@ namespace dak
          // Combine fat lines with their twin to have the correct contour at both ends.
          fat_lines_t combine_fat_lines(const fat_lines_t& fat_lines);
 
+         // Combine fat lines with their continuation when passing over and going straight.
+         fat_lines_t combine_continuations(const fat_lines_t& fat_lines);
+
          // Get the two before/after points needed to draw the p2 junction
          // of the given edge given the number of connections.
          std::pair<point_t, point_t> get_points_many_connections(const edge_t& an_edge, size_t index, double width, const geometry::edges_map_t::range_t& connections) override;
