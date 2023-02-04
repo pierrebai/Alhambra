@@ -159,6 +159,8 @@ namespace dak
 
          std::set<edge_t> already_done;
 
+         constexpr double angle_tolerance = 0.05;
+
          const auto& edges = my_map.all();
          for (size_t edge_index = 0; edge_index < edges.size(); ++edge_index)
          {
@@ -185,7 +187,7 @@ namespace dak
                   continue;
 
                const double angle = edge.angle(other_edge);
-               if (!utility::near(angle, 0.0) && !utility::near(angle, geometry::PI))
+               if (!utility::near(angle, 0.0, angle_tolerance) && !utility::near(angle, geometry::PI, angle_tolerance))
                   continue;
 
                // Combine the two edges contour.
@@ -197,9 +199,9 @@ namespace dak
 
                if (continuation_edge.is_canonical())
                {
-                  fat_line.hexagon.points[0] = fat_lines[other_index].hexagon.points[5];
+                  fat_line.hexagon.points[0] = fat_lines[other_index].hexagon.points[3];
                   fat_line.hexagon.points[1] = fat_lines[other_index].hexagon.points[4];
-                  fat_line.hexagon.points[2] = fat_lines[other_index].hexagon.points[3];
+                  fat_line.hexagon.points[2] = fat_lines[other_index].hexagon.points[5];
                }
                else
                {
@@ -224,7 +226,7 @@ namespace dak
                   continue;
 
                const double angle = edge.angle(other_edge);
-               if (!utility::near(angle, 0.0) && !utility::near(angle, geometry::PI))
+               if (!utility::near(angle, 0.0, angle_tolerance) && !utility::near(angle, geometry::PI, angle_tolerance))
                   continue;
 
                // Combine the two edges contour.
@@ -242,9 +244,9 @@ namespace dak
                }
                else
                {
-                  fat_line.hexagon.points[3] = fat_lines[other_index].hexagon.points[2];
+                  fat_line.hexagon.points[3] = fat_lines[other_index].hexagon.points[0];
                   fat_line.hexagon.points[4] = fat_lines[other_index].hexagon.points[1];
-                  fat_line.hexagon.points[5] = fat_lines[other_index].hexagon.points[0];
+                  fat_line.hexagon.points[5] = fat_lines[other_index].hexagon.points[2];
                }
 
                already_done.insert(edge);
