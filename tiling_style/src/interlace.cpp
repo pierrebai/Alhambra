@@ -142,9 +142,7 @@ namespace dak
 
          all_edges = true;
          fat_lines_t fat_lines = outline_t::generate_fat_lines(all_edges);
-
          fat_lines = combine_fat_lines(fat_lines);
-
          fat_lines = combine_continuations(fat_lines);
 
          // TODO: shadow.
@@ -154,10 +152,9 @@ namespace dak
 
       interlace_t::fat_lines_t interlace_t::combine_continuations(const interlace_t::fat_lines_t& fat_lines)
       {
-         interlace_t::fat_lines_t combined;
-         combined.reserve(fat_lines.size() / 2 + 1);
+         interlace_t::fat_lines_t combined(fat_lines);
 
-         std::set<edge_t> already_done;
+         std::map<size_t, std::vector<size_t>> combined_with;
 
          constexpr double angle_tolerance = 0.05;
 
@@ -170,73 +167,113 @@ namespace dak
             if (!edge.is_canonical())
                continue;
 
-            if (already_done.count(edge))
-               continue;
-
             const edge_t twin = edge.twin();
             const size_t twin_index = std::lower_bound(edges.begin(), edges.end(), twin) - edges.begin();
 
-            const bool is_over = my_is_p1_over[edge_index];
-            const bool is_twin_over = my_is_p1_over[twin_index];
-            if (!(is_over || is_twin_over))
+            const bool is_not_a_crossing[2] = { (my_map.outbounds(edge.p1).size() == 2), (my_map.outbounds(twin.p1).size() == 2) };
+            const bool is_over[2] = { my_is_p1_over[edge_index], my_is_p1_over[twin_index] };
+            if (!(is_over[0] || is_over[1] || is_not_a_crossing[0] || is_not_a_crossing[1]))
                continue;
 
-            const edge_t& continuation_edge = my_map.continuation(is_over ? twin : edge);
-            if (continuation_edge.is_invalid())
-               continue;
-
-            const edge_t other_edge = continuation_edge.is_canonical()
-               ? continuation_edge
-               : continuation_edge.twin();
-            if (already_done.count(other_edge))
-               continue;
-
-            const double angle = edge.angle(other_edge);
-            if (!utility::near(angle, 0.0, angle_tolerance) && !utility::near(angle, geometry::PI, angle_tolerance))
-               continue;
-
-            // Combine the two edges contour.
-            const size_t other_index = std::lower_bound(edges.begin(), edges.end(), other_edge) - edges.begin();
-
-            // Use the edge fat-line as the basis.
-            combined.emplace_back(fat_lines[edge_index]);
-            auto& fat_line = combined.back();
-
-            const size_t index_0 = is_over ? 0 : 3;
-            const size_t index_1 = is_over ? 1 : 4;
-            const size_t index_2 = is_over ? 2 : 5;
-
-            if (continuation_edge.is_canonical())
+            for (int which_over = 0; which_over < 2; ++which_over)
             {
-               fat_line.hexagon.points[index_0] = fat_lines[other_index].hexagon.points[3];
-               fat_line.hexagon.points[index_1] = fat_lines[other_index].hexagon.points[4];
-               fat_line.hexagon.points[index_2] = fat_lines[other_index].hexagon.points[5];
-            }
-            else
-            {
-               fat_line.hexagon.points[index_0] = fat_lines[other_index].hexagon.points[0];
-               fat_line.hexagon.points[index_1] = fat_lines[other_index].hexagon.points[1];
-               fat_line.hexagon.points[index_2] = fat_lines[other_index].hexagon.points[2];
-            }
+               if (!(is_over[which_over] || is_not_a_crossing[which_over]))
+                  continue;
 
-            already_done.insert(edge);
-            already_done.insert(other_edge);
+               const bool is_first_over = (which_over == 0);
+
+               const edge_t& continuation_edge = my_map.continuation(is_first_over ? twin : edge);
+               if (continuation_edge.is_invalid())
+                  continue;
+
+               const edge_t other_edge = continuation_edge.is_canonical()
+                  ? continuation_edge
+                  : continuation_edge.twin();
+               const size_t other_index = std::lower_bound(edges.begin(), edges.end(), other_edge) - edges.begin();
+
+               const double angle = edge.angle(other_edge);
+               if (!utility::near(angle, 0.0, angle_tolerance) && !utility::near(angle, geometry::PI, angle_tolerance))
+                  continue;
+
+               // Combine the two edges contour.
+
+               // Use the edge fat-line as the basis.
+               fat_line_t& fat_line = combined[edge_index];
+
+               const size_t index_0 = is_first_over ? 0 : 3;
+               const size_t index_1 = is_first_over ? 1 : 4;
+               const size_t index_2 = is_first_over ? 2 : 5;
+
+               if (continuation_edge.is_canonical())
+               {
+                  fat_line.hexagon.points[index_0] = combined[other_index].hexagon.points[3];
+                  fat_line.hexagon.points[index_1] = combined[other_index].hexagon.points[4];
+                  fat_line.hexagon.points[index_2] = combined[other_index].hexagon.points[5];
+               }
+               else
+               {
+                  fat_line.hexagon.points[index_0] = combined[other_index].hexagon.points[0];
+                  fat_line.hexagon.points[index_1] = combined[other_index].hexagon.points[1];
+                  fat_line.hexagon.points[index_2] = combined[other_index].hexagon.points[2];
+               }
+
+               combined[other_index] = fat_line;
+
+               combined_with[edge_index].push_back(other_index);
+               combined_with[other_index].push_back(edge_index);
+
+               for (size_t index : combined_with[edge_index])
+               {
+                  if (index != edge_index && index != other_index)
+                  {
+                     combined[index] = fat_line;
+                     combined_with[other_index].push_back(index);
+                  }
+               }
+
+               for (size_t index : combined_with[other_index])
+               {
+                  if (index != edge_index && index != other_index)
+                  {
+                     combined[index] = fat_line;
+                     combined_with[edge_index].push_back(index);
+                  }
+               }
+            }
          }
 
-         // Now fill the fat lines that are not merged with another.
+         // Reduce the size of combined to keep only canonical and only
+         // one copy of each combined fsat line.
+
+         interlace_t::fat_lines_t reduced_combined;
+         reduced_combined.reserve(edges.size() / 2 + 1);
+
          for (size_t edge_index = 0; edge_index < edges.size(); ++edge_index)
          {
             const edge_t& edge = edges[edge_index];
             if (!edge.is_canonical())
                continue;
 
-            if (already_done.count(edge))
-               continue;
+            // Only keep if the edge index is the smallest index of edges
+            // that have been combined.
+            const auto iter = combined_with.find(edge_index);
+            if (iter != combined_with.end())
+            {
+               size_t smallest_canonical_index = INT_MAX;
+               for (size_t index : iter->second)
+               {
+                  //if (!edges[index].is_canonical())
+                  //   continue;
+                  smallest_canonical_index = std::min(smallest_canonical_index, index);
+               }
+               if (smallest_canonical_index < edge_index)
+                  continue;
+            }
 
-            combined.emplace_back(fat_lines[edge_index]);
+            reduced_combined.push_back(combined[edge_index]);
          }
 
-         return combined;
+         return reduced_combined;
       }
 
 
