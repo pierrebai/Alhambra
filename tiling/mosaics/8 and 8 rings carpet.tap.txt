@@ -1,10 +1,10 @@
-layers 5
-  interlace 0 0.050000000000000003
-  thick 0.076562500000000006 0.015312500000000001
+movable-join-layers  5
+  outline
+  thick 0.076562500000000006 0.050000000000000003 round
   color 102 204 255 255
   mosaic "8 Ring" 3
     regular 8
-    star 8 2.0078125 2
+    star 8 2 2
     polygon 16
       1 0.41421356237309515
       1 -0.41421356237309576
@@ -25,8 +25,9 @@ layers 5
     irregular "Girih" 0 4 1
     regular 4
     irregular "Girih" 0 1 1
+  position 93.273010785827594 0 0 0 93.273010785827594 0
   outline
-  thick 0.059999999999999998 0.012
+  thick 0.059999999999999998 0.02 round
   color 0 102 204 255
   mosaic "8 and 8" 3
     regular 8
@@ -38,8 +39,8 @@ layers 5
       3 0.41421356237309426
       2.4142135623730958 1
     irregular "Girih" 0 0.44 1
-  outline
-  thick 0.13125000000000001 0.026250000000000002
+  position 93.273010785827594 0 0 0 93.273010785827594 0
+  thick 0.13125000000000001 0.050000000000000003 round
   color 255 204 0 255
   mosaic "8 and 8" 3
     regular 8
@@ -51,6 +52,7 @@ layers 5
       3 0.41421356237309426
       2.4142135623730958 1
     irregular "Girih" 0 0.44 1
+  position 93.273010785827594 0 0 0 93.273010785827594 0
   filled true false
   color 0 51 102 255
   mosaic "8 Ring" 3
@@ -76,6 +78,7 @@ layers 5
     irregular "Girih" 0 4 1
     regular 4
     irregular "Girih" 0 1 1
+  position 93.273010785827594 0 0 0 93.273010785827594 0
   filled false true
   color 204 102 0 255
   mosaic "8 Ring" 3
@@ -101,3 +104,4 @@ layers 5
     irregular "Girih" 0 4 1
     regular 4
     irregular "Girih" 0 1 1
+  position 93.273010785827594 0 0 0 93.273010785827594 0
