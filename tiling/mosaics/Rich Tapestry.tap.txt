@@ -1,0 +1,42 @@
+colored-movable-join-layers  3
+  thick 0.019999999999999997 0.080000000000000002 miter
+   255 255 255 255
+  color 0 0 0 255
+  mosaic "8 and 8" 3
+    regular 8
+    star 8 2 2
+    regular 4
+    star 4 1 3
+    polygon 3
+      1.8284271247461912 0.41421356237309548
+      3 0.41421356237309426
+      2.4142135623730958 1
+    irregular "Girih" 0 0 1
+  position 45.559094377235937 0 0 0 45.559094377235937 0
+  filled false true
+  color 20 140 220 255
+  mosaic "8 and 8" 3
+    regular 8
+    star 8 2 2
+    regular 4
+    star 4 1 3
+    polygon 3
+      1.8284271247461912 0.41421356237309548
+      3 0.41421356237309426
+      2.4142135623730958 1
+    irregular "Girih" 0 0 1
+  position 45.559094377235937 0 0 0 45.559094377235937 0
+  thick 0.099999999999999992 0.11999999999999998 miter
+   255 255 255 255
+  color 0 0 0 255
+  mosaic "8 and 8" 3
+    regular 8
+    star 8 2 2
+    regular 4
+    star 4 1 3
+    polygon 3
+      1.8284271247461912 0.41421356237309548
+      3 0.41421356237309426
+      2.4142135623730958 1
+    irregular "Girih" 0 0 1
+  position 45.559094377235937 0 0 0 45.559094377235937 0
