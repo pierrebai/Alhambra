@@ -130,26 +130,26 @@ namespace dak
             if (star_t* edited_star = get_star(my_edited_figure))
             {
                const int sides = edited_star->n;
-               my_d_editor->set_value(edited_star->d);
                my_d_editor->set_limits(-sides / 2., sides / 2, 0.01);
-               my_s_editor->set_value(edited_star->s);
+               my_d_editor->set_value(edited_star->d);
                my_s_editor->set_limits(1, sides / 2);
+               my_s_editor->set_value(edited_star->s);
             }
             else if (rosette_t* edited_rosette = get_rosette(my_edited_figure))
             {
                const int sides = edited_rosette->n;
                my_q_editor->set_value(edited_rosette->q);
-               my_s_editor->set_value(edited_rosette->s);
                my_s_editor->set_limits(1, sides / 2);
+               my_s_editor->set_value(edited_rosette->s);
             }
             else if (irregular_figure_t* edited_irregular = get_irregular_figure(my_edited_figure))
             {
                const int sides = int(edited_irregular->poly.points.size());
-               my_d_editor->set_value(edited_irregular->d);
                my_d_editor->set_limits(-sides / 2., sides / 2, 0.01);
+               my_d_editor->set_value(edited_irregular->d);
                my_q_editor->set_value(edited_irregular->q);
-               my_s_editor->set_value(edited_irregular->s);
                my_s_editor->set_limits(1, sides / 2);
+               my_s_editor->set_value(edited_irregular->s);
             }
 
             update_enabled();

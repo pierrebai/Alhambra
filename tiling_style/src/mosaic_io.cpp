@@ -47,6 +47,7 @@ namespace dak
          const wchar_t* old_layer_sentry = L"layers";
          const wchar_t* movable_layer_sentry = L"movable-layers";
          const wchar_t* movable_join_layer_sentry = L"movable-join-layers";
+         const wchar_t* colored_movable_join_layer_sentry = L"colored-movable-join-layers";
 
          ////////////////////////////////////////////////////////////////////////////
          //
@@ -142,26 +143,34 @@ namespace dak
             write_colored(file, style);
          }
 
-         void read_thick(std::wistream& file, thick_t& new_style, bool has_join)
+         void read_thick(std::wistream& file, thick_t& new_style, bool has_join, bool has_outline_color)
          {
             std::wstring dummy;
             file >> dummy >> new_style.width >> new_style.outline_width;
             if (has_join)
                file >> new_style.join;
+            if (has_outline_color)
+            {
+               int r = 0, g = 0, b = 0, a = 0;
+               file >> r >> g >> b >> a;
+               new_style.outline_color = ui::color_t(r, g, b, a);
+            }
             read_colored(file, new_style);
          }
 
          void write_thick(std::wostream& file, const thick_t& style)
          {
             file << L"  " << thick_name << " " << style.width << " " << style.outline_width << " " << style.join << L"\n";
+            const int r = style.outline_color.r, g = style.outline_color.g, b = style.outline_color.b, a = style.outline_color.a;
+            file << L"  " << r << " " << g << " " << b << " " << a << L"\n";
             write_colored(file, style);
          }
 
-         void read_outline(std::wistream& file, outline_t& new_style, bool has_join)
+         void read_outline(std::wistream& file, outline_t& new_style, bool has_join, bool has_outline_color)
          {
             std::wstring dummy;
             file >> dummy;
-            read_thick(file, new_style, has_join);
+            read_thick(file, new_style, has_join, has_outline_color);
          }
 
          void write_outline(std::wostream& file, const outline_t& style)
@@ -170,11 +179,11 @@ namespace dak
             write_thick(file, style);
          }
 
-         void read_emboss(std::wistream& file, emboss_t& new_style, bool has_join)
+         void read_emboss(std::wistream& file, emboss_t& new_style, bool has_join, bool has_outline_color)
          {
             std::wstring dummy;
             file >> dummy >> new_style.angle;
-            read_outline(file, new_style, has_join);
+            read_outline(file, new_style, has_join, has_outline_color);
          }
 
          void write_emboss(std::wostream& file, const emboss_t& style)
@@ -183,12 +192,12 @@ namespace dak
             write_outline(file, style);
          }
 
-         void read_interlace(std::wistream& file, interlace_t& new_style, bool has_join)
+         void read_interlace(std::wistream& file, interlace_t& new_style, bool has_join, bool has_outline_color)
          {
             std::wstring dummy;
             file >> dummy >> new_style.gap_width >> new_style.shadow_width;
             // In the text format, interlace derives from thick, not outline.
-            read_thick(file, new_style, has_join);
+            read_thick(file, new_style, has_join, has_outline_color);
          }
 
          void write_interlace(std::wostream& file, const interlace_t& style)
@@ -436,8 +445,9 @@ namespace dak
          size_t count = 0;
          file >> sentry >> count;
 
-         const bool is_movable_join = (sentry == movable_join_layer_sentry);
-         const bool is_movable = (is_movable_join || sentry == movable_layer_sentry);
+         const bool is_colored = (sentry == colored_movable_join_layer_sentry);
+         const bool is_movable_join = (sentry == movable_join_layer_sentry || sentry == colored_movable_join_layer_sentry);
+         const bool is_movable = (is_movable_join || sentry == movable_layer_sentry || sentry == colored_movable_join_layer_sentry);
 
          for (size_t i = 0; i < count; ++i)
          {
@@ -450,7 +460,7 @@ namespace dak
             if (style_type == emboss_name)
             {
                std::shared_ptr<emboss_t> new_emboss(new emboss_t);
-               read_emboss(file, *new_emboss, is_movable_join);
+               read_emboss(file, *new_emboss, is_movable_join, is_colored);
                new_mosaic_layer->style = new_emboss;
             }
             else if (style_type == filled_name)
@@ -462,13 +472,13 @@ namespace dak
             else if (style_type == interlace_name)
             {
                std::shared_ptr<interlace_t> new_interlace(new interlace_t);
-               read_interlace(file, *new_interlace, is_movable_join);
+               read_interlace(file, *new_interlace, is_movable_join, is_colored);
                new_mosaic_layer->style = new_interlace;
             }
             else if (style_type == outline_name)
             {
                std::shared_ptr<outline_t> new_outline(new outline_t);
-               read_outline(file, *new_outline, is_movable_join);
+               read_outline(file, *new_outline, is_movable_join, is_colored);
                new_mosaic_layer->style = new_outline;
             }
             else if (style_type == plain_name)
@@ -486,7 +496,7 @@ namespace dak
             else if (style_type == thick_name)
             {
                std::shared_ptr<thick_t> new_thick(new thick_t);
-               read_thick(file, *new_thick, is_movable_join);
+               read_thick(file, *new_thick, is_movable_join, is_colored);
                new_mosaic_layer->style = new_thick;
             }
             else
@@ -511,7 +521,7 @@ namespace dak
          file.precision(17);
          file.imbue(std::locale("C"));
 
-         file << movable_join_layer_sentry << L"  " << layers.size() << "\n";
+         file << colored_movable_join_layer_sentry << L"  " << layers.size() << "\n";
 
          for (const auto& styled_mosaic : layers)
          {
