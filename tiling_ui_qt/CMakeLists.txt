@@ -33,13 +33,7 @@ target_link_libraries(tiling_ui_qt
    tiling tiling_style
    dak_utility dak_geometry dak_ui dak_ui_qt
    QtAdditions
-)
-
-target_include_directories(tiling_ui_qt PUBLIC
-   "${Qt5Core_INCLUDE_DIRS}"
-   "${Qt5Widgets_INCLUDE_DIRS}"
-   "${Qt5Gui_INCLUDE_DIRS}"
-   "${Qt5WinExtras_INCLUDE_DIRS}"
+   QtAdditions Qt5::Core Qt5::Widgets Qt5::Gui Qt5::WinExtras
 )
 
 target_compile_features(tiling_ui_qt PUBLIC

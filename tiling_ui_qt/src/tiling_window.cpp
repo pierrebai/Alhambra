@@ -184,7 +184,7 @@ namespace dak
          }
          catch (const std::exception& e)
          {
-            const std::wstring error_msg = utility::convert(e.what());
+            const std::wstring error_msg = utility::widen_text(e.what());
             const std::wstring error = error_msg.length() > 0
                                      ? std::wstring(L::t(L"Reason given: ")) + error_msg + std::wstring(L::t(L"."))
                                      : std::wstring(L::t(L"No reason given for the error."));
@@ -268,7 +268,7 @@ namespace dak
          catch (const std::exception& e)
          {
             my_tiling_editor->report_error(std::wstring(L::t(L"Cannot save the tiling!\n")) +
-                                 std::wstring(L::t(L"Error: ")) + utility::convert(e.what()));
+                                 std::wstring(L::t(L"Error: ")) + utility::widen_text(e.what()));
             return false;
          }
       }

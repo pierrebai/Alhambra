@@ -310,6 +310,10 @@ namespace dak
             file >> dummy >> std::quoted(tiling_name) >> figure_count;
 
             new_mosaic->tiling = tiling::find_tiling(known_tilings, tiling_name);
+            if (!new_mosaic->tiling)
+               throw std::exception(
+                  utility::narrow_text(
+                     utility::format(L::t(L"Unknown tiling %s."), tiling_name.c_str())).c_str());
 
             for (int i = 0; i < figure_count; ++i)
             {

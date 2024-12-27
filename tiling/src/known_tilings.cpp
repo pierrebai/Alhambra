@@ -50,13 +50,13 @@ namespace dak
                }
                catch (const std::exception& ex)
                {
-                  errors.emplace_back(utility::convert(ex.what()));
+                  errors.emplace_back(utility::widen_text(ex.what()));
                }
             }
          }
          catch (const std::exception& ex)
          {
-            errors.emplace_back(utility::convert(ex.what()));
+            errors.emplace_back(utility::widen_text(ex.what()));
          }
 
          return tilings;

@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "configurePresets": [
+    {
+      "name": "default",
+      "inherits": "VS 2022",
+      "environment": {
+        // Replace the following with the path to the Qt5 VS2019 or 2022 files and remove this comment.
+        "QT5_DIR": "C:\\Qt-5.15\\5.15.0\\msvc2019_64"
+      },
+      "cacheVariables": {
+        "CMAKE_PREFIX_PATH": "%QT5_DIR%"
+      }
+    }
+  ]
+}

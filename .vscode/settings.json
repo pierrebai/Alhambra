@@ -8,6 +8,7 @@
         "xstddef": "cpp",
         "xutility": "cpp",
         "streambuf": "cpp",
-        "xiosbase": "cpp"
+        "xiosbase": "cpp",
+        "xtree": "cpp"
     }
 }

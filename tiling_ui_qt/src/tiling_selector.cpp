@@ -252,7 +252,7 @@ namespace dak
             }
             catch (const std::exception& e)
             {
-               const std::wstring error_msg = utility::convert(e.what());
+               const std::wstring error_msg = utility::widen_text(e.what());
                const std::wstring error = error_msg.length() > 0
                   ? std::wstring(L::t(L"Reason given: ")) + error_msg + std::wstring(L::t(L"."))
                   : std::wstring(L::t(L"No reason given for the error."));
